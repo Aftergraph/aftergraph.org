@@ -8,6 +8,10 @@
 - [Launcher](https://aftergraph.org/launch): System launcher / command palette for all Aftergraph destinations
 - [Status](https://aftergraph.org/status): Operational snapshot (build-time)
 - [Knowledge Plane docs](https://docs.aftergraph.org/): Live developer & research portal
+- [Knowledge Plane quickstart](https://docs.aftergraph.org/developers/quickstart/): Verify the plane in 10 minutes
+- [Knowledge Plane Contract Explorer](https://docs.aftergraph.org/standards/contracts/): 13 canonical cross-repo contracts
+- [Knowledge Plane Evidence](https://docs.aftergraph.org/evidence/claim-graph/): C-001..C-008 claims with verbatim audit statuses
+- [Knowledge Plane Sentinel](https://docs.aftergraph.org/sentinel/): Verified code-review strategy docs
 - [Health](https://aftergraph.org/healthz): Deployment status
 
 ## Deep index (from the Knowledge Plane)
