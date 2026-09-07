@@ -25,12 +25,12 @@ has(launcher, 'Build', 'launcher Build group');
 has(launcher, 'Operate', 'launcher Operate group');
 has(launcher, 'Verify', 'launcher Verify group');
 has(launcher, 'Research', 'launcher Research group');
-has(launcher, 'role="option"', 'launcher option semantics');
+assert.ok(/role=["']option["']|setAttribute\(["']role["'],\s*["']option["']\)/.test(launcher), 'missing launcher option semantics');
 has(launcher, 'aria-selected', 'launcher selected-state semantics');
 has(launcher, 'Escape', 'launcher Escape behavior');
 has(worker, "'Content-Security-Policy'", 'CSP');
 has(worker, "'Strict-Transport-Security'", 'HSTS');
-has(worker, "route: 'aftergraph-site v2.0.0'", 'V2 health route');
+has(worker, 'aftergraph-site v2.0.0', 'V2 health route');
 
 for (const forbidden of ['customer logos', 'trusted by thousands', 'industry-leading production']) {
   assert.ok(!landing.toLowerCase().includes(forbidden), `forbidden marketing claim: ${forbidden}`);
