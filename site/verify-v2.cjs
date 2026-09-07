@@ -17,8 +17,9 @@ function has(haystack, needle, label = needle) {
   assert.ok(haystack.includes(needle), `missing ${label}`);
 }
 
-// ponytail: hero contract updated to the merged canonical headline (PR31 UX + PR16 topology);
-has(landing, 'Intelligence that must answer', 'V2 hero headline');
+// ponytail: hero contract follows the approved V2 landing (systems hero,
+// lifecycle field, control layers) ported over the #14 baseline;
+has(landing, 'Infrastructure for verifiable intelligent systems', 'V2 hero headline');
 has(landing, 'Mission', 'mission trace');
 has(landing, 'Authority', 'authority trace');
 has(landing, 'Evidence', 'evidence trace');
