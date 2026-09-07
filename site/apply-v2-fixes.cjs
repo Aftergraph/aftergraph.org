@@ -46,12 +46,6 @@ build = replaceRequired(
   '  <url><loc>https://aftergraph.org/launch</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n  <url><loc>https://aftergraph.org/status</loc><changefreq>daily</changefreq><priority>0.7</priority></url>\n',
   'status sitemap entry',
 );
-build = replaceRequired(
-  'const STATUS =',
-  'const STATUS =',
-  'const STATUS =',
-  'noop',
-);
 if (!build.includes('const STATUS =')) {
   build = replaceRequired(
     build,
@@ -72,8 +66,8 @@ write('build-worker.cjs', build);
 
 let status = read('status.html');
 status = status.replace('(12 repository snapshot)', '(10 public repositories · GitHub API snapshot)');
-const beforeLines = status.split('\n');
-status = beforeLines
+status = status
+  .split('\n')
   .filter((line) => !line.includes('context-continuity') && !line.includes('skills-vault'))
   .join('\n');
 assert.ok(!status.includes('context-continuity'), 'private context-continuity row remained');
