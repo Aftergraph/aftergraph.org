@@ -1,0 +1,18 @@
+# Aftergraph
+
+> Infrastructure and open research for verifiable intelligent systems: missions, authority, durable execution, evidence, verification and agentic institutions.
+
+## Key pages
+
+- [aftergraph.org](https://aftergraph.org/): Landing page
+- [Launcher](https://aftergraph.org/launch): System launcher / command palette for all Aftergraph destinations
+- [Health](https://aftergraph.org/healthz): Deployment status
+
+## Organization
+
+- GitHub organization: [github.com/Aftergraph](https://github.com/Aftergraph)
+- Repositories (public): intelligence-systems-research, aie, trust-gateway, works-execution, work-intelligence-v2, after-graph-governance, studio, brand, docs, aftergraph.org, context-continuity, skills-vault
+
+## Evidence rule
+
+Visibility never upgrades evidence. Research claims, experiments, prototypes and production capabilities are labelled by maturity on every surface. Research evidence is never runtime authority by itself.
