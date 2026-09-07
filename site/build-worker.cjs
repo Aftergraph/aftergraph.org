@@ -15,6 +15,7 @@ let landing = read('index.html');
 let launch = read('launch.html');
 const notFound = read('404.html');
 const statusPage = read('status.html');
+let sentinel = read('sentinel.html');
 const monogram = read('monogram.svg');
 const llms = read('llms.txt');
 const security = read('security.txt');
@@ -49,6 +50,13 @@ const OG = `
   sameAs: ['https://github.com/Aftergraph']
 })}</script>`;
 
+const OG_SENTINEL = `
+<meta property="og:site_name" content="Aftergraph">
+<meta property="og:title" content="Sentinel — Verified Code Review">
+<meta property="og:description" content="PRs into merge-ready verdicts on the exact commit.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aftergraph.org/sentinel">`;
+
 const OG_LAUNCH = `
 <meta property="og:site_name" content="Aftergraph">
 <meta property="og:title" content="Launcher — Aftergraph">
@@ -59,6 +67,7 @@ const OG_LAUNCH = `
 
 landing = landing.replace('</head>', `${FAVICON}${OG}\n</head>`);
 launch = launch.replace('</head>', `${FAVICON}${OG_LAUNCH}\n</head>`);
+sentinel = sentinel.replace('</head>', `${FAVICON}${OG_SENTINEL}\n</head>`);
 
 const health = JSON.stringify({
   status: 'ok',
@@ -90,6 +99,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
   <url><loc>https://aftergraph.org/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://aftergraph.org/launch</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://aftergraph.org/status</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://aftergraph.org/sentinel</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
 </urlset>
 `;
 
@@ -110,6 +120,7 @@ const MONOGRAM = ${JSON.stringify(monogram)};
 const LLMS = ${JSON.stringify(llms)};
 const SECURITY = ${JSON.stringify(security)};
 const STATUS = ${JSON.stringify(statusPage)};
+const SENTINEL = ${JSON.stringify(sentinel)};
 const HEALTH = ${JSON.stringify(health)};
 const ROBOTS = ${JSON.stringify(robots)};
 const SITEMAP = ${JSON.stringify(sitemap)};
@@ -128,6 +139,7 @@ addEventListener('fetch', event => {
   else if (p === '/favicon.ico' || p === '/og-image.svg') { body = MONOGRAM; contentType = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
   else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
   else if (p === '/status' || p === '/status/') { body = STATUS; }
+  else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }
   else if (p === '/404') { body = NOTFOUND; }
   else if (p === '/') { body = LANDING; }
   else { body = NOTFOUND; responseStatus = 404; cache = 'no-store'; }
