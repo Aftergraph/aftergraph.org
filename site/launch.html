@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Aftergraph system launcher — search public destinations by intent: build, operate, verify, research.">
+<meta name="theme-color" content="#080c14">
+<link rel="canonical" href="https://aftergraph.org/launch">
 <title>Launcher — Aftergraph</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23080c14'/><path d='M16 5l9 5v12l-9 5-9-5V10z' fill='none' stroke='%2342c7e8' stroke-width='2'/></svg>">
 <style>
@@ -17,8 +20,9 @@ a{color:#8ab4f8;text-decoration:none}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
 .palette{background:rgba(14,22,48,.8);border:1px solid rgba(137,147,164,.25);border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5)}
 .search input{width:100%;background:transparent;border:none;outline:none;color:#f5f7fa;font-size:22px;padding:22px 24px;font-family:inherit;border-bottom:1px solid rgba(137,147,164,.2)}
-.search input::placeholder{color:#5a6474}
-.hint{display:flex;gap:16px;padding:10px 24px;border-bottom:1px solid rgba(137,147,164,.12);font-size:12px;color:#5a6474;align-items:center;flex-wrap:wrap}
+.visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.search input::placeholder{color:#7b8494}
+.hint{display:flex;gap:16px;padding:10px 24px;border-bottom:1px solid rgba(137,147,164,.12);font-size:12px;color:#7b8494;align-items:center;flex-wrap:wrap}
 .hint .spacer{flex:1}
 .results{max-height:520px;overflow-y:auto}
 .group{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8993a4;padding:14px 24px 6px}
@@ -38,13 +42,13 @@ a{color:#8ab4f8;text-decoration:none}
 .badge-internal{background:rgba(147,158,180,.15);color:#8993a4;border:1px solid rgba(147,158,180,.4)}
 .badge-public{background:rgba(36,196,173,.15);color:#24c4ad;border:1px solid rgba(36,196,173,.4)}
 .badge-demo{background:rgba(240,166,74,.16);color:#f0a64a;border:1px solid rgba(240,166,74,.35)}
-.empty{padding:32px 24px;color:#5a6474;font-size:14px;text-align:center}
+.empty{padding:32px 24px;color:#7b8494;font-size:14px;text-align:center}
 .preview{background:rgba(14,22,48,.8);border:1px solid rgba(137,147,164,.25);border-radius:16px;padding:20px;font-size:13px}
 .preview h2{margin:0 0 6px;font-size:17px}
 .preview p{margin:0 0 12px;color:#8993a4}
 .preview .url{font-family:ui-monospace,monospace;font-size:12px;color:#42c7e8;word-break:break-all}
-.preview .keys{margin-top:12px;color:#5a6474;font-size:12px}
-.back{margin-top:24px;text-align:center;font-size:13px;color:#5a6474}
+.preview .keys{margin-top:12px;color:#7b8494;font-size:12px}
+.back{margin-top:24px;text-align:center;font-size:13px;color:#7b8494}
 .back a{color:#8993a4}
 :focus-visible{outline:2px solid #42c7e8;outline-offset:2px}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.preview{display:none}}
@@ -57,7 +61,7 @@ a{color:#8ab4f8;text-decoration:none}
 <div class="brand"><a href="/">← AFTERGRAPH</a></div>
 <div class="layout">
 <div class="palette" id="palette">
-<div class="search"><input id="q" type="text" placeholder="Type to search…  e.g. trust, research, launch" autofocus autocomplete="off" role="combobox" aria-expanded="true" aria-controls="results" aria-activedescendant="launcher-option-0"></div>
+<div class="search"><label class="visually-hidden" for="q">Search destinations</label><input id="q" type="text" placeholder="Type to search…  e.g. trust, research, launch" autofocus autocomplete="off" role="combobox" aria-expanded="true" aria-controls="results" aria-activedescendant="launcher-option-0" aria-label="Search destinations"></div>
 <div class="hint"><span>↑↓ navigate</span><span>↵ open</span><span>esc close</span><span>&gt; commands</span><span class="spacer"></span><span id="count" aria-live="polite"></span></div>
 <div class="results" id="results" role="listbox" aria-label="Destinations"></div>
 </div>
@@ -69,7 +73,7 @@ a{color:#8ab4f8;text-decoration:none}
 const ITEMS = [
 {g:"Platform",n:"Trust Gateway",d:"Fail-closed control plane — approvals, policy, budgets, audit",u:"https://github.com/Aftergraph/trust-gateway",b:"prototype"},
 {g:"Platform",n:"WORKS Execution",d:"Durable execution — missions, WorkGraph, leases, recovery",u:"https://github.com/Aftergraph/works-execution",b:"prototype"},
-{g:"Platform",n:"Wie",d:"Work Intelligence Engine — Observations → structured, attributable WorkItems",u:"https://github.com/Aftergraph/wi-backend",b:"prototype"},
+{g:"Platform",n:"Wie",d:"Work Intelligence Engine by Aftergraph — Observations → structured, attributable WorkItems",u:"https://github.com/Aftergraph/wi-backend",b:"prototype"},
 {g:"Platform",n:"AIE",d:"Agentic Institution Engineering — authority & delegation semantics",u:"https://github.com/Aftergraph/aie",b:"prototype"},
 {g:"Platform",n:"Studio",d:"Operator UX — mission status, evidence, approvals",u:"https://github.com/Aftergraph/studio",b:"prototype"},
 {g:"Platform",n:"Studio — Live demo",d:"Tier-0 demo — interactive, local-only fixture data, no backend.",u:"/studio/",b:"demo"},
@@ -123,7 +127,7 @@ function render(){
   count.textContent = filtered.length+' hit'+(filtered.length===1?'':'s');
   let html='',last='';
   filtered.forEach((it,idx)=>{
-    if(it.g!==last){html+='<div class="group">'+it.g+'</div>';last=it.g;}
+    if(it.g!==last){html+='<div class="group" role="presentation">'+it.g+'</div>';last=it.g;}
     html+='<div class="item'+(idx===0?' active':'')+'" role="option" id="launcher-option-'+idx+'" aria-selected="'+(idx===0)+'" aria-label="'+it.n+', '+it.d+'" data-i="'+idx+'">'
       +'<span class="name">'+it.n+'</span>'
       +'<span class="desc">'+it.d+'</span>'
