@@ -3,109 +3,166 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Aftergraph system launcher — find the right build, operate, verify or research surface.">
 <title>Launcher — Aftergraph</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23080c14'/><path d='M16 5l9 5v12l-9 5-9-5V10z' fill='none' stroke='%2342c7e8' stroke-width='2'/></svg>">
 <style>
-:root{color-scheme:dark}
+:root{color-scheme:dark;--canvas:#080c14;--raised:#0e1630;--text:#f5f7fa;--muted:#8993a4;--subtle:#5a6474;--border:rgba(137,147,164,.19);--control:#42c7e8;--evidence:#24c4ad;--authority:#7759e8;--decision:#f0a64a;--system:#4c8bd8}
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{background:#080c14;color:#f5f7fa;font:15px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
-.wrap{max-width:760px;margin:0 auto;padding:64px 24px}
-a{color:#8ab4f8;text-decoration:none}
-.brand{font-weight:700;letter-spacing:.02em;font-size:13px;color:#42c7e8;text-transform:uppercase;margin-bottom:32px}
-.brand a{color:#42c7e8}
-.palette{background:rgba(14,22,48,.8);border:1px solid rgba(137,147,164,.25);border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5)}
-.search input{width:100%;background:transparent;border:none;outline:none;color:#f5f7fa;font-size:22px;padding:22px 24px;font-family:inherit;border-bottom:1px solid rgba(137,147,164,.2)}
-.search input::placeholder{color:#5a6474}
-kbd{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;background:rgba(137,147,164,.18);border:1px solid rgba(137,147,164,.3);border-radius:4px;padding:1px 5px;color:#9fb0c8}
-.hint{display:flex;gap:16px;padding:10px 24px;border-bottom:1px solid rgba(137,147,164,.12);font-size:12px;color:#5a6474;align-items:center}
-.hint .spacer{flex:1}
-.results{max-height:520px;overflow-y:auto}
-.group{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8993a4;padding:14px 24px 6px}
-.item{display:flex;align-items:center;gap:12px;padding:11px 24px;cursor:pointer;border-left:3px solid transparent}
-.item:hover{background:rgba(66,199,232,.06)}
-.item.active{background:rgba(66,199,232,.12);border-left-color:#42c7e8}
-.item .name{font-weight:600;font-size:15px}
-.item .desc{color:#8993a4;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:420px}
-.item .right{margin-left:auto;flex-shrink:0}
-.item .arrow{color:#42c7e8;font-size:16px;opacity:0}
-.item.active .arrow{opacity:1}
-.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-.badge-prototype{background:rgba(240,166,74,.16);color:#f0a64a;border:1px solid rgba(240,166,74,.35)}
-.badge-research{background:rgba(147,158,180,.15);color:#8993a4;border:1px solid rgba(147,158,180,.4)}
-.badge-production{background:rgba(36,196,173,.15);color:#24c4ad;border:1px solid rgba(36,196,173,.4)}
-.badge-org{background:rgba(76,139,216,.15);color:#4c8bd8;border:1px solid rgba(76,139,216,.4)}
-.empty{padding:32px 24px;color:#5a6474;font-size:14px;text-align:center}
-.back{margin-top:24px;text-align:center;font-size:13px;color:#5a6474}
-.back a{color:#8993a4}
-@media(max-width:600px){.item .desc{display:none}.wrap{padding:32px 12px}}
-@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+html,body{margin:0;padding:0;min-height:100%}
+body{min-height:100vh;background:var(--canvas);color:var(--text);font:15px/1.55 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(840px 460px at 78% -6%,rgba(119,89,232,.08),transparent 62%),radial-gradient(720px 420px at 3% 10%,rgba(66,199,232,.07),transparent 60%)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--control);outline-offset:3px;border-radius:7px}
+.shell{max-width:920px;margin:0 auto;padding:48px 24px 72px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:46px}
+.brand{display:inline-flex;align-items:center;gap:10px;color:var(--text);font-weight:700}
+.mark{width:26px;height:26px;border:1.5px solid var(--control);clip-path:polygon(50% 0,100% 88%,0 88%);display:grid;place-items:center;color:var(--evidence);font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.toplink{color:#8693a5;font-size:13px}.toplink:hover{color:var(--control)}
+.intro{margin-bottom:24px}.intro p:first-child{margin:0 0 10px;color:#8fa7c4;font:600 11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase}.intro h1{margin:0;font-size:clamp(34px,6vw,52px);line-height:1.02;letter-spacing:-.04em;font-weight:620}.intro .lede{margin:14px 0 0;max-width:650px;color:#8f9bad;font-size:16px}
+.palette{border:1px solid var(--border);background:rgba(10,16,28,.80);border-radius:15px;overflow:hidden;box-shadow:0 28px 90px rgba(0,0,0,.28)}
+.search{position:relative;border-bottom:1px solid var(--border)}
+.search::before{content:"⌕";position:absolute;left:22px;top:50%;transform:translateY(-50%);color:#657286;font-size:23px;pointer-events:none}
+.search input{width:100%;min-height:72px;padding:18px 22px 18px 54px;background:transparent;border:0;outline:0;color:var(--text);font:500 20px/1.4 inherit}
+.search input::placeholder{color:#566174}
+.command-help{display:flex;gap:18px;align-items:center;padding:9px 22px;border-bottom:1px solid rgba(137,147,164,.10);color:#657286;font-size:11px}
+kbd{font:600 10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;border:1px solid rgba(137,147,164,.23);background:rgba(137,147,164,.08);padding:1px 5px;border-radius:4px;color:#9aa7ba}.command-help .grow{flex:1}.count{color:#7c899b}
+.results{max-height:590px;overflow:auto;padding:6px 0 10px;scrollbar-color:#23304a transparent}
+.group{padding:16px 22px 7px;color:#738094;font:650 10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase}
+.item{min-height:62px;margin:2px 8px;padding:10px 14px;border:1px solid transparent;border-radius:9px;display:grid;grid-template-columns:minmax(160px,.48fr) minmax(0,1fr) auto;gap:18px;align-items:center;color:inherit;text-decoration:none;transition:background .14s,border-color .14s,transform .14s}
+.item:hover{background:rgba(66,199,232,.045);border-color:rgba(66,199,232,.12);color:inherit}
+.item.active{background:rgba(66,199,232,.085);border-color:rgba(66,199,232,.28)}
+.item:focus-visible{outline-offset:0}
+.name{font-weight:680;color:#e4e9f0;min-width:0}.purpose{color:#8995a7;font-size:13px;min-width:0}.meta{display:flex;align-items:center;gap:8px;justify-self:end}.type{color:#657286;font:600 9px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;text-transform:uppercase}.badge{padding:3px 7px;border-radius:999px;border:1px solid rgba(137,147,164,.20);color:#8d99aa;font:650 9px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.05em}.badge.prototype{color:var(--decision);border-color:rgba(240,166,74,.28);background:rgba(240,166,74,.05)}.badge.research{color:#a7b0c0}.badge.public{color:var(--evidence);border-color:rgba(36,196,173,.25);background:rgba(36,196,173,.045)}.arrow{color:var(--control);opacity:0;transform:translateX(-4px);transition:opacity .14s,transform .14s}.item.active .arrow,.item:hover .arrow{opacity:1;transform:none}
+.empty{padding:42px 22px;text-align:center;color:#6f7c8f}.empty b{display:block;color:#aab4c4;margin-bottom:4px}.empty span{font-size:13px}
+.status{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.legend{margin-top:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border:1px solid var(--border);background:var(--border);border-radius:10px;overflow:hidden}.legend div{background:#0a101c;padding:14px}.legend b{display:block;color:#cbd3df;font-size:12px;margin-bottom:3px}.legend span{color:#6c788a;font-size:11px}
+.back{margin-top:24px;color:#6f7b8d;font-size:12px}.back a{color:#8995a7}.back a:hover{color:var(--control)}
+@media(max-width:720px){.shell{padding:28px 14px 52px}.topbar{margin-bottom:34px}.intro h1{font-size:40px}.search input{min-height:64px;font-size:18px}.command-help{gap:10px;flex-wrap:wrap}.command-help .grow{display:none}.results{max-height:none}.item{min-height:70px;grid-template-columns:1fr auto;gap:4px 12px;padding:12px}.name{font-size:14px}.purpose{grid-column:1/-1;white-space:normal;font-size:12px;line-height:1.45}.meta{grid-column:2;grid-row:1}.arrow{display:none}.legend{grid-template-columns:1fr 1fr}}
+@media(max-width:430px){.toplink{display:none}.legend{grid-template-columns:1fr}.search::before{left:16px}.search input{padding-left:46px}.group{padding-left:15px}.item{margin-left:5px;margin-right:5px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
-<div class="wrap">
-<div class="brand"><a href="/">← AFTERGRAPH</a></div>
-<div class="palette" id="palette">
-<div class="search"><input id="q" type="text" placeholder="Type to search…  e.g. trust, research, launch" autofocus autocomplete="off"></div>
-<div class="hint"><span>↑↓ navigate</span><span>↵ open</span><span>esc close</span><span class="spacer"></span><span>maturity-labelled</span></div>
-<div class="results" id="results"></div>
-</div>
-<div class="back"><a href="/">← Back to aftergraph.org</a></div>
-</div>
+<main class="shell" id="launcher-shell" tabindex="-1">
+<div class="topbar"><a class="brand" href="/"><span class="mark" aria-hidden="true">A</span><span>Aftergraph</span></a><a class="toplink" href="https://docs.aftergraph.org/">Open docs →</a></div>
+<header class="intro"><p>System launcher</p><h1>Go where the work belongs.</h1><p class="lede">Search the Aftergraph ecosystem by intent. Build a system, operate it, verify what happened, or inspect the research behind it.</p></header>
+<section class="palette" aria-label="Aftergraph command launcher">
+<div class="search"><label for="q" class="status">Search Aftergraph destinations</label><input id="q" type="search" aria-label="Search Aftergraph destinations" aria-controls="results" autocomplete="off" autofocus placeholder="Search WORKS, evidence, contracts, research…"></div>
+<div class="command-help" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>Enter</kbd> open</span><span><kbd>Esc</kbd> clear</span><span class="grow"></span><span class="count" id="count"></span></div>
+<div id="results" class="results" role="listbox" aria-label="Aftergraph destinations"></div>
+<p id="status" class="status" aria-live="polite"></p>
+</section>
+<div class="legend" aria-label="Intent groups"><div><b>Build</b><span>Implement and integrate.</span></div><div><b>Operate</b><span>Run and observe work.</span></div><div><b>Verify</b><span>Inspect evidence and controls.</span></div><div><b>Research</b><span>Study specifications and experiments.</span></div></div>
+<p class="back"><a href="/">← Back to aftergraph.org</a></p>
+</main>
 <script>
 const ITEMS = [
-{g:"Platform",n:"Trust Gateway",d:"Fail-closed control plane — approvals, policy, budgets, audit",u:"https://github.com/Aftergraph/trust-gateway",b:"prototype"},
-{g:"Platform",n:"WORKS Execution",d:"Durable execution — missions, WorkGraph, leases, recovery",u:"https://github.com/Aftergraph/works-execution",b:"prototype"},
-{g:"Platform",n:"Work Intelligence v2",d:"Observations → structured, attributable WorkItems",u:"https://github.com/Aftergraph/work-intelligence-v2",b:"prototype"},
-{g:"Platform",n:"AIE",d:"Agentic Institution Engineering — authority & delegation semantics",u:"https://github.com/Aftergraph/aie",b:"prototype"},
-{g:"Platform",n:"Studio",d:"Operator UX — mission status, evidence, approvals",u:"https://github.com/Aftergraph/studio",b:"prototype"},
-{g:"Platform",n:"Governance",d:"Cross-repo contracts, terminology, evidence boundaries",u:"https://github.com/Aftergraph/after-graph-governance",b:"prototype"},
-{g:"Platform",n:"Knowledge Plane (docs)",d:"Developer & research portal compiler",u:"https://github.com/Aftergraph/docs",b:"prototype"},
-{g:"Research",n:"Intelligence Systems Research",d:"SPEC-001, MISSION-Bench, assurance, replication",u:"https://github.com/Aftergraph/intelligence-systems-research",b:"research"},
-{g:"Research",n:"Aftergraph Foundation Model",d:"Training, datasets, evals, adapters — agentic SE",u:"https://github.com/Aftergraph/afm",b:"research"},
-{g:"Research",n:"Context Continuity",d:"Portable state-transfer capsules (Draft 0.1)",u:"https://github.com/Aftergraph/context-continuity",b:"research"},
-{g:"Brand",n:"Brand OS",d:"Identity, tokens, assets, communication contracts",u:"https://github.com/Aftergraph/brand",b:"production"},
-{g:"Organization",n:"GitHub Organization",d:"All Aftergraph repositories and community files",u:"https://github.com/Aftergraph",b:"org"},
-{g:"Site",n:"Home",d:"aftergraph.org landing",u:"/",b:"org"},
-{g:"Site",n:"Health check",d:"Deployment status + timestamp",u:"/healthz",b:"org"}
+  {group:'Build',name:'WORKS Execution',purpose:'Durable mission execution, workers, leases, budgets and recovery.',url:'https://github.com/Aftergraph/works-execution',maturity:'prototype',type:'product'},
+  {group:'Build',name:'Developer Quickstart',purpose:'Start with the first useful path through the Knowledge Plane.',url:'https://docs.aftergraph.org/developers/quickstart/',maturity:'public',type:'docs'},
+  {group:'Build',name:'Studio',purpose:'Operator-facing mission status, evidence, approvals and needs-you flows.',url:'https://github.com/Aftergraph/studio',maturity:'prototype',type:'product'},
+  {group:'Operate',name:'Work Intelligence',purpose:'Turn source-neutral observations into structured, attributable WorkItems.',url:'https://github.com/Aftergraph/work-intelligence-v2',maturity:'prototype',type:'product'},
+  {group:'Operate',name:'WORKS Runtime',purpose:'Inspect the execution plane, scheduling, recovery and worker contracts.',url:'https://github.com/Aftergraph/works-execution',maturity:'prototype',type:'runtime'},
+  {group:'Operate',name:'Site Health',purpose:'Check the deployed aftergraph.org worker health surface.',url:'/healthz',maturity:'public',type:'status'},
+  {group:'Verify',name:'Trust Gateway',purpose:'Fail-closed approvals, policy, budgets and tamper-evident audit.',url:'https://github.com/Aftergraph/trust-gateway',maturity:'prototype',type:'product'},
+  {group:'Verify',name:'Evidence',purpose:'Inspect claim strength, provenance and reproduction state.',url:'https://docs.aftergraph.org/evidence/',maturity:'public',type:'docs'},
+  {group:'Verify',name:'Contract Explorer',purpose:'Inspect canonical contracts and their ownership boundaries.',url:'https://docs.aftergraph.org/standards/contracts/',maturity:'public',type:'docs'},
+  {group:'Verify',name:'Governance',purpose:'Cross-repository contracts, terminology and evidence boundaries.',url:'https://github.com/Aftergraph/after-graph-governance',maturity:'prototype',type:'repo'},
+  {group:'Research',name:'Intelligence Systems Research',purpose:'SPEC-001, MISSION-Bench, assurance and replication work.',url:'https://github.com/Aftergraph/intelligence-systems-research',maturity:'research',type:'research'},
+  {group:'Research',name:'AIE',purpose:'Agentic Institution Engineering: authority, delegation, revocation and budgets.',url:'https://github.com/Aftergraph/aie',maturity:'prototype',type:'research'},
+  {group:'Research',name:'Aftergraph Foundation Model',purpose:'Training, datasets, evals and adapters for agentic software engineering.',url:'https://github.com/Aftergraph/afm',maturity:'research',type:'research'},
+  {group:'Research',name:'Context Continuity',purpose:'Research into portable continuity and state transfer across sessions.',url:'https://github.com/Aftergraph/context-continuity',maturity:'research',type:'research'}
 ];
+const GROUPS = ['Build','Operate','Verify','Research'];
 const q = document.getElementById('q');
 const results = document.getElementById('results');
-let filtered = [], active = 0;
-function render(){
-  const t = q.value.trim().toLowerCase();
-  filtered = ITEMS.filter(i => !t || (i.n+" "+i.d+" "+i.g).toLowerCase().includes(t));
-  active = 0;
-  if(!filtered.length){results.innerHTML = '<div class="empty">No destinations match — try "research" or "studio".</div>';return;}
-  let html = "", last = "";
-  filtered.forEach((it,idx) => {
-    if(it.g !== last){html += '<div class="group">'+it.g+'</div>';last=it.g;}
-    html += '<div class="item'+(idx===0?' active':'')+'" data-i="'+idx+'">'
-      + '<span class="name">'+it.n+'</span>'
-      + '<span class="desc">'+it.d+'</span>'
-      + '<span class="right"><span class="badge badge-'+it.b+'">'+it.b+'</span><span class="arrow">→</span></span>'
-      + '</div>';
-  });
-  results.innerHTML = html;
+const status = document.getElementById('status');
+const count = document.getElementById('count');
+const shell = document.getElementById('launcher-shell');
+let filtered = [];
+let active = 0;
+
+function score(item, query){
+  if(!query) return 1;
+  const hay = `${item.name} ${item.purpose} ${item.group} ${item.type} ${item.maturity}`.toLowerCase();
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if(!terms.every(term => hay.includes(term))) return -1;
+  let total = 0;
+  for(const term of terms){
+    if(item.name.toLowerCase().startsWith(term)) total += 8;
+    else if(item.name.toLowerCase().includes(term)) total += 5;
+    else if(item.group.toLowerCase().includes(term)) total += 3;
+    else total += 1;
+  }
+  return total;
 }
-function open(i){const it=filtered[i];if(it)location.href=it.u;}
-document.querySelector('#results').addEventListener('mousemove',e=>{
-  const el=e.target.closest('.item');if(!el)return;
-  document.querySelectorAll('.item').forEach(x=>x.classList.remove('active'));
-  el.classList.add('active');active=+el.dataset.i;
-});
-document.querySelector('#results').addEventListener('click',e=>{
-  const el=e.target.closest('.item');if(el)open(+el.dataset.i);
-});
+function setActive(next){
+  const options = [...results.querySelectorAll('[role="option"]')];
+  if(!options.length){active=0;return;}
+  active = Math.max(0, Math.min(next, options.length - 1));
+  options.forEach((el,index)=>{
+    const selected = index === active;
+    el.classList.toggle('active', selected);
+    el.setAttribute('aria-selected', String(selected));
+    if(selected) el.scrollIntoView({block:'nearest'});
+  });
+}
+function render(){
+  const query = q.value.trim();
+  filtered = ITEMS.map(item => ({item,score:score(item,query)})).filter(x=>x.score>=0).sort((a,b)=>b.score-a.score || GROUPS.indexOf(a.item.group)-GROUPS.indexOf(b.item.group)).map(x=>x.item);
+  active = 0;
+  results.innerHTML = '';
+  count.textContent = `${filtered.length} destinations`;
+  status.textContent = `${filtered.length} destinations available`;
+  if(!filtered.length){
+    results.innerHTML = '<div class="empty"><b>No matching destination.</b><span>Try “evidence”, “WORKS”, “contracts” or “research”.</span></div>';
+    return;
+  }
+  for(const group of GROUPS){
+    const items = filtered.filter(item=>item.group===group);
+    if(!items.length) continue;
+    const heading = document.createElement('div');
+    heading.className = 'group';
+    heading.textContent = group;
+    results.appendChild(heading);
+    for(const item of items){
+      const index = filtered.indexOf(item);
+      const a = document.createElement('a');
+      a.className = 'item';
+      a.href = item.url;
+      a.dataset.index = String(index);
+      a.setAttribute('role','option');
+      a.setAttribute('aria-selected','false');
+      a.innerHTML = `<span class="name"></span><span class="purpose"></span><span class="meta"><span class="type"></span><span class="badge ${item.maturity}"></span><span class="arrow" aria-hidden="true">→</span></span>`;
+      a.querySelector('.name').textContent = item.name;
+      a.querySelector('.purpose').textContent = item.purpose;
+      a.querySelector('.type').textContent = item.type;
+      a.querySelector('.badge').textContent = item.maturity;
+      a.addEventListener('pointerenter',()=>setActive(index));
+      a.addEventListener('focus',()=>setActive(index));
+      results.appendChild(a);
+    }
+  }
+  setActive(0);
+}
+function openActive(){
+  const option = results.querySelector(`[data-index="${active}"]`);
+  if(option) option.click();
+}
 q.addEventListener('input',render);
-q.addEventListener('keydown',e=>{
-  if(e.key==='ArrowDown'){e.preventDefault();active=Math.min(active+1,filtered.length-1);}
-  else if(e.key==='ArrowUp'){e.preventDefault();active=Math.max(active-1,0);}
-  else if(e.key==='Enter'){open(active);return;}
-  else if(e.key==='Escape'){q.value='';render();return;}
-  else return;
-  document.querySelectorAll('.item').forEach((x,i)=>x.classList.toggle('active',i===active));
-  document.querySelectorAll('.item')[active]?.scrollIntoView({block:'nearest'});
+q.addEventListener('keydown',event=>{
+  if(event.key==='ArrowDown'){event.preventDefault();setActive(active+1);}
+  else if(event.key==='ArrowUp'){event.preventDefault();setActive(active-1);}
+  else if(event.key==='Enter'){event.preventDefault();openActive();}
+  else if(event.key==='Escape'){
+    event.preventDefault();
+    if(q.value){q.value='';render();q.focus();}
+    else{shell.focus();}
+  }
+});
+results.addEventListener('click',event=>{
+  const option = event.target.closest('[role="option"]');
+  if(option) setActive(Number(option.dataset.index));
 });
 render();
 </script>
