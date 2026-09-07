@@ -8,65 +8,44 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aftergraph.org/status">
 <style>
-:root{color-scheme:dark}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{background:#0a0c12;color:#f2f4f8;font-family:Inter,"SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-feature-settings:"cv01","ss03";line-height:1.6;-webkit-font-smoothing:antialiased}
-a{color:#42c7e8;text-decoration:none}a:hover{color:#8fe0f5}
-.wrap{max-width:980px;margin:0 auto;padding:56px 32px 88px}
-.brand{font-weight:600;letter-spacing:.02em;font-size:15px;margin-bottom:40px}
-.brand i{font-style:normal;color:#42c7e8}
-h1{font-size:40px;line-height:1.05;letter-spacing:-.8px;font-weight:600;margin:0 0 10px}
-.lede{color:#9aa3b2;font-size:16px;margin:0 0 36px;max-width:640px}
-.card{border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);border-radius:12px;padding:24px;margin-bottom:18px}
-.card h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#42c7e8;font-weight:600;margin:0 0 16px}
-.ok{display:inline-block;width:8px;height:8px;border-radius:50%;background:#24c4ad;margin-right:8px;vertical-align:middle}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th{text-align:left;color:#7b8494;font-weight:500;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
-td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
-.rname{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;white-space:nowrap;color:#d7dbe2}
-.rel{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;color:#24c4ad}
-.none{color:#5d6878}
-.pushed{color:#9aa3b2;white-space:nowrap}
-.meta{color:#5d6878;font-size:12px;margin-top:8px}
-.nav a{color:#9aa3b2;font-size:13px;margin-right:16px}.nav a:hover{color:#f2f4f8}
+:root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;padding:0}body{background:#0a0c12;color:#f2f4f8;font-family:Inter,"SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}a{color:#42c7e8;text-decoration:none}a:hover{color:#8fe0f5}.wrap{max-width:980px;margin:0 auto;padding:56px 32px 88px}.brand{font-weight:600;letter-spacing:.02em;font-size:15px;margin-bottom:40px}.brand i{font-style:normal;color:#42c7e8}h1{font-size:40px;line-height:1.05;letter-spacing:-.8px;font-weight:600;margin:0 0 10px}.lede{color:#9aa3b2;font-size:16px;margin:0 0 36px;max-width:700px}.card{border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);border-radius:12px;padding:24px;margin-bottom:18px}.card h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#42c7e8;font-weight:600;margin:0 0 16px}.ok{display:inline-block;width:8px;height:8px;border-radius:50%;background:#24c4ad;margin-right:8px;vertical-align:middle}table{width:100%;border-collapse:collapse;font-size:13.5px}th{text-align:left;color:#7b8494;font-weight:500;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.08)}td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}.rname{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;white-space:nowrap;color:#d7dbe2}.muted{color:#9aa3b2}.meta{color:#5d6878;font-size:12px;margin-top:8px}.nav a{color:#9aa3b2;font-size:13px;margin-right:16px}.nav a:hover{color:#f2f4f8}@media(max-width:760px){.wrap{padding-left:18px;padding-right:18px}table{font-size:12px}.rname{white-space:normal}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <div class="brand">AFTERGRAPH<i>.</i> <span class="nav"><a href="/">Landing</a><a href="/launch">Launcher</a><a href="/healthz">Health</a></span></div>
 <h1>Status</h1>
-<p class="lede">Operational snapshot of the Aftergraph ecosystem. Generated at build time — freshness is stamped below; nothing here is fetched at request time.</p>
+<p class="lede">Public platform snapshot. Repository topology is governed in <a href="https://github.com/Aftergraph/after-graph-governance">Aftergraph/after-graph-governance</a>; exact Git heads come from its generated org-state surface. This page is a public projection, not canonical repository truth.</p>
 <div class="card">
 <h2><span class="ok"></span>Platform &amp; site</h2>
 <table>
-<tr><th>Surface</th><th>Status</th><th>Verified</th></tr>
-<tr><td class="rname">aftergraph.org</td><td>Operational</td><td class="pushed">200 · / /launch /healthz /robots /sitemap /404 /status</td></tr>
-<tr><td class="rname">Cloudflare worker</td><td>Deployed</td><td class="pushed">aftergraph-site · zone active</td></tr>
+<tr><th>Surface</th><th>Status</th><th>Boundary</th></tr>
+<tr><td class="rname">aftergraph.org</td><td>Operational</td><td class="muted">Public presentation and launcher only</td></tr>
+<tr><td class="rname">docs.aftergraph.org</td><td>Live</td><td class="muted">Provenance-pinned Knowledge Plane</td></tr>
 </table>
 </div>
 <div class="card">
-<h2>Repositories <span class="meta">(12 public · GitHub API snapshot)</span></h2>
+<h2>Platform topology <span class="meta">19 installed · 11 public · 8 private</span></h2>
 <table>
-<tr><th>Repository</th><th>Purpose</th><th>Latest release</th><th>Last push</th></tr>
-<tr><td class='rname'>intelligence-systems-research</td><td>Research program for verifiable intelligent systems — SPEC-001 Mission Contracts, MISSION-Bench, assurance, re</td><td><span class="rel">v0.1.0-study006-recruitment</span></td><td class='pushed'>2026-09-07</td></tr>
-<tr><td class='rname'>aie</td><td>Agentic Institution Engineering — portable semantics for authority, delegation, revocation, budgets, lifecycle</td><td><span class="none">—</span></td><td class='pushed'>2026-09-07</td></tr>
-<tr><td class='rname'>trust-gateway</td><td>Fail-closed runtime control and enforcement plane for governed autonomous agents, approvals, policy, budgets a</td><td><span class="none">—</span></td><td class='pushed'>2026-09-07</td></tr>
-<tr><td class='rname'>works-execution</td><td>Durable execution plane for autonomous work — missions, WorkGraph scheduling, workers, leases, budgets, recove</td><td><span class="rel">v0.3.5</span></td><td class='pushed'>2026-09-07</td></tr>
-<tr><td class='rname'>work-intelligence-v2</td><td>Source-neutral work intelligence: observations become structured, attributable WorkItems for downstream autono</td><td><span class="none">—</span></td><td class='pushed'>2026-09-07</td></tr>
-<tr><td class='rname'>after-graph-governance</td><td>Canonical cross-repository contracts, architecture, terminology, exact-head state and evidence boundaries for </td><td><span class="none">—</span></td><td class='pushed'>2026-09-07</td></tr>
-<tr><td class='rname'>studio</td><td>Operator and product experience for Aftergraph systems: mission status, evidence, approvals, needs-you flows a</td><td><span class="none">—</span></td><td class='pushed'>2026-09-07</td></tr>
-<tr><td class='rname'>brand</td><td>Aftergraph Brand OS and design system: identity, tokens, canonical assets and public communication contracts.</td><td><span class="none">—</span></td><td class='pushed'>2026-09-07</td></tr>
-<tr><td class='rname'>docs</td><td>Aftergraph Knowledge Plane — public developer & research portal. Provenance-stamped docs, contracts, claims + </td><td><span class="rel">v1.1.0</span></td><td class='pushed'>2026-09-07</td></tr>
-<tr><td class='rname'>aftergraph.org</td><td>Canonical public platform for aftergraph.org: marketing site, organization front door and system launcher for </td><td><span class="rel">v1.1.0</span></td><td class='pushed'>2026-09-07</td></tr>
-<tr><td class='rname'>context-continuity</td><td>Aftergraph Continuity Contract: portable state-transfer capsules for heterogeneous intelligent systems (Draft </td><td><span class="rel">plugin-v0.1.1</span></td><td class='pushed'>2026-09-07</td></tr>
-<tr><td class='rname'>skills-vault</td><td>Kurateret Hermes skill-bibliotek — 44 skills (superpowers, addyosmani, anthropic, egne)</td><td><span class="none">—</span></td><td class='pushed'>2026-09-07</td></tr>
+<tr><th>Public repository</th><th>Canonical role</th></tr>
+<tr><td class="rname">.github</td><td>Organization/community infrastructure</td></tr>
+<tr><td class="rname">after-graph-governance</td><td>Canonical topology, contracts and exact-head generation</td></tr>
+<tr><td class="rname">aftergraph.org</td><td>Public front door and launcher</td></tr>
+<tr><td class="rname">aie</td><td>Normative institution / authority semantics</td></tr>
+<tr><td class="rname">brand</td><td>Brand OS and design system</td></tr>
+<tr><td class="rname">docs</td><td>Knowledge Plane</td></tr>
+<tr><td class="rname">intelligence-systems-research</td><td>Research, SPEC-001, MISSION-Bench and assurance evidence</td></tr>
+<tr><td class="rname">studio</td><td>General-purpose human operating environment</td></tr>
+<tr><td class="rname">trust-gateway</td><td>Runtime admission and enforcement</td></tr>
+<tr><td class="rname">work-intelligence-v2</td><td>Observation → WorkItem inference</td></tr>
+<tr><td class="rname">works-execution</td><td>Durable execution and execution evidence</td></tr>
 </table>
+<p class="meta">Eight private repositories participate in the topology but their source content is not rendered on this public surface.</p>
 </div>
 <div class="card">
-<h2>Evidence</h2>
-<p style="font-size:14px;color:#9aa3b2;margin:0 0 10px">Visibility never upgrades evidence. Maturity labels (prototype / research / production) are carried per surface. Research evidence never becomes runtime authority by itself.</p>
-<p class="meta">Snapshot: 2026-09-07T01:59:08Z UTC · generated by development-loop · build-time data, no runtime fetch</p>
+<h2>Evidence boundaries</h2>
+<p class="muted" style="font-size:14px;margin:0 0 10px">Visibility never upgrades evidence. Runtime evidence, AIE conformance, scientific evidence and production authority are separate states. Exact-head state also does not prove functional conformance.</p>
+<p class="meta">Evidence cut: 2026-09-07 · topology count reconciled against the installed Aftergraph GitHub organization</p>
 </div>
 </div>
 </body>
