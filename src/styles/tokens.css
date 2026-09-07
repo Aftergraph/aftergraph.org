@@ -1,0 +1,148 @@
+/**
+ * Aftergraph Design Tokens — Astro Site Integration
+ * Source: @aftergraph/brand v1.0.0 (tokens.css + tokens.json)
+ * Sync: Build-time copy from Aftergraph/brand repo; do NOT edit manually.
+ * Theme: Dark-first (institutional default). Light via [data-theme="light"].
+ */
+
+:root {
+  /* === Brand Primitives (immutable) === */
+  --ag-brand-institution-black: #080c14;
+  --ag-brand-graph-midnight: #0e1630;
+  --ag-brand-evidence-white: #f5f7fa;
+  --ag-brand-slate: #8993a4;
+  --ag-brand-control-cyan: #42c7e8;
+  --ag-brand-evidence-teal: #24c4ad;
+  --ag-brand-authority-violet: #7759e8;
+  --ag-brand-decision-amber: #f0a64a;
+  --ag-brand-system-blue: #4c8bd8;
+  --ag-brand-danger: #ff6b7a;
+
+  /* === Typography Stacks === */
+  --ag-font-interface: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --ag-font-code: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --ag-font-editorial: "Source Serif 4", Georgia, "Times New Roman", serif;
+
+  /* === Type Scale === */
+  --ag-type-display: 34px;
+  --ag-type-headline: 28px;
+  --ag-type-title: 22px;
+  --ag-type-subhead: 18px;
+  --ag-type-body-lg: 16px;
+  --ag-type-body: 14px;
+  --ag-type-body-sm: 13px;
+  --ag-type-ui: 12px;
+  --ag-type-caption: 11px;
+
+  /* === Font Weights === */
+  --ag-weight-regular: 400;
+  --ag-weight-medium: 500;
+  --ag-weight-semibold: 600;
+  --ag-weight-bold: 700;
+  --ag-weight-heavy: 780;
+
+  /* === Line Heights === */
+  --ag-leading-tight: 1.15;
+  --ag-leading-snug: 1.3;
+  --ag-leading-normal: 1.5;
+  --ag-leading-relaxed: 1.65;
+
+  /* === Spacing Scale === */
+  --ag-space-xxs: 2px;
+  --ag-space-xs: 4px;
+  --ag-space-sm: 8px;
+  --ag-space-md: 12px;
+  --ag-space-base: 16px;
+  --ag-space-lg: 18px;
+  --ag-space-xl: 24px;
+  --ag-space-xxl: 32px;
+  --ag-space-3xl: 40px;
+  --ag-space-4xl: 48px;
+  --ag-space-5xl: 64px;
+
+  /* === Radii === */
+  --ag-radius-control: 8px;
+  --ag-radius-button: 10px;
+  --ag-radius-card: 12px;
+  --ag-radius-surface: 16px;
+  --ag-radius-sheet: 22px;
+  --ag-radius-pill: 999px;
+
+  /* === Motion === */
+  --ag-motion-micro: 120ms;
+  --ag-motion-state: 200ms;
+  --ag-motion-surface: 340ms;
+  --ag-motion-ambient: 3000ms;
+  --ag-ease-micro: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ag-ease-state: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ag-ease-surface: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* === Semantic Tokens — DARK DEFAULT (institutional primary) === */
+  color-scheme: dark;
+  --ag-canvas: #080c14;
+  --ag-canvas-raised: #0e1630;
+  --ag-surface: rgba(14, 22, 48, 0.78);
+  --ag-surface-strong: rgba(20, 31, 64, 0.92);
+  --ag-text: #f5f7fa;
+  --ag-text-muted: #8993a4;
+  --ag-text-subtle: #5a6474;
+  --ag-border: rgba(137, 147, 164, 0.20);
+  --ag-border-strong: rgba(66, 199, 232, 0.40);
+  --ag-control: #42c7e8;
+  --ag-control-soft: rgba(66, 199, 232, 0.14);
+  --ag-evidence: #24c4ad;
+  --ag-evidence-soft: rgba(36, 196, 173, 0.14);
+  --ag-authority: #7759e8;
+  --ag-authority-soft: rgba(119, 89, 232, 0.16);
+  --ag-decision: #f0a64a;
+  --ag-decision-soft: rgba(240, 166, 74, 0.15);
+  --ag-system: #4c8bd8;
+  --ag-system-soft: rgba(76, 139, 216, 0.15);
+  --ag-danger: #ff6b7a;
+  --ag-danger-soft: rgba(255, 107, 122, 0.16);
+  --ag-shadow-flat: none;
+  --ag-shadow-raised: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --ag-shadow-focus: 0 10px 32px rgba(0, 0, 0, 0.45);
+  --ag-shadow-overlay: 0 24px 80px rgba(0, 0, 0, 0.65), 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* === LIGHT THEME OVERRIDE === */
+html[data-theme="light"],
+[data-theme="light"] {
+  color-scheme: light;
+  --ag-canvas: #f5f7fa;
+  --ag-canvas-raised: #ffffff;
+  --ag-surface: #ffffff;
+  --ag-surface-strong: #eceff3;
+  --ag-text: #080c14;
+  --ag-text-muted: #4f5868;
+  --ag-text-subtle: #8993a4;
+  --ag-border: #e5e8ed;
+  --ag-border-strong: #d7dce3;
+  --ag-control: #0c52ef;
+  --ag-control-soft: #eaf1ff;
+  --ag-evidence: #15985d;
+  --ag-evidence-soft: #e8f7ef;
+  --ag-authority: #7759e8;
+  --ag-authority-soft: #f2edff;
+  --ag-decision: #b57300;
+  --ag-decision-soft: #fff5df;
+  --ag-system: #2367ff;
+  --ag-system-soft: #edf4ff;
+  --ag-danger: #d24242;
+  --ag-danger-soft: #fff0f0;
+  --ag-shadow-flat: none;
+  --ag-shadow-raised: 0 4px 16px rgba(8, 12, 20, 0.08);
+  --ag-shadow-focus: 0 10px 28px rgba(8, 12, 20, 0.12);
+  --ag-shadow-overlay: 0 24px 80px rgba(8, 12, 20, 0.20), 0 2px 12px rgba(8, 12, 20, 0.08);
+}
+
+/* === Reduced Motion === */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ag-motion-micro: 0ms;
+    --ag-motion-state: 0ms;
+    --ag-motion-surface: 0ms;
+    --ag-motion-ambient: 0ms;
+  }
+}
