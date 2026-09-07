@@ -22,10 +22,39 @@ a:hover{color:#8fe0f5}
 .nav .links a:hover{color:#f2f4f8}
 .nav .links .cta{background:#42c7e8;color:#0a0c12!important;padding:7px 16px;border-radius:6px;font-weight:600}
 .nav .links .cta:hover{background:#64d5f0;color:#0a0c12!important}
-.hero{max-width:1180px;margin:0 auto;padding:110px 40px 64px}
+.hero{max-width:1180px;margin:0 auto;padding:110px 40px 64px;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:56px;align-items:center}
 .hero h1{font-size:64px;line-height:1.02;letter-spacing:-1.6px;font-weight:500;margin:0 0 22px;max-width:900px;color:#f2f4f8}
 .hero h1 em{font-style:normal;color:#24c4ad}
 .hero .lede{font-size:19px;line-height:1.6;color:#9aa3b2;max-width:640px;margin:0 0 36px;font-weight:400}
+.trust{font-size:13px;color:#7b8494;margin:22px 0 0;max-width:640px}
+.prcard{min-width:0;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:#0d111b;padding:26px;box-shadow:0 24px 80px rgba(0,0,0,.45)}
+.prcard-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
+.prcard-kicker{margin:0 0 8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#42c7e8;font-weight:600}
+.prcard-title{margin:0 0 6px;font-size:17px;font-weight:600;color:#f2f4f8}
+.prcard-title span{display:block;font-size:13px;font-weight:400;color:#9aa3b2;margin-top:2px}
+.prcard-sha{margin:0;font-size:12px;color:#7b8494}
+.prcard-sha code{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;color:#42c7e8;font-size:12px}
+.verdict{flex:none;display:inline-flex;align-items:center;gap:8px;margin:0;padding:7px 12px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.08em;background:rgba(255,125,140,.12);border:1px solid rgba(255,125,140,.45);color:#ff7d8c;white-space:nowrap}
+.prcard-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 18px}
+.prcard-stats div{border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;background:rgba(255,255,255,.015)}
+.prcard-stats dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#7b8494;margin-bottom:2px}
+.prcard-stats dd{margin:0;font-size:22px;font-weight:600;color:#f2f4f8}
+.finding{border:1px solid rgba(255,125,140,.3);border-left:3px solid #ff7d8c;border-radius:8px;padding:12px 14px;margin:0 0 18px;background:rgba(255,125,140,.04)}
+.finding-title{margin:0 0 10px;font-size:14px;font-weight:600;color:#f2f4f8}
+.sev{display:inline-block;margin-right:8px;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.07em;background:rgba(255,125,140,.14);border:1px solid rgba(255,125,140,.4);color:#ff7d8c;vertical-align:1px}
+.ticks{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 18px}
+.ticks li{font-size:13px;color:#9aa3b2}
+.ticks li b{color:#24c4ad;font-weight:700;margin-right:6px}
+.pipeline{list-style:none;margin:0 0 20px;padding:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pipeline li{font-size:11px;font-weight:600;letter-spacing:.04em;padding:5px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.1);color:#7b8494;animation:pstep 10s linear infinite}
+.pipeline li:nth-child(2){animation-delay:2s}
+.pipeline li:nth-child(3){animation-delay:4s}
+.pipeline li:nth-child(4){animation-delay:6s}
+.pipeline li.done{animation-delay:8s;border-color:rgba(255,125,140,.5);color:#ff7d8c}
+@keyframes pstep{0%,18%{border-color:rgba(66,199,232,.7);color:#f2f4f8;background:rgba(66,199,232,.08)}20%,100%{border-color:rgba(255,255,255,.1);color:#7b8494;background:transparent}}
+.pipeline li.done{animation-name:pstep-done}
+@keyframes pstep-done{0%,18%{border-color:rgba(255,125,140,.7);color:#ff7d8c;background:rgba(255,125,140,.08)}20%,100%{border-color:rgba(255,125,140,.5);color:#ff7d8c;background:transparent}}
+.card-actions .btn{padding:9px 18px;font-size:14px}
 .cta-row{display:flex;gap:14px;flex-wrap:wrap}
 .btn{display:inline-block;padding:10px 20px;border-radius:6px;font-size:15px;font-weight:600;transition:all .18s}
 .btn-p{background:#42c7e8;color:#0a0c12}
@@ -54,8 +83,9 @@ a:hover{color:#8fe0f5}
 .foot h4{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#7b8494;margin:0 0 14px;font-weight:600}
 .foot a{display:block;color:#9aa3b2;font-size:14px;margin-bottom:9px}
 .foot a:hover{color:#f2f4f8}
-@media(max-width:900px){.hero h1{font-size:44px}.sh2{font-size:34px}.nav .links a:not(.cta){display:none}.hero,.section{padding-left:22px;padding-right:22px}}
-@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+@media(max-width:900px){.hero{grid-template-columns:1fr;gap:40px;padding-top:72px}.hero h1{font-size:44px}.sh2{font-size:34px}.nav .links a:not(.cta){display:none}.hero,.section{padding-left:22px;padding-right:22px}}
+@media(max-width:480px){.hero{padding-top:56px}.hero h1{font-size:40px;letter-spacing:-1px}.hero .lede{font-size:17px}.prcard{padding:18px}.prcard-head{flex-direction:column}.prcard-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.prcard-stats dd{font-size:18px}.nav{padding:14px 22px}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}.pipeline li{animation:none}.pipeline li.done{border-color:rgba(255,125,140,.5);color:#ff7d8c}}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #42c7e8;outline-offset:2px}
 </style>
 </head>
@@ -66,13 +96,50 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #42c7
 </nav>
 
 <header class="hero">
+<div>
 <h1>Ship code you can <em>prove</em> works</h1>
-<p class="lede">Sentinel turns pull requests into merge-ready verdicts — SHIP or DO NOT SHIP on the exact commit it verified, with cited evidence. If the base moves, the verdict dies automatically.</p>
+<p class="lede">Sentinel reviews, tests and verifies every change against the exact commit you intend to merge.</p>
 <div class="cta-row">
-<a class="btn btn-p" href="https://github.com/Aftergraph/sentinel">Get the CLI →</a>
+<a class="btn btn-p" href="https://github.com/Aftergraph/sentinel">Start free</a>
 <a class="btn btn-g" href="#verdict">See a verified PR</a>
 <a class="btn btn-g" href="https://docs.aftergraph.org/sentinel/" target="_blank" rel="noopener">Read the docs ↗</a>
 </div>
+<p class="trust">No training on your private code. Cloud or self-hosted.</p>
+</div>
+<aside class="prcard" aria-label="Example live pull request verdict">
+<div class="prcard-head">
+<div>
+<p class="prcard-kicker">Live PR · example</p>
+<p class="prcard-title">PR #482 <span>feat: session token rotation</span></p>
+<p class="prcard-sha">HEAD <code>98af672</code></p>
+</div>
+<p class="verdict" role="status"><span aria-hidden="true">■</span> DO_NOT_SHIP</p>
+</div>
+<dl class="prcard-stats">
+<div><dt>Blockers</dt><dd>2</dd></div>
+<div><dt>Checks</dt><dd>18</dd></div>
+<div><dt>Evidence</dt><dd>11</dd></div>
+</dl>
+<div class="finding">
+<p class="finding-title"><span class="sev">HIGH</span> Session token accepted after rotation</p>
+<ul class="ticks">
+<li><b>✓</b> reproduced</li>
+<li><b>✓</b> regression test</li>
+<li><b>✓</b> API captured</li>
+</ul>
+</div>
+<ol class="pipeline" aria-label="Verification pipeline: analyzing, finding, reproducing, evidence, verdict">
+<li>Analyzing</li>
+<li>Finding</li>
+<li>Reproducing</li>
+<li>Evidence</li>
+<li class="done">Verdict</li>
+</ol>
+<div class="cta-row card-actions">
+<a class="btn btn-p" href="#verdict">View evidence</a>
+<a class="btn btn-g" href="https://docs.aftergraph.org/sentinel/" target="_blank" rel="noopener">Fix</a>
+</div>
+</aside>
 </header>
 
 <section class="section" id="verdict">
