@@ -40,13 +40,13 @@ const privateRepos = [
   'continuum'
 ];
 
-if (!landing.includes('19 repositories') || !landing.includes('11 public') || !landing.includes('8 private')) {
-  fail('landing topology totals are not 19 / 11 public / 8 private');
+if (!landing.includes('20 repositories') || !landing.includes('12 public') || !landing.includes('8 private')) {
+  fail('landing topology totals are not 20 / 12 public / 8 private');
 }
-if (!status.includes('19 installed') || !status.includes('11 public') || !status.includes('8 private')) {
+if (!status.includes('20 installed') || !status.includes('12 public') || !status.includes('8 private')) {
   fail('status topology totals are not reconciled');
 }
-if (!llms.includes('Installed platform topology: 19 repositories') || !llms.includes('Public repositories: 11') || !llms.includes('Private repositories: 8')) {
+if (!llms.includes('Installed platform topology: 20 repositories') || !llms.includes('Public repositories: 12') || !llms.includes('Private repositories: 8')) {
   fail('llms.txt topology totals are not reconciled');
 }
 for (const repo of expectedPublic) {
