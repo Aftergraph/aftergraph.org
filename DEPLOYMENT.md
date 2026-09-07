@@ -10,9 +10,16 @@ Static Assets (same account, zone e23b26f46a48d143f488ef85874b1948).
 node site/build-worker.cjs   # regenerates site/worker/worker.js from HTML sources
 ```
 
-`build-worker.cjs` embeds `index.html` (landing v3) + `launch.html`
+> ⚠️ 2026-09-07: `site/worker.js` is now the canonical ESM module worker
+> (Text/Data imports, `export default`). `build-worker.cjs` still generates
+> the OLD `addEventListener` style and overwrites `wrangler.toml` without
+> the `[[rules]]` blocks — DO NOT run it until it is updated, or it will
+> clobber the live worker and its module rules.
+
+`worker.js` embeds `index.html` (landing v3) + `launch.html`
 (command palette) + security headers (CSP, HSTS, frame/X-content, permissions)
-+ robots/sitemap into the worker script.
++ robots/sitemap + the pro asset set (`site/favicon.svg`, `site/og-image.svg`,
+PWA icons, `site.webmanifest`) into the worker script.
 
 ## Deploy
 

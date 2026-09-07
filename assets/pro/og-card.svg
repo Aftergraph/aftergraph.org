@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Aftergraph social card">
+  <title>Aftergraph — Intelligent work that can prove the outcome</title>
+  <defs>
+    <linearGradient id="og-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0E1630"/>
+      <stop offset="0.55" stop-color="#080C14"/>
+      <stop offset="1" stop-color="#080C14"/>
+    </linearGradient>
+    <radialGradient id="og-cyan" cx="0.18" cy="0.2" r="0.55">
+      <stop offset="0" stop-color="#42C7E8" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#42C7E8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="og-teal" cx="0.88" cy="0.95" r="0.55">
+      <stop offset="0" stop-color="#24C4AD" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#24C4AD" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="og-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#F5F7FA" stroke-opacity="0.055" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#og-bg)"/>
+  <rect width="1200" height="630" fill="url(#og-grid)"/>
+  <rect width="1200" height="630" fill="url(#og-cyan)"/>
+  <rect width="1200" height="630" fill="url(#og-teal)"/>
+  <!-- Monogram mark -->
+  <g transform="translate(120,165)">
+    <path d="M125 10 234 73v126L125 262 16 199V73z" fill="none" stroke="#42C7E8" stroke-width="16" stroke-linejoin="round"/>
+    <g stroke="#F5F7FA" stroke-width="9" fill="none" stroke-linejoin="round">
+      <path d="M60 92 125 54l65 38v92l-65 38-65-38z"/>
+      <path d="M125 54v168"/>
+    </g>
+    <g fill="#F5F7FA">
+      <circle cx="125" cy="54" r="13"/>
+      <circle cx="60" cy="92" r="13"/>
+      <circle cx="190" cy="92" r="13"/>
+      <circle cx="60" cy="184" r="13"/>
+      <circle cx="190" cy="184" r="13"/>
+      <circle cx="125" cy="222" r="13"/>
+    </g>
+    <path d="M125 108l34 34-34 34-34-34z" fill="#42C7E8"/>
+  </g>
+  <!-- Copy -->
+  <text x="430" y="280" font-family="Inter,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="88" font-weight="600" letter-spacing="1" fill="#F5F7FA">AFTERGRAPH<tspan fill="#42C7E8">.</tspan></text>
+  <text x="432" y="345" font-family="Inter,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="34" font-weight="400" fill="#8993A4">Intelligent work that can</text>
+  <text x="432" y="390" font-family="Inter,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="34" font-weight="400" fill="#F5F7FA">prove the outcome<tspan fill="#24C4AD">.</tspan></text>
+  <rect x="432" y="430" width="120" height="5" rx="2.5" fill="#42C7E8"/>
+  <rect x="560" y="430" width="48" height="5" rx="2.5" fill="#24C4AD"/>
+  <text x="432" y="505" font-family="'JetBrains Mono',ui-monospace,Menlo,monospace" font-size="24" letter-spacing="2" fill="#8993A4">aftergraph.org</text>
+  <text x="432" y="548" font-family="'JetBrains Mono',ui-monospace,Menlo,monospace" font-size="20" letter-spacing="2" fill="#5A6474">GOVERNED · DURABLE · VERIFIABLE</text>
+</svg>

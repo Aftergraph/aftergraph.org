@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="560" viewBox="0 0 1180 560" role="img" aria-label="Aftergraph operating model illustration">
+  <title>From intent to verified outcome</title>
+  <defs>
+    <pattern id="hero-grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0H0v44" fill="none" stroke="#F5F7FA" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="hero-glow" cx="0.5" cy="0.42" r="0.65">
+      <stop offset="0" stop-color="#42C7E8" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#42C7E8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1180" height="560" rx="24" fill="#0E1630" fill-opacity="0.55"/>
+  <rect width="1180" height="560" rx="24" fill="url(#hero-grid)"/>
+  <rect width="1180" height="560" rx="24" fill="url(#hero-glow)"/>
+  <rect x="1" y="1" width="1178" height="558" rx="23" fill="none" stroke="#F5F7FA" stroke-opacity="0.08" stroke-width="2"/>
+  <!-- Pipeline nodes -->
+  <g font-family="Inter,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="16" font-weight="600" text-anchor="middle">
+    <g>
+      <rect x="40" y="150" width="128" height="64" rx="12" fill="#080C14" stroke="#8993A4" stroke-opacity="0.45" stroke-width="1.5"/>
+      <circle cx="104" cy="168" r="5" fill="#8993A4"/>
+      <text x="104" y="200" fill="#F5F7FA">Intent</text>
+    </g>
+    <g>
+      <rect x="196" y="150" width="128" height="64" rx="12" fill="#080C14" stroke="#7759E8" stroke-width="1.5"/>
+      <circle cx="260" cy="168" r="5" fill="#7759E8"/>
+      <text x="260" y="200" fill="#F5F7FA">Mission</text>
+    </g>
+    <g>
+      <rect x="352" y="150" width="128" height="64" rx="12" fill="#080C14" stroke="#7759E8" stroke-width="1.5"/>
+      <circle cx="416" cy="168" r="5" fill="#7759E8"/>
+      <text x="416" y="200" fill="#F5F7FA">Authority</text>
+    </g>
+    <g>
+      <rect x="508" y="150" width="140" height="64" rx="12" fill="#080C14" stroke="#F0A64A" stroke-width="1.5"/>
+      <circle cx="578" cy="168" r="5" fill="#F0A64A"/>
+      <text x="578" y="200" fill="#F5F7FA">Enforcement</text>
+    </g>
+    <g>
+      <rect x="676" y="150" width="128" height="64" rx="12" fill="#080C14" stroke="#4C8BD8" stroke-width="1.5"/>
+      <circle cx="740" cy="168" r="5" fill="#4C8BD8"/>
+      <text x="740" y="200" fill="#F5F7FA">Execution</text>
+    </g>
+    <g>
+      <rect x="832" y="150" width="128" height="64" rx="12" fill="#080C14" stroke="#24C4AD" stroke-width="1.5"/>
+      <circle cx="896" cy="168" r="5" fill="#24C4AD"/>
+      <text x="896" y="200" fill="#F5F7FA">Evidence</text>
+    </g>
+    <g>
+      <rect x="988" y="150" width="152" height="64" rx="12" fill="rgba(66,199,232,0.10)" stroke="#42C7E8" stroke-width="2"/>
+      <path d="M1036 192l8 8 14-15" fill="none" stroke="#42C7E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="1078" y="200" fill="#F5F7FA">Verified</text>
+    </g>
+    <!-- Connectors -->
+    <g stroke="#42C7E8" stroke-opacity="0.7" stroke-width="2" fill="none">
+      <path d="M168 182h20"/><path d="M184 177l8 5-8 5z" fill="#42C7E8" stroke="none"/>
+      <path d="M324 182h20"/><path d="M340 177l8 5-8 5z" fill="#42C7E8" stroke="none"/>
+      <path d="M480 182h20"/><path d="M496 177l8 5-8 5z" fill="#42C7E8" stroke="none"/>
+      <path d="M648 182h20"/><path d="M664 177l8 5-8 5z" fill="#42C7E8" stroke="none"/>
+      <path d="M804 182h20"/><path d="M820 177l8 5-8 5z" fill="#42C7E8" stroke="none"/>
+      <path d="M960 182h20"/><path d="M976 177l8 5-8 5z" fill="#42C7E8" stroke="none"/>
+    </g>
+  </g>
+  <!-- Evidence receipt card -->
+  <g>
+    <rect x="330" y="300" width="520" height="180" rx="16" fill="#080C14" stroke="#24C4AD" stroke-opacity="0.5" stroke-width="1.5"/>
+    <circle cx="372" cy="342" r="16" fill="none" stroke="#24C4AD" stroke-width="2.5"/>
+    <path d="M364 342l6 6 11-12" fill="none" stroke="#24C4AD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="400" y="338" font-family="'JetBrains Mono',ui-monospace,Menlo,monospace" font-size="17" fill="#F5F7FA">evidence sealed · mission #4821</text>
+    <text x="400" y="362" font-family="'JetBrains Mono',ui-monospace,Menlo,monospace" font-size="14" fill="#8993A4">sha256:9f2c…e41a · independent verify</text>
+    <rect x="372" y="384" width="436" height="10" rx="5" fill="#F5F7FA" fill-opacity="0.10"/>
+    <rect x="372" y="404" width="300" height="10" rx="5" fill="#F5F7FA" fill-opacity="0.10"/>
+    <rect x="372" y="424" width="360" height="10" rx="5" fill="#42C7E8" fill-opacity="0.30"/>
+  </g>
+  <!-- Floating orbs -->
+  <circle cx="150" cy="400" r="42" fill="#7759E8" fill-opacity="0.16"/>
+  <circle cx="150" cy="400" r="42" fill="none" stroke="#7759E8" stroke-opacity="0.5" stroke-width="1.5"/>
+  <circle cx="1040" cy="400" r="42" fill="#42C7E8" fill-opacity="0.12"/>
+  <circle cx="1040" cy="400" r="42" fill="none" stroke="#42C7E8" stroke-opacity="0.5" stroke-width="1.5"/>
+  <path d="M150 388l12 12-12 12-12-12z" fill="#7759E8" fill-opacity="0.8"/>
+  <path d="M1040 388l12 12-12 12-12-12z" fill="#42C7E8" fill-opacity="0.9"/>
+  <text x="590" y="90" font-family="Inter,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="22" font-weight="500" letter-spacing="3" fill="#8993A4" text-anchor="middle">FROM INTENT TO <tspan fill="#24C4AD">VERIFIED OUTCOME</tspan></text>
+</svg>

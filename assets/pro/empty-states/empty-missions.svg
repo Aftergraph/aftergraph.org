@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240" role="img" aria-label="No missions yet">
+  <title>Empty — missions</title>
+  <path d="M160 22 231 63v82l-71 41-71-41V63z" fill="none" stroke="#7759E8" stroke-width="3" stroke-dasharray="10 8" stroke-linejoin="round" stroke-opacity="0.8"/>
+  <g stroke="#7759E8" stroke-width="2.5" fill="none" stroke-linecap="round">
+    <circle cx="160" cy="104" r="24"/>
+    <circle cx="160" cy="104" r="11"/>
+  </g>
+  <path d="M160 98l6 6-6 6-6-6z" fill="#7759E8"/>
+  <rect x="90" y="196" width="140" height="10" rx="5" fill="#F5F7FA" fill-opacity="0.14"/>
+  <rect x="115" y="212" width="90" height="8" rx="4" fill="#F5F7FA" fill-opacity="0.08"/>
+</svg>

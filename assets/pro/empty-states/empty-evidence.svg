@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240" role="img" aria-label="No evidence yet">
+  <title>Empty — evidence</title>
+  <circle cx="160" cy="104" r="72" fill="none" stroke="#24C4AD" stroke-width="3" stroke-dasharray="10 8" stroke-opacity="0.8"/>
+  <circle cx="160" cy="96" r="26" fill="none" stroke="#24C4AD" stroke-width="2.5"/>
+  <path d="M142 128l-6 32 24-9 24 9-6-32" fill="none" stroke="#24C4AD" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M150 96l7 7 13-14" fill="none" stroke="#F5F7FA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="90" y="196" width="140" height="10" rx="5" fill="#F5F7FA" fill-opacity="0.14"/>
+  <rect x="115" y="212" width="90" height="8" rx="4" fill="#F5F7FA" fill-opacity="0.08"/>
+</svg>

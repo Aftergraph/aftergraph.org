@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200" role="img" aria-label="Aftergraph brand kit board">
+<title>Aftergraph — brand-kit overview 3x3</title>
+<rect width="1600" height="1200" fill="#0B0E15"/>
+<g font-family="Inter,-apple-system,'Segoe UI',Roboto,sans-serif">
+<!-- row/col geometry: 3 cols x 56 gutter: panel w 496; rows: 340/340/340, gutters 28, top label 64 -->
+<!-- PANEL 1: logo cover -->
+<rect x="24" y="64" width="496" height="340" rx="16" fill="#080C14" stroke="#8993A4" stroke-opacity=".2"/>
+<text x="48" y="96" font-size="13" letter-spacing="3" fill="#8993A4">01 · MARK</text>
+<g transform="translate(88,120)">
+<path d="M80 6 146 44v76L80 158 14 120V44z" fill="none" stroke="#42C7E8" stroke-width="10" stroke-linejoin="round"/>
+<g stroke="#F5F7FA" stroke-width="6.5" fill="none"><path d="M40 56 80 32l40 24v56l-40 24-40-24z"/><path d="M80 32v104"/></g>
+<g fill="#F5F7FA"><circle cx="80" cy="32" r="9"/><circle cx="40" cy="56" r="9"/><circle cx="120" cy="56" r="9"/><circle cx="40" cy="112" r="9"/><circle cx="120" cy="112" r="9"/><circle cx="80" cy="136" r="9"/></g>
+<path d="M80 62l23 23-23 23-23-23z" fill="#42C7E8"/>
+</g>
+<text x="280" y="212" font-size="44" font-weight="600" letter-spacing="3" fill="#F5F7FA">AFTERGRAPH<tspan fill="#42C7E8">.</tspan></text>
+<text x="280" y="246" font-size="13" letter-spacing="4" fill="#8993A4">VERIFIABLE INTELLIGENT SYSTEMS</text>
+<text x="48" y="352" font-family="JetBrains Mono,monospace" font-size="14" fill="#24C4AD">p.01 — hexagon-graph seal · control cyan on institution black</text>
+<!-- PANEL 2: construction -->
+<rect x="552" y="64" width="496" height="340" rx="16" fill="#0E1630" stroke="#8993A4" stroke-opacity=".2"/>
+<text x="576" y="96" font-size="13" letter-spacing="3" fill="#8993A4">02 · CONSTRUCTION</text>
+<g stroke="#8993A4" stroke-opacity=".3"><line x1="640" y1="120" x2="640" y2="330"/><line x1="720" y1="120" x2="720" y2="330"/><line x1="800" y1="120" x2="800" y2="330"/><line x1="880" y1="120" x2="880" y2="330"/><line x1="600" y1="170" x2="1000" y2="170"/><line x1="600" y1="230" x2="1000" y2="230"/><line x1="600" y1="290" x2="1000" y2="290"/></g>
+<circle cx="760" cy="230" r="86" fill="none" stroke="#42C7E8" stroke-width="2" stroke-dasharray="6 6"/>
+<path d="M760 156l64 37v74l-64 37-64-37v-74z" fill="none" stroke="#F5F7FA" stroke-width="3"/>
+<path d="M760 208l22 22-22 22-22-22z" fill="#42C7E8"/>
+<circle cx="760" cy="156" r="7" fill="#24C4AD"/><circle cx="824" cy="193" r="7" fill="#24C4AD"/><circle cx="824" cy="267" r="7" fill="#24C4AD"/>
+<text x="900" y="180" font-family="JetBrains Mono,monospace" font-size="13" fill="#42C7E8">⌀ 1x grid</text>
+<text x="900" y="232" font-family="JetBrains Mono,monospace" font-size="13" fill="#F5F7FA">◇ core = proof</text>
+<text x="900" y="284" font-family="JetBrains Mono,monospace" font-size="13" fill="#24C4AD">● 6 nodes</text>
+<text x="576" y="352" font-family="JetBrains Mono,monospace" font-size="14" fill="#8993A4">p.02 — hexagon · inner graph · diamond core</text>
+<!-- PANEL 3: digital application -->
+<rect x="1080" y="64" width="496" height="340" rx="16" fill="#080C14" stroke="#42C7E8" stroke-opacity=".35"/>
+<text x="1104" y="96" font-size="13" letter-spacing="3" fill="#8993A4">03 · PRODUCT SURFACE</text>
+<g transform="translate(1104,116)">
+<rect x="0" y="0" width="448" height="220" rx="12" fill="#0E1630" stroke="#8993A4" stroke-opacity=".35"/>
+<rect x="0" y="0" width="448" height="34" rx="12" fill="#42C7E8" opacity=".12"/>
+<circle cx="22" cy="17" r="5" fill="#FF6B7A"/><circle cx="42" cy="17" r="5" fill="#F0A64A"/><circle cx="62" cy="17" r="5" fill="#24C4AD"/>
+<rect x="90" y="8" width="280" height="18" rx="9" fill="#F5F7FA" opacity=".12"/>
+<text x="18" y="76" font-size="24" font-weight="600" fill="#F5F7FA">Every agent action,</text>
+<text x="18" y="104" font-size="24" font-weight="600" fill="#24C4AD">sealed as evidence.</text>
+<rect x="18" y="124" width="150" height="36" rx="8" fill="#42C7E8"/><text x="93" y="148" font-size="15" font-weight="600" text-anchor="middle" fill="#080C14">Launch mission</text>
+<rect x="180" y="124" width="150" height="36" rx="8" fill="none" stroke="#8993A4" stroke-opacity=".6"/><text x="255" y="148" font-size="15" text-anchor="middle" fill="#F5F7FA">Verify</text>
+<text x="18" y="192" font-family="JetBrains Mono,monospace" font-size="14" fill="#24C4AD">$ attest --mission 042 ✓</text>
+<text x="250" y="192" font-family="JetBrains Mono,monospace" font-size="14" fill="#8993A4">merkle 9f3a…c1</text>
+<text x="18" y="216" font-family="JetBrains Mono,monospace" font-size="14" fill="#42C7E8">policy: PASS · scope: ok</text>
+</g>
+<text x="1104" y="352" font-family="JetBrains Mono,monospace" font-size="14" fill="#8993A4">p.03 — hero + attestation terminal</text>
+<!-- PANEL 4: essence -->
+<rect x="24" y="428" width="496" height="340" rx="16" fill="#0E1630" stroke="#8993A4" stroke-opacity=".2"/>
+<text x="48" y="460" font-size="13" letter-spacing="3" fill="#8993A4">04 · ESSENCE</text>
+<text x="48" y="560" font-size="46" font-weight="500" fill="#F5F7FA">Nothing autonomous</text>
+<text x="48" y="612" font-size="46" font-weight="500" fill="#F5F7FA">without <tspan fill="#24C4AD">evidence.</tspan></text>
+<text x="48" y="660" font-size="16" fill="#8993A4">Infrastructure for governed autonomous intelligence.</text>
+<text x="48" y="716" font-family="JetBrains Mono,monospace" font-size="14" fill="#8993A4">p.04 — one promise, no fluff</text>
+<!-- PANEL 5: color -->
+<rect x="552" y="428" width="496" height="340" rx="16" fill="#080C14" stroke="#8993A4" stroke-opacity=".2"/>
+<text x="576" y="460" font-size="13" letter-spacing="3" fill="#8993A4">05 · COLOR</text>
+<g font-family="JetBrains Mono,monospace" font-size="12" text-anchor="middle">
+<rect x="576" y="480" width="140" height="120" rx="10" fill="#080C14" stroke="#8993A4" stroke-opacity=".4"/><text x="646" y="620" fill="#F5F7FA">BLACK 080C14</text>
+<rect x="724" y="480" width="140" height="120" rx="10" fill="#0E1630" stroke="#8993A4" stroke-opacity=".4"/><text x="794" y="620" fill="#F5F7FA">MIDNIGHT</text>
+<rect x="872" y="480" width="140" height="120" rx="10" fill="#F5F7FA"/><text x="942" y="620" fill="#F5F7FA">PAPER F5F7FA</text>
+<rect x="576" y="628" width="140" height="72" rx="10" fill="#42C7E8"/><text x="646" y="716" fill="#F5F7FA">CYAN 42C7E8</text>
+<rect x="724" y="628" width="140" height="72" rx="10" fill="#24C4AD"/><text x="794" y="716" fill="#F5F7FA">TEAL 24C4AD</text>
+<rect x="872" y="628" width="140" height="72" rx="10" fill="#7759E8"/><text x="942" y="716" fill="#F5F7FA">VIOLET 7759E8</text>
+</g>
+<text x="576" y="748" font-family="JetBrains Mono,monospace" font-size="14" fill="#8993A4">p.05 — 9 tokens · amber #F0A64A · blue #4C8BD8</text>
+<!-- PANEL 6: type -->
+<rect x="1080" y="428" width="496" height="340" rx="16" fill="#F5F7FA" stroke="#8993A4" stroke-opacity=".3"/>
+<text x="1104" y="460" font-size="13" letter-spacing="3" fill="#4F5868">06 · TYPOGRAPHY</text>
+<text x="1104" y="540" font-size="64" font-weight="600" letter-spacing="-1" fill="#080C14">Aa Inter</text>
+<text x="1104" y="584" font-size="20" fill="#4F5868">ABCDEFGHIJKLM abcdefgh 0123456789</text>
+<text x="1104" y="632" font-family="JetBrains Mono,monospace" font-size="22" fill="#0C52EF">$ attest --scope ok_</text>
+<text x="1104" y="668" font-family="JetBrains Mono,monospace" font-size="14" fill="#4F5868">JetBrains Mono · code / receipts / CLI</text>
+<text x="1104" y="716" font-family="JetBrains Mono,monospace" font-size="14" fill="#4F5868">p.06 — Inter UI · Mono evidence · Serif editorial</text>
+<!-- PANEL 7: physical application -->
+<rect x="24" y="792" width="496" height="340" rx="16" fill="#080C14" stroke="#8993A4" stroke-opacity=".2"/>
+<text x="48" y="824" font-size="13" letter-spacing="3" fill="#8993A4">07 · ARTIFACT</text>
+<g transform="translate(48,844) rotate(-4 200 110)">
+<rect x="0" y="0" width="400" height="220" rx="14" fill="#0E1630" stroke="#42C7E8" stroke-opacity=".5"/>
+<text x="24" y="52" font-size="26" font-weight="600" letter-spacing="2" fill="#F5F7FA">AFTERGRAPH<tspan fill="#42C7E8">.</tspan></text>
+<text x="24" y="78" font-size="11" letter-spacing="3" fill="#8993A4">GOVERNED OPERATOR · CLEARANCE 04</text>
+<rect x="24" y="100" width="200" height="8" rx="4" fill="#42C7E8" opacity=".5"/>
+<rect x="24" y="116" width="140" height="8" rx="4" fill="#8993A4" opacity=".4"/>
+<rect x="24" y="150" width="120" height="34" rx="17" fill="none" stroke="#24C4AD" stroke-width="2"/>
+<text x="84" y="173" font-family="JetBrains Mono,monospace" font-size="13" text-anchor="middle" fill="#24C4AD">SEALED ✓</text>
+<circle cx="340" cy="160" r="34" fill="none" stroke="#7759E8" stroke-width="3"/>
+<text x="340" y="168" font-size="22" text-anchor="middle" fill="#7759E8">⬣</text>
+</g>
+<text x="48" y="1108" font-family="JetBrains Mono,monospace" font-size="14" fill="#8993A4">p.07 — operator card · seal · clearance</text>
+<!-- PANEL 8: image direction -->
+<rect x="552" y="792" width="496" height="340" rx="16" fill="#0E1630" stroke="#8993A4" stroke-opacity=".2"/>
+<text x="576" y="824" font-size="13" letter-spacing="3" fill="#8993A4">08 · WORLD</text>
+<g transform="translate(576,844)">
+<rect x="0" y="0" width="448" height="220" rx="12" fill="#080C14"/>
+<circle cx="330" cy="60" r="44" fill="#F0A64A" opacity=".8"/>
+<path d="M0 170 L110 90 L210 150 L320 70 L448 140 L448 220 L0 220z" fill="#0E1630" stroke="#42C7E8" stroke-opacity=".6"/>
+<path d="M0 190 L130 120 L250 175 L360 110 L448 165" fill="none" stroke="#24C4AD" stroke-width="2" opacity=".8"/>
+<g fill="#F5F7FA" opacity=".25"><circle cx="60" cy="40" r="2"/><circle cx="120" cy="70" r="2"/><circle cx="200" cy="36" r="2"/><circle cx="260" cy="80" r="2"/><circle cx="390" cy="30" r="2"/></g>
+<rect x="0" y="150" width="448" height="70" fill="#080C14" opacity=".55"/>
+<text x="20" y="182" font-size="19" font-weight="500" fill="#F5F7FA">Calm systems, dusk light.</text>
+<text x="20" y="204" font-family="JetBrains Mono,monospace" font-size="12" fill="#42C7E8">NO STOCK PEOPLE · NO SPARKLE CLUTTER</text>
+</g>
+<text x="576" y="1108" font-family="JetBrains Mono,monospace" font-size="14" fill="#8993A4">p.08 — cinematic calm · halftone-ready</text>
+<!-- PANEL 9: system detail -->
+<rect x="1080" y="792" width="496" height="340" rx="16" fill="#080C14" stroke="#24C4AD" stroke-opacity=".4"/>
+<text x="1104" y="824" font-size="13" letter-spacing="3" fill="#8993A4">09 · SYSTEM</text>
+<g transform="translate(1104,844)" font-family="JetBrains Mono,monospace">
+<g font-size="13" text-anchor="middle">
+<rect x="0" y="0" width="100" height="64" rx="10" fill="#0E1630" stroke="#42C7E8"/><text x="50" y="28" font-size="20" fill="#42C7E8">◈</text><text x="50" y="50" fill="#F5F7FA">GRAPH</text>
+<rect x="112" y="0" width="100" height="64" rx="10" fill="#0E1630" stroke="#7759E8"/><text x="162" y="28" font-size="20" fill="#7759E8">⬣</text><text x="162" y="50" fill="#F5F7FA">GRANT</text>
+<rect x="224" y="0" width="100" height="64" rx="10" fill="#0E1630" stroke="#F0A64A"/><text x="274" y="28" font-size="20" fill="#F0A64A">◉</text><text x="274" y="50" fill="#F5F7FA">GATE</text>
+<rect x="336" y="0" width="100" height="64" rx="10" fill="#0E1630" stroke="#24C4AD"/><text x="386" y="28" font-size="20" fill="#24C4AD">✔</text><text x="386" y="50" fill="#F5F7FA">SEAL</text>
+</g>
+<rect x="0" y="80" width="436" height="52" rx="10" fill="#0E1630" stroke="#8993A4" stroke-opacity=".4"/>
+<circle cx="28" cy="106" r="8" fill="none" stroke="#24C4AD" stroke-width="2"/><text x="46" y="111" font-size="14" fill="#F5F7FA">mission-042 · sealed</text><text x="330" y="111" font-size="14" fill="#24C4AD">✓ 9f3a…c1</text>
+<rect x="0" y="140" width="436" height="52" rx="10" fill="#0E1630" stroke="#8993A4" stroke-opacity=".4"/>
+<circle cx="28" cy="166" r="8" fill="none" stroke="#F0A64A" stroke-width="2"/><text x="46" y="171" font-size="14" fill="#F5F7FA">mission-043 · gated</text><text x="330" y="171" font-size="14" fill="#F0A64A">◉ approval</text>
+</g>
+<text x="1104" y="1108" font-family="JetBrains Mono,monospace" font-size="14" fill="#8993A4">p.09 — chips · receipts · status</text>
+<!-- header + footer -->
+<text x="24" y="36" font-size="20" font-weight="600" letter-spacing="3" fill="#F5F7FA">AFTERGRAPH<tspan fill="#42C7E8">.</tspan></text>
+<text x="1330" y="36" font-family="JetBrains Mono,monospace" font-size="15" fill="#8993A4">BRAND KIT · v2 · 3×3 · 4:3</text>
+<text x="24" y="1168" font-family="JetBrains Mono,monospace" font-size="13" fill="#8993A4">aftergraph.org · palette: tokens.json v1.0.0 · Inter + JetBrains Mono · original hexagon-graph mark — no copied logos</text>
+</g>
+</svg>

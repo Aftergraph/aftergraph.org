@@ -1,0 +1,45 @@
+/**
+ * Aftergraph Pro Assets — companion stylesheet
+ * Palette derived from src/styles/tokens.css (brand v1.0.0, dark-first).
+ * Reference SVG masters in ./, ./icons/, ./empty-states/, ./backgrounds/.
+ */
+
+:root {
+  --ag-pro-ink: #080c14;
+  --ag-pro-midnight: #0e1630;
+  --ag-pro-paper: #f5f7fa;
+  --ag-pro-slate: #8993a4;
+  --ag-pro-cyan: #42c7e8;
+  --ag-pro-teal: #24c4ad;
+  --ag-pro-violet: #7759e8;
+  --ag-pro-amber: #f0a64a;
+  --ag-pro-blue: #4c8bd8;
+  --ag-pro-danger: #ff6b7a;
+}
+
+.ag-pro-logo { display: inline-block; height: 28px; width: auto; }
+.ag-pro-logo--large { height: 40px; }
+.ag-pro-favicon { width: 32px; height: 32px; border-radius: 7px; }
+.ag-pro-icon { width: 24px; height: 24px; }
+.ag-pro-og { width: 100%; height: auto; aspect-ratio: 1200 / 630; display: block; }
+.ag-pro-hero { width: 100%; height: auto; display: block; }
+.ag-pro-empty { width: 100%; max-width: 320px; height: auto; margin-inline: auto; display: block; }
+
+.ag-pro-surface {
+  background-color: var(--ag-pro-ink);
+  background-image: url("./backgrounds/bg-grid.svg");
+  background-size: 480px 480px;
+  color: var(--ag-pro-paper);
+}
+.ag-pro-surface--dots {
+  background-image: url("./backgrounds/bg-dots.svg");
+}
+.ag-pro-surface--aurora {
+  background-image: url("./backgrounds/bg-aurora.svg");
+  background-size: cover;
+  background-position: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ag-pro-hero, .ag-pro-og { content-visibility: auto; }
+}

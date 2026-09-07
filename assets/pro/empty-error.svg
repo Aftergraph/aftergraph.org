@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360" role="img" aria-label="Verification failed empty state">
+  <title>Empty state — verification failed</title>
+  <rect width="480" height="360" rx="20" fill="#0E1630"/>
+  <g transform="translate(190,52)">
+    <path d="M50 4 96 30v52L50 108 4 82V30z" fill="none" stroke="#FF6B7A" stroke-width="7" stroke-linejoin="round"/>
+    <line x1="35" y1="45" x2="65" y2="75" stroke="#FF6B7A" stroke-width="7" stroke-linecap="round"/>
+    <line x1="65" y1="45" x2="35" y2="75" stroke="#FF6B7A" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <text x="240" y="210" text-anchor="middle" font-family="Inter,-apple-system,'Segoe UI',sans-serif" font-size="28" font-weight="600" fill="#F5F7FA">Verification failed</text>
+  <text x="240" y="244" text-anchor="middle" font-family="Inter,-apple-system,'Segoe UI',sans-serif" font-size="16" fill="#8993A4">This receipt does not match its seal.</text>
+  <text x="240" y="268" text-anchor="middle" font-family="Inter,-apple-system,'Segoe UI',sans-serif" font-size="16" fill="#8993A4">Re-run attestation or check scope.</text>
+  <g font-family="JetBrains Mono,monospace" font-size="15">
+    <rect x="140" y="292" width="200" height="40" rx="8" fill="none" stroke="#42C7E8" stroke-width="2"/>
+    <text x="240" y="318" text-anchor="middle" fill="#42C7E8">$ attest --retry</text>
+  </g>
+</svg>

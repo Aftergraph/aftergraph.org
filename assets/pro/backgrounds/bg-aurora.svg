@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800" role="img" aria-label="Aurora background">
+  <title>Background — aurora</title>
+  <defs>
+    <radialGradient id="aur-cyan" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#42C7E8" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#42C7E8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="aur-violet" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#7759E8" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#7759E8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="aur-teal" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#24C4AD" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#24C4AD" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="60"/>
+    </filter>
+  </defs>
+  <rect width="800" height="800" fill="#080C14"/>
+  <g filter="url(#soft)">
+    <ellipse cx="240" cy="260" rx="220" ry="180" fill="url(#aur-cyan)"/>
+    <ellipse cx="590" cy="560" rx="240" ry="190" fill="url(#aur-violet)"/>
+    <ellipse cx="580" cy="200" rx="170" ry="150" fill="url(#aur-teal)"/>
+  </g>
+</svg>

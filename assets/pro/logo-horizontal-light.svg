@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="128" viewBox="0 0 560 128" role="img" aria-label="Aftergraph horizontal lockup on light">
+  <title>Aftergraph — horizontal lockup (light surfaces)</title>
+  <rect width="560" height="128" rx="16" fill="#F5F7FA"/>
+  <g transform="translate(8,8)">
+    <path d="M56 4 102 30v52L56 108 10 82V30z" fill="none" stroke="#0C52EF" stroke-width="7" stroke-linejoin="round"/>
+    <g stroke="#080C14" stroke-width="4.5" fill="none" stroke-linejoin="round">
+      <path d="M28 38 56 22l28 16v40L56 94 28 78z"/>
+      <path d="M56 22v72"/>
+    </g>
+    <g fill="#080C14">
+      <circle cx="56" cy="22" r="6"/><circle cx="28" cy="38" r="6"/><circle cx="84" cy="38" r="6"/>
+      <circle cx="28" cy="78" r="6"/><circle cx="84" cy="78" r="6"/><circle cx="56" cy="94" r="6"/>
+    </g>
+    <path d="M56 44l16 16-16 16-16-16z" fill="#0C52EF"/>
+  </g>
+  <text x="140" y="66" font-family="Inter,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="42" font-weight="600" letter-spacing="3" fill="#080C14">AFTERGRAPH<tspan fill="#0C52EF">.</tspan></text>
+  <text x="142" y="94" font-family="Inter,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="13" font-weight="500" letter-spacing="4.5" fill="#4F5868">VERIFIABLE INTELLIGENT SYSTEMS</text>
+</svg>

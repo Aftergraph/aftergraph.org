@@ -1,3 +1,13 @@
 name = "aftergraph-site"
 main = "worker.js"
 compatibility_date = "2024-11-01"
+
+[[rules]]
+type = "Text"
+globs = ["**/*.html", "**/*.txt", "**/*.svg", "**/*.webmanifest"]
+fallthrough = true
+
+[[rules]]
+type = "Data"
+globs = ["**/*.png"]
+fallthrough = true
