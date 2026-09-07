@@ -39,10 +39,13 @@ has(launcher, 'https://docs.aftergraph.org/', 'launcher Knowledge Plane route');
 has(launcher, 'ArrowDown', 'launcher keyboard navigation');
 has(launcher, 'ArrowUp', 'launcher keyboard navigation');
 has(launcher, 'Escape', 'launcher Escape behavior');
-// ponytail: merged launcher uses class-based active state, not ARIA option roles;
-// full ARIA listbox semantics (role=option, aria-activedescendant, stable option
-// ids, group-stable ordering) is a P2 follow-up, not a merge gate — keyboard
-// operability (arrows + Enter + Escape) is asserted above and verified working.
+// ponytail: merged launcher now carries full ARIA listbox semantics
+// (shipped in the launcher-aria slice); these pin the contract.
+has(launcher, 'role="listbox"', 'launcher listbox role');
+has(launcher, 'role="option"', 'launcher option semantics');
+has(launcher, 'aria-selected', 'launcher selected-state semantics');
+has(launcher, 'aria-activedescendant', 'launcher active-descendant semantics');
+has(launcher, 'launcher-option-', 'stable launcher option ids');
 has(launcher, 'data-i=', 'launcher item affordance');
 for (const privateUrl of [
   'https://github.com/Aftergraph/afm',
