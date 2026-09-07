@@ -4,8 +4,22 @@ updates:
     directory: /
     schedule: { interval: weekly, time: "06:00", timezone: Europe/Copenhagen }
     open-pull-requests-limit: 10
+    groups:
+      # ponytail: npm lockfile bumps opened as individual PRs collide on
+      # the lockfile exactly like the ISR study011 lock did (5 conflicting
+      # PRs on 2026-09-07). Grouped minor/patch = one PR per ecosystem.
+      npm-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
     ignore: [{ dependency-name: "*", update-types: ["version-update:semver-major"] }]
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: weekly, time: "06:00", timezone: Europe/Copenhagen }
     open-pull-requests-limit: 5
+    groups:
+      github-actions-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore: [{ dependency-name: "*", update-types: ["version-update:semver-major"] }]
