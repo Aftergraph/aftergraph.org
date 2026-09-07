@@ -30,6 +30,8 @@ has(launcher, 'Research', 'launcher Research group');
 assert.ok(/role=["']option["']|setAttribute\(["']role["'],\s*["']option["']\)/.test(launcher), 'missing launcher option semantics');
 has(launcher, 'aria-selected', 'launcher selected-state semantics');
 has(launcher, 'Escape', 'launcher Escape behavior');
+has(launcher, 'GROUPS.indexOf(a.item.group)-GROUPS.indexOf(b.item.group)', 'group-stable launcher ordering');
+has(launcher, 'let renderIndex=0', 'DOM-aligned launcher selection index');
 has(worker, "'Content-Security-Policy'", 'CSP');
 has(worker, "'Strict-Transport-Security'", 'HSTS');
 has(worker, 'aftergraph-site v2.0.0', 'V2 health route');
