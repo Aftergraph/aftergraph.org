@@ -1,0 +1,21 @@
+# Studio Tier-1/2 API proxy worker (studio-api-proxy).
+# Code: site/studio-api-proxy.js. Gate: node site/verify-studio.cjs live-api.
+# Proxies /studio/api/* (+ /studio/healthz) to the Studio backend under a
+# more-specific route; the Tier-0 aftergraph-studio worker keeps the rest of
+# /studio/*, and the aftergraph-site worker is untouched. No assets: code only.
+#
+# Fail-closed defaults (this file ships safe values only):
+#   BACKEND_URL = ""      -> every request 503 backend_not_configured
+#   STUDIO_API_TIER = "tier1" -> GET-only allowlist (POST 405, off-list 403)
+# The real BACKEND_URL (and tier for Tier-2) is set via the Cloudflare
+# dashboard (Worker > Settings > Variables) — never in this or any committed
+# file. Tier-2 additionally passes through caller Authorization; this worker
+# never logs secrets (see studio-api-proxy.js header).
+
+name = "studio-api-proxy"
+compatibility_date = "2024-11-01"
+main = "./studio-api-proxy.js"
+
+[vars]
+BACKEND_URL = ""
+STUDIO_API_TIER = "tier1"

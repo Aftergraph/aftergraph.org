@@ -4,7 +4,10 @@
 //
 //   node site/verify-studio.cjs build            # build-time asserts (default)
 //   node site/verify-studio.cjs live [base]      # live smoke (+ build checks first)
+//   node site/verify-studio.cjs live-api [base]  # proxy checks (direct, no network)
 // Base resolution for live: argv[3] > STUDIO_BASE env > https://aftergraph.org.
+// Base resolution for live-api: argv[3] > STUDIO_API_PROXY_BASE env; empty
+// means direct proxy-file checks only, live URLs are printed for the operator.
 
 const fs = require('fs');
 const path = require('path');
@@ -157,14 +160,99 @@ async function liveSmoke(base) {
   } else pass(`asset 200 with immutable caching (${cacheControl})`);
 }
 
+async function liveApiChecks(proxyBase) {
+  // Part 1 — direct checks against the proxy file (no network, no backend).
+  // Tier-1: GET allowlist returns backend JSON, POST -> 405, off-list -> 403,
+  // missing BACKEND_URL -> 503. Backend fetch is stubbed; the stub records
+  // calls so "never reaches the backend" is asserted, not assumed.
+  const { pathToFileURL } = require('url');
+  const proxyUrl = pathToFileURL(path.join(SITE, 'studio-api-proxy.js')).href;
+  const worker = (await import(proxyUrl)).default;
+  const BACKEND = 'https://backend.invalid';
+  const T1 = { BACKEND_URL: BACKEND, STUDIO_API_TIER: 'tier1' };
+  const realFetch = globalThis.fetch;
+  let calls = [];
+  const stubBackend = (payload = { state: 'live' }) => {
+    globalThis.fetch = async (url, init = {}) => {
+      calls.push({ url: String(url), init });
+      return new Response(JSON.stringify(payload), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      });
+    };
+  };
+  const req = (p, init) => new Request(`https://aftergraph.org${p}`, init);
+  try {
+    calls = [];
+    stubBackend({ state: 'live' });
+    let res = await worker.fetch(req('/studio/api/v1/state'), T1);
+    let body = await res.json();
+    if (res.status !== 200 || body.state !== 'live') {
+      fail(`live-api direct: GET /studio/api/v1/state -> ${res.status} (want 200 backend JSON)`);
+    } else if (calls.length !== 1 || calls[0].url !== `${BACKEND}/api/v1/state`) {
+      fail(`live-api direct: GET forwarded to ${calls.map((c) => c.url)} (want ${BACKEND}/api/v1/state)`);
+    } else pass('live-api direct: Tier-1 GET allowlist returns backend JSON');
+
+    calls = [];
+    stubBackend();
+    res = await worker.fetch(req('/studio/api/v1/state', { method: 'POST', body: '{}' }), T1);
+    if (res.status !== 405) fail(`live-api direct: POST -> ${res.status} (want 405)`);
+    else if (calls.length !== 0) fail('live-api direct: POST reached the backend (want 405, never forwarded)');
+    else pass('live-api direct: Tier-1 POST -> 405, never reaches backend');
+
+    calls = [];
+    stubBackend();
+    res = await worker.fetch(req('/studio/api/v1/events'), T1);
+    if (res.status !== 403) fail(`live-api direct: off-list -> ${res.status} (want 403)`);
+    else if (calls.length !== 0) fail('live-api direct: off-list reached the backend (want 403, never forwarded)');
+    else pass('live-api direct: Tier-1 off-list -> 403, never reaches backend');
+
+    calls = [];
+    stubBackend();
+    res = await worker.fetch(req('/studio/api/v1/state'), { STUDIO_API_TIER: 'tier1' });
+    if (res.status !== 503) fail(`live-api direct: no BACKEND_URL -> ${res.status} (want 503)`);
+    else if (calls.length !== 0) fail('live-api direct: unconfigured request reached the backend (want 503, never forwarded)');
+    else pass('live-api direct: no BACKEND_URL -> 503');
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+
+  // Part 2 — documented live URLs (operator smoke after deploy + route-attach).
+  const live = [
+    ['GET', '/studio/api/v1/state', 200, 'backend JSON'],
+    ['POST', '/studio/api/v1/state', 405, 'tier1_read_only'],
+    ['GET', '/studio/api/v1/events', 403, 'tier1_not_allowlisted'],
+  ];
+  if (!proxyBase) {
+    console.log('STUDIO-VERIFY-INFO: live-api live URLs (pass a base after deploy to smoke them):');
+    for (const [method, p, want, note] of live) {
+      console.log(`STUDIO-VERIFY-INFO:   ${method} <base>${p} -> ${want} (${note})`);
+    }
+    console.log('STUDIO-VERIFY-INFO: usage: node site/verify-studio.cjs live-api https://aftergraph.org');
+    return;
+  }
+  const origin = proxyBase.replace(/\/$/, '');
+  for (const [method, p, want] of live) {
+    const res = await fetch(`${origin}${p}`, { method });
+    await res.text();
+    if (res.status !== want) fail(`live-api live: ${method} ${p} -> ${res.status} (want ${want})`);
+    else pass(`live-api live: ${method} ${p} -> ${want}`);
+  }
+}
+
 (async () => {
   const mode = process.argv[2] || 'build';
-  buildChecks();
-  if (mode === 'live') {
-    const base = process.argv[3] || process.env.STUDIO_BASE || 'https://aftergraph.org';
-    await liveSmoke(base);
-  } else if (mode !== 'build') {
-    fail(`unknown mode (want build|live): ${mode}`);
+  if (mode === 'live-api') {
+    const base = process.argv[3] || process.env.STUDIO_API_PROXY_BASE || '';
+    await liveApiChecks(base);
+  } else {
+    buildChecks();
+    if (mode === 'live') {
+      const base = process.argv[3] || process.env.STUDIO_BASE || 'https://aftergraph.org';
+      await liveSmoke(base);
+    } else if (mode !== 'build') {
+      fail(`unknown mode (want build|live|live-api): ${mode}`);
+    }
   }
   if (failures) {
     console.error(`STUDIO-VERIFY-FAIL: ${failures} gate(s) failed`);

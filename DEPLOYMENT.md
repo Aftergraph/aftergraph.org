@@ -91,3 +91,39 @@ separate `site/studio-api-proxy.js` worker (`BACKEND_URL`,
 - Tier-2 full backend proxy: any method on `/healthz` or `/api/v1/*` with
   `Authorization` (+ content-type/accept/idempotency-key) passthrough.
 - The proxy never logs secrets: no headers, bodies, tokens, or query strings.
+
+## Studio API proxy deploy (studio-api-proxy, Tier-1/2)
+
+Config: `site/studio-api-wrangler.toml` (worker `studio-api-proxy`, no assets,
+fail-closed `BACKEND_URL=""` → 503, `STUDIO_API_TIER="tier1"`). Real
+`BACKEND_URL` (and tier for Tier-2) is set via the dashboard (Worker →
+Settings → Variables) — never in files. The `aftergraph-site` and
+`aftergraph-studio` workers are untouched.
+
+Pre-deploy gate (direct proxy checks, no network):
+
+```sh
+node site/verify-studio.cjs live-api
+```
+
+Deploy:
+
+```sh
+cd site && npx wrangler@4.129.0 deploy --config studio-api-wrangler.toml --name studio-api-proxy
+```
+
+Route attach (manual, once): `aftergraph.org/studio/api/*` + `www` (and
+`aftergraph.org/studio/healthz` + `www`) → `studio-api-proxy` (dashboard or
+API token). These more-specific routes win over the Tier-0
+`aftergraph.org/studio/*` → `aftergraph-studio` route.
+
+Smoke (Tier-1: want 200 backend JSON, 405, 403):
+
+```sh
+curl -s -o /dev/null -w '%{http_code}\n' https://aftergraph.org/studio/api/v1/state
+curl -s -o /dev/null -w '%{http_code}\n' -X POST https://aftergraph.org/studio/api/v1/state
+curl -s -o /dev/null -w '%{http_code}\n' https://aftergraph.org/studio/api/v1/events
+node site/verify-studio.cjs live-api https://aftergraph.org
+```
+
+Rollback: `wrangler rollback --name studio-api-proxy`.
