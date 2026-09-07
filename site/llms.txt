@@ -6,7 +6,18 @@
 
 - [aftergraph.org](https://aftergraph.org/): Landing page
 - [Launcher](https://aftergraph.org/launch): System launcher / command palette for all Aftergraph destinations
+- [Status](https://aftergraph.org/status): Operational snapshot (build-time)
+- [Knowledge Plane docs](https://docs.aftergraph.org/): Live developer & research portal
 - [Health](https://aftergraph.org/healthz): Deployment status
+
+## Deep index (from the Knowledge Plane)
+
+- [Platform overview](https://docs.aftergraph.org/platform/)
+- [Golden Mission route](https://docs.aftergraph.org/platform/golden-mission/)
+- [System Map (verified bindings)](https://docs.aftergraph.org/platform/system-map/)
+- [Research overview](https://docs.aftergraph.org/research/)
+- [Claim chains C-001..C-008](https://docs.aftergraph.org/evidence/claim-graph/)
+- [Docs index (llms.txt)](https://docs.aftergraph.org/llms.txt)
 
 ## Organization
 
