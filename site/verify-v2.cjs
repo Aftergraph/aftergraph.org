@@ -85,8 +85,8 @@ has(worker, "p === '/status' || p === '/status/'", 'compiled status route');
 assert.ok(Array.isArray(statusData.repos), 'status-data repos must be an array');
 assert.ok(statusData.repos.length > 0, 'status-data must contain public repositories');
 assert.ok(statusData.repos.every((repo) => repo.visibility === 'public'), 'status-data must contain public repositories only');
-has(statusPage, '20 installed', 'status page installed-repository count');
-has(statusPage, '12 public', 'status page public repository count');
+has(statusPage, '21 installed', 'status page installed-repository count');
+has(statusPage, '13 public', 'status page public repository count');
 has(statusPage, 'docs.aftergraph.org', 'Knowledge Plane evidence link');
 
 const publicSurface = `${landing}\n${launcher}\n${statusPage}\n${statusDataText}\n${llms}\n${worker}`.toLowerCase();

@@ -22,11 +22,11 @@ const security = read('security.txt');
 
 // Reconciliation gates. These intentionally fail closed when a public surface
 // drifts back to the pre-V1 repository inventory.
-assert(landing.includes('20 repositories'), 'landing must declare the 19-repository topology');
-assert(landing.includes('12 public') && landing.includes('8 private'), 'landing visibility totals must be reconciled');
-assert(statusPage.includes('20 installed') && statusPage.includes('12 public') && statusPage.includes('8 private'), 'status topology totals must be reconciled');
-assert(llms.includes('Installed platform topology: 20 repositories'), 'llms.txt must carry topology total');
-assert(llms.includes('Public repositories: 12') && llms.includes('Private repositories: 8'), 'llms.txt visibility totals must be reconciled');
+assert(landing.includes('21 repositories'), 'landing must declare the 19-repository topology');
+assert(landing.includes('13 public') && landing.includes('8 private'), 'landing visibility totals must be reconciled');
+assert(statusPage.includes('21 installed') && statusPage.includes('13 public') && statusPage.includes('8 private'), 'status topology totals must be reconciled');
+assert(llms.includes('Installed platform topology: 21 repositories'), 'llms.txt must carry topology total');
+assert(llms.includes('Public repositories: 13') && llms.includes('Private repositories: 8'), 'llms.txt visibility totals must be reconciled');
 assert(!llms.includes('- `context-continuity`') && !llms.includes('- `skills-vault`'), 'private repositories must not appear in the public-repository list');
 assert(!landing.includes('https://github.com/Aftergraph/context-continuity'), 'public landing must not link directly to private Continuity source');
 

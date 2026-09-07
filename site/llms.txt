@@ -35,8 +35,8 @@
 
 ## Platform topology (from Aftergraph/after-graph-governance)
 
-Installed platform topology: 20 repositories
-Public repositories: 12
+Installed platform topology: 21 repositories
+Public repositories: 13
 Private repositories: 8
 
 ### Public
@@ -48,6 +48,7 @@ Private repositories: 8
 - `brand`
 - `docs`
 - `intelligence-systems-research`
+- `runtime`
 - `sentinel`
 - `studio`
 - `trust-gateway`
