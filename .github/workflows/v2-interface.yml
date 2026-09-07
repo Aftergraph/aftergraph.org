@@ -11,7 +11,7 @@ on:
       - 'feat/aftergraph-v2-implementation'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   contract:
@@ -25,3 +25,15 @@ jobs:
         run: node site/verify-v2.cjs
       - name: Diff check
         run: git diff --check
+      - name: Commit generated worker on implementation branch
+        if: github.event_name == 'push'
+        run: |
+          if git diff --quiet -- site/worker.js site/wrangler.toml; then
+            echo "Generated worker already current"
+            exit 0
+          fi
+          git config user.name "aftergraph-v2-ci"
+          git config user.email "actions@users.noreply.github.com"
+          git add site/worker.js site/wrangler.toml
+          git commit -m "build(site): regenerate V2 worker [skip ci]"
+          git push
