@@ -37,6 +37,31 @@ Routes: `aftergraph.org/*` + `www.aftergraph.org/*` → `aftergraph-site`.
 Production is verified through `/healthz` plus HTTP 200 smoke checks for `/`,
 `/launch`, `/status`, `/robots.txt` and `/sitemap.xml`.
 
+## Studio demo (aftergraph-studio, Tier-0)
+
+The interactive Studio demo at `https://aftergraph.org/studio/` is a separate
+Cloudflare Worker (`aftergraph-studio`, static assets only, no worker code).
+The existing `aftergraph-site` worker is untouched; route
+`aftergraph.org/studio/*` (and `www`) → `aftergraph-studio`.
+
+Build (pinned Studio source, fail-closed allowlist/denylist, `/studio/` asset
+rewrite, version-stamped SW cache, `version.json` `{studio_sha, built_at,
+mode: "demo"}`):
+
+```sh
+export AG_DEPLOYED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)" STUDIO_SHA="<sha>"
+node site/studio-build.cjs && node site/verify-studio.cjs
+```
+
+Deploy:
+
+```sh
+cd site && npx wrangler@4.129.0 deploy --config studio-wrangler.toml --name aftergraph-studio
+```
+
+Rollback: `wrangler rollback --name aftergraph-studio`. Only manual step, once:
+attach the `aftergraph.org/studio/*` route (dashboard or API token).
+
 ## Design lineage
 
 - Landing: V2 Systems Interface. The public mental model is mission → authority
@@ -50,3 +75,19 @@ Production is verified through `/healthz` plus HTTP 200 smoke checks for `/`,
 - Evidence rule: visibility never upgrades evidence. Research, specifications,
   runtime implementations and independently checkable production behavior stay
   explicitly distinct.
+
+## Studio live tiers (Tier-1 / Tier-2 API proxy)
+
+Tier-0 (current): static demo only, no backend. Tiers 1–2 are served by the
+separate `site/studio-api-proxy.js` worker (`BACKEND_URL`,
+`STUDIO_API_TIER=tier1|tier2`); the `aftergraph-site` worker is untouched.
+
+- Tier-1 read-only live status: GET only, allowlisted to `/healthz`,
+  `/api/v1/state`, `/api/v1/system`, `/api/v1/missions`, `/api/v1/needs`,
+  `/api/v1/agents`, `/api/v1/artifacts`, `/api/v1/connections`,
+  `/api/v1/spaces`, `/api/v1/upstreams`, `/api/v1/context`,
+  `/api/v1/sync/events` (SSE `/api/v1/events` excluded). Non-GET → 405,
+  off-allowlist → 403, never reaches the backend.
+- Tier-2 full backend proxy: any method on `/healthz` or `/api/v1/*` with
+  `Authorization` (+ content-type/accept/idempotency-key) passthrough.
+- The proxy never logs secrets: no headers, bodies, tokens, or query strings.
