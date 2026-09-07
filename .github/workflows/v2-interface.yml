@@ -12,7 +12,7 @@ on:
       - 'feat/aftergraph-v2-implementation'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   contract:
@@ -20,24 +20,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - name: Apply latest-main integration patch
-        run: |
-          node site/apply-main18.cjs
-          rm site/apply-main18.cjs
       - name: Compile worker
         run: node site/build-worker.cjs
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
-      - name: Diff check
-        run: git diff --check
-      - name: Commit integrated sources and bundle
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A -- site .github/workflows/v2-interface.yml
-          if ! git diff --cached --quiet; then
-            git commit -m "fix(site): integrate latest main navigation contracts"
-            git push
-          fi
       - name: Generated bundle is current
         run: git diff --exit-code -- site/worker.js site/wrangler.toml
+      - name: Diff check
+        run: git diff --check
