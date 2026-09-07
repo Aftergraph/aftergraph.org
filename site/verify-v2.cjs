@@ -26,6 +26,7 @@ has(landing, 'Evidence', 'evidence trace');
 has(landing, 'Verified', 'verified outcome trace');
 has(landing, 'Complete != Verified', 'research-integrity principle');
 has(landing, 'href="https://docs.aftergraph.org', 'docs cross-link');
+has(landing, 'href="/status"', 'landing operational status route');
 has(landing, 'prefers-reduced-motion', 'reduced-motion support');
 has(landing, ':focus-visible', 'visible focus');
 
@@ -33,6 +34,7 @@ has(launcher, 'Build', 'launcher Build group');
 has(launcher, 'Operate', 'launcher Operate group');
 has(launcher, 'Verify', 'launcher Verify group');
 has(launcher, 'Research', 'launcher Research group');
+has(launcher, "name:'Knowledge Plane'", 'launcher Knowledge Plane destination');
 has(launcher, 'https://docs.aftergraph.org/', 'launcher Knowledge Plane route');
 assert.ok(/role=["']option["']|setAttribute\(["']role["'],\s*["']option["']\)/.test(launcher), 'missing launcher option semantics');
 has(launcher, 'aria-selected', 'launcher selected-state semantics');
