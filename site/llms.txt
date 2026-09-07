@@ -14,7 +14,7 @@
 - [Knowledge Plane Sentinel](https://docs.aftergraph.org/sentinel/): Verified code-review strategy docs
 - [Health](https://aftergraph.org/healthz): Deployment status
 - [Sentinel](https://aftergraph.org/sentinel): Verified code review product page (maturity: prototype)
-- [Studio demo](https://aftergraph.org/studio/): Interactive Studio operator demo — local-only fixture data, no backend (maturity: demo)
+- [Studio demo](https://aftergraph.org/studio/): Tier-0 demo — interactive, local-only fixture data, no backend. (maturity: Tier-0 demo)
 
 ## Deep index (from the Knowledge Plane)
 

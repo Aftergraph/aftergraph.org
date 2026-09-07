@@ -3,8 +3,9 @@
 // Tier-1 (read-only live status): GET only, restricted to the allowlist below
 //   (health/state and other safe read endpoints). Anything else -> 4xx,
 //   the request never reaches the backend.
-// Tier-2 (full backend proxy): any method on /healthz or /api/v1/*, with
-//   auth header passthrough (Authorization) plus content-type / accept /
+// Tier-2 (full backend proxy): any method on /healthz or /api/v1/*
+//   (incl. /studio/healthz and /studio/api/v1/* after mount-prefix strip),
+//   with auth header passthrough (Authorization) plus content-type / accept /
 //   idempotency-key. All other paths -> 404.
 //
 // Env:
@@ -100,7 +101,14 @@ export default {
   async fetch(request, env = {}) {
     const tier = tierOf(env);
     const url = new URL(request.url);
-    const pathname = url.pathname;
+    // D1: this worker owns /studio/api/* (plus /studio/healthz) under its own
+    // more-specific route. Strip the /studio mount prefix first, then match
+    // /healthz | /api/v1/* exactly as before. Query string is preserved via
+    // url.search in forward(). Only the pathname is ever logged.
+    let pathname = url.pathname;
+    if (pathname === '/studio' || pathname.startsWith('/studio/')) {
+      pathname = pathname.slice('/studio'.length) || '/';
+    }
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: corsHeaders() });
     }

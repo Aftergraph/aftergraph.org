@@ -118,3 +118,9 @@ Studio into the existing worker, touching the site worker routes.
   the site worker 404s it today.
 - The earlier unexplained clean-up of dirty `site/index.html`/`site/worker.js`
   (observed dirty, now clean, untouched by us): flag, not blocking.
+
+## Canonical glossary
+
+- Canonical integration language: `workspace/aftergraph.org/docs/INTEGRATION-LANGUAGE.md`.
+- Companion spec: `workspace/studio/docs/STUDIO-EDGE-BACKEND-SPEC.md`.
+- Convention: any new Tier-N or maturity term requires a glossary row first.
