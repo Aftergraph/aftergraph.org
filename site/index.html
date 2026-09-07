@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Aftergraph — infrastructure and open research for verifiable intelligent systems.">
+<title>Aftergraph — Verifiable Intelligent Systems</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23080c14'/><path d='M16 5l9 5v12l-9 5-9-5V10z' fill='none' stroke='%2342c7e8' stroke-width='2'/></svg>">
+</head>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#0a0c12;color:#f2f4f8;font-family:Inter,"SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-feature-settings:"cv01","ss03";-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:#42c7e8;text-decoration:none}
+a:hover{color:#8fe0f5}
+/* ---- nav ---- */
+.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(10,12,18,.82);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav .brand{font-weight:600;letter-spacing:.02em;font-size:15px;color:#f2f4f8}
+.nav .brand i{font-style:normal;color:#42c7e8}
+.nav .links{display:flex;align-items:center;gap:28px}
+.nav .links a{color:#9aa3b2;font-size:14px;font-weight:500}
+.nav .links a:hover{color:#f2f4f8}
+.nav .links .cta{background:#42c7e8;color:#0a0c12!important;padding:7px 16px;border-radius:6px;font-weight:600}
+.nav .links .cta:hover{background:#64d5f0;color:#0a0c12!important}
+/* ---- hero ---- */
+.hero{max-width:1180px;margin:0 auto;padding:110px 40px 64px}
+.hero h1{font-size:64px;line-height:1.02;letter-spacing:-1.6px;font-weight:500;margin:0 0 22px;max-width:900px;color:#f2f4f8}
+.hero h1 em{font-style:normal;color:#24c4ad}
+.hero .lede{font-size:19px;line-height:1.6;color:#9aa3b2;max-width:640px;margin:0 0 36px;font-weight:400}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-block;padding:10px 20px;border-radius:6px;font-size:15px;font-weight:600;transition:all .18s}
+.btn-p{background:#42c7e8;color:#0a0c12}
+.btn-p:hover{background:#64d5f0;color:#0a0c12}
+.btn-g{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);color:#d7dbe2}
+.btn-g:hover{border-color:rgba(66,199,232,.4);color:#42c7e8}
+/* ---- strip ---- */
+.strips{max-width:1180px;margin:0 auto;padding:0 40px 8px;display:flex;flex-wrap:wrap;gap:8px 24px;border-top:1px solid rgba(255,255,255,.05);padding-top:20px}
+.strip{font-size:13px;color:#7b8494;font-weight:500}
+.strip b{color:#d7dbe2;font-weight:500}
+.strip .dot{color:#24c4ad}
+/* ---- sections ---- */
+.section{max-width:1180px;margin:0 auto;padding:88px 40px}
+.stitle{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#42c7e8;font-weight:500;margin:0 0 14px}
+.sh2{font-size:44px;line-height:1.06;letter-spacing:-1.1px;font-weight:500;margin:0 0 18px;color:#f2f4f8}
+.slede{font-size:17px;color:#9aa3b2;max-width:620px;margin:0 0 44px}
+/* ---- evidence chain ---- */
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 8px}
+.chain .node{border:1px solid rgba(66,199,232,.35);border-radius:6px;padding:7px 14px;font-size:14px;color:#d7dbe2;background:rgba(66,199,232,.05);font-weight:500}
+.chain .node.dim{border-color:rgba(255,255,255,.08);color:#7b8494;background:transparent}
+.chain .arr{color:#42c7e8;font-size:17px}
+/* ---- products: WORKS først, derefter resten ---- */
+.dispatch{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:stretch}
+.dispatch .prim{border:1px solid rgba(66,199,232,.28);background:rgba(66,199,232,.04);border-radius:12px;padding:30px}
+.dispatch .prim h3{font-size:24px;margin:0 0 6px;font-weight:600;letter-spacing:-.3px;color:#f2f4f8}
+.dispatch .prim .badge{margin-left:0}
+.dispatch .aux{border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:24px;background:rgba(255,255,255,.015)}
+.dispatch .aux h3{font-size:19px;margin:0 0 6px;font-weight:600;letter-spacing:-.2px;color:#f2f4f8}
+.card-p{border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.card-p h3{font-size:19px;margin:0;font-weight:600;letter-spacing:-.2px;color:#f2f4f8;display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.card-p p{font-size:14px;line-height:1.6;color:#9aa3b2;margin:0}
+.card-p .go{margin-top:auto;padding-top:14px}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase}
+.b-pr{background:rgba(240,166,74,.14);color:#f0a64a;border:1px solid rgba(240,166,74,.3)}
+.b-r{background:rgba(136,145,160,.13);color:#98a2b3;border:1px solid rgba(136,145,160,.3)}
+.b-p{background:rgba(36,196,173,.14);color:#24c4ad;border:1px solid rgba(36,196,173,.3)}
+.grid{border-top:1px solid rgba(255,255,255,.05);padding-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;margin-top:18px}
+/* ---- research ---- */
+.res{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.res .r{border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);border-radius:12px;padding:22px}
+.res .r h4{margin:0 0 4px;font-size:17px;font-weight:600;letter-spacing:-.2px;color:#f2f4f8}
+.res .r .meta{font-size:12px;color:#7b8494;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.res .r p{margin:0;font-size:14px;color:#9aa3b2;line-height:1.6}
+/* ---- code ---- */
+.code{background:#0e1220;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:22px;font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:#b6c2d4;overflow-x:auto}
+.code .c{color:#5d6878}.code .k{color:#ff7d8c}.code .f{color:#42c7e8}
+/* ---- evidence note ---- */
+.ev{border:1px solid rgba(36,196,173,.28);background:rgba(36,196,173,.04);border-radius:10px;padding:14px 18px;font-size:13px;color:#86c9be;margin-top:44px}
+/* ---- footer ---- */
+.foot{max-width:1180px;margin:0 auto;padding:56px 40px 88px;border-top:1px solid rgba(255,255,255,.05);display:flex;flex-wrap:wrap;gap:40px}
+.foot .col{min-width:150px}
+.foot h4{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#7b8494;margin:0 0 14px;font-weight:600}
+.foot a{display:block;color:#9aa3b2;font-size:14px;margin-bottom:9px}
+.foot a:hover{color:#f2f4f8}
+@media(max-width:900px){.dispatch{grid-template-columns:1fr}.hero h1{font-size:44px}.sh2{font-size:34px}.nav .links a:not(.cta){display:none}.hero,.section{padding-left:22px;padding-right:22px}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<nav class="nav">
+<div class="brand">AFTERGRAPH<i>.</i></div>
+<div class="links"><a href="#platform">Platform</a><a href="#research">Research</a><a href="#trust">Trust</a><a href="/launch" class="cta">Launch</a></div>
+</nav>
+
+<header class="hero">
+<h1>Intelligence that must answer <em>for itself</em></h1>
+<p class="lede">Missions, authority, durable execution, evidence, verification. Aftergraph is infrastructure and open research for agentic institutions that can be held accountable — not systems that just seem confident.</p>
+<div class="cta-row">
+<a class="btn btn-p" href="/launch">Open the launcher →</a>
+<a class="btn btn-g" href="https://github.com/Aftergraph">Browse the repositories</a>
+</div>
+</header>
+
+<div class="strips">
+<span class="strip"><span class="dot">●</span> aftergraph.org operational</span>
+<span class="strip">8 public repositories</span>
+<span class="strip"><b>Most mature:</b> works-execution v0.3.6</span>
+<span class="strip">Research evidence is <b>never</b> runtime authority</span>
+</div>
+
+<section class="section" id="thesis">
+<div class="stitle">Thesis</div>
+<h2 class="sh2">From intent to verified outcome</h2>
+<p class="slede">An agent acts under a mission. It spends only what an authority allows. Every action leaves an evidence trail. A verifier can check the outcome. That is the operating model Aftergraph is built on.</p>
+<div class="chain">
+<span class="node">Intent</span><span class="arr">→</span><span class="node">Mission</span><span class="arr">→</span><span class="node">Authority</span><span class="arr">→</span><span class="node">Execution</span><span class="arr">→</span><span class="node">Evidence</span><span class="arr">→</span><span class="node">Verification</span><span class="arr">→</span><span class="node dim">Verified outcome</span>
+</div>
+</section>
+
+<section class="section" id="platform">
+<div class="stitle">Platform</div>
+<h2 class="sh2">What is built, honestly labelled</h2>
+<p class="slede">Every surface carries a maturity badge. Prototype, research, production — nothing claims more than it has. WORKS is furthest along; everything else is openly prototyped.</p>
+
+<div class="dispatch">
+<div class="prim">
+<h3>WORKS Execution <span class="badge b-pr">v0.3.6 · prototype</span></h3>
+<p style="color:#b6c2d4;font-size:15px;line-height:1.65;margin:0 0 8px">Durable execution plane for autonomous work — missions, WorkGraph scheduling, workers, leases, budgets, recovery and execution evidence. The most mature surface in the ecosystem.</p>
+<div class="go"><a class="btn btn-g" href="https://github.com/Aftergraph/works-execution">Repository →</a></div>
+</div>
+<div class="aux">
+<h3>Work Intelligence <span class="badge b-pr">prototype</span></h3>
+<p style="color:#9aa3b2;font-size:14px;line-height:1.6;margin:0">Source-neutral observations become structured, attributable WorkItems.</p>
+<div class="go" style="margin-top:14px"><a class="btn btn-g" href="https://github.com/Aftergraph/work-intelligence-v2">Repository →</a></div>
+</div>
+</div>
+
+<div class="grid">
+<div class="card-p"><h3>Trust Gateway <span class="badge b-pr">prototype</span></h3><p>Fail-closed enforcement: approvals, policy, budgets, tamper-evident audit.</p><div class="go"><a href="https://github.com/Aftergraph/trust-gateway">Repository →</a></div></div>
+<div class="card-p"><h3>AIE <span class="badge b-pr">prototype</span></h3><p>Agentic Institution Engineering — authority, delegation, revocation, budget semantics.</p><div class="go"><a href="https://github.com/Aftergraph/aie">Repository →</a></div></div>
+<div class="card-p"><h3>Studio <span class="badge b-pr">prototype</span></h3><p>Operator UX: mission status, evidence, approvals, needs-you flows.</p><div class="go"><a href="https://github.com/Aftergraph/studio">Repository →</a></div></div>
+<div class="card-p"><h3>Governance <span class="badge b-pr">prototype</span></h3><p>Cross-repo contracts, terminology, exact-head state, evidence boundaries.</p><div class="go"><a href="https://github.com/Aftergraph/after-graph-governance">Repository →</a></div></div>
+</div>
+</section>
+
+<section class="section" id="research">
+<div class="stitle">Research</div>
+<h2 class="sh2">Claims you can reproduce</h2>
+<p class="slede">Research is first-class and evidence-labelled. Research results never become runtime authority by themselves — a promotion decision is a separate, governed step.</p>
+<div class="res">
+<div class="r"><h4>SPEC-001 Mission Contracts</h4><div class="meta"><span class="badge b-r">Research</span>intelligence-systems-research</div><p>Mission contracts and the assurance model for verifiable agent missions.</p></div>
+<div class="r"><h4>MISSION-Bench</h4><div class="meta"><span class="badge b-r">Research</span>intelligence-systems-research</div><p>Benchmark for mission-level agent performance under governed execution.</p></div>
+<div class="r"><h4>Aftergraph Foundation Model</h4><div class="meta"><span class="badge b-r">Research</span>afm</div><p>Training, datasets, evals and adapters for agentic software engineering.</p></div>
+</div>
+<div class="ev">Evidence rule: visibility never upgrades evidence. Experiments, prototypes and production capabilities are labelled as such. Academic fanfiction is still fanfiction.</div>
+</section>
+
+<section class="section" id="trust">
+<div class="stitle">Trust</div>
+<h2 class="sh2">Why believe any of this</h2>
+<p class="slede">Because you can check. The repositories are open, releases are gated, claims are labelled, and the exact state of every repo is queryable at build time.</p>
+<div class="code"><span class="c"># verify exact state at build time — no runtime fetch, no stale claim</span>
+<span class="k">gh</span> api repos/Aftergraph/works-execution --jq <span class="f">'.description, .license.spdx_id'</span></div>
+</section>
+
+<footer class="foot">
+<div class="col"><h4>Ecosystem</h4><a href="https://github.com/Aftergraph">GitHub</a><a href="/launch">Launcher</a><a href="https://github.com/Aftergraph/docs">Knowledge Plane</a></div>
+<div class="col"><h4>Research</h4><a href="https://github.com/Aftergraph/intelligence-systems-research">ISR</a><a href="https://github.com/Aftergraph/aie">AIE</a><a href="https://github.com/Aftergraph/afm">AFM</a></div>
+<div class="col"><h4>Products</h4><a href="https://github.com/Aftergraph/works-execution">WORKS</a><a href="https://github.com/Aftergraph/trust-gateway">Trust Gateway</a><a href="https://github.com/Aftergraph/work-intelligence-v2">WI v2</a><a href="https://github.com/Aftergraph/studio">Studio</a></div>
+<div class="col"><h4>Meta</h4><a href="https://github.com/Aftergraph/aftergraph.org">This site's source</a><a href="/healthz">Health</a></div>
+</footer>
+</body>
+</html>
