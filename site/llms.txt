@@ -10,6 +10,18 @@
 - [Health](https://aftergraph.org/healthz): Deployment health surface
 - [Knowledge Plane](https://docs.aftergraph.org/): Developer, standards, evidence and research portal
 
+## Deep index (Knowledge Plane)
+
+- [Platform overview](https://docs.aftergraph.org/platform/)
+- [Golden Mission](https://docs.aftergraph.org/platform/golden-mission/)
+- [System Map](https://docs.aftergraph.org/platform/system-map/)
+- [Developer Quickstart](https://docs.aftergraph.org/developers/quickstart/)
+- [Contract Explorer](https://docs.aftergraph.org/standards/contracts/)
+- [Evidence](https://docs.aftergraph.org/evidence/)
+- [Claim Graph](https://docs.aftergraph.org/evidence/claim-graph/)
+- [Research overview](https://docs.aftergraph.org/research/)
+- [Knowledge Plane llms.txt](https://docs.aftergraph.org/llms.txt)
+
 ## Organization
 
 - GitHub organization: [github.com/Aftergraph](https://github.com/Aftergraph)
