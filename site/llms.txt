@@ -66,3 +66,4 @@ Private repositories: 8
 ## Evidence rule
 
 Visibility never upgrades evidence. Research claims, experiments, prototypes and production capabilities are labelled by maturity on every surface. Research evidence is never runtime authority by itself.
+<!-- queue probe -->
