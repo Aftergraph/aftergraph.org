@@ -46,7 +46,9 @@ landing = landing.replace('</head>', FAVICON + OG + '\n</head>');
 launch = launch.replace('</head>', FAVICON + OG_LAUNCH + '\n</head>');
 
 // --- runtime ---
-const health = JSON.stringify({ status: 'ok', deployed: new Date().toISOString(), route: 'aftergraph-site v2.0.0', sha: process.env.AG_SHA || 'local' });
+// Reproducible by default. A real deploy may inject AG_DEPLOYED_AT + AG_SHA.
+const deployed = process.env.AG_DEPLOYED_AT || 'unpublished';
+const health = JSON.stringify({ status: 'ok', deployed, route: 'aftergraph-site v2.0.0', sha: process.env.AG_SHA || 'local' });
 const robots = `User-agent: *
 Allow: /
 Disallow: /healthz
