@@ -2,54 +2,71 @@ const fs = require('fs');
 const path = require('path');
 
 const SITE = __dirname;
+const read = (file) => fs.readFileSync(path.join(SITE, file), 'utf8');
+const assert = (condition, message) => {
+  if (!condition) {
+    console.error(`BUILD-FAIL: ${message}`);
+    process.exit(1);
+  }
+};
 
-function read(f) { return fs.readFileSync(path.join(SITE, f), 'utf8'); }
-
-// --- sources ---
+// Source files are canonical. worker.js is generated deployment output.
 let landing = read('index.html');
 let launch = read('launch.html');
-const nf = read('404.html');
-const st = read('status.html');
+const notFound = read('404.html');
+const statusPage = read('status.html');
 const monogram = read('monogram.svg');
 const llms = read('llms.txt');
-const sec = read('security.txt');
+const security = read('security.txt');
 
-const FAVICON = `<link rel="icon" type="image/svg+xml" href="/favicon.ico">`;
+// Reconciliation gates. These intentionally fail closed when a public surface
+// drifts back to the pre-V1 repository inventory.
+assert(landing.includes('19 repositories'), 'landing must declare the 19-repository topology');
+assert(landing.includes('11 public') && landing.includes('8 private'), 'landing visibility totals must be reconciled');
+assert(statusPage.includes('19 installed') && statusPage.includes('11 public') && statusPage.includes('8 private'), 'status topology totals must be reconciled');
+assert(llms.includes('Installed platform topology: 19 repositories'), 'llms.txt must carry topology total');
+assert(llms.includes('Public repositories: 11') && llms.includes('Private repositories: 8'), 'llms.txt visibility totals must be reconciled');
+assert(!llms.includes('- `context-continuity`') && !llms.includes('- `skills-vault`'), 'private repositories must not appear in the public-repository list');
+assert(!landing.includes('https://github.com/Aftergraph/context-continuity'), 'public landing must not link directly to private Continuity source');
+
+const FAVICON = '<link rel="icon" type="image/svg+xml" href="/favicon.ico">';
 const OG = `
 <meta property="og:site_name" content="Aftergraph">
-<meta property="og:title" content="Aftergraph — Infrastructure for Verifiable Intelligent Systems">
-<meta property="og:description" content="Bound missions, scoped authority, durable execution, evidence and independent verification for long-horizon intelligent systems.">
+<meta property="og:title" content="Aftergraph — Verifiable Intelligent Systems">
+<meta property="og:description" content="Governed, durable and verifiable intelligent work: missions, authority, runtime enforcement, execution, evidence and independent verification.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aftergraph.org/">
 <meta property="og:image" content="https://aftergraph.org/og-image.svg">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Aftergraph">
-<meta name="twitter:description" content="Infrastructure for verifiable intelligent systems.">
+<meta name="twitter:description" content="Governed, durable and verifiable intelligent work.">
 <script type="application/ld+json">${JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Aftergraph',
   url: 'https://aftergraph.org',
-  description: 'Infrastructure and open research for verifiable intelligent systems: bounded missions, scoped authority, durable execution, evidence and independent verification.',
+  description: 'Infrastructure and open research for governed, durable and verifiable intelligent work.',
   sameAs: ['https://github.com/Aftergraph']
 })}</script>`;
 
 const OG_LAUNCH = `
 <meta property="og:site_name" content="Aftergraph">
 <meta property="og:title" content="Launcher — Aftergraph">
-<meta property="og:description" content="Find the right Aftergraph surface to build, operate, verify or research.">
+<meta property="og:description" content="System launcher for public Aftergraph destinations.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aftergraph.org/launch">
 <meta property="og:image" content="https://aftergraph.org/og-image.svg">`;
 
-// inject into <head> once (before </head>)
-landing = landing.replace('</head>', FAVICON + OG + '\n</head>');
-launch = launch.replace('</head>', FAVICON + OG_LAUNCH + '\n</head>');
+landing = landing.replace('</head>', `${FAVICON}${OG}\n</head>`);
+launch = launch.replace('</head>', `${FAVICON}${OG_LAUNCH}\n</head>`);
 
-// --- runtime ---
-// Reproducible by default. A real deploy may inject AG_DEPLOYED_AT + AG_SHA.
-const deployed = process.env.AG_DEPLOYED_AT || 'unpublished';
-const health = JSON.stringify({ status: 'ok', deployed, route: 'aftergraph-site v2.0.0', sha: process.env.AG_SHA || 'local' });
+const health = JSON.stringify({
+  status: 'ok',
+  deployed: new Date().toISOString(),
+  route: 'aftergraph-site v1.2.0',
+  sha: process.env.AG_SHA || 'local'
+});
+
 const robots = `User-agent: *
 Allow: /
 Disallow: /healthz
@@ -64,6 +81,7 @@ Allow: /
 
 Sitemap: https://aftergraph.org/sitemap.xml
 `;
+
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://aftergraph.org/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
@@ -71,7 +89,8 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
   <url><loc>https://aftergraph.org/status</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>
 `;
-const headers = `const SECURE = {
+
+const secureHeaders = `const SECURE = {
   'Content-Security-Policy': "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
   'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
   'X-Content-Type-Options': 'nosniff',
@@ -79,39 +98,55 @@ const headers = `const SECURE = {
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
 };`;
-const worker = `${headers}
+
+const worker = `${secureHeaders}
 const LANDING = ${JSON.stringify(landing)};
 const LAUNCH = ${JSON.stringify(launch)};
-const NOTFOUND = ${JSON.stringify(nf)};
-const STATUS = ${JSON.stringify(st)};
+const NOTFOUND = ${JSON.stringify(notFound)};
 const MONOGRAM = ${JSON.stringify(monogram)};
 const LLMS = ${JSON.stringify(llms)};
-const SECURITY = ${JSON.stringify(sec)};
+const SECURITY = ${JSON.stringify(security)};
+const STATUS = ${JSON.stringify(statusPage)};
 const HEALTH = ${JSON.stringify(health)};
 const ROBOTS = ${JSON.stringify(robots)};
 const SITEMAP = ${JSON.stringify(sitemap)};
-addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
+addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
   const p = url.pathname;
-  let body, ct = 'text/html;charset=utf-8', cache = 'public, max-age=300', status = 200;
-  if (p === '/healthz' || p === '/health') { body = HEALTH; ct = 'application/json'; cache = 'public, max-age=60'; }
-  else if (p === '/robots.txt') { body = ROBOTS; ct = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
-  else if (p === '/sitemap.xml') { body = SITEMAP; ct = 'application/xml;charset=utf-8'; cache = 'public, max-age=3600'; }
-  else if (p === '/llms.txt') { body = LLMS; ct = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
-  else if (p === '/.well-known/security.txt') { body = SECURITY; ct = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
-  else if (p === '/favicon.ico' || p === '/og-image.svg') { body = MONOGRAM; ct = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
+  let body;
+  let contentType = 'text/html;charset=utf-8';
+  let cache = 'public, max-age=300';
+  let responseStatus = 200;
+  if (p === '/healthz' || p === '/health') { body = HEALTH; contentType = 'application/json'; cache = 'public, max-age=60'; }
+  else if (p === '/robots.txt') { body = ROBOTS; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
+  else if (p === '/sitemap.xml') { body = SITEMAP; contentType = 'application/xml;charset=utf-8'; cache = 'public, max-age=3600'; }
+  else if (p === '/llms.txt') { body = LLMS; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
+  else if (p === '/.well-known/security.txt') { body = SECURITY; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
+  else if (p === '/favicon.ico' || p === '/og-image.svg') { body = MONOGRAM; contentType = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
   else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
   else if (p === '/status' || p === '/status/') { body = STATUS; }
   else if (p === '/404') { body = NOTFOUND; }
   else if (p === '/') { body = LANDING; }
-  else { body = NOTFOUND; status = 404; cache = 'no-store'; }
-  e.respondWith(new Response(body, { status, headers: { 'content-type': ct, 'cache-control': cache, ...SECURE } }));
+  else { body = NOTFOUND; responseStatus = 404; cache = 'no-store'; }
+  event.respondWith(new Response(body, {
+    status: responseStatus,
+    headers: { 'content-type': contentType, 'cache-control': cache, ...SECURE }
+  }));
 });`;
+
 fs.writeFileSync(path.join(SITE, 'worker.js'), worker);
+// Wrangler executes this build command from the site/ directory before every
+// deployment. That makes source HTML/text canonical and prevents a stale
+// tracked worker from being uploaded.
 fs.writeFileSync(path.join(SITE, 'wrangler.toml'), `name = "aftergraph-site"
 main = "worker.js"
 compatibility_date = "2024-11-01"
+
+[build]
+command = "node build-worker.cjs"
 `);
+
 console.log('worker.js bytes:', worker.length);
 console.log('landing with meta bytes:', landing.length, '| launch:', launch.length);
+console.log('topology gates: PASS');
 console.log('favicon injected:', landing.includes('/favicon.ico'), '| JSON-LD:', landing.includes('application/ld+json'));

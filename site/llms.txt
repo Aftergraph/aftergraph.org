@@ -1,26 +1,27 @@
 # Aftergraph
 
-> Infrastructure and open research for verifiable intelligent systems: bounded missions, scoped authority, durable execution, evidence and independent verification.
+> Infrastructure and open research for verifiable intelligent systems: missions, authority, durable execution, evidence, verification and agentic institutions.
 
 ## Key pages
 
-- [aftergraph.org](https://aftergraph.org/): Public platform landing page
-- [Launcher](https://aftergraph.org/launch): Intent-based launcher for public Aftergraph surfaces
-- [Status](https://aftergraph.org/status): Build-time operational snapshot of the public ecosystem
-- [Health](https://aftergraph.org/healthz): Deployment health surface
-- [Knowledge Plane](https://docs.aftergraph.org/): Developer, standards, evidence and research portal
+- [aftergraph.org](https://aftergraph.org/): Landing page
+- [Launcher](https://aftergraph.org/launch): System launcher / command palette for all Aftergraph destinations
+- [Status](https://aftergraph.org/status): Operational snapshot (build-time)
+- [Knowledge Plane docs](https://docs.aftergraph.org/): Live developer & research portal
+- [Knowledge Plane quickstart](https://docs.aftergraph.org/developers/quickstart/): Verify the plane in 10 minutes
+- [Knowledge Plane Contract Explorer](https://docs.aftergraph.org/standards/contracts/): 13 canonical cross-repo contracts
+- [Knowledge Plane Evidence](https://docs.aftergraph.org/evidence/claim-graph/): C-001..C-008 claims with verbatim audit statuses
+- [Knowledge Plane Sentinel](https://docs.aftergraph.org/sentinel/): Verified code-review strategy docs
+- [Health](https://aftergraph.org/healthz): Deployment status
 
-## Deep index (Knowledge Plane)
+## Deep index (from the Knowledge Plane)
 
 - [Platform overview](https://docs.aftergraph.org/platform/)
-- [Golden Mission](https://docs.aftergraph.org/platform/golden-mission/)
-- [System Map](https://docs.aftergraph.org/platform/system-map/)
-- [Developer Quickstart](https://docs.aftergraph.org/developers/quickstart/)
-- [Contract Explorer](https://docs.aftergraph.org/standards/contracts/)
-- [Evidence](https://docs.aftergraph.org/evidence/)
-- [Claim Graph](https://docs.aftergraph.org/evidence/claim-graph/)
+- [Golden Mission route](https://docs.aftergraph.org/platform/golden-mission/)
+- [System Map (verified bindings)](https://docs.aftergraph.org/platform/system-map/)
 - [Research overview](https://docs.aftergraph.org/research/)
-- [Knowledge Plane llms.txt](https://docs.aftergraph.org/llms.txt)
+- [Claim chains C-001..C-008](https://docs.aftergraph.org/evidence/claim-graph/)
+- [Docs index (llms.txt)](https://docs.aftergraph.org/llms.txt)
 
 ## Context packs (ACC-shaped, machine-usable)
 
@@ -31,13 +32,43 @@
 - [Research](https://docs.aftergraph.org/context/research.json)
 - [Standards](https://docs.aftergraph.org/context/standards.json)
 
+## Platform topology (from Aftergraph/after-graph-governance)
+
+Installed platform topology: 19 repositories
+Public repositories: 11
+Private repositories: 8
+
+### Public
+
+- `.github`
+- `after-graph-governance`
+- `aftergraph.org`
+- `aie`
+- `brand`
+- `docs`
+- `intelligence-systems-research`
+- `studio`
+- `trust-gateway`
+- `work-intelligence-v2`
+- `works-execution`
+
+### Private (names only; never linked publicly)
+
+- afm
+- autonomous-venture-company
+- context-continuity
+- continuum
+- llm-research-development
+- model-registry
+- skills-vault
+- work-intelligence-web
+
+
 ## Organization
 
 - GitHub organization: [github.com/Aftergraph](https://github.com/Aftergraph)
-- Public repositories represented by this surface: intelligence-systems-research, aie, trust-gateway, works-execution, work-intelligence-v2, after-graph-governance, studio, brand, docs, aftergraph.org
-
-This public inventory is an allowlist. Repository visibility is not inferred from naming, local snapshots or historical references.
+- Repositories (public): intelligence-systems-research, aie, trust-gateway, works-execution, work-intelligence-v2, after-graph-governance, studio, brand, docs, aftergraph.org, context-continuity, skills-vault
 
 ## Evidence rule
 
-Visibility never upgrades evidence. Research claims, experiments, prototypes and production capabilities remain labelled by maturity. Research evidence is never runtime authority by itself.
+Visibility never upgrades evidence. Research claims, experiments, prototypes and production capabilities are labelled by maturity on every surface. Research evidence is never runtime authority by itself.

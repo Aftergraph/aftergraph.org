@@ -28,12 +28,24 @@ every page. No fake stats, customers or testimonials.
 
 ## Local development
 
+This repository currently ships a static Cloudflare Worker (no build step, no
+npm project). Regenerate the deployed bundle after editing sources:
+
 ```sh
-npm ci
-npm run dev
+cd site
+node build-worker.cjs   # reads index.html/launch.html/status.html/llms.txt/... -> worker.js
+npx wrangler@4.129.0 deploy --config wrangler.toml --name aftergraph-site
 ```
 
-## Deployment
+See `DEPLOYMENT.md` for the full workflow and provenance.
 
-Push to `main` deploys to production via Cloudflare Workers Static Assets
-(see `DEPLOYMENT.md`). Preview deployments run on every PR.
+## Release history
+
+- **v1.2.3** — context packs exposed in llms.txt (P3 of the docs↔site audit)
+- **v1.2.2** — Knowledge Plane build manifest on `/status` (P2)
+- **v1.2.1** — docs portal links in launcher/footer; llms.txt federates the Knowledge Plane deep index (P0+P1)
+- **v1.2.0** — `/status` operational snapshot; `/status` in launcher + sitemap
+- **v1.1.0** — `/404`, `/llms.txt`, `/.well-known/security.txt`, OG/JSON-LD, favicon from brand monogram
+- **v1.0.0** — landing v3, launcher command palette, security headers, robots/sitemap
+
+Full release notes: https://github.com/Aftergraph/aftergraph.org/releases

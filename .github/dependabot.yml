@@ -1,11 +1,16 @@
 version: 2
 updates:
-  - package-ecosystem: npm
-    directory: /
-    schedule: { interval: weekly, time: "06:00", timezone: Europe/Copenhagen }
-    open-pull-requests-limit: 10
-    ignore: [{ dependency-name: "*", update-types: ["version-update:semver-major"] }]
+  # ponytail: npm ecosystem removed — this repo has no package.json /
+  # lockfile (the site is a single Cloudflare worker + static assets).
+  # The entry made Dependabot scan a nonexistent manifest, producing a
+  # guaranteed "success + failure" pair on every run since creation.
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: weekly, time: "06:00", timezone: Europe/Copenhagen }
     open-pull-requests-limit: 5
+    groups:
+      github-actions-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore: [{ dependency-name: "*", update-types: ["version-update:semver-major"] }]
