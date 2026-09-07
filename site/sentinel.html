@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Sentinel by Aftergraph — verified code review. PRs into merge-ready verdicts on the exact commit.">
+<title>Sentinel — Verified Code Review · Aftergraph</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23080c14'/><path d='M16 5l9 5v12l-9 5-9-5V10z' fill='none' stroke='%2342c7e8' stroke-width='2'/></svg>">
+</head>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#0a0c12;color:#f2f4f8;font-family:Inter,"SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:#42c7e8;text-decoration:none}
+a:hover{color:#8fe0f5}
+.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(10,12,18,.82);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav .brand{font-weight:600;letter-spacing:.02em;font-size:15px;color:#f2f4f8}
+.nav .brand i{font-style:normal;color:#42c7e8}
+.nav .links{display:flex;align-items:center;gap:28px}
+.nav .links a{color:#9aa3b2;font-size:14px;font-weight:500}
+.nav .links a:hover{color:#f2f4f8}
+.nav .links .cta{background:#42c7e8;color:#0a0c12!important;padding:7px 16px;border-radius:6px;font-weight:600}
+.nav .links .cta:hover{background:#64d5f0;color:#0a0c12!important}
+.hero{max-width:1180px;margin:0 auto;padding:110px 40px 64px}
+.hero h1{font-size:64px;line-height:1.02;letter-spacing:-1.6px;font-weight:500;margin:0 0 22px;max-width:900px;color:#f2f4f8}
+.hero h1 em{font-style:normal;color:#24c4ad}
+.hero .lede{font-size:19px;line-height:1.6;color:#9aa3b2;max-width:640px;margin:0 0 36px;font-weight:400}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-block;padding:10px 20px;border-radius:6px;font-size:15px;font-weight:600;transition:all .18s}
+.btn-p{background:#42c7e8;color:#0a0c12}
+.btn-p:hover{background:#64d5f0;color:#0a0c12}
+.btn-g{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);color:#d7dbe2}
+.btn-g:hover{border-color:rgba(66,199,232,.4);color:#42c7e8}
+.section{max-width:1180px;margin:0 auto;padding:88px 40px}
+.stitle{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#42c7e8;font-weight:500;margin:0 0 14px}
+.sh2{font-size:44px;line-height:1.06;letter-spacing:-1.1px;font-weight:500;margin:0 0 18px;color:#f2f4f8}
+.slede{font-size:17px;color:#9aa3b2;max-width:620px;margin:0 0 44px}
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 8px}
+.chain .node{border:1px solid rgba(66,199,232,.35);border-radius:6px;padding:7px 14px;font-size:14px;color:#d7dbe2;background:rgba(66,199,232,.05);font-weight:500}
+.chain .arr{color:#42c7e8;font-size:17px}
+.grid{border-top:1px solid rgba(255,255,255,.05);padding-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;margin-top:18px}
+.card-p{border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.card-p h3{font-size:19px;margin:0;font-weight:600;letter-spacing:-.2px;color:#f2f4f8;display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.card-p p{font-size:14px;line-height:1.6;color:#9aa3b2;margin:0}
+.card-p .go{margin-top:auto;padding-top:14px}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase}
+.b-pr{background:rgba(240,166,74,.14);color:#f0a64a;border:1px solid rgba(240,166,74,.3)}
+.code{background:#0e1220;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:22px;font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:#b6c2d4;overflow-x:auto}
+.code .c{color:#5d6878}.code .k{color:#ff7d8c}.code .f{color:#42c7e8}.code .g{color:#24c4ad}
+.ev{border:1px solid rgba(36,196,173,.28);background:rgba(36,196,173,.04);border-radius:10px;padding:14px 18px;font-size:13px;color:#86c9be;margin-top:44px}
+.foot{max-width:1180px;margin:0 auto;padding:56px 40px 88px;border-top:1px solid rgba(255,255,255,.05);display:flex;flex-wrap:wrap;gap:40px}
+.foot .col{min-width:150px}
+.foot h4{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#7b8494;margin:0 0 14px;font-weight:600}
+.foot a{display:block;color:#9aa3b2;font-size:14px;margin-bottom:9px}
+.foot a:hover{color:#f2f4f8}
+@media(max-width:900px){.hero h1{font-size:44px}.sh2{font-size:34px}.nav .links a:not(.cta){display:none}.hero,.section{padding-left:22px;padding-right:22px}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #42c7e8;outline-offset:2px}
+</style>
+</head>
+<body>
+<nav class="nav">
+<div class="brand">AFTERGRAPH<i>.</i></div>
+<div class="links"><a href="/">Platform</a><a href="https://docs.aftergraph.org/sentinel/" target="_blank" rel="noopener">Docs ↗</a><a href="https://github.com/Aftergraph/sentinel">Repository</a><a href="/launch" class="cta">Launch</a></div>
+</nav>
+
+<header class="hero">
+<h1>Ship code you can <em>prove</em> works</h1>
+<p class="lede">Sentinel turns pull requests into merge-ready verdicts — SHIP or DO NOT SHIP on the exact commit it verified, with cited evidence. If the base moves, the verdict dies automatically.</p>
+<div class="cta-row">
+<a class="btn btn-p" href="https://github.com/Aftergraph/sentinel">Get the CLI →</a>
+<a class="btn btn-g" href="#verdict">See a verified PR</a>
+<a class="btn btn-g" href="https://docs.aftergraph.org/sentinel/" target="_blank" rel="noopener">Read the docs ↗</a>
+</div>
+</header>
+
+<section class="section" id="verdict">
+<div class="stitle">Actual output · rule-pack 1.1.0</div>
+<h2 class="sh2">A verdict, not a comment</h2>
+<p class="slede">This is what Sentinel prints. One decision, bound to one commit, every finding anchored to a file and line.</p>
+<div class="code"><span class="c"># sentinel review --pr 42 — exit 1</span>
+HEAD <span class="f">a3f9c1d</span> (verified: base main@9be201c unchanged since review start)
+
+<span class="k">DO NOT SHIP</span> — 2 findings
+1. [security] Unauthenticated DELETE route — <span class="f">routes/admin.mjs:41</span>
+   Rule: auth-required-routes. Evidence: no auth middleware on DELETE /admin/purge.
+2. [reliability] Migration without rollback — <span class="f">db/migrate_014.sql</span>
+   Rule: migration-rollback-required. Evidence: no DOWN block.
+
+<span class="g">4 checks passed</span>: secrets-scan, lockfile-consistency, test-status, diff-size.</div>
+<div class="ev">Maturity: <b>prototype</b> — CLI v0.1 ships free for public repos. The GitHub App, sandbox verification runners and signed receipts are roadmap, not product. Nothing here claims otherwise.</div>
+</section>
+
+<section class="section" id="how">
+<div class="stitle">How it works</div>
+<h2 class="sh2">Reviewed is not verified</h2>
+<p class="slede">Review finds what looks wrong. Verification proves what holds. Only both together earn a verdict — always on the exact HEAD.</p>
+<div class="chain">
+<span class="node">Change</span><span class="arr">→</span><span class="node">Review</span><span class="arr">→</span><span class="node">Findings</span><span class="arr">→</span><span class="node">Verification</span><span class="arr">→</span><span class="node">Evidence</span><span class="arr">→</span><span class="node">Verdict</span>
+</div>
+<div class="grid">
+<div class="card-p"><h3>Exact-head binding</h3><p>Every verdict names the commit it verified. A new push invalidates it — exit 2 STALE, never a silent approval of moved code.</p></div>
+<div class="card-p"><h3>Deterministic rules</h3><p>20-rule pack, versioned and pinned. Same diff plus same pack gives the byte-identical verdict — reproducible in audits.</p></div>
+<div class="card-p"><h3>Machine surfaces</h3><p>Human, JSON, SARIF 2.1.0 and governance verdict formats. Exit codes gate CI: 0 pass, 1 fail, 2 re-run.</p></div>
+</div>
+</section>
+
+<section class="section" id="trust">
+<div class="stitle">Trust</div>
+<h2 class="sh2">Read-only by construction</h2>
+<p class="slede">The CLI performs zero writes: no comments, no checks, no commits, no account. Verdicts go to stdout and a local receipt ledger you own.</p>
+<div class="code"><span class="c"># local-first: no GitHub needed</span>
+git diff | sentinel review --diff - --repo myorg/myrepo</div>
+</section>
+
+<footer class="foot">
+<div class="col"><h4>Sentinel</h4><a href="https://github.com/Aftergraph/sentinel">Repository</a><a href="https://docs.aftergraph.org/sentinel/" target="_blank" rel="noopener">Docs ↗</a><a href="/launch">Launcher</a></div>
+<div class="col"><h4>Aftergraph</h4><a href="/">Platform</a><a href="/status">Status</a><a href="https://github.com/Aftergraph">GitHub</a></div>
+<div class="col"><h4>Meta</h4><a href="https://github.com/Aftergraph/aftergraph.org">This site's source</a><a href="/healthz">Health</a></div>
+</footer>
+</body>
+</html>

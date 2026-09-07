@@ -6,6 +6,7 @@ const root = __dirname;
 const read = (name) => fs.readFileSync(path.join(root, name), 'utf8');
 const landing = read('index.html');
 const launcher = read('launch.html');
+const sentinelPage = read('sentinel.html');
 const buildWorker = read('build-worker.cjs');
 const statusPage = read('status.html');
 const statusDataText = read('status-data.json');
@@ -95,6 +96,20 @@ for (const privateRepo of ['context-continuity', 'skills-vault']) {
 
 for (const forbidden of ['customer logos', 'trusted by thousands', 'industry-leading production']) {
   assert.ok(!landing.toLowerCase().includes(forbidden), `forbidden marketing claim: ${forbidden}`);
+}
+
+has(sentinelPage, 'Maturity: <b>prototype</b>', 'sentinel maturity label');
+has(sentinelPage, 'prefers-reduced-motion', 'sentinel reduced-motion support');
+has(sentinelPage, ':focus-visible', 'sentinel visible focus');
+has(sentinelPage, 'https://github.com/Aftergraph/sentinel', 'sentinel repository link');
+has(sentinelPage, 'href="/launch"', 'sentinel launcher cross-link');
+has(buildWorker, "read('sentinel.html')", 'sentinel source included in worker build');
+has(buildWorker, 'https://aftergraph.org/sentinel', 'sentinel sitemap entry');
+has(buildWorker, "p === '/sentinel' || p === '/sentinel/'", 'sentinel worker route');
+has(worker, 'const SENTINEL =', 'compiled sentinel surface');
+has(llms, 'https://aftergraph.org/sentinel', 'sentinel llms entry');
+for (const forbidden of ['trusted by thousands', 'industry-leading production', 'customer logos']) {
+  assert.ok(!sentinelPage.toLowerCase().includes(forbidden), `forbidden marketing claim on sentinel page: ${forbidden}`);
 }
 
 console.log('Aftergraph V2 contract: PASS');
