@@ -10,6 +10,7 @@ const buildWorker = read('build-worker.cjs');
 const statusPage = read('status.html');
 const statusDataText = read('status-data.json');
 const statusData = JSON.parse(statusDataText);
+const llms = read('llms.txt');
 const worker = fs.existsSync(path.join(root, 'worker.js')) ? read('worker.js') : '';
 
 function has(haystack, needle, label = needle) {
@@ -32,6 +33,7 @@ has(launcher, 'Build', 'launcher Build group');
 has(launcher, 'Operate', 'launcher Operate group');
 has(launcher, 'Verify', 'launcher Verify group');
 has(launcher, 'Research', 'launcher Research group');
+has(launcher, 'https://docs.aftergraph.org/', 'launcher Knowledge Plane route');
 assert.ok(/role=["']option["']|setAttribute\(["']role["'],\s*["']option["']\)/.test(launcher), 'missing launcher option semantics');
 has(launcher, 'aria-selected', 'launcher selected-state semantics');
 has(launcher, 'aria-activedescendant', 'launcher active-descendant semantics');
@@ -39,6 +41,10 @@ has(launcher, 'launcher-option-', 'stable launcher option ids');
 has(launcher, 'Escape', 'launcher Escape behavior');
 has(launcher, 'GROUPS.indexOf(a.item.group)-GROUPS.indexOf(b.item.group)', 'group-stable launcher ordering');
 has(launcher, 'let renderIndex=0', 'DOM-aligned launcher selection index');
+
+has(llms, '## Deep index (Knowledge Plane)', 'federated Knowledge Plane deep index');
+has(llms, 'https://docs.aftergraph.org/llms.txt', 'Knowledge Plane llms federation');
+has(llms, 'Public repositories represented by this surface', 'public repository allowlist');
 
 has(buildWorker, "const st = read('status.html')", 'status source included in worker build');
 has(buildWorker, 'https://aftergraph.org/status', 'status sitemap entry');
@@ -54,7 +60,7 @@ assert.ok(statusData.repos.length > 0, 'status-data must contain public reposito
 assert.ok(statusData.repos.every((repo) => repo.visibility === 'public'), 'status-data must contain public repositories only');
 has(statusPage, `(${statusData.repos.length} public repositories`, 'status page public repository count');
 
-const publicSurface = `${landing}\n${launcher}\n${statusPage}\n${statusDataText}\n${worker}`.toLowerCase();
+const publicSurface = `${landing}\n${launcher}\n${statusPage}\n${statusDataText}\n${llms}\n${worker}`.toLowerCase();
 for (const privateRepo of ['context-continuity', 'skills-vault']) {
   assert.ok(!publicSurface.includes(privateRepo), `private repository leaked into public surface: ${privateRepo}`);
 }
