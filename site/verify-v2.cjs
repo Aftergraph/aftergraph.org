@@ -43,10 +43,28 @@ has(launcher, 'launcher-option-', 'stable launcher option ids');
 has(launcher, 'Escape', 'launcher Escape behavior');
 has(launcher, 'GROUPS.indexOf(a.item.group)-GROUPS.indexOf(b.item.group)', 'group-stable launcher ordering');
 has(launcher, 'let renderIndex=0', 'DOM-aligned launcher selection index');
+for (const privateUrl of [
+  'https://github.com/Aftergraph/afm',
+  'https://github.com/Aftergraph/context-continuity',
+  'https://github.com/Aftergraph/skills-vault',
+]) {
+  assert.ok(!launcher.includes(privateUrl), `private repository link leaked into public launcher: ${privateUrl}`);
+}
 
 has(llms, '## Deep index (Knowledge Plane)', 'federated Knowledge Plane deep index');
 has(llms, 'https://docs.aftergraph.org/llms.txt', 'Knowledge Plane llms federation');
 has(llms, 'Public repositories represented by this surface', 'public repository allowlist');
+has(llms, '## Context packs (ACC-shaped, machine-usable)', 'ACC-shaped context-pack index');
+for (const contextPack of [
+  'context/index.json',
+  'context/platform.json',
+  'context/platform.golden-mission.json',
+  'context/developers.json',
+  'context/research.json',
+  'context/standards.json',
+]) {
+  has(llms, `https://docs.aftergraph.org/${contextPack}`, `context pack ${contextPack}`);
+}
 
 has(buildWorker, "const st = read('status.html')", 'status source included in worker build');
 has(buildWorker, 'https://aftergraph.org/status', 'status sitemap entry');
