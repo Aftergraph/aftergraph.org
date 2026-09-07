@@ -1,88 +1,176 @@
 # Aftergraph System Map
 
-> **Generated**: 2026-09-07 | **Branch**: worker/audit-map | **Source**: GitHub API audit of 18 repos
-> **Purpose**: Canonical reference for aftergraph.org site generation. This map is a *source of truth* for site structure, not a copy of repo READMEs.
+> **Evidence cut:** 2026-09-07  
+> **Scope:** 19 repositories currently installed for the `Aftergraph` organization  
+> **Authority:** This file is a public-site rendering/input snapshot. It is **not** the canonical source of repository topology or exact Git state.
 
-## Repository Classification & Maturity
+Canonical ownership/topology lives in `Aftergraph/after-graph-governance`:
 
-| Category | Repository | Purpose (one-liner) | Maturity | Evidence Warnings |
-|----------|-----------|---------------------|----------|-------------------|
-| **Organization** | `.github` | Org profile, community health files, PR templates, brand/execution scripts | production | No README; content in subdirs only |
-| **Organization** | `after-graph-governance` | Cross-repo contracts, architecture, terminology, evidence boundaries | prototype | README exists but minimal; governance docs present |
-| **Products** | `autonomous-venture-company` | AI-native venture OS: governed agents, orchestration, product cells | prototype | Private repo; large codebase (50MB); no public releases |
-| **Products** | `studio` | Operator UX: mission status, evidence, approvals, needs-you flows | prototype | v0.1.0 tagged; CI active; no deployment URL found |
-| **Products** | `work-intelligence-web` | Adaptive UI runtime for Work Intelligence | prototype | Substantial README; frontend-ci.yml; no homepage/deploy URL |
-| **Products** | `work-intelligence-v2` | Source-neutral observations → structured WorkItems | prototype | v0.1.0 tagged; auto-merge CI; no OpenAPI spec found |
-| **Infrastructure** | `trust-gateway` | Fail-closed runtime control: approvals, policy, budgets, audit | prototype | v0.1.0 tagged; brand-assets CI; no deploy URL or OpenAPI |
-| **Infrastructure** | `works-execution` | Durable execution: missions, WorkGraph scheduling, leases, recovery | prototype | v0.3.6 (most mature release); Go codebase; no OpenAPI |
-| **Infrastructure** | `context-continuity` | Portable state-transfer capsules for heterogeneous systems (Draft 0.1) | research | Validate CI only; explicitly marked Draft 0.1 |
-| **Research** | `intelligence-systems-research` | Verifiable intelligent systems: SPEC-001, MISSION-Bench, assurance | research | Extensive docs (14+ numbered specs); no releases; no CI |
-| **Research** | `llm-research-development` | Methodology, skills, evals, experiment contracts, AFM integration | research | Private repo; minimal tree; no releases |
-| **Research** | `afm` | Aftergraph Foundation Model: training, datasets, adapters, evals | research | Private repo; experiments/manifests dirs; no releases |
-| **Protocols** | `aie` | Agentic Institution Engineering: authority, delegation, revocation, budgets | prototype | v0.1.0 tagged; self-hosted CI; Python; no OpenAPI |
-| **Developer Ecosystem** | `skills-vault` | Curated Hermes skill library (44 skills: superpowers, addyosmani, anthropic, own) | prototype | Release + validate CI; Python; no versioned releases |
-| **Developer Ecosystem** | `docs` | Knowledge Plane: public developer & research portal compiler | prototype | JavaScript; ci.yml + verifier.yml; no homepage |
-| **Public Services** | `aftergraph.org` | Canonical public platform: marketing site, org front door, system launcher | prototype | Astro + Cloudflare Workers; codeql + release-drafter CI; no live URL yet |
-| **Documentation** | `brand` | Brand OS & design system: identity, tokens, assets, communication contracts | prototype | DESIGN-SYSTEM.md, tokens.css/json, SVG assets; no releases |
-| **Repositories** | `model-registry` | Model families, versions, artifacts, evals, provenance, lifecycle state | research | Private repo; schemas/policies/models dirs; no releases |
+- `docs/platform-topology/1.0.json` — slow-changing repository scope, plane and role;
+- `latest-org-state.json` — generated exact-head snapshot from the GitHub API;
+- `docs/cross-repo-contracts.md` — normative contract ownership/consumption;
+- repository-owned READMEs/contracts — implementation truth for each module.
 
-## Canonical Sources for Site Generation
+The website must not silently reinterpret those sources into stronger maturity or evidence claims.
 
-The aftergraph.org site MUST generate content from these authoritative sources (not copy README text):
+## Platform model
 
-### 1. Organization & Governance
-- **Org identity**: `Aftergraph/.github` → `profile/`, `brand/`, `CODE_OF_CONDUCT.md`, `SECURITY.md`
-- **Cross-repo contracts**: `Aftergraph/after-graph-governance` → `GOVERNANCE.md`, `BRAND.md`, `dependencies.yml`, `latest-org-state.json`
-- **Brand system**: `Aftergraph/brand` → `tokens.json`, `tokens.css`, `manifest.json`, `DESIGN-SYSTEM.md`, `USAGE-RULES.md`
+```text
+Public / Knowledge
+  aftergraph.org · docs · .github · brand
+          ↓
+Experience
+  studio · work-intelligence-web · autonomous-venture-company
+          ↓
+Intent / Work / Continuity
+  work-intelligence-v2 · context-continuity
+          ↓
+Institution / Enforcement / Execution
+  aie → trust-gateway → works-execution
+          ↓
+Capabilities / Models
+  skills-vault · llm-research-development · afm · model-registry
+          ↓
+Assurance / Verification
+  intelligence-systems-research · continuum
+          ↓
+Verified outcomes
+```
 
-### 2. Products & Infrastructure
-- **Product definitions**: Each product repo's README frontmatter (when available) + `package.json`/`pyproject.toml` metadata
-- **API contracts**: Search for `openapi.yaml`/`openapi.json` in each infra/product repo (currently NONE found — site must not claim OpenAPI compliance)
-- **Deployment state**: Wrangler/Vercel/Fly/Docker configs (currently NONE found — site must not claim live deployments)
-- **Release state**: GitHub Releases API per repo (only `works-execution` has meaningful releases at v0.3.6)
+The arrows describe platform composition, not claim inheritance. A downstream surface does not inherit a stronger evidence class merely because it consumes an upstream service.
 
-### 3. Research & Protocols
-- **Research program**: `Aftergraph/intelligence-systems-research` → numbered spec files (`00-EXECUTIVE-SUMMARY.md` through `14-MARKET-AND-USER-NEEDS.md`)
-- **AIE protocol**: `Aftergraph/aie` → README + any `specs/` or `docs/` subdir
-- **Context continuity**: `Aftergraph/context-continuity` → README (explicitly Draft 0.1)
-- **Model registry**: `Aftergraph/model-registry` → `schemas/`, `policies/`, `models/` (private; site references existence only)
+## Repository classification
 
-### 4. Developer Ecosystem
-- **Skills catalog**: `Aftergraph/skills-vault` → repo root SKILL.md files + `validate.yml` output
-- **Documentation portal**: `Aftergraph/docs` → compiled output (not source markdown)
+| Plane | Repository | Canonical responsibility | Visibility | Current evidence-safe characterization |
+|---|---|---|---|---|
+| Governance | `after-graph-governance` | topology, cross-repo contracts, boundaries, exact-head generation | public | active governance implementation |
+| Institution | `aie` | authority, delegation, lifecycle, budget/revocation semantics | public | experimental standards/reference implementation; Draft track |
+| Enforcement | `trust-gateway` | runtime admission, approvals, policy, secrets and action audit | public | active runtime implementation with documented limits |
+| Execution | `works-execution` | durable work, scheduling, workers, recovery, evidence/quittance | public | active durable execution implementation |
+| Experience | `studio` | general-purpose Chat / Work / Space operating environment | public | full-stack reference build; external integrations remain separately gated |
+| Work Intelligence | `work-intelligence-v2` | source-neutral observations → canonical WorkItems | public | production-integration backend implementation |
+| Experience | `work-intelligence-web` | specialist Work Intelligence UI and least-privilege BFF | private | deployed specialist web experience; backend remains canonical |
+| Continuity | `context-continuity` | portable actionable state transfer / handoff contract | private | research prototype, ACC Draft 0.1 |
+| Assurance | `continuum` | continuity/containment mission-bench and fault injection | private | verification harness under active development |
+| Research/Assurance | `intelligence-systems-research` | SPEC-001, MISSION-Bench, empirical studies, scientific claims | public | audited research program; live claims remain evidence-gated |
+| Capabilities | `skills-vault` | skill trust, lifecycle, provenance, discovery and distribution | private | governed capability supply-chain implementation |
+| Models | `llm-research-development` | reusable model R&D/eval/promotion methodology | private | foundation/model-engineering methodology |
+| Models | `afm` | AFM-specific training, data, experiments and evals | private | active research/model program |
+| Models | `model-registry` | immutable promoted model metadata/lifecycle | private | registry foundation |
+| Products | `autonomous-venture-company` | venture OS, Hermes integration, Product Cells | private | substantial product/reference consumer; production authority separately gated |
+| Knowledge | `docs` | provenance-pinned developer/research Knowledge Plane | public | live at `docs.aftergraph.org` |
+| Public | `aftergraph.org` | public website, org front door and launcher | public | deployed public surface |
+| Foundation | `brand` | visual identity, tokens and master assets | public | provisional Brand OS; trademark clearance not implied |
+| Foundation | `.github` | organization profile, contribution/security/support defaults | public | active organization/community infrastructure |
 
-### 5. Evidence Boundaries (CRITICAL)
-The site MUST NOT claim:
-- ❌ "Production-ready" for any repo (none have production maturity)
-- ❌ "Standard" or "specification" without explicit version tag (only `context-continuity` declares Draft 0.1)
-- ❌ Live deployment URLs (none configured)
-- ❌ OpenAPI/API documentation (no specs found in any repo)
-- ❌ Stable releases (only `works-execution` at v0.3.6 approaches stability)
+**Count:** 19 repositories: 11 public, 8 private at this evidence cut.
 
-The site MUST attribute:
-- ✅ Maturity level per repo (production/prototype/research/experiment)
-- ✅ Last commit date as freshness signal
-- ✅ Release tag when present
-- ✅ Visibility (public/private) — private repos referenced by description only
-- ✅ CI state as activity signal (workflows present ≠ passing)
+## Core ownership rules
 
-## Overlap & Responsibility Notes
+### Mission and verified outcome
 
-| Concern | Primary Repo | Secondary/Related | Notes |
-|---------|-------------|-------------------|-------|
-| Brand identity | `brand` | `.github/brand`, `after-graph-governance/BRAND.md` | Three locations; `brand` repo is canonical for tokens/assets |
-| Governance contracts | `after-graph-governance` | `.github`, individual repo GOVERNANCE.md | Cross-repo authority lives in governance repo |
-| Work Intelligence | `work-intelligence-v2` | `work-intelligence-web` | v2 = backend/runtime; web = UI. Naming suggests v1 deprecated/absorbed |
-| Agent governance | `aie` | `trust-gateway`, `autonomous-venture-company` | AIE = semantics; trust-gateway = enforcement; AVC = application |
-| Research specs | `intelligence-systems-research` | `llm-research-development`, `afm` | ISR = public program; LLM-RD + AFM = private implementation |
-| Model lifecycle | `model-registry` | `afm`, `intelligence-systems-research` | Registry = canonical metadata; AFM = training; ISR = evaluation |
-| Skills | `skills-vault` | `autonomous-venture-company/.hermes` | Vault = curated public set; AVC may have private skills |
+```text
+intent / observation
+→ mission / work definition
+→ authority resolution
+→ runtime admission
+→ durable execution
+→ evidence
+→ independent verification
+→ verified outcome
+```
 
-## Site Generation Directives
+`Declared completion != verified outcome` remains a system invariant. A UI status, agent message or execution success flag is not sufficient evidence by itself.
 
-1. **Data fetching**: Use GitHub API at build time (Cloudflare Workers can fetch public repos; private repos require token)
-2. **Freshness**: Display last-commit and release-tag as "last updated" signals
-3. **No static copies**: Site pages reference canonical sources via link + metadata extraction, never inline README content
-4. **Maturity badges**: Render maturity level per repo with color coding (green=production, yellow=prototype, blue=research, gray=experiment)
-5. **Evidence warnings**: Auto-generate warning banners when claims lack supporting artifacts (no OpenAPI, no deploy URL, no releases)
-6. **Private repos**: List by name + description only; no links, no content extraction
+### Work Intelligence
+
+```text
+Signal → Observation → WorkCandidate → WorkItem
+       → Review/Approve → Publication → optional WORKS promotion
+```
+
+`WorkItem != WORKS Work`. `work-intelligence-web` is a projection/BFF, not canonical WorkItem storage.
+
+### Authority and execution
+
+For consequential execution:
+
+```text
+Executable = Intersection(AIE authority/policy, Trust Gateway runtime admission, WORKS durable execution)
+```
+
+A model, agent, plugin, skill, UI or repository membership does not grant authority by installation/existence.
+
+### Continuity
+
+`context-continuity` owns transfer of actionable state. A Continuity Capsule may carry authority references/context, but it cannot mint or expand authority. It also does not replace mission verification or execution evidence.
+
+### Models and skills
+
+```text
+llm-research-development → AFM → model-registry
+skills-vault → governed capability distribution
+```
+
+Models and skills are capabilities consumed by the platform. Promotion or installation does not grant runtime authority.
+
+## Evidence boundaries
+
+The public site MUST preserve these separations:
+
+1. runtime evidence does not establish AIE conformance;
+2. AIE conformance does not establish scientific validity;
+3. scientific evidence does not grant runtime/production authority;
+4. exact-head state does not prove functional conformance;
+5. public visibility does not upgrade maturity;
+6. private repository existence must not cause private content leakage.
+
+When a source says `research`, `prototype`, `reference`, `production integration`, `deployed`, `external interop PASS`, or another bounded state, the site must preserve that wording/context rather than flattening everything into one maturity badge.
+
+## Canonical sources for public generation
+
+### Governance and topology
+
+- `Aftergraph/after-graph-governance/docs/platform-topology/1.0.json`
+- `Aftergraph/after-graph-governance/latest-org-state.json` (fresh generated snapshot, not a timeless artifact)
+- `Aftergraph/after-graph-governance/docs/cross-repo-contracts.md`
+- `Aftergraph/after-graph-governance/docs/evidence-layer-model.md`
+
+### Knowledge and claims
+
+- `Aftergraph/docs` is the Knowledge Plane/compiler layer and pins exact upstream SHAs.
+- Scientific claims come from `Aftergraph/intelligence-systems-research` registries/audits.
+- AIE maturity/conformance comes from `Aftergraph/aie` evidence, not from platform marketing copy.
+
+### Product/runtime state
+
+- Each runtime/product repo owns its implementation state and limitations.
+- Deployment URLs may be displayed only when supported by the owning repo or live deployment evidence.
+- API surfaces must come from canonical OpenAPI/contracts where those exist; absence must not be converted into invented documentation.
+
+### Brand
+
+- `Aftergraph/brand` owns design tokens/master assets.
+- Provisional trademark/brand status must remain visible where relevant.
+
+## Public generation directives
+
+1. Resolve the 19-repository set from governance topology, not from a hand-maintained site list.
+2. Use a fresh generated org-state for exact heads/freshness.
+3. Preserve repo-owned descriptions and evidence/maturity qualifiers.
+4. Publicly list private repos only using approved name/description metadata; never fetch/render their private source content into a public build.
+5. Separate `visibility`, `implementation state`, `deployment state`, `conformance state` and `scientific evidence class` instead of collapsing them into one badge.
+6. Fail the build or visibly mark stale data when governance topology and site catalog diverge.
+7. Keep public navigation outcome/capability-oriented; repositories are implementation modules, not the user's required mental model.
+
+## Current reconciliation backlog
+
+Canonical execution tasks live in `Aftergraph/after-graph-governance/docs/PLATFORM-RECONCILIATION-V1.md`.
+
+Highest-priority remaining platform work after topology reconciliation:
+
+- canonical Principal/Tenant identity architecture;
+- one production E2E path `Studio → AIE → Trust Gateway → WORKS → Evidence → Verifier`;
+- benchmark/fault taxonomy reconciliation across ISR, Continuum and ACC;
+- AVC/platform executable-overlap audit;
+- automatic topology import into `docs` and `aftergraph.org`.

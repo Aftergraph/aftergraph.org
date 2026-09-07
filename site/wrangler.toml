@@ -1,3 +1,6 @@
 name = "aftergraph-site"
 main = "worker.js"
 compatibility_date = "2024-11-01"
+
+[build]
+command = "node build-worker.cjs"

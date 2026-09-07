@@ -32,6 +32,38 @@
 - [Research](https://docs.aftergraph.org/context/research.json)
 - [Standards](https://docs.aftergraph.org/context/standards.json)
 
+## Platform topology (from Aftergraph/after-graph-governance)
+
+Installed platform topology: 19 repositories
+Public repositories: 11
+Private repositories: 8
+
+### Public
+
+- `.github`
+- `after-graph-governance`
+- `aftergraph.org`
+- `aie`
+- `brand`
+- `docs`
+- `intelligence-systems-research`
+- `studio`
+- `trust-gateway`
+- `work-intelligence-v2`
+- `works-execution`
+
+### Private (names only; never linked publicly)
+
+- afm
+- autonomous-venture-company
+- context-continuity
+- continuum
+- llm-research-development
+- model-registry
+- skills-vault
+- work-intelligence-web
+
+
 ## Organization
 
 - GitHub organization: [github.com/Aftergraph](https://github.com/Aftergraph)
