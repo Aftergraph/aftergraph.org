@@ -64,8 +64,17 @@ if (!build.includes("p === '/status' || p === '/status/'")) {
 }
 write('build-worker.cjs', build);
 
+const statusData = JSON.parse(read('status-data.json'));
+const publicRepos = statusData.repos.filter((repo) => repo.visibility === 'public');
+assert.equal(publicRepos.length, statusData.repos.length, 'status-data contains non-public repositories');
+
 let status = read('status.html');
-status = status.replace('(12 repository snapshot)', '(10 public repositories · GitHub API snapshot)');
+const repoHeading = `<h2>Repositories <span class="meta">(${publicRepos.length} public repositories · GitHub API snapshot)</span></h2>`;
+status = status.replace(
+  /<h2>Repositories <span class="meta">\([^<]*\)<\/span><\/h2>/,
+  repoHeading,
+);
+assert.ok(status.includes(repoHeading), 'status repository heading was not normalized');
 status = status
   .split('\n')
   .filter((line) => !line.includes('context-continuity') && !line.includes('skills-vault'))
