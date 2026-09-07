@@ -7,6 +7,9 @@
 - [aftergraph.org](https://aftergraph.org/): Landing page
 - [Launcher](https://aftergraph.org/launch): System launcher / command palette for all Aftergraph destinations
 - [Health](https://aftergraph.org/healthz): Deployment status
+- [Knowledge Plane](https://docs.aftergraph.org/): Developer & research portal — provenance-stamped docs, contracts, claims, API reference, context packs for agents
+- [Knowledge Plane context packs](https://docs.aftergraph.org/context/index.json): ACC-shaped portable context bundles per page
+- [Knowledge Plane status](https://docs.aftergraph.org/status.json): Build provenance + source freshness for the portal
 
 ## Organization
 
