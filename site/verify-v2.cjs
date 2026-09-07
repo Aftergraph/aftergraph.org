@@ -61,6 +61,8 @@ assert.ok(Array.isArray(statusData.repos), 'status-data repos must be an array')
 assert.ok(statusData.repos.length > 0, 'status-data must contain public repositories');
 assert.ok(statusData.repos.every((repo) => repo.visibility === 'public'), 'status-data must contain public repositories only');
 has(statusPage, `(${statusData.repos.length} public repositories`, 'status page public repository count');
+has(statusPage, 'Knowledge Plane build', 'Knowledge Plane build evidence card');
+has(statusPage, 'https://docs.aftergraph.org/build-manifest.json', 'source-owned Knowledge Plane build manifest route');
 
 const publicSurface = `${landing}\n${launcher}\n${statusPage}\n${statusDataText}\n${llms}\n${worker}`.toLowerCase();
 for (const privateRepo of ['context-continuity', 'skills-vault']) {
