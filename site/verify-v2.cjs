@@ -12,7 +12,9 @@ function has(haystack, needle, label = needle) {
   assert.ok(haystack.includes(needle), `missing ${label}`);
 }
 
-has(landing, 'Infrastructure for verifiable intelligent systems.', 'V2 hero headline');
+has(landing, 'Infrastructure for', 'V2 hero headline prefix');
+has(landing, 'verifiable', 'V2 hero emphasis');
+has(landing, 'intelligent systems.', 'V2 hero headline suffix');
 has(landing, 'Mission', 'mission trace');
 has(landing, 'Authority', 'authority trace');
 has(landing, 'Evidence', 'evidence trace');
