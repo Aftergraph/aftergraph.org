@@ -25,7 +25,7 @@ For a real production build, inject the deployment timestamp and exact source
 commit before compiling. Example for a POSIX shell:
 
 ```sh
-export AG_DEPLOYED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+export AG_DEPLOYED="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 export AG_SHA="$(git rev-parse HEAD)"
 node site/build-worker.cjs
 node site/verify-v2.cjs
