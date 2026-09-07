@@ -16,27 +16,27 @@ const sec = read('security.txt');
 const FAVICON = `<link rel="icon" type="image/svg+xml" href="/favicon.ico">`;
 const OG = `
 <meta property="og:site_name" content="Aftergraph">
-<meta property="og:title" content="Aftergraph — Verifiable Intelligent Systems">
-<meta property="og:description" content="Infrastructure and open research for verifiable intelligent systems: missions, authority, durable execution, evidence, verification and agentic institutions.">
+<meta property="og:title" content="Aftergraph — Infrastructure for Verifiable Intelligent Systems">
+<meta property="og:description" content="Bound missions, scoped authority, durable execution, evidence and independent verification for long-horizon intelligent systems.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aftergraph.org/">
 <meta property="og:image" content="https://aftergraph.org/og-image.svg">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Aftergraph">
-<meta name="twitter:description" content="Infrastructure and open research for verifiable intelligent systems.">
+<meta name="twitter:description" content="Infrastructure for verifiable intelligent systems.">
 <script type="application/ld+json">${JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Aftergraph',
   url: 'https://aftergraph.org',
-  description: 'Infrastructure and open research for verifiable intelligent systems: missions, authority, durable execution, evidence, verification and agentic institutions.',
+  description: 'Infrastructure and open research for verifiable intelligent systems: bounded missions, scoped authority, durable execution, evidence and independent verification.',
   sameAs: ['https://github.com/Aftergraph']
 })}</script>`;
 
 const OG_LAUNCH = `
 <meta property="og:site_name" content="Aftergraph">
 <meta property="og:title" content="Launcher — Aftergraph">
-<meta property="og:description" content="System launcher and command palette for all Aftergraph destinations.">
+<meta property="og:description" content="Find the right Aftergraph surface to build, operate, verify or research.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aftergraph.org/launch">
 <meta property="og:image" content="https://aftergraph.org/og-image.svg">`;
@@ -46,7 +46,7 @@ landing = landing.replace('</head>', FAVICON + OG + '\n</head>');
 launch = launch.replace('</head>', FAVICON + OG_LAUNCH + '\n</head>');
 
 // --- runtime ---
-const health = JSON.stringify({ status: 'ok', deployed: new Date().toISOString(), route: 'aftergraph-site v1.1.0', sha: process.env.AG_SHA || 'local' });
+const health = JSON.stringify({ status: 'ok', deployed: new Date().toISOString(), route: 'aftergraph-site v2.0.0', sha: process.env.AG_SHA || 'local' });
 const robots = `User-agent: *
 Allow: /
 Disallow: /healthz
