@@ -29,6 +29,7 @@ assert(llms.includes('Installed platform topology: 21 repositories'), 'llms.txt 
 assert(llms.includes('Public repositories: 13') && llms.includes('Private repositories: 8'), 'llms.txt visibility totals must be reconciled');
 assert(!llms.includes('- `context-continuity`') && !llms.includes('- `skills-vault`'), 'private repositories must not appear in the public-repository list');
 assert(!landing.includes('https://github.com/Aftergraph/context-continuity'), 'public landing must not link directly to private Continuity source');
+assert(statusPage.includes('__AG_SHA__') && statusPage.includes('__AG_DEPLOYED__'), 'status must carry build-provenance placeholders');
 
 const FAVICON = '<link rel="icon" type="image/svg+xml" href="/favicon.ico">';
 const OG = `
@@ -68,6 +69,8 @@ const OG_LAUNCH = `
 landing = landing.replace('</head>', `${FAVICON}${OG}\n</head>`);
 launch = launch.replace('</head>', `${FAVICON}${OG_LAUNCH}\n</head>`);
 sentinel = sentinel.replace('</head>', `${FAVICON}${OG_SENTINEL}\n</head>`);
+
+let statusBuilt = statusPage.replaceAll('__AG_SHA__', process.env.AG_SHA || 'local').replaceAll('__AG_DEPLOYED__', process.env.AG_DEPLOYED || 'build-time');
 
 const health = JSON.stringify({
   status: 'ok',
@@ -119,7 +122,7 @@ const NOTFOUND = ${JSON.stringify(notFound)};
 const MONOGRAM = ${JSON.stringify(monogram)};
 const LLMS = ${JSON.stringify(llms)};
 const SECURITY = ${JSON.stringify(security)};
-const STATUS = ${JSON.stringify(statusPage)};
+const STATUS = ${JSON.stringify(statusBuilt)};
 const SENTINEL = ${JSON.stringify(sentinel)};
 const HEALTH = ${JSON.stringify(health)};
 const ROBOTS = ${JSON.stringify(robots)};
