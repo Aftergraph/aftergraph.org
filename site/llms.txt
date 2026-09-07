@@ -5,15 +5,15 @@
 ## Key pages
 
 - [aftergraph.org](https://aftergraph.org/): Landing page
-- [Launcher](https://aftergraph.org/launch): System launcher / command palette for all Aftergraph destinations
-- [Status](https://aftergraph.org/status): Operational snapshot (build-time)
+- [Launcher](https://aftergraph.org/launch): System launcher / command palette for public Aftergraph destinations
+- [Status](https://aftergraph.org/status): Operational public projection (build-time)
 - [Knowledge Plane docs](https://docs.aftergraph.org/): Live developer & research portal
 - [Knowledge Plane quickstart](https://docs.aftergraph.org/developers/quickstart/): Verify the plane in 10 minutes
-- [Knowledge Plane Contract Explorer](https://docs.aftergraph.org/standards/contracts/): 13 canonical cross-repo contracts
-- [Knowledge Plane Evidence](https://docs.aftergraph.org/evidence/claim-graph/): C-001..C-008 claims with verbatim audit statuses
-- [Knowledge Plane Sentinel](https://docs.aftergraph.org/sentinel/): Verified code-review strategy docs
+- [Knowledge Plane Contract Explorer](https://docs.aftergraph.org/standards/contracts/): Canonical cross-repo contract explorer
+- [Knowledge Plane Evidence](https://docs.aftergraph.org/evidence/claim-graph/): Claim graph with provenance and audit status
+- [Knowledge Plane Sentinel](https://docs.aftergraph.org/sentinel/): Sentinel documentation
 - [Health](https://aftergraph.org/healthz): Deployment status
-- [Sentinel](https://aftergraph.org/sentinel): Verified code review product page (maturity: prototype)
+- [Sentinel](https://aftergraph.org/sentinel): Verified code-review product page
 
 ## Deep index (from the Knowledge Plane)
 
@@ -21,7 +21,7 @@
 - [Golden Mission route](https://docs.aftergraph.org/platform/golden-mission/)
 - [System Map (verified bindings)](https://docs.aftergraph.org/platform/system-map/)
 - [Research overview](https://docs.aftergraph.org/research/)
-- [Claim chains C-001..C-008](https://docs.aftergraph.org/evidence/claim-graph/)
+- [Evidence claim graph](https://docs.aftergraph.org/evidence/claim-graph/)
 - [Docs index (llms.txt)](https://docs.aftergraph.org/llms.txt)
 
 ## Context packs (ACC-shaped, machine-usable)
@@ -35,9 +35,11 @@
 
 ## Platform topology (from Aftergraph/after-graph-governance)
 
-Installed platform topology: 21 repositories
-Public repositories: 13
-Private repositories: 8
+Canonical platform topology: 21 repositories
+Public repositories: 12
+Private repositories: 9
+
+Repository count is a Governance projection, not product identity and not compatibility evidence.
 
 ### Public
 
@@ -48,23 +50,30 @@ Private repositories: 8
 - `brand`
 - `docs`
 - `intelligence-systems-research`
-- `runtime`
 - `sentinel`
 - `studio`
 - `trust-gateway`
-- `work-intelligence-v2`
+- `wi-backend`
 - `works-execution`
 
 ### Private
 
-8 private repositories participate in the topology; names are withheld on this public surface (see governance topology for the canonical inventory).
+9 private repositories participate in the canonical topology; their repository names are not enumerated on this public allowlist. Public product/capability pages may describe a private implementation without exposing a private source link.
 
+## Product identities
+
+- Studio by Aftergraph
+- Sentinel by Aftergraph
+- Wie by Aftergraph
+- Continuum by Aftergraph
+
+Wie's canonical public backend repository is `wi-backend`. Public product naming is separate from source-repository identity.
 
 ## Organization
 
 - GitHub organization: [github.com/Aftergraph](https://github.com/Aftergraph)
-- Repositories (public): intelligence-systems-research, aie, trust-gateway, works-execution, work-intelligence-v2, after-graph-governance, studio, brand, docs, aftergraph.org, .github
+- Public repository allowlist: `.github`, `after-graph-governance`, `aftergraph.org`, `aie`, `brand`, `docs`, `intelligence-systems-research`, `sentinel`, `studio`, `trust-gateway`, `wi-backend`, `works-execution`
 
 ## Evidence rule
 
-Visibility never upgrades evidence. Research claims, experiments, prototypes and production capabilities are labelled by maturity on every surface. Research evidence is never runtime authority by itself.
+Visibility never upgrades evidence. Canonical topology membership does not establish functional conformance, production readiness or APC compatibility. Research claims, experiments, prototypes and production capabilities are labelled by maturity on their owning surfaces. Research evidence is never runtime authority by itself.
