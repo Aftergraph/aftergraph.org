@@ -29,6 +29,8 @@ has(landing, 'href="https://docs.aftergraph.org', 'docs cross-link');
 has(landing, 'href="/status"', 'landing operational status route');
 has(landing, 'prefers-reduced-motion', 'reduced-motion support');
 has(landing, ':focus-visible', 'visible focus');
+has(landing, 'data-mission-rail', 'golden mission scroll rail');
+has(landing, 'requestAnimationFrame', 'rail scroll progression');
 
 has(launcher, 'Build', 'launcher Build group');
 has(launcher, 'Platform', 'launcher Platform group');
