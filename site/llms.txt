@@ -22,6 +22,15 @@
 - [Research overview](https://docs.aftergraph.org/research/)
 - [Knowledge Plane llms.txt](https://docs.aftergraph.org/llms.txt)
 
+## Context packs (ACC-shaped, machine-usable)
+
+- [Index](https://docs.aftergraph.org/context/index.json)
+- [Platform](https://docs.aftergraph.org/context/platform.json)
+- [Golden Mission](https://docs.aftergraph.org/context/platform.golden-mission.json)
+- [Developers](https://docs.aftergraph.org/context/developers.json)
+- [Research](https://docs.aftergraph.org/context/research.json)
+- [Standards](https://docs.aftergraph.org/context/standards.json)
+
 ## Organization
 
 - GitHub organization: [github.com/Aftergraph](https://github.com/Aftergraph)
