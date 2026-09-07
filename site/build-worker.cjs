@@ -9,6 +9,7 @@ function read(f) { return fs.readFileSync(path.join(SITE, f), 'utf8'); }
 let landing = read('index.html');
 let launch = read('launch.html');
 const nf = read('404.html');
+const st = read('status.html');
 const monogram = read('monogram.svg');
 const llms = read('llms.txt');
 const sec = read('security.txt');
@@ -82,6 +83,7 @@ const NOTFOUND = ${JSON.stringify(nf)};
 const MONOGRAM = ${JSON.stringify(monogram)};
 const LLMS = ${JSON.stringify(llms)};
 const SECURITY = ${JSON.stringify(sec)};
+const STATUS = ${JSON.stringify(st)};
 const HEALTH = ${JSON.stringify(health)};
 const ROBOTS = ${JSON.stringify(robots)};
 const SITEMAP = ${JSON.stringify(sitemap)};
@@ -96,6 +98,7 @@ addEventListener('fetch', e => {
   else if (p === '/.well-known/security.txt') { body = SECURITY; ct = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
   else if (p === '/favicon.ico' || p === '/og-image.svg') { body = MONOGRAM; ct = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
   else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
+  else if (p === '/status' || p === '/status/') { body = STATUS; }
   else if (p === '/404') { body = NOTFOUND; }
   else if (p === '/') { body = LANDING; }
   else { body = NOTFOUND; status = 404; cache = 'no-store'; }
