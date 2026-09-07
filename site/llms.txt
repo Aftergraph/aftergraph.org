@@ -13,6 +13,8 @@
 - [Knowledge Plane Evidence](https://docs.aftergraph.org/evidence/claim-graph/): C-001..C-008 claims with verbatim audit statuses
 - [Knowledge Plane Sentinel](https://docs.aftergraph.org/sentinel/): Verified code-review strategy docs
 - [Health](https://aftergraph.org/healthz): Deployment status
+- [Sentinel](https://aftergraph.org/sentinel): Verified code review product page (maturity: prototype)
+- [Studio demo](https://aftergraph.org/studio/): Interactive Studio operator demo — local-only fixture data, no backend (maturity: demo)
 
 ## Deep index (from the Knowledge Plane)
 
