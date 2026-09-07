@@ -9,6 +9,7 @@ function read(f) { return fs.readFileSync(path.join(SITE, f), 'utf8'); }
 let landing = read('index.html');
 let launch = read('launch.html');
 const nf = read('404.html');
+const st = read('status.html');
 const monogram = read('monogram.svg');
 const llms = read('llms.txt');
 const sec = read('security.txt');
@@ -67,6 +68,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://aftergraph.org/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://aftergraph.org/launch</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://aftergraph.org/status</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>
 `;
 const headers = `const SECURE = {
@@ -81,6 +83,7 @@ const worker = `${headers}
 const LANDING = ${JSON.stringify(landing)};
 const LAUNCH = ${JSON.stringify(launch)};
 const NOTFOUND = ${JSON.stringify(nf)};
+const STATUS = ${JSON.stringify(st)};
 const MONOGRAM = ${JSON.stringify(monogram)};
 const LLMS = ${JSON.stringify(llms)};
 const SECURITY = ${JSON.stringify(sec)};
@@ -98,6 +101,7 @@ addEventListener('fetch', e => {
   else if (p === '/.well-known/security.txt') { body = SECURITY; ct = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
   else if (p === '/favicon.ico' || p === '/og-image.svg') { body = MONOGRAM; ct = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
   else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
+  else if (p === '/status' || p === '/status/') { body = STATUS; }
   else if (p === '/404') { body = NOTFOUND; }
   else if (p === '/') { body = LANDING; }
   else { body = NOTFOUND; status = 404; cache = 'no-store'; }

@@ -1,7 +1,7 @@
 # Site deployment — aftergraph.org (v2.0.0)
 
 Serves the canonical public platform: landing (`/`), system launcher (`/launch`),
-health (`/healthz`), `robots.txt` and `sitemap.xml` from the `aftergraph-site`
+health (`/healthz`), operational status (`/status`), `robots.txt` and `sitemap.xml` from the `aftergraph-site`
 Cloudflare Worker.
 
 ## Build
@@ -35,7 +35,7 @@ npx wrangler@4.129.0 deploy --config wrangler.toml --name aftergraph-site
 
 Routes: `aftergraph.org/*` + `www.aftergraph.org/*` → `aftergraph-site`.
 Production is verified through `/healthz` plus HTTP 200 smoke checks for `/`,
-`/launch`, `/robots.txt` and `/sitemap.xml`.
+`/launch`, `/status`, `/robots.txt` and `/sitemap.xml`.
 
 ## Design lineage
 
