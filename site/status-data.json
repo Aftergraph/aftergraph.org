@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-09-07T01:59:08Z",
+  "generated_by": "loop wakeup #1",
+  "repos": [
+    {
+      "name": "intelligence-systems-research",
+      "description": "Research program for verifiable intelligent systems — SPEC-001 Mission Contracts, MISSION-Bench, assurance, replication and empirical evidence.",
+      "pushed_at": "2026-09-07T00:16:29Z",
+      "latest_release": "v0.1.0-study006-recruitment",
+      "visibility": "public"
+    },
+    {
+      "name": "aie",
+      "description": "Agentic Institution Engineering — portable semantics for authority, delegation, revocation, budgets, lifecycle, topology governance and evidence.",
+      "pushed_at": "2026-09-07T00:32:30Z",
+      "latest_release": "",
+      "visibility": "public"
+    },
+    {
+      "name": "trust-gateway",
+      "description": "Fail-closed runtime control and enforcement plane for governed autonomous agents, approvals, policy, budgets and tamper-evident audit.",
+      "pushed_at": "2026-09-07T00:32:28Z",
+      "latest_release": "",
+      "visibility": "public"
+    },
+    {
+      "name": "works-execution",
+      "description": "Durable execution plane for autonomous work — missions, WorkGraph scheduling, workers, leases, budgets, recovery and execution evidence.",
+      "pushed_at": "2026-09-07T00:30:18Z",
+      "latest_release": "v0.3.5",
+      "visibility": "public"
+    },
+    {
+      "name": "work-intelligence-v2",
+      "description": "Source-neutral work intelligence: observations become structured, attributable WorkItems for downstream autonomous systems.",
+      "pushed_at": "2026-09-07T01:50:04Z",
+      "latest_release": "",
+      "visibility": "public"
+    },
+    {
+      "name": "after-graph-governance",
+      "description": "Canonical cross-repository contracts, architecture, terminology, exact-head state and evidence boundaries for the Aftergraph ecosystem.",
+      "pushed_at": "2026-09-07T00:30:15Z",
+      "latest_release": "",
+      "visibility": "public"
+    },
+    {
+      "name": "studio",
+      "description": "Operator and product experience for Aftergraph systems: mission status, evidence, approvals, needs-you flows and verified outcomes.",
+      "pushed_at": "2026-09-07T01:55:57Z",
+      "latest_release": "",
+      "visibility": "public"
+    },
+    {
+      "name": "brand",
+      "description": "Aftergraph Brand OS and design system: identity, tokens, canonical assets and public communication contracts.",
+      "pushed_at": "2026-09-07T00:17:28Z",
+      "latest_release": "",
+      "visibility": "public"
+    },
+    {
+      "name": "docs",
+      "description": "Aftergraph Knowledge Plane — public developer & research portal. Provenance-stamped docs, contracts, claims + agent surfaces. Live: https://docs.aftergraph.org",
+      "pushed_at": "2026-09-07T01:58:47Z",
+      "latest_release": "v1.1.0",
+      "visibility": "public"
+    },
+    {
+      "name": "aftergraph.org",
+      "description": "Canonical public platform for aftergraph.org: marketing site, organization front door and system launcher for the Aftergraph ecosystem.",
+      "pushed_at": "2026-09-07T01:55:53Z",
+      "latest_release": "v1.1.0",
+      "visibility": "public"
+    }
+  ]
+}
