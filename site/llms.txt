@@ -5,14 +5,48 @@
 ## Key pages
 
 - [aftergraph.org](https://aftergraph.org/): Landing page
-- [Launcher](https://aftergraph.org/launch): System launcher / command palette for all Aftergraph destinations
+- [Launcher](https://aftergraph.org/launch): System launcher / command palette for Aftergraph destinations
+- [Status](https://aftergraph.org/status): Build-time public platform snapshot
 - [Health](https://aftergraph.org/healthz): Deployment status
+- [Knowledge Plane](https://docs.aftergraph.org/): Provenance-pinned developer and research documentation
 
 ## Organization
 
 - GitHub organization: [github.com/Aftergraph](https://github.com/Aftergraph)
-- Repositories (public): intelligence-systems-research, aie, trust-gateway, works-execution, work-intelligence-v2, after-graph-governance, studio, brand, docs, aftergraph.org, context-continuity, skills-vault
+- Installed platform topology: 19 repositories
+- Public repositories: 11
+- Private repositories: 8
+- Canonical topology owner: `Aftergraph/after-graph-governance`
+
+### Public repositories
+
+- `.github`
+- `after-graph-governance`
+- `aftergraph.org`
+- `aie`
+- `brand`
+- `docs`
+- `intelligence-systems-research`
+- `studio`
+- `trust-gateway`
+- `work-intelligence-v2`
+- `works-execution`
+
+Private repositories are represented publicly only through approved topology metadata. Their source content is not part of this public machine-readable surface.
+
+## Operating model
+
+```text
+intent / observation
+→ work / mission / continuity
+→ authority
+→ runtime enforcement
+→ durable execution
+→ evidence
+→ independent verification
+→ verified outcome
+```
 
 ## Evidence rule
 
-Visibility never upgrades evidence. Research claims, experiments, prototypes and production capabilities are labelled by maturity on every surface. Research evidence is never runtime authority by itself.
+Visibility never upgrades evidence. Research claims, experiments, prototypes, runtime implementations, conformance results and production capabilities retain their own evidence/maturity boundaries. Runtime evidence is not AIE conformance; AIE conformance is not scientific evidence; scientific evidence does not grant production authority.
