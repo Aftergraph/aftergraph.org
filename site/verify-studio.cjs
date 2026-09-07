@@ -218,25 +218,30 @@ async function liveApiChecks(proxyBase) {
   }
 
   // Part 2 — documented live URLs (operator smoke after deploy + route-attach).
+  // Tier-1 is health-depth honest: the backend may answer 401 (REQUIRE_AUTH)
+  // instead of 200 — both are backend JSON. What must NEVER happen is an HTML
+  // shell on an API path, so content-type is asserted alongside status.
   const live = [
-    ['GET', '/studio/api/v1/state', 200, 'backend JSON'],
-    ['POST', '/studio/api/v1/state', 405, 'tier1_read_only'],
-    ['GET', '/studio/api/v1/events', 403, 'tier1_not_allowlisted'],
+    ['GET', '/studio/api/v1/state', [200, 401], 'backend JSON or auth-required JSON'],
+    ['POST', '/studio/api/v1/state', [405], 'tier1_read_only'],
+    ['GET', '/studio/api/v1/events', [403], 'tier1_not_allowlisted'],
   ];
   if (!proxyBase) {
     console.log('STUDIO-VERIFY-INFO: live-api live URLs (pass a base after deploy to smoke them):');
     for (const [method, p, want, note] of live) {
-      console.log(`STUDIO-VERIFY-INFO:   ${method} <base>${p} -> ${want} (${note})`);
+      console.log(`STUDIO-VERIFY-INFO:   ${method} <base>${p} -> ${want.join('/')} (${note})`);
     }
     console.log('STUDIO-VERIFY-INFO: usage: node site/verify-studio.cjs live-api https://aftergraph.org');
     return;
   }
   const origin = proxyBase.replace(/\/$/, '');
-  for (const [method, p, want] of live) {
+  for (const [method, p, wants, note] of live) {
     const res = await fetch(`${origin}${p}`, { method });
     await res.text();
-    if (res.status !== want) fail(`live-api live: ${method} ${p} -> ${res.status} (want ${want})`);
-    else pass(`live-api live: ${method} ${p} -> ${want}`);
+    const type = res.headers.get('content-type') || '';
+    if (!wants.includes(res.status)) fail(`live-api live: ${method} ${p} -> ${res.status} (want ${wants.join('/')} ${note})`);
+    else if (!type.includes('application/json')) fail(`live-api live: ${method} ${p} serves ${type || 'unknown'} (want backend JSON, never shell HTML)`);
+    else pass(`live-api live: ${method} ${p} -> ${res.status} JSON (${note})`);
   }
 }
 

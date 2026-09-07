@@ -117,7 +117,9 @@ Route attach (manual, once): `aftergraph.org/studio/api/*` + `www` (and
 API token). These more-specific routes win over the Tier-0
 `aftergraph.org/studio/*` → `aftergraph-studio` route.
 
-Smoke (Tier-1: want 200 backend JSON, 405, 403):
+Smoke (Tier-1 honest: state is 200 backend JSON or 401 auth-required
+JSON when the backend runs REQUIRE_AUTH — both prove the proxy path;
+405 and 403 prove the tier cage; every API answer must be JSON, never shell):
 
 ```sh
 curl -s -o /dev/null -w '%{http_code}\n' https://aftergraph.org/studio/api/v1/state
