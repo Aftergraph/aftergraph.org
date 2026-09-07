@@ -14,7 +14,6 @@
 - [Knowledge Plane Sentinel](https://docs.aftergraph.org/sentinel/): Verified code-review strategy docs
 - [Health](https://aftergraph.org/healthz): Deployment status
 - [Sentinel](https://aftergraph.org/sentinel): Verified code review product page (maturity: prototype)
-- [Studio demo](https://aftergraph.org/studio/): Tier-0 demo — interactive, local-only fixture data, no backend. (maturity: Tier-0 demo)
 
 ## Deep index (from the Knowledge Plane)
 
@@ -36,8 +35,8 @@
 
 ## Platform topology (from Aftergraph/after-graph-governance)
 
-Installed platform topology: 20 repositories
-Public repositories: 12
+Installed platform topology: 21 repositories
+Public repositories: 13
 Private repositories: 8
 
 ### Public
@@ -49,6 +48,7 @@ Private repositories: 8
 - `brand`
 - `docs`
 - `intelligence-systems-research`
+- `runtime`
 - `sentinel`
 - `studio`
 - `trust-gateway`

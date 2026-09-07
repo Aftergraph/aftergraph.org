@@ -26,7 +26,7 @@
 </table>
 </div>
 <div class="card">
-<h2>Platform topology <span class="meta">20 installed · 12 public · 8 private</span></h2>
+<h2>Platform topology <span class="meta">21 installed · 13 public · 8 private</span></h2>
 <table>
 <tr><th>Public repository</th><th>Canonical role</th></tr>
 <tr><td class="rname">.github</td><td>Organization/community infrastructure</td></tr>
@@ -40,6 +40,7 @@
 <tr><td class="rname">trust-gateway</td><td>Runtime admission and enforcement</td></tr>
 <tr><td class="rname">work-intelligence-v2</td><td>Observation → WorkItem inference</td></tr>
 <tr><td class="rname">works-execution</td><td>Durable execution and execution evidence</td></tr>
+<tr><td class="rname">runtime</td><td>Agent lifecycle, orchestration and dispatch</td></tr>
 <tr><td class="rname">sentinel</td><td>Verified code-review verdicts</td></tr>
 </table>
 <p class="meta">Eight private repositories participate in the topology but their source content is not rendered on this public surface.</p>
@@ -48,6 +49,11 @@
 <h2>Evidence boundaries</h2>
 <p class="muted" style="font-size:14px;margin:0 0 10px">Visibility never upgrades evidence. Runtime evidence, AIE conformance, scientific evidence and production authority are separate states. Exact-head state also does not prove functional conformance.</p>
 <p class="meta">Evidence cut: 2026-09-07 · topology count reconciled against the installed Aftergraph GitHub organization</p>
+</div>
+<div class="card">
+<h2>Independent verification</h2>
+<p class="muted" style="font-size:14px;margin:0 0 10px">This page is served only when every build gate passes. Re-run any line below against the live site and the deployed bundle:</p>
+<p class="meta">bundle sha: __AG_SHA__ · deployed: __AG_DEPLOYED__<br>curl -s https://aftergraph.org/healthz<br>curl -s https://work-intelligence.aftergraph.org/api/healthz<br>Work Intelligence console: <a href="https://work-intelligence.aftergraph.org/">work-intelligence.aftergraph.org</a></p>
 </div>
 </div>
 </body>

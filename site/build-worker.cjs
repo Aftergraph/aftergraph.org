@@ -22,13 +22,14 @@ const security = read('security.txt');
 
 // Reconciliation gates. These intentionally fail closed when a public surface
 // drifts back to the pre-V1 repository inventory.
-assert(landing.includes('20 repositories'), 'landing must declare the 19-repository topology');
-assert(landing.includes('12 public') && landing.includes('8 private'), 'landing visibility totals must be reconciled');
-assert(statusPage.includes('20 installed') && statusPage.includes('12 public') && statusPage.includes('8 private'), 'status topology totals must be reconciled');
-assert(llms.includes('Installed platform topology: 20 repositories'), 'llms.txt must carry topology total');
-assert(llms.includes('Public repositories: 12') && llms.includes('Private repositories: 8'), 'llms.txt visibility totals must be reconciled');
+assert(landing.includes('21 repositories'), 'landing must declare the 19-repository topology');
+assert(landing.includes('13 public') && landing.includes('8 private'), 'landing visibility totals must be reconciled');
+assert(statusPage.includes('21 installed') && statusPage.includes('13 public') && statusPage.includes('8 private'), 'status topology totals must be reconciled');
+assert(llms.includes('Installed platform topology: 21 repositories'), 'llms.txt must carry topology total');
+assert(llms.includes('Public repositories: 13') && llms.includes('Private repositories: 8'), 'llms.txt visibility totals must be reconciled');
 assert(!llms.includes('- `context-continuity`') && !llms.includes('- `skills-vault`'), 'private repositories must not appear in the public-repository list');
 assert(!landing.includes('https://github.com/Aftergraph/context-continuity'), 'public landing must not link directly to private Continuity source');
+assert(statusPage.includes('__AG_SHA__') && statusPage.includes('__AG_DEPLOYED__'), 'status must carry build-provenance placeholders');
 
 const FAVICON = '<link rel="icon" type="image/svg+xml" href="/favicon.ico">';
 const OG = `
@@ -69,6 +70,8 @@ landing = landing.replace('</head>', `${FAVICON}${OG}\n</head>`);
 launch = launch.replace('</head>', `${FAVICON}${OG_LAUNCH}\n</head>`);
 sentinel = sentinel.replace('</head>', `${FAVICON}${OG_SENTINEL}\n</head>`);
 
+let statusBuilt = statusPage.replaceAll('__AG_SHA__', process.env.AG_SHA || 'local').replaceAll('__AG_DEPLOYED__', process.env.AG_DEPLOYED || 'build-time');
+
 const health = JSON.stringify({
   status: 'ok',
   // ponytail: deterministic per tree — wall-clock here made every rebuild
@@ -100,7 +103,6 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
   <url><loc>https://aftergraph.org/launch</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://aftergraph.org/status</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://aftergraph.org/sentinel</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://aftergraph.org/studio/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>
 `;
 
@@ -120,7 +122,7 @@ const NOTFOUND = ${JSON.stringify(notFound)};
 const MONOGRAM = ${JSON.stringify(monogram)};
 const LLMS = ${JSON.stringify(llms)};
 const SECURITY = ${JSON.stringify(security)};
-const STATUS = ${JSON.stringify(statusPage)};
+const STATUS = ${JSON.stringify(statusBuilt)};
 const SENTINEL = ${JSON.stringify(sentinel)};
 const HEALTH = ${JSON.stringify(health)};
 const ROBOTS = ${JSON.stringify(robots)};
