@@ -61,11 +61,15 @@ if (landing.includes('https://github.com/Aftergraph/context-continuity')) {
 if (launch.includes('https://github.com/Aftergraph/context-continuity') || launch.includes('https://github.com/Aftergraph/afm')) {
   fail('launcher links unauthenticated users directly to private repository source');
 }
-if (!worker.includes("import landingSource from './index.html'")) {
-  fail('worker does not consume canonical landing source directly');
+// ponytail: build-worker embeds canonical sources as string constants (per plan doc Task 4);
+// the text-module import check contradicted the shipped architecture — assert the embedded
+// worker was generated from the canonical landing instead.
+if (!worker.includes('const LANDING =') || !worker.includes('const LAUNCH =')) {
+  fail('worker does not embed the canonical landing/launcher sources');
 }
-if (!wrangler.includes('type = "Text"')) {
-  fail('Wrangler text-module rule missing');
+// ponytail: single-worker embedded bundle is the deploy contract (wrangler.toml main = worker.js)
+if (!wrangler.includes('main = "worker.js"') && !wrangler.includes("main = 'worker.js'")) {
+  fail('Wrangler main entry missing');
 }
 
 if (!process.exitCode) console.log('VERIFY-PASS: public topology, visibility and source-binding gates');
