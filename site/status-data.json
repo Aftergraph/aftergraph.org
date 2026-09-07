@@ -4,14 +4,14 @@
   "repos": [
     {
       "name": "intelligence-systems-research",
-      "description": "Research program for verifiable intelligent systems \u2014 SPEC-001 Mission Contracts, MISSION-Bench, assurance, replication and empirical evidence.",
+      "description": "Research program for verifiable intelligent systems — SPEC-001 Mission Contracts, MISSION-Bench, assurance, replication and empirical evidence.",
       "pushed_at": "2026-09-07T00:16:29Z",
       "latest_release": "v0.1.0-study006-recruitment",
       "visibility": "public"
     },
     {
       "name": "aie",
-      "description": "Agentic Institution Engineering \u2014 portable semantics for authority, delegation, revocation, budgets, lifecycle, topology governance and evidence.",
+      "description": "Agentic Institution Engineering — portable semantics for authority, delegation, revocation, budgets, lifecycle, topology governance and evidence.",
       "pushed_at": "2026-09-07T00:32:30Z",
       "latest_release": "",
       "visibility": "public"
@@ -25,7 +25,7 @@
     },
     {
       "name": "works-execution",
-      "description": "Durable execution plane for autonomous work \u2014 missions, WorkGraph scheduling, workers, leases, budgets, recovery and execution evidence.",
+      "description": "Durable execution plane for autonomous work — missions, WorkGraph scheduling, workers, leases, budgets, recovery and execution evidence.",
       "pushed_at": "2026-09-07T00:30:18Z",
       "latest_release": "v0.3.5",
       "visibility": "public"
@@ -60,7 +60,7 @@
     },
     {
       "name": "docs",
-      "description": "Aftergraph Knowledge Plane \u2014 public developer & research portal. Provenance-stamped docs, contracts, claims + agent surfaces. Live: https://docs.aftergraph.org",
+      "description": "Aftergraph Knowledge Plane — public developer & research portal. Provenance-stamped docs, contracts, claims + agent surfaces. Live: https://docs.aftergraph.org",
       "pushed_at": "2026-09-07T01:58:47Z",
       "latest_release": "v1.1.0",
       "visibility": "public"
@@ -71,20 +71,6 @@
       "pushed_at": "2026-09-07T01:55:53Z",
       "latest_release": "v1.1.0",
       "visibility": "public"
-    },
-    {
-      "name": "context-continuity",
-      "description": "Aftergraph Continuity Contract: portable state-transfer capsules for heterogeneous intelligent systems (Draft 0.1)",
-      "pushed_at": "2026-09-07T01:55:47Z",
-      "latest_release": "plugin-v0.1.1",
-      "visibility": "private"
-    },
-    {
-      "name": "skills-vault",
-      "description": "Kurateret Hermes skill-bibliotek \u2014 44 skills (superpowers, addyosmani, anthropic, egne)",
-      "pushed_at": "2026-09-07T01:19:11Z",
-      "latest_release": "",
-      "visibility": "private"
     }
   ]
 }

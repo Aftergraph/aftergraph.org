@@ -62,7 +62,10 @@ launch = launch.replace('</head>', `${FAVICON}${OG_LAUNCH}\n</head>`);
 
 const health = JSON.stringify({
   status: 'ok',
-  deployed: new Date().toISOString(),
+  // ponytail: deterministic per tree — wall-clock here made every rebuild
+  // differ, so CI's "generated bundle is current" gate could never pass.
+  // Freshness is still observable via the deployed worker's build time.
+  deployed: process.env.AG_DEPLOYED || 'build-time',
   route: 'aftergraph-site v1.2.0',
   sha: process.env.AG_SHA || 'local'
 });

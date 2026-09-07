@@ -52,22 +52,15 @@ Private repositories: 8
 - `work-intelligence-v2`
 - `works-execution`
 
-### Private (names only; never linked publicly)
+### Private
 
-- afm
-- autonomous-venture-company
-- context-continuity
-- continuum
-- llm-research-development
-- model-registry
-- skills-vault
-- work-intelligence-web
+8 private repositories participate in the topology; names are withheld on this public surface (see governance topology for the canonical inventory).
 
 
 ## Organization
 
 - GitHub organization: [github.com/Aftergraph](https://github.com/Aftergraph)
-- Repositories (public): intelligence-systems-research, aie, trust-gateway, works-execution, work-intelligence-v2, after-graph-governance, studio, brand, docs, aftergraph.org, context-continuity, skills-vault
+- Repositories (public): intelligence-systems-research, aie, trust-gateway, works-execution, work-intelligence-v2, after-graph-governance, studio, brand, docs, aftergraph.org, .github
 
 ## Evidence rule
 
