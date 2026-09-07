@@ -46,9 +46,9 @@ kbd{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;backgroun
 <div class="wrap">
 <div class="brand"><a href="/">← AFTERGRAPH</a></div>
 <div class="palette" id="palette">
-<div class="search"><input id="q" type="text" placeholder="Type to search…  e.g. trust, research, launch" autofocus autocomplete="off"></div>
+<div class="search"><input id="q" type="text" role="combobox" aria-expanded="true" aria-controls="results" aria-autocomplete="list" placeholder="Type to search…  e.g. trust, research, launch" autofocus autocomplete="off"></div>
 <div class="hint"><span>↑↓ navigate</span><span>↵ open</span><span>esc close</span><span class="spacer"></span><span>maturity-labelled</span></div>
-<div class="results" id="results"></div>
+<div class="results" id="results" role="listbox" aria-label="Aftergraph destinations"></div>
 </div>
 <div class="back"><a href="/">← Back to aftergraph.org</a></div>
 </div>
@@ -78,6 +78,17 @@ const ITEMS = [
 const q = document.getElementById('q');
 const results = document.getElementById('results');
 let filtered = [], active = 0;
+// ponytail: single ARIA sync point — every selection change (render,
+// hover, arrow keys) funnels through here so aria-selected and the
+// combobox's aria-activedescendant never drift from the visual state.
+function syncAria(){
+  document.querySelectorAll('#results .item').forEach((x,i)=>{
+    const on = i===active;
+    x.classList.toggle('active',on);
+    x.setAttribute('aria-selected',on?'true':'false');
+  });
+  q.setAttribute('aria-activedescendant','launcher-option-'+active);
+}
 function render(){
   const t = q.value.trim().toLowerCase();
   filtered = ITEMS.filter(i => !t || (i.n+" "+i.d+" "+i.g).toLowerCase().includes(t));
@@ -86,19 +97,19 @@ function render(){
   let html = "", last = "";
   filtered.forEach((it,idx) => {
     if(it.g !== last){html += '<div class="group">'+it.g+'</div>';last=it.g;}
-    html += '<div class="item'+(idx===0?' active':'')+'" data-i="'+idx+'">'
+    html += '<div class="item" role="option" id="launcher-option-'+idx+'" aria-selected="'+(idx===0)+'" data-i="'+idx+'">'
       + '<span class="name">'+it.n+'</span>'
       + '<span class="desc">'+it.d+'</span>'
       + '<span class="right"><span class="badge badge-'+it.b+'">'+it.b+'</span><span class="arrow">→</span></span>'
       + '</div>';
   });
   results.innerHTML = html;
+  syncAria();
 }
 function open(i){const it=filtered[i];if(it)location.href=it.u;}
 document.querySelector('#results').addEventListener('mousemove',e=>{
   const el=e.target.closest('.item');if(!el)return;
-  document.querySelectorAll('.item').forEach(x=>x.classList.remove('active'));
-  el.classList.add('active');active=+el.dataset.i;
+  active=+el.dataset.i;syncAria();
 });
 document.querySelector('#results').addEventListener('click',e=>{
   const el=e.target.closest('.item');if(el)open(+el.dataset.i);
@@ -110,7 +121,7 @@ q.addEventListener('keydown',e=>{
   else if(e.key==='Enter'){open(active);return;}
   else if(e.key==='Escape'){q.value='';render();return;}
   else return;
-  document.querySelectorAll('.item').forEach((x,i)=>x.classList.toggle('active',i===active));
+  syncAria();
   document.querySelectorAll('.item')[active]?.scrollIntoView({block:'nearest'});
 });
 render();
