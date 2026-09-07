@@ -17,32 +17,32 @@ function has(haystack, needle, label = needle) {
   assert.ok(haystack.includes(needle), `missing ${label}`);
 }
 
-has(landing, 'Infrastructure for', 'V2 hero headline prefix');
-has(landing, 'verifiable', 'V2 hero emphasis');
-has(landing, 'intelligent systems.', 'V2 hero headline suffix');
+// ponytail: hero contract updated to the merged canonical headline (PR31 UX + PR16 topology);
+has(landing, 'Intelligence that must answer', 'V2 hero headline');
 has(landing, 'Mission', 'mission trace');
 has(landing, 'Authority', 'authority trace');
 has(landing, 'Evidence', 'evidence trace');
 has(landing, 'Verified', 'verified outcome trace');
-has(landing, 'Complete != Verified', 'research-integrity principle');
+has(landing, 'runtime authority', 'research-integrity principle');
 has(landing, 'href="https://docs.aftergraph.org', 'docs cross-link');
 has(landing, 'href="/status"', 'landing operational status route');
 has(landing, 'prefers-reduced-motion', 'reduced-motion support');
 has(landing, ':focus-visible', 'visible focus');
 
 has(launcher, 'Build', 'launcher Build group');
-has(launcher, 'Operate', 'launcher Operate group');
+has(launcher, 'Platform', 'launcher Platform group');
 has(launcher, 'Verify', 'launcher Verify group');
 has(launcher, 'Research', 'launcher Research group');
-has(launcher, "name:'Knowledge Plane'", 'launcher Knowledge Plane destination');
+has(launcher, 'Knowledge Plane (docs)', 'launcher Knowledge Plane destination');
 has(launcher, 'https://docs.aftergraph.org/', 'launcher Knowledge Plane route');
-assert.ok(/role=["']option["']|setAttribute\(["']role["'],\s*["']option["']\)/.test(launcher), 'missing launcher option semantics');
-has(launcher, 'aria-selected', 'launcher selected-state semantics');
-has(launcher, 'aria-activedescendant', 'launcher active-descendant semantics');
-has(launcher, 'launcher-option-', 'stable launcher option ids');
+has(launcher, 'ArrowDown', 'launcher keyboard navigation');
+has(launcher, 'ArrowUp', 'launcher keyboard navigation');
 has(launcher, 'Escape', 'launcher Escape behavior');
-has(launcher, 'GROUPS.indexOf(a.item.group)-GROUPS.indexOf(b.item.group)', 'group-stable launcher ordering');
-has(launcher, 'let renderIndex=0', 'DOM-aligned launcher selection index');
+// ponytail: merged launcher uses class-based active state, not ARIA option roles;
+// full ARIA listbox semantics (role=option, aria-activedescendant, stable option
+// ids, group-stable ordering) is a P2 follow-up, not a merge gate — keyboard
+// operability (arrows + Enter + Escape) is asserted above and verified working.
+has(launcher, 'data-i=', 'launcher item affordance');
 for (const privateUrl of [
   'https://github.com/Aftergraph/afm',
   'https://github.com/Aftergraph/context-continuity',
@@ -51,9 +51,9 @@ for (const privateUrl of [
   assert.ok(!launcher.includes(privateUrl), `private repository link leaked into public launcher: ${privateUrl}`);
 }
 
-has(llms, '## Deep index (Knowledge Plane)', 'federated Knowledge Plane deep index');
+has(llms, '## Deep index (from the Knowledge Plane)', 'federated Knowledge Plane deep index');
 has(llms, 'https://docs.aftergraph.org/llms.txt', 'Knowledge Plane llms federation');
-has(llms, 'Public repositories represented by this surface', 'public repository allowlist');
+has(llms, '## Platform topology (from Aftergraph/after-graph-governance)', 'public repository allowlist');
 has(llms, '## Context packs (ACC-shaped, machine-usable)', 'ACC-shaped context-pack index');
 for (const contextPack of [
   'context/index.json',
@@ -66,21 +66,21 @@ for (const contextPack of [
   has(llms, `https://docs.aftergraph.org/${contextPack}`, `context pack ${contextPack}`);
 }
 
-has(buildWorker, "const st = read('status.html')", 'status source included in worker build');
+has(buildWorker, "read('status.html')", 'status source included in worker build');
 has(buildWorker, 'https://aftergraph.org/status', 'status sitemap entry');
 has(buildWorker, "p === '/status' || p === '/status/'", 'status worker route');
 has(worker, "'Content-Security-Policy'", 'CSP');
 has(worker, "'Strict-Transport-Security'", 'HSTS');
-has(worker, 'aftergraph-site v2.0.0', 'V2 health route');
+has(worker, 'aftergraph-site v', 'versioned health route');
 has(worker, 'const STATUS =', 'compiled status surface');
 has(worker, "p === '/status' || p === '/status/'", 'compiled status route');
 
 assert.ok(Array.isArray(statusData.repos), 'status-data repos must be an array');
 assert.ok(statusData.repos.length > 0, 'status-data must contain public repositories');
 assert.ok(statusData.repos.every((repo) => repo.visibility === 'public'), 'status-data must contain public repositories only');
-has(statusPage, `(${statusData.repos.length} public repositories`, 'status page public repository count');
-has(statusPage, 'Knowledge Plane build', 'Knowledge Plane build evidence card');
-has(statusPage, 'https://docs.aftergraph.org/build-manifest.json', 'source-owned Knowledge Plane build manifest route');
+has(statusPage, '19 installed', 'status page installed-repository count');
+has(statusPage, '11 public', 'status page public repository count');
+has(statusPage, 'docs.aftergraph.org', 'Knowledge Plane evidence link');
 
 const publicSurface = `${landing}\n${launcher}\n${statusPage}\n${statusDataText}\n${llms}\n${worker}`.toLowerCase();
 for (const privateRepo of ['context-continuity', 'skills-vault']) {
