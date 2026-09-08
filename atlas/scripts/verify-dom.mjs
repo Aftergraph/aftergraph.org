@@ -126,6 +126,12 @@ try {
     await page.waitForTimeout(1500);
     const contracts = await page.locator('.panel').innerText();
     if (!contracts.includes('Contracts')) fail('contracts view missing');
+    // Contract row navigates into the topology inspector
+    await page.locator('.panel tbody tr').first().locator('button').click();
+    await page.waitForTimeout(1500);
+    if (!page.url().includes('node=')) fail('contract selection did not address the node in URL');
+    const cins = await page.locator('.inspector').innerText();
+    if (!cins.includes('contract:')) fail('contract inspector missing after row navigation');
     await page.goto(`${base}?view=snapshots`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(1500);
     const snaps = await page.locator('.panel').innerText();
