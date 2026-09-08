@@ -114,3 +114,25 @@ surface, which enforces its own authority. The projection contains no action end
 Tokens + assets from canonical `Aftergraph/brand` (build-time reference; current mirror
 `tokens.css`/`tokens.json` derived from brand v1.0.0, `--ag-*` prefix). Dark-first, light
 override via `data-theme`. Typography: Inter / JetBrains Mono / Source Serif 4.
+
+## 8. Known limitations (verified, not aspirational)
+
+- Temporal axis is cuts + snapshots. Pulse shows the latest cut; snapshot diff
+  compares two cuts. 24h/7d/30d windows do not exist — no history is captured
+  yet, and none is faked.
+- Capabilities / AFM lineage views are labeled PREVIEW fixtures
+  (`docs/atlas/enrich/fixtures.json`), not generated assertions. Generator v0.3
+  activates them. Flagged fixture content renders withheld + reason (E26).
+- Ask Atlas is V0 extractive. No LLM synthesis layer exists; the plug-point
+  contract (`answerFromEvidence` + `validateAnswer`) is defined and tested (E24).
+- No live Runtime/WORKS/mission feed is wired. No mission observatory view
+  exists; nothing invents operational state.
+- Graph scale: ELK layered layout measures ~1.1s one-time at 500 nodes (E31
+  probe); desktop renders the full graph without virtualization. Mobile uses
+  neighborhood focus, never the shrunken full graph.
+- Data is frozen at the evidence cut (header shows age + STALE past 24h).
+  Between cuts Atlas is honestly out of date, never silently live.
+- Private sources ship as names/roles only; exact HEADs, messages, push dates
+  and PRs are withheld by policy and gated in CI (E18/E20).
+- Screenshots are machine-gated (DOM: overlap, contrast, viewports); human
+  aesthetic review of `atlas/qa-shots/` remains open.
