@@ -177,6 +177,11 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E34 Shots re-taken: prior set predated E26/E30/E32 visual changes. All
   5 views re-shot on current UI + capabilities view added to shoot.mjs.
   Pushed 32f0f24.
+- E35 Merge-readiness proven: main == branch base (no main-side movement),
+  dry-run merge feat/atlas → main in a scratch worktree: zero conflicts,
+  and the merged tree passes 14/14 + verify + worker + V2 contract.
+  Worktree removed after. Merge is Jonas-gated as ever — this only proves
+  it will be clean whenever he says go.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
