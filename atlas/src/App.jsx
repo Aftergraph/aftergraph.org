@@ -17,6 +17,7 @@ import {
   validateAnswer,
 } from './lib/derive.js';
 import enrichFixtures from '../../docs/atlas/enrich/fixtures.json';
+import { pulseRows, contractRows } from './lib/sliceC.js';
 
 const VIEWS = ['topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask'];
 
@@ -77,30 +78,19 @@ async function layouted(graph) {
   return { pos };
 }
 
-function PulseView({ projection, bySubject, onSelect }) {
-  const repos = projection.entities.filter((e) => e.kind === 'repository');
-  const rows = repos.map((e) => {
-    const list = bySubject.get(e.id) || [];
-    const get = (p, plane) => list.find((a) => a.predicate === p && (!plane || a.truth_plane === plane))?.value;
-    const prs = list.filter((a) => a.predicate === 'open_pr');
-    return {
-      id: e.id,
-      label: shortLabel(e),
-      head: get('head_sha', 'OBSERVED') ? String(get('head_sha', 'OBSERVED')).slice(0, 7) : 'withheld',
-      pushed: get('pushed_at', 'OBSERVED') || '—',
-      prs: prs.length,
-    };
-  }).sort((a, b) => (a.pushed < b.pushed ? 1 : -1));
+function PulseView({ projection, onSelect }) {
+  const rows = pulseRows(projection);
   return (
     <div className="panel" aria-label="Development pulse">
-      <h2>Pulse <span className="prov">OBSERVED heads + PROPOSED PRs, sorted by push</span></h2>
+      <h2>Pulse <span className="prov">OBSERVED heads + PROPOSED PRs, sorted by activity</span></h2>
       <table>
         <thead><tr><th>repo</th><th>head</th><th>pushed</th><th>open PRs</th></tr></thead>
         <tbody>
           {rows.map((r) => (
             <tr key={r.id}>
               <td><button className="link" onClick={() => onSelect(r.id)}>{r.label}</button></td>
-              <td className="prov">{r.head}</td><td className="prov">{r.pushed}</td><td>{r.prs}</td>
+              <td className="prov">{r.headSha ? r.headSha.slice(0, 7) : (r.withheld ? `withheld (${r.withheld})` : '—')}</td>
+              <td className="prov">{r.pushedAt || '—'}</td><td>{r.openPrs.length}</td>
             </tr>
           ))}
         </tbody>
@@ -110,25 +100,20 @@ function PulseView({ projection, bySubject, onSelect }) {
 }
 
 function ContractsView({ projection, onSelect }) {
-  const contracts = projection.entities.filter((e) => e.kind === 'contract');
-  const rels = projection.relations;
+  const rows = contractRows(projection);
   return (
     <div className="panel" aria-label="Contract explorer">
-      <h2>Contracts <span className="prov">{contracts.length} registered</span></h2>
+      <h2>Contracts <span className="prov">{rows.length} registered</span></h2>
       <table>
         <thead><tr><th>contract</th><th>owners</th><th>consumers</th></tr></thead>
         <tbody>
-          {contracts.map((c) => {
-            const owners = rels.filter((r) => r.target === c.id && (r.relation === 'owns' || r.relation === 'provides'));
-            const consumers = rels.filter((r) => r.target === c.id && r.relation === 'consumes');
-            return (
-              <tr key={c.id}>
-                <td><button className="link" onClick={() => onSelect(c.id)}>{shortLabel(c)}</button></td>
-                <td className="prov">{owners.map((r) => shortLabel({ identity: { full_name: r.source.split(':')[1] } })).join(', ') || '—'}</td>
-                <td>{consumers.length}</td>
-              </tr>
-            );
-          })}
+          {rows.map((c) => (
+            <tr key={c.id}>
+              <td><button className="link" onClick={() => onSelect(c.id)}>{c.label}</button></td>
+              <td className="prov">{[...c.owners, ...c.providers].map((o) => o.label).join(', ') || '—'}</td>
+              <td>{c.consumers.length}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
@@ -412,7 +397,7 @@ export default function App() {
       </div>
       ) : (
       <div className="center">
-        {view === 'pulse' && <PulseView projection={projection} bySubject={bySubject} onSelect={(id) => { setNode(id); setView('topology'); }} />}
+        {view === 'pulse' && <PulseView projection={projection} onSelect={(id) => { setNode(id); setView('topology'); }} />}
         {view === 'contracts' && <ContractsView projection={projection} onSelect={(id) => { setNode(id); setView('topology'); }} />}
         {view === 'capabilities' && <PreviewView title="Capabilities" draft={enrichFixtures.capability_example} kind="capability" />}
         {view === 'models' && <PreviewView title="AFM lineage" draft={enrichFixtures.model_example} kind="model" />}

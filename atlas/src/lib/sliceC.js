@@ -79,7 +79,8 @@ export function contractRows(projection) {
     const rels = (projection.relations || []).filter((r) => r.source === e.id || r.target === e.id);
     const owners = [...new Set(rels.filter((r) => r.target === e.id && r.relation === 'owns').map((r) => r.source))].sort();
     const providers = [...new Set(rels.filter((r) => r.target === e.id && r.relation === 'provides').map((r) => r.source))].sort();
-    const consumers = [...new Set(rels.filter((r) => r.source === e.id && r.relation === 'consumes').map((r) => r.target))].sort();
+    // Consumers are the modules that consume THIS contract (edges pointing at it).
+    const consumers = [...new Set(rels.filter((r) => r.target === e.id && r.relation === 'consumes').map((r) => r.source))].sort();
     const refs = [...new Set((projection.assertions || []).filter((a) => a.subject === e.id).map((a) => a.provenance?.ref).filter(Boolean))].sort();
     rows.push({ id: e.id, label: label(e.id), owners: owners.map((id) => ({ id, label: label(id) })), providers: providers.map((id) => ({ id, label: label(id) })), consumers: consumers.map((id) => ({ id, label: label(id) })), refs });
   }
