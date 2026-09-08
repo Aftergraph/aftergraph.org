@@ -223,6 +223,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   click addresses the node in URL and opens its inspector. PASS. Pushed 95f1b24.
 - E47 Pulse navigation: same gap, same Raphael for pulse rows (incl. repairing
   my own duplicate-page block slip with node --check first). PASS. Pushed cf4042d.
+- E48 Empty/loading states: tree filter now reports "No entities match" (role
+  status) instead of silent empty list; snapshot inspect shows Loading + clears
+  stale diff on re-click. 40/40 vitest + projection tests + verify PASS.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).

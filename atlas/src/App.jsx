@@ -192,6 +192,7 @@ function SnapshotsView({ projection }) {
   const [index, setIndex] = React.useState(null);
   const [sel, setSel] = React.useState(null);
   const [diff, setDiff] = React.useState(null);
+  const [loading, setLoading] = React.useState(null);
   React.useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -210,12 +211,16 @@ function SnapshotsView({ projection }) {
   }, []);
   const inspect = async (file) => {
     setSel(file);
+    setDiff(null);
+    setLoading(file);
     try {
       const res = await fetch(`snapshots/${file}`, { cache: 'no-store' });
       const old = await res.json();
       setDiff(diffProjections(old, projection));
     } catch {
       setDiff({ error: `cannot load ${file}` });
+    } finally {
+      setLoading(null);
     }
   };
   return (
@@ -245,6 +250,7 @@ function SnapshotsView({ projection }) {
           </tbody>
         </table>
       )}
+      {loading && <p className="prov" role="status">Loading {loading}…</p>}
       {diff && !diff.error && (
         <dl className="prov">
           <dt>comparing {sel} → current</dt>
@@ -489,7 +495,10 @@ export default function App() {
         <div className="banner" role="status">Serving runtime-fetched projection — rebuild for a pinned cut.</div>
       )}
       <nav className="tree" aria-label="Entities">
-        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Filter entities…" aria-label="Filter entities" />
+        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Filter entities… (live filter)" aria-label="Filter entities" />
+        {search.trim() && [...treeRepos, ...treeContracts].filter((n) => matched.has(n.id)).length === 0 && (
+          <p className="prov" role="status">No entities match “{search.trim()}”.</p>
+        )}
         <div className="prov">repositories ({treeRepos.length})</div>
         {treeRepos.filter((n) => matched.has(n.id)).map((n) => (
           <button key={n.id} aria-selected={n.id === node} onClick={() => setNode(n.id)}>
