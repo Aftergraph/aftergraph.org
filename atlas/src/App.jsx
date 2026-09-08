@@ -251,6 +251,7 @@ function SnapshotsView({ projection }) {
           <dd>added entities: {diff.addedEntities.join(', ') || '—'}</dd>
           <dd>removed entities: {diff.removedEntities.join(', ') || '—'}</dd>
           <dd>changed assertions: {diff.changedAssertions.join(', ') || '—'}</dd>
+          <dd>assertions +{diff.addedAssertions.length}/−{diff.removedAssertions.length} (value changes re-id; observed_at churn ignored)</dd>
           <dd>relations +{diff.addedRelations.length}/−{diff.removedRelations.length}</dd>
           <dd>opened conflicts: {diff.openedConflicts.join(', ') || '—'} · resolved: {diff.resolvedConflicts.join(', ') || '—'}</dd>
         </dl>

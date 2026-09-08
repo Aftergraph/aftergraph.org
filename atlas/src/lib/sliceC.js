@@ -95,8 +95,16 @@ export function diffProjections(oldP, newP) {
   const keySet = (arr, k) => new Set(arr.map((x) => x[k]));
   const oldE = keySet(oldP.entities, 'id');
   const newE = keySet(newP.entities, 'id');
-  const oldA = new Map(oldP.assertions.map((a) => [a.id, JSON.stringify(a)]));
-  const newA = new Map(newP.assertions.map((a) => [a.id, JSON.stringify(a)]));
+  // Semantic comparison: observed_at records WHEN we looked, not WHAT changed.
+  // Without stripping it every re-cut reports the whole projection as changed.
+  // Assertion ids embed the value hash, so genuine value changes surface as
+  // added/removed ids — tracked explicitly instead of silently dropped.
+  const sem = (a) => {
+    const { observed_at, ...rest } = a;
+    return JSON.stringify(rest);
+  };
+  const oldA = new Map(oldP.assertions.map((a) => [a.id, sem(a)]));
+  const newA = new Map(newP.assertions.map((a) => [a.id, sem(a)]));
   const oldR = keySet(oldP.relations, 'id');
   const newR = keySet(newP.relations, 'id');
   const oldC = keySet(oldP.conflicts || [], 'id');
@@ -105,10 +113,14 @@ export function diffProjections(oldP, newP) {
   const changedAssertions = [...newA.keys()]
     .filter((id) => oldA.has(id) && oldA.get(id) !== newA.get(id))
     .sort();
+  const newAKeys = new Set(newA.keys());
+  const oldAKeys = new Set(oldA.keys());
   return {
     addedEntities: sub(newE, oldE),
     removedEntities: sub(oldE, newE),
     changedAssertions,
+    addedAssertions: sub(newAKeys, oldAKeys),
+    removedAssertions: sub(oldAKeys, newAKeys),
     addedRelations: sub(newR, oldR),
     removedRelations: sub(oldR, newR),
     openedConflicts: sub(newC, oldC),

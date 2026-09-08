@@ -75,7 +75,21 @@ describe('diffProjections', () => {
     const d = diffProjections(proj, JSON.parse(JSON.stringify(proj)));
     expect(d).toEqual({
       addedEntities: [], removedEntities: [], changedAssertions: [],
+      addedAssertions: [], removedAssertions: [],
       addedRelations: [], removedRelations: [], openedConflicts: [], resolvedConflicts: [],
     });
+  });
+
+  it('ignores observed_at churn but tracks added/removed assertion ids', () => {
+    const touched = JSON.parse(JSON.stringify(proj));
+    // Timestamp-only touch: invisible to the semantic diff.
+    touched.assertions.forEach((a) => { a.observed_at = '2030-01-01T00:00:00Z'; });
+    // Value-hash id change (what the generator emits on real value change).
+    const moved = touched.assertions.find((a) => a.id === 'as-1');
+    moved.id = 'as-1b';
+    const d = diffProjections(proj, touched);
+    expect(d.changedAssertions).toEqual([]);
+    expect(d.addedAssertions).toEqual(['as-1b']);
+    expect(d.removedAssertions).toEqual(['as-1']);
   });
 });
