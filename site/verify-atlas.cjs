@@ -23,9 +23,11 @@ if (proj.schema !== 'atlas-projection/0.2') fail(`schema is ${JSON.stringify(pro
 if (!proj.meta || !/^[0-9a-f]{40}$/.test(proj.meta.gov_sha || '')) fail('meta.gov_sha must be a full 40-hex SHA');
 if (!proj.meta || !/^\d{4}-\d{2}-\d{2}T/.test(proj.meta.evidence_cut || '')) fail('meta.evidence_cut must be ISO-8601 UTC');
 const pins = (proj.meta && proj.meta.repo_pins) || {};
+const privateRepos = new Set((proj.meta && proj.meta.private_repos) || []);
 if (Object.keys(pins).length < 1) fail('meta.repo_pins is empty (no manually maintained repo list allowed, but pins must be generated)');
 for (const [repo, sha] of Object.entries(pins)) {
   if (!/^[0-9a-f]{40}$/.test(sha)) fail(`repo_pins[${repo}] is not a full 40-hex SHA`);
+  if (privateRepos.has(repo)) fail(`repo_pins[${repo}] is a private repo — exact private HEADs must not ship`);
 }
 
 const entities = new Map((proj.entities || []).map((e) => [e.id, e]));

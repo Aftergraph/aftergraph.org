@@ -123,29 +123,29 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 | repo | head | branch | open PRs |
 |---|---|---|---|
 | .github | e9662a4 | main | 0 |
-| afm | 248fa56 | main | 0 |
+| afm | private-withheld | main | 0 |
 | after-graph-governance | 856c6f6 | main | 7 |
 | aftergraph-cron-fabric | cd8652f | main | 0 |
 | aftergraph.org | ec54979 | main | 3 |
 | aie | 88c1889 | main | 0 |
-| autonomous-venture-company | e08d337 | main | 20 |
+| autonomous-venture-company | private-withheld | main | 20 |
 | brand | f0171b5 | main | 1 |
-| context-continuity | 63ab0c9 | main | 0 |
-| continuum | befbdab | main | 0 |
+| context-continuity | private-withheld | main | 0 |
+| continuum | private-withheld | main | 0 |
 | docs | 10a8f39 | main | 0 |
 | intelligence-systems-research | d3da7f2 | main | 0 |
-| llm-research-development | c6adf46 | main | 1 |
-| model-registry | b610e77 | main | 1 |
-| runtime | cd9c885 | main | 2 |
-| sentinel-firetest | 79cc374 | main | 0 |
+| llm-research-development | private-withheld | main | 1 |
+| model-registry | private-withheld | main | 1 |
+| runtime | private-withheld | main | 2 |
+| sentinel-firetest | private-withheld | main | 0 |
 | sentinel-firetest2 | e59ce25 | main | 0 |
 | sentinel | c09eb71 | main | 2 |
-| skills-vault | 8a480b9 | main | 0 |
+| skills-vault | private-withheld | main | 0 |
 | studio | d332fe0 | main | 1 |
 | trust-gateway | 5ec9dc4 | main | 2 |
-| veranza | 1f98773 | main | 0 |
+| veranza | private-withheld | main | 0 |
 | wi-backend | f2c7843 | main | 0 |
-| wi-frontend | 5ed2761 | main | 0 |
+| wi-frontend | private-withheld | main | 0 |
 | works-execution | 1267f03 | main | 1 |
 
 Base pins: aftergraph.org main `ec549794ec80b0f96c9764af04d15c88fd330c09` (local == origin).

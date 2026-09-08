@@ -47,10 +47,16 @@ test('schema id is atlas-projection/0.2 with pinned meta', () => {
   assert.match(proj.meta.gov_sha, /^[0-9a-f]{40}$/);
   assert.deepEqual(Object.keys(proj.meta.repo_pins).sort(), [
     'Aftergraph/alpha',
-    'Aftergraph/beta',
     'Aftergraph/wi-backend',
   ]);
+  assert.deepEqual(proj.meta.private_repos, ['Aftergraph/beta']);
   for (const sha of Object.values(proj.meta.repo_pins)) assert.match(sha, /^[0-9a-f]{40}$/);
+});
+
+test('no private exact head ships anywhere in the serialized artifact', () => {
+  const text = fs.readFileSync(path.join(tmp, 'p1.json'), 'utf8');
+  const betaSha = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+  assert.ok(!text.includes(betaSha), 'private beta HEAD leaked into public artifact');
 });
 
 test('entities carry no truth_plane; every assertion/relation carries full provenance', () => {

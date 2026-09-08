@@ -170,6 +170,11 @@ const depsProv = () =>
   );
 const ghProv = (repo, ref, evidence_level) =>
   prov(`github-api repos/Aftergraph/${repo}`, 'github-api', `Aftergraph/${repo}`, ref, evidence_level);
+// Private-source policy: provenance refs for private repos point at the canonical
+// branch name, never the exact HEAD (exact private HEADs must not ship publicly).
+// valid_at commit dates are likewise withheld for private repos.
+const obsRef = (name, d) => (d.meta.private ? d.meta.default_branch : d.head.sha);
+const obsValid = (name, d, date) => (d.meta.private ? null : date);
 
 // ---- repository entities: union of observed slugs + canonical-only names ----
 const canonNames = new Set(topology.repositories.map((r) => r.name));
@@ -275,9 +280,9 @@ const WITHHELD = ['head_sha', 'head_msg', 'pushed_at', 'open_pr'];
 for (const [name, d] of Object.entries(observed)) {
   const id = repoEntityId(name);
   const isPrivate = !!d.meta.private;
-  addAssertion(id, 'slug', name, 'OBSERVED', ghProv(name, d.head.sha, 'observed'), d.head.date);
-  addAssertion(id, 'visibility', isPrivate ? 'private' : 'public', 'OBSERVED', ghProv(name, d.head.sha, 'observed'), null);
-  addAssertion(id, 'canonical_branch', d.meta.default_branch, 'OBSERVED', ghProv(name, d.head.sha, 'observed'), null);
+  addAssertion(id, 'slug', name, 'OBSERVED', ghProv(name, obsRef(name, d), 'observed'), obsValid(name, d, d.head.date));
+  addAssertion(id, 'visibility', isPrivate ? 'private' : 'public', 'OBSERVED', ghProv(name, obsRef(name, d), 'observed'), null);
+  addAssertion(id, 'canonical_branch', d.meta.default_branch, 'OBSERVED', ghProv(name, obsRef(name, d), 'observed'), null);
   if (isPrivate) {
     addAssertion(
       id,
@@ -285,7 +290,7 @@ for (const [name, d] of Object.entries(observed)) {
       { reason: 'private-source-boundary', predicates: WITHHELD },
       'OBSERVED',
       {
-        ...ghProv(name, d.head.sha, 'observed'),
+        ...ghProv(name, obsRef(name, d), 'observed'),
         source: `withheld by generator (private-source-boundary): Aftergraph/${name}`,
         source_type: 'generated-derivation',
         evidence_level: 'observed',
@@ -436,10 +441,18 @@ conflicts.sort((x, y) => (x.id < y.id ? -1 : 1));
 const byId = (arr) => [...arr].sort((x, y) => (x.id < y.id ? -1 : 1));
 
 const repoPins = {};
+const privateRepos = [];
 for (const [name, d] of Object.entries(observed)) {
   if (!/^[0-9a-f]{40}$/.test(d.head.sha)) throw new Error(`bad head sha for ${name}`);
+  // Private-source boundary: exact private HEADs are non-public repository state
+  // and must never ship in the public artifact. Names/roles travel via assertions.
+  if (d.meta.private) {
+    privateRepos.push(`Aftergraph/${name}`);
+    continue;
+  }
   repoPins[`Aftergraph/${name}`] = d.head.sha;
 }
+privateRepos.sort();
 
 const projection = {
   schema: 'atlas-projection/0.2',
@@ -449,6 +462,7 @@ const projection = {
     gov_sha: govSha,
     gov_topology: 'docs/platform-topology/1.0.json',
     repo_pins: Object.fromEntries(Object.entries(repoPins).sort(([a], [b]) => (a < b ? -1 : 1))),
+    private_repos: privateRepos,
     snapshot_of: null,
   },
   entities: byId([...entities.values()]),
