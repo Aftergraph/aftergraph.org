@@ -215,6 +215,10 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E44 Cut #3 (21:12:42Z): cron-fabric moved after ~2h quiet. Full re-cut
   25/25, projection 144/319/190/2, 3rd snapshot indexed, ledger table
   re-pinned. 14/14 + 40/40 + verify + DOM PASS, 0 leaks. Pushed cdef3c9.
+- E45 Diff noise Raphael: cut#2→cut#3 showed 30 'changed', 27 of them cut-label
+  churn inside presence derivation sources (my E38 'leave it' was wrong at
+  90% noise). sem() normalizes cut labels; true diff is 3 ref updates +
+  6/6 id churn. 40/40 + DOM PASS. Pushed 88cdab7.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
