@@ -16,6 +16,7 @@ import {
   filterEntities,
   cutAge,
   tracePath,
+  validateProjection,
 } from '../src/lib/derive.js';
 
 // Minimal v0.2-shaped fixture: one entity with assertions on two planes each.
@@ -316,5 +317,49 @@ describe('tracePath', () => {
     // Direct rel-1 wins over the 2-hop aie -> old -> gov detour.
     const t = tracePath(multi, 'repo:Aftergraph/aie', 'repo:Aftergraph/gov');
     expect(t.path).toEqual(['repo:Aftergraph/aie', 'repo:Aftergraph/gov']);
+  });
+});
+
+describe('validateProjection', () => {
+  const valid = {
+    schema: 'atlas-projection/0.2',
+    meta: { evidence_cut: '2026-09-08T15:48:21Z', gov_sha: 'a'.repeat(40), repo_pins: {} },
+    entities: [],
+    assertions: [],
+    relations: [],
+    conflicts: [],
+  };
+
+  it('accepts a well-formed projection', () => {
+    expect(validateProjection(valid)).toEqual({ ok: true, errors: [] });
+  });
+
+  it('rejects non-objects without crashing', () => {
+    for (const bad of [null, undefined, 42, 'x', []]) {
+      const r = validateProjection(bad);
+      expect(r.ok).toBe(false);
+      expect(r.errors.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('rejects wrong schema versions', () => {
+    const r = validateProjection({ ...valid, schema: 'atlas-projection/0.1' });
+    expect(r.ok).toBe(false);
+    expect(r.errors.join(' ')).toMatch(/schema/);
+  });
+
+  it('lists every missing structural piece', () => {
+    const r = validateProjection({ schema: 'atlas-projection/0.2' });
+    expect(r.ok).toBe(false);
+    expect(r.errors).toContain('missing meta');
+    for (const k of ['entities', 'assertions', 'relations', 'conflicts']) {
+      expect(r.errors).toContain(`missing ${k} array`);
+    }
+  });
+
+  it('rejects a malformed gov_sha', () => {
+    const r = validateProjection({ ...valid, meta: { ...valid.meta, gov_sha: 'abc' } });
+    expect(r.ok).toBe(false);
+    expect(r.errors.join(' ')).toMatch(/gov_sha/);
   });
 });

@@ -18,6 +18,7 @@ import {
   filterEntities,
   cutAge,
   tracePath,
+  validateProjection,
 } from './lib/derive.js';
 import enrichFixtures from '../../docs/atlas/enrich/fixtures.json';
 import { pulseRows, contractRows, diffProjections } from './lib/sliceC.js';
@@ -28,14 +29,20 @@ const GENERATOR_CMD =
   'node site/generate-atlas-projection.mjs --ledger <ledger-dir> --gov <governance-clone> --out site/atlas-projection.json';
 
 function useProjection() {
-  const [state, setState] = useState({ status: 'loading', projection: null, origin: null });
+  const [state, setState] = useState({ status: 'loading', projection: null, origin: null, errors: [] });
   useEffect(() => {
     let cancelled = false;
+    const accept = (projection, origin) => {
+      const v = validateProjection(projection);
+      if (cancelled) return true;
+      if (!v.ok) setState({ status: 'malformed', projection: null, origin, errors: v.errors });
+      else setState({ status: 'ready', projection, origin, errors: [] });
+      return true;
+    };
     (async () => {
       try {
         const mod = await import('../../site/atlas-projection.json');
-        if (!cancelled) setState({ status: 'ready', projection: mod.default, origin: 'build' });
-        return;
+        if (accept(mod.default, 'build')) return;
       } catch {
         /* fall through to runtime fetch */
       }
@@ -43,9 +50,9 @@ function useProjection() {
         const res = await fetch('./projection.json', { cache: 'no-store' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const projection = await res.json();
-        if (!cancelled) setState({ status: 'ready', projection, origin: 'fetch' });
+        accept(projection, 'fetch');
       } catch {
-        if (!cancelled) setState({ status: 'empty', projection: null, origin: null });
+        if (!cancelled) setState({ status: 'empty', projection: null, origin: null, errors: [] });
       }
     })();
     return () => {
@@ -287,7 +294,7 @@ function AskView({ projection, q, setQ, hits, setHits }) {
 }
 
 export default function App() {
-  const { status, projection, origin } = useProjection();
+  const { status, projection, origin, errors } = useProjection();
   const [overlay, setOverlay] = useState(() => parseState(window.location.search).overlay);
   const [node, setNode] = useState(() => parseState(window.location.search).node);
   const initialView = parseState(window.location.search).view;
@@ -384,6 +391,25 @@ export default function App() {
     setOverlay((o) => (o.includes(p) ? o.filter((x) => x !== p) : [...o, p]));
 
   if (status === 'loading') return <div className="empty"><p>Loading Atlas projection…</p></div>;
+  if (status === 'malformed') {
+    return (
+      <div className="empty">
+        <h1>Atlas projection is malformed</h1>
+        <p>
+          The UI is read-only and renders only valid generated evidence. This projection
+          failed shape validation{origin ? ` (source: ${origin})` : ''} — nothing is rendered
+          rather than guessing:
+        </p>
+        <ul>
+          {(errors || []).map((e) => (
+            <li key={e}>{e}</li>
+          ))}
+        </ul>
+        <p>Regenerate it with the audited generator:</p>
+        <code>{GENERATOR_CMD}</code>
+      </div>
+    );
+  }
   if (status === 'empty' || !projection) {
     return (
       <div className="empty">

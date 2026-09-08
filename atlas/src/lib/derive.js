@@ -352,6 +352,30 @@ export function parseState(search) {
   };
 }
 
+// Fail-closed shape validation for anything the UI is about to render.
+// Returns { ok, errors[] }. The UI shows a dedicated malformed state instead
+// of crashing on corrupt projections; verify-atlas.cjs remains the build gate.
+export function validateProjection(p) {
+  const errors = [];
+  if (!p || typeof p !== 'object' || Array.isArray(p)) {
+    return { ok: false, errors: ['projection is not an object'] };
+  }
+  if (p.schema !== 'atlas-projection/0.2') {
+    errors.push(`unsupported schema: ${JSON.stringify(p.schema)} (expected "atlas-projection/0.2")`);
+  }
+  if (!p.meta || typeof p.meta !== 'object') {
+    errors.push('missing meta');
+  } else {
+    if (typeof p.meta.evidence_cut !== 'string' || !p.meta.evidence_cut) errors.push('missing meta.evidence_cut');
+    if (!/^[0-9a-f]{40}$/.test(p.meta.gov_sha || '')) errors.push('meta.gov_sha is not a full 40-hex SHA');
+    if (p.meta.repo_pins && typeof p.meta.repo_pins !== 'object') errors.push('meta.repo_pins is not an object');
+  }
+  for (const k of ['entities', 'assertions', 'relations', 'conflicts']) {
+    if (!Array.isArray(p[k])) errors.push(`missing ${k} array`);
+  }
+  return { ok: errors.length === 0, errors };
+}
+
 // Fixed deterministic ELK options. Same graph + same options => same layout.
 export function elkOptions() {
   return {
