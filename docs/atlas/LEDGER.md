@@ -110,6 +110,10 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   derive.validateProjection gates build+fetch sources, dedicated malformed state
   with reasons (no mid-render crash). 5 new vitest (37/37), DOM/verify PASS.
   Pushed ffab6ca.
+- E20 Gate hole closed: poison-proven that exact-head refs on private subjects
+  (E18 2nd vector) PASSED verify-atlas; added leaksHead invariant (gov-SHA
+  exempt, relations covered). Poison FAILs (1 violation), real PASSes.
+  Pushed 545ea87.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
