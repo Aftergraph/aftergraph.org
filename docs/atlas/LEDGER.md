@@ -231,6 +231,19 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   144/319/190/2 unchanged, 4th snapshot indexed. 14/14 + verify + 0 leaks.
 - E50 DOM covers E48: filter-nonsense asserts "No entities match" status;
   full ATLAS-DOM-VERIFY PASS on fresh cut-#4 build.
+- E51 CI lesson (2 red runs): App.jsx:43 build-time imports
+  site/atlas-projection.json, so vite emits a content-hashed
+  atlas-projection-*.js chunk. vite build MUST run after every App.jsx, CSS,
+  or projection change, then build-worker, before commit — committing a bundle
+  built from older sources fails the "bundle is current" gate with a
+  deleted-chunk diff. Never commit site/atlas without a fresh vite build.
+- E52 Visual polish integrated (delegated, commander-verified): NodeCard plane
+  chips with full-name tooltips, conflict badge, focus-ring proof (2px solid),
+  typography/spacing/depth pass in app.css. Commander review: in-scope files
+  only, no evidence-hiding rules, steered Raphael (focus ring, chip titles).
+  Fresh vite+worker rebuild from final sources, 40/40 vitest + 14/14 +
+  verify + DOM PASS, LF clean. New helpers: scripts/proof-polish.mjs (49L),
+  scripts/shoot-focus.mjs (17L); after-shots committed as evidence.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).

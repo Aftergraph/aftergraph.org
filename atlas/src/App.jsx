@@ -66,7 +66,11 @@ function NodeCard({ data }) {
     <div className={`rf-node${data.conflict ? ' conflict' : ''}${data.selected ? ' selected' : ''}`} title={data.id}>
       <Handle type="target" position={Position.Top} />
       <div className="rf-label">{data.label}</div>
-      <div className="prov">{data.planes.join(' + ')}</div>
+      <div className="rf-planes">
+        {data.planes.map((p) => (
+          <span key={p} title={p} className={`plane-chip chip-${p}`}>{p.slice(0, 3)}</span>
+        ))}
+      </div>
       <Handle type="source" position={Position.Bottom} />
     </div>
   );
