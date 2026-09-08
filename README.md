@@ -26,6 +26,15 @@ Visibility never upgrades evidence. Research claims, experimental results,
 prototypes, production capabilities and roadmap items are labelled as such on
 every page. No fake stats, customers or testimonials.
 
+## Public community plane
+
+- Human entry: https://aftergraph.org/community
+- Organization Discussions: https://github.com/orgs/Aftergraph/discussions
+- Public roadmap: https://github.com/Aftergraph/.github/blob/main/PUBLIC-ROADMAP.md
+- RFC process: https://github.com/Aftergraph/.github/blob/main/RFC-PROCESS.md
+
+Discussion is a deliberation surface, not a canonical specification or evidence upgrade.
+
 ## Local development
 
 This repository currently ships a static Cloudflare Worker (no build step, no

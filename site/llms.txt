@@ -7,6 +7,10 @@
 - [aftergraph.org](https://aftergraph.org/): Landing page
 - [Launcher](https://aftergraph.org/launch): System launcher / command palette for public Aftergraph destinations
 - [Status](https://aftergraph.org/status): Operational public projection (build-time)
+- [Community](https://aftergraph.org/community): Discussions, roadmap, RFC intake and contribution routing
+- [Organization Discussions](https://github.com/orgs/Aftergraph/discussions): Public deliberation and research review
+- [Public roadmap](https://github.com/Aftergraph/.github/blob/main/PUBLIC-ROADMAP.md): Gate-driven public priorities
+- [RFC process](https://github.com/Aftergraph/.github/blob/main/RFC-PROCESS.md): Organization-wide proposal lifecycle
 - [Knowledge Plane docs](https://docs.aftergraph.org/): Live developer & research portal
 - [Knowledge Plane quickstart](https://docs.aftergraph.org/developers/quickstart/): Verify the plane in 10 minutes
 - [Knowledge Plane Contract Explorer](https://docs.aftergraph.org/standards/contracts/): Canonical cross-repo contract explorer

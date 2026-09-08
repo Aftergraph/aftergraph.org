@@ -16,6 +16,7 @@ let launch = read('launch.html');
 const notFound = read('404.html');
 const statusPage = read('status.html');
 let sentinel = read('sentinel.html');
+let community = read('community.html');
 const monogram = read('monogram.svg');
 const llms = read('llms.txt');
 const security = read('security.txt');
@@ -23,6 +24,8 @@ const security = read('security.txt');
 // Public topology is a Governance projection. These gates fail closed when a
 // source surface drifts from the current canonical/public boundary.
 assert(landing.includes('21 canonical repositories'), 'landing must declare the canonical 21-repository topology');
+assert(community.includes('github.com/orgs/Aftergraph/discussions'), 'community must route to organization Discussions');
+assert(community.includes('PUBLIC-ROADMAP.md') && community.includes('RFC-PROCESS.md'), 'community must expose roadmap and RFC process');
 assert(landing.includes('12 public') && landing.includes('9 private'), 'landing visibility totals must be reconciled');
 assert(statusPage.includes('21 canonical') && statusPage.includes('12 public') && statusPage.includes('9 private'), 'status topology totals must be reconciled');
 assert(llms.includes('Canonical platform topology: 21 repositories'), 'llms.txt must carry canonical topology total');
@@ -111,6 +114,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
   <url><loc>https://aftergraph.org/launch</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://aftergraph.org/status</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://aftergraph.org/sentinel</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://aftergraph.org/community</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>
 `;
 
@@ -132,6 +136,7 @@ const LLMS = ${JSON.stringify(llms)};
 const SECURITY = ${JSON.stringify(security)};
 const STATUS = ${JSON.stringify(statusBuilt)};
 const SENTINEL = ${JSON.stringify(sentinel)};
+const COMMUNITY = ${JSON.stringify(community)};
 const HEALTH = ${JSON.stringify(health)};
 const ROBOTS = ${JSON.stringify(robots)};
 const SITEMAP = ${JSON.stringify(sitemap)};
@@ -151,6 +156,7 @@ addEventListener('fetch', event => {
   else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
   else if (p === '/status' || p === '/status/') { body = STATUS; }
   else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }
+  else if (p === '/community' || p === '/community/') { body = COMMUNITY; }
   else if (p === '/404') { body = NOTFOUND; }
   else if (p === '/') { body = LANDING; }
   else { body = NOTFOUND; responseStatus = 404; cache = 'no-store'; }
