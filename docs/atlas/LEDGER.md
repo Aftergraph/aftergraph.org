@@ -219,6 +219,8 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   churn inside presence derivation sources (my E38 'leave it' was wrong at
   90% noise). sem() normalizes cut labels; true diff is 3 ref updates +
   6/6 id churn. 40/40 + DOM PASS. Pushed 88cdab7.
+- E46 Contract navigation: DOM never clicked a contract row. Now asserts row
+  click addresses the node in URL and opens its inspector. PASS. Pushed 95f1b24.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
