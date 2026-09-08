@@ -38,9 +38,14 @@ Entity (stable identity, NO truth_plane)
     "generator": "site/generate-atlas-projection.mjs",
     "gov_sha": "<full 40-hex after-graph-governance SHA>",
     "gov_topology": "docs/platform-topology/1.0.json",
-    "repo_pins": { "<full_name>": "<full 40-hex HEAD>" },
+    "repo_pins": { "<public full_name>": "<full 40-hex HEAD>" },
+    "private_repos": [ "<private full_name>" ],
     "snapshot_of": null
   },
+  // Private-source policy: repo_pins carries exact HEADs for PUBLIC repos only.
+  // Private repos are listed by NAME in private_repos; their assertion provenance
+  // refs point at the canonical branch (never the exact HEAD) and valid_at is
+  // withheld. Names/roles travel via assertions; exact private state never ships.
   "entities": [ { "id": "repo:Aftergraph/aie", "kind": "repository", "identity": {} } ],
   "assertions": [],
   "relations": [],
