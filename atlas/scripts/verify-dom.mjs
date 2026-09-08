@@ -44,7 +44,19 @@ try {
     }
     await page.close();
   }
-  // Mobile neighborhood: fewer nodes than desktop, inspector present
+  // Slice C views render through the tab strip
+  {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await page.goto(`${base}?view=ask`, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(2000);
+    const ask = await page.locator('.panel').innerText();
+    if (!ask.includes('Ask Atlas')) fail('ask view missing');
+    await page.goto(`${base}?view=contracts`, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(1500);
+    const contracts = await page.locator('.panel').innerText();
+    if (!contracts.includes('Contracts')) fail('contracts view missing');
+    await page.close();
+  }
   {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
     await page.goto(`${base}?node=${encodeURIComponent('repo:Aftergraph/wi-backend')}`, { waitUntil: 'networkidle', timeout: 60000 });
