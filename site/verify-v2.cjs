@@ -72,6 +72,8 @@ for (const contextPack of [
   has(llms, `https://docs.aftergraph.org/${contextPack}`, `context pack ${contextPack}`);
 }
 
+// Reconciled against aftergraph.org main after #54 so topology/privacy assertions
+// remain independent of the newer copy, metadata, navigation and a11y surface.
 // Canonical public topology is a projection of Governance truth, not installed
 // repo discovery. Runtime is currently private and therefore must not appear in
 // the public source allowlist even though the Runtime capability is public-facing.
