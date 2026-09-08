@@ -171,6 +171,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   gov #38/#39/#40 incl. the actual C4 Raphael). Candidates, never resolutions;
   gate + drift UI + fixture test cover it. 14/14 + 39/39 + DOM PASS.
   Snapshot re-emitted same-cut, diff-proven additive-only. Pushed 3c637fe.
+- E33 Tablet QA: DOM smoke covered desktop + mobile but not tablet. Added
+  820x1180 pass (full topology renders, zero horizontal overflow). PASS.
+  Pushed 6db24df.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
