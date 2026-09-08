@@ -129,6 +129,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E24 Ask boundary as code: answerFromEvidence composer (retrieve → evidence →
   validate → verdict) rewired into AskView; smuggled-citation rejection tested;
   LLM plug-point contract explicit. 39/39 vitest, DOM PASS. Pushed a5c97aa.
+- E25 Screenshots refreshed (4 shots, atlas/qa-shots, committed d08976c) against
+  19:30 cut; DOM assertions green. Human visual review still open: vision tool
+  errored this session (provider 400 on reasoning param) — shots await eyeballs.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
