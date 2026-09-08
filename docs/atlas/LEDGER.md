@@ -203,6 +203,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   fixed a strict-mode locator collision on the way. PASS. Pushed a30146d.
 - E41 Impact interaction: DOM never clicked 'Show impact'. Now asserts the
   dependents/dependencies block renders for a selected node. PASS. Pushed cf8f6d3.
+- E42 Overlay toggles: DOM never touched plane filters. Now flips PROPOSED
+  off/on asserting aria-pressed, URL persistence and a non-empty graph.
+  PASS. Pushed 78c88d4.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
