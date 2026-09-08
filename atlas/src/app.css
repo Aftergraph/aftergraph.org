@@ -55,7 +55,8 @@ body { margin: 0; background: var(--ag-canvas); color: var(--ag-text); font-fami
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
-.rf-node { background: var(--ag-raised); border: 1px solid var(--ag-border); border-radius: 8px; padding: 6px 10px; font-size: 12px; }
+.rf-node { background: var(--ag-raised); border: 1px solid var(--ag-border); border-radius: 8px; padding: 6px 10px; font-size: 12px; width: 190px; height: 54px; box-sizing: border-box; overflow: hidden; }
+.rf-node > .rf-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rf-node.conflict { border-color: var(--ag-decision); }
 .rf-node.selected { outline: 2px solid var(--ag-control); }
 .views { grid-column: 1 / -1; display: flex; gap: 4px; padding: 6px 16px; border-bottom: 1px solid var(--ag-border); background: var(--ag-raised); flex-wrap: wrap; }

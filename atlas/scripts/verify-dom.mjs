@@ -91,6 +91,19 @@ try {
     await page.waitForTimeout(1500);
     const snaps = await page.locator('.panel').innerText();
     if (!snaps.includes('Snapshots')) fail('snapshots view missing');
+    // Every remaining view must render without crashing (no error boundary:
+    // a throw in any view blanks the whole app for that URL).
+    for (const [v, needle] of [['pulse', 'Pulse'], ['models', 'AFM lineage'], ['research', 'Proposal constellation']]) {
+      await page.goto(`${base}?view=${v}`, { waitUntil: 'networkidle', timeout: 60000 });
+      await page.waitForTimeout(1500);
+      const body = await page.locator('body').innerText();
+      if (!body.includes(needle)) fail(`${v} view missing '${needle}' (render crash?)`);
+      const errors = await page.evaluate(() => document.querySelectorAll('.empty h1').length);
+      if (errors > 0) {
+        const t = await page.locator('.empty').innerText();
+        fail(`${v} view renders error state: ${t.slice(0, 120)}`);
+      }
+    }
     // Fixture previews must honor their own publication boundary
     await page.goto(`${base}?view=capabilities`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(1500);
