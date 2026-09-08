@@ -117,6 +117,11 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E21 CI browser smoke: site/serve-local.cjs (stdlib static server, DOM PASS
   verified locally) + workflow chromium install and smoke step after worker
   compile. Pushed 986cf97.
+- E22 Production gate complete in CI (run 34268801913 success): install-lockfile,
+  unit, projection, build, verify, worker, chromium, DOM smoke (incl. embedded
+  a11y: named controls, labels, Tab focus, focus indicator), V2 contract,
+  bundle-current, diff-check — all green. Watch: checkout pin logs Node20
+  deprecation (forced to 24, still green).
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
