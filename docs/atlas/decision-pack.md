@@ -12,12 +12,10 @@ leakage-gate). Fuld evidens: `docs/atlas/LEDGER.md` (E1–E26).
   i `docs/platform-topology/1.0.json` (assurance-planet). Alternativ: eksplicit `excluded`-markering,
   så Atlas holder op med at flagge den.
 
-## 2. dependencies.yml peger stadig på gamle WI-navne (C4, stadig åben)
+## 2. dependencies.yml peger stadig på gamle WI-navne (C4, LØST af sig selv)
 
-- Topology bruger `wi-backend`/`wi-frontend`. `dependencies.yml` bruger stadig
-  `work-intelligence-v2`/`work-intelligence-web` (studio, docs, WI-forbrug).
-- Anbefaling: opdatér `dependencies.yml` til de nye slugs.
-  Alternativ: behold bevidst + dokumentér alias — så fjerner jeg konflikten som `acknowledged`.
+- Cut #6 (gov `4ad398e`): konflikten er væk — topology og dependencies er enige
+  igen. Intet at beslutte; punktet er flyttet til "Løst siden sidst".
 
 ## 3. Bekræft runtime-visibility (stadig privat)
 
@@ -41,15 +39,17 @@ leakage-gate). Fuld evidens: `docs/atlas/LEDGER.md` (E1–E26).
 
 ## 6. Merge af feat/atlas til main (nyt)
 
-- Verificeret: 13/13 projektionstests, 39/39 vitest, verify PASS, DOM-smoke PASS,
-  0 private SHA'er i artefakter, 2 kendte konflikter (C2+C4 ovenfor) synlige i UI.
-- Anbefaling: review + merge, når beslutning 1–2 er håndteret (eller bevidst udskudt).
-  Atlas deployer med det eksisterende site (ingen særskilt infra).
+- Verificeret: 14/14 projektionstests, 40/40 vitest, verify PASS, DOM-smoke PASS,
+  0 private SHA'er i artefakter, 1 kendt konflikt (C2) synlig i UI.
+- Anbefaling: review + merge. Atlas deployer med det eksisterende site
+  (ingen særskilt infra).
 
 ## Løst siden sidst
 
 - Site-gates var uenige om WI-navnet: nu er begge sider enige om `wi-backend`
   (legacy-slug forbydes af gates). Punktet er lukket uden handling fra dig.
+- C4 (dependencies.yml vs topology): resolved af governance selv ved gov
+  `4ad398e` (cut #6). Projektionen gik 144→156 entiteter, konflikter 2→1.
 
 ## Hvad sker der derefter
 

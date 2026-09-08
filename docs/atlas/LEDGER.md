@@ -266,6 +266,11 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   atlas-redesign.css (focal graph, whisper panels, trace divider) via
   main.jsx. Antislop gate: purpose-written rules, AA tokens, gates green.
   vite+worker rebuilt, DOM PASS, LF clean.
+- E57 Cut #6 (23:23:16Z): governance 5f53273->4ad398e resolved C4 itself
+  (kun C2 tilbage); fabric 8ebbdeb->5f418ee (PR #27). Projektion
+  144/156 entiteter, 190/212 relationer, 6. snapshot. DOM-gate opdateret til
+  at forvente C4-væk (FAIL ved resurfacing). decision-pack re-skrevet til
+  aktuel sandhed. 14/14 + verify + 0 leaks + DOM PASS.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
@@ -285,14 +290,14 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - RISK: worker.js is 2.5MB (1.7MB atlas bundle inlined) — Cloudflare script-size limits
   unverified; code-split or Static Assets if deploy rejects.
 
-## Exact heads (cut 2026-09-08T22:23:58Z; full SHAs in `workspace/.tmp-atlas-ledger-5/obs_*.json`)
+## Exact heads (cut 2026-09-08T23:23:16Z; full SHAs in `workspace/.tmp-atlas-ledger-6/obs_*.json`)
 
 | repo | head | branch | open PRs |
 |---|---|---|---|
 | .github | e9662a4 | main | 0 |
 | afm | private-withheld | main | withheld |
-| after-graph-governance | 5f53273 | main | 3 |
-| aftergraph-cron-fabric | 8ebbdeb | main | 0 |
+| after-graph-governance | 4ad398e | main | 3 |
+| aftergraph-cron-fabric | 5f418ee | main | 0 |
 | aftergraph.org | ec54979 | main | 3 |
 | aie | 3c999d2 | main | 0 |
 | autonomous-venture-company | private-withheld | main | withheld |

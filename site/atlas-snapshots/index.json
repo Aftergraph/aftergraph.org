@@ -58,5 +58,16 @@
       "C2",
       "C4"
     ]
+  },
+  {
+    "file": "projection-2026-09-08T23-23-16Z.json",
+    "evidence_cut": "2026-09-08T23:23:16Z",
+    "gov_sha": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+    "entities": 156,
+    "assertions": 316,
+    "relations": 212,
+    "conflicts": [
+      "C2"
+    ]
   }
 ]
