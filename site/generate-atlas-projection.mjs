@@ -438,6 +438,39 @@ function findAssertion(subject, predicate, plane) {
 }
 
 conflicts.sort((x, y) => (x.id < y.id ? -1 : 1));
+// Proposed-resolution candidates: open PR assertions on the conflict's subject
+// repos (+ governance for intra-canonical conflicts, which are governance-owned
+// files). Presented as CANDIDATES for a human to judge — never as claimed
+// resolutions. Deterministic: sorted by (repo, number).
+{
+  const prBySubject = new Map(); // entity id -> [{assertion, repo, number, title}]
+  for (const a of assertions) {
+    if (a.predicate !== 'open_pr' || a.truth_plane !== 'PROPOSED') continue;
+    const list = prBySubject.get(a.subject) || [];
+    list.push({ assertion: a.id, repo: a.provenance.repository, number: a.value.number, title: a.value.title });
+    prBySubject.set(a.subject, list);
+  }
+  const govId = repoEntityId('after-graph-governance');
+  const assertionById = new Map(assertions.map((a) => [a.id, a]));
+  for (const c of conflicts) {
+    const involved = new Set(c.subjects || []);
+    // Pair-based conflicts (rename, visibility) name assertions, not subjects:
+    // recover the subjects they argue about.
+    for (const p of c.pairs || []) {
+      for (const aid of [p.a, p.b]) {
+        const a = assertionById.get(aid);
+        if (a && entities.has(a.subject)) involved.add(a.subject);
+      }
+    }
+    if (c.kind === 'intra-canonical' && entities.has(govId)) involved.add(govId);
+    const cand = [];
+    for (const s of [...involved].sort()) {
+      for (const pr of prBySubject.get(s) || []) cand.push(pr);
+    }
+    cand.sort((a, b) => (a.repo < b.repo ? -1 : a.repo > b.repo ? 1 : a.number - b.number));
+    c.proposed = cand;
+  }
+}
 const byId = (arr) => [...arr].sort((x, y) => (x.id < y.id ? -1 : 1));
 
 const repoPins = {};

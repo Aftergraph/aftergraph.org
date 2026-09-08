@@ -93,6 +93,22 @@ test('C1 rename pair cites both slug assertions', () => {
   assert.ok(assertions.has(c1.pairs[0].a) && assertions.has(c1.pairs[0].b));
 });
 
+test('conflicts link proposed-resolution candidates, never claimed resolutions', () => {
+  const proposed = new Map(
+    proj.assertions.filter((a) => a.predicate === 'open_pr' && a.truth_plane === 'PROPOSED').map((a) => [a.id, a])
+  );
+  for (const c of proj.conflicts) {
+    assert.ok(Array.isArray(c.proposed), `${c.id} must carry a proposed array (possibly empty)`);
+    for (const pr of c.proposed) {
+      assert.ok(proposed.has(pr.assertion), `${c.id} candidate ${pr.assertion} must resolve to a PROPOSED open_pr assertion`);
+    }
+  }
+  const c1 = proj.conflicts.find((c) => c.id === 'C1');
+  assert.equal(c1.proposed.length, 1, 'C1 must surface the wi-backend PR as a candidate');
+  assert.equal(c1.proposed[0].number, 8);
+  assert.equal(proposed.get(c1.proposed[0].assertion).subject, 'repo:Aftergraph/wi-backend');
+});
+
 test('C2 absent when everything observed is registered or rename-covered', () => {
   assert.ok(!proj.conflicts.find((c) => c.id === 'C2'), 'no unregistered repos in fixture');
 });

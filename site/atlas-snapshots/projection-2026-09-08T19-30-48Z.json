@@ -10651,7 +10651,8 @@
       "subjects": [
         "repo:Aftergraph/sentinel-firetest2"
       ],
-      "note": "Live in the org at the evidence cut but absent from canonical topology; needs registration or explicit exclusion."
+      "note": "Live in the org at the evidence cut but absent from canonical topology; needs registration or explicit exclusion.",
+      "proposed": []
     },
     {
       "id": "C4",
@@ -10661,7 +10662,27 @@
         "repo:Aftergraph/work-intelligence-v2",
         "repo:Aftergraph/work-intelligence-web"
       ],
-      "note": "dependencies.yml still targets legacy WI slugs that platform-topology/1.0 no longer registers; edges kept verbatim as shadows."
+      "note": "dependencies.yml still targets legacy WI slugs that platform-topology/1.0 no longer registers; edges kept verbatim as shadows.",
+      "proposed": [
+        {
+          "assertion": "as-742eadade5fb",
+          "repo": "Aftergraph/after-graph-governance",
+          "number": 38,
+          "title": "feat(governance): build ARI Phase 0/1 compatibility foundation"
+        },
+        {
+          "assertion": "as-17a375d5bbfe",
+          "repo": "Aftergraph/after-graph-governance",
+          "number": 39,
+          "title": "feat(governance): complete ARI Phase 1 registry, RBOM, and query"
+        },
+        {
+          "assertion": "as-31c64e17a114",
+          "repo": "Aftergraph/after-graph-governance",
+          "number": 40,
+          "title": "fix(governance): reconcile Runtime and Wie topology truth"
+        }
+      ]
     }
   ]
 }

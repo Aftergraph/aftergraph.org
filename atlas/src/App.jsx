@@ -598,6 +598,11 @@ export default function App() {
               {(c.subjects || []).map((s) => (
                 <p key={s} className="prov">subject: {s} ({shortLabel(projection.entities.find((e) => e.id === s) || { id: s })})</p>
               ))}
+              {(c.proposed || []).map((pr) => (
+                <p key={pr.assertion} className="prov">
+                  proposed candidate (not a resolution): {pr.repo} #{pr.number} {pr.title} ({pr.assertion})
+                </p>
+              ))}
             </div>
           ))}
         </section>

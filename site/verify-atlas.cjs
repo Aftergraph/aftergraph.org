@@ -83,6 +83,10 @@ for (const r of proj.relations || []) {
 
 // Conflict references must resolve.
 const assertionIds = new Set((proj.assertions || []).map((a) => a.id));
+const proposedById = new Map();
+for (const a of proj.assertions || []) {
+  if (a.predicate === 'open_pr' && a.truth_plane === 'PROPOSED') proposedById.set(a.id, a);
+}
 for (const c of proj.conflicts || []) {
   for (const p of c.pairs || []) {
     if (!assertionIds.has(p.a)) fail(`conflict ${c.id} references unknown assertion ${p.a}`);
@@ -90,6 +94,9 @@ for (const c of proj.conflicts || []) {
   }
   for (const s of c.subjects || []) {
     if (!entities.has(s)) fail(`conflict ${c.id} references unknown entity ${s}`);
+  }
+  for (const pr of c.proposed || []) {
+    if (!proposedById.has(pr.assertion)) fail(`conflict ${c.id} proposed candidate ${pr.assertion} is not a PROPOSED open_pr assertion`);
   }
 }
 

@@ -42,6 +42,9 @@ Entity (stable identity, NO truth_plane)
     "private_repos": [ "<private full_name>" ],
     "snapshot_of": null
   },
+  // Conflicts name subjects/pairs AND proposed-resolution candidates: open
+  // PR assertions on the involved sources (candidates for a human to judge,
+  // never claimed resolutions). verify-atlas.cjs fails closed on dangling refs.
   // Private-source policy: repo_pins carries exact HEADs for PUBLIC repos only.
   // Private repos are listed by NAME in private_repos; their assertion provenance
   // refs point at the canonical branch (never the exact HEAD) and valid_at is

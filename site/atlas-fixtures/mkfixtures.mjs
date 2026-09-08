@@ -36,7 +36,9 @@ fs.writeFileSync(path.join(ledger, 'obs_alpha.json'), JSON.stringify(obs('alpha'
   { baseRefName: 'main', headRefName: 'feat/x', headRefOid: 'dddddddddddddddddddddddddddddddddddddddd', isDraft: false, number: 7, title: 'feat: x', updatedAt: '2026-09-08T14:00:00Z' },
 ])));
 fs.writeFileSync(path.join(ledger, 'obs_beta.json'), JSON.stringify(obs('beta', true, [])));
-fs.writeFileSync(path.join(ledger, 'obs_wi-backend.json'), JSON.stringify(obs('wi-backend', false, [])));
+fs.writeFileSync(path.join(ledger, 'obs_wi-backend.json'), JSON.stringify(obs('wi-backend', false, [
+  { baseRefName: 'main', headRefName: 'feat/y', headRefOid: 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', isDraft: false, number: 8, title: 'feat: y', updatedAt: '2026-09-08T14:00:00Z' },
+])));
 
 // Canonical: alpha + beta shared; legacy WI slug canonical-only; cron-fabric observed-only.
 const topology = {
