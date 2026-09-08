@@ -53,8 +53,10 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - Slice A' COMPLETED BY COMMANDER: `site/generate-atlas-projection.mjs` +
   `site/atlas-projection.test.mjs` (9/9 green) + `site/verify-atlas.cjs` (PASS).
   Live projection: 144 entities / 316 assertions / 187 relations / 2 conflicts (C2, C4).
-- Slice B1 (sa-0-fe61b7f8, deleg_db57da95): vite scaffold + shell + topology + overlays + drift.
-  Handoff: paths, test counts, build listing, residual risk. Slice C deferred until B1 lands.
+- Slice B1 (sa-0-fe61b7f8): STALLED → STOPPED. COMPLETED BY COMMANDER: commits 8092285 + 12b4aac
+  (scaffold, shell, worker routes, rename-aware neighborhoods, DOM PASS, 4 clean shots).
+- Loop: cron `atlas-dev-loop` (2051a4babc9c) every 30m, continuity, workdir aftergraph.org,
+  deliver local — keeps developing Atlas on feat/atlas (no push). First run ~19:55 local.
 - Team Enrich (sa-0-6c14bd09, deleg_a55a547c): capability/model/research source survey →
   docs/atlas/enrich/. Touches generator/built-app paths FORBIDDEN (fixtures + spec only).
 - Team QA-harness (sa-1-610cb4c4): gate baseline + worker route trace + CI proposal →
@@ -66,6 +68,10 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   #51 org-state regen, #41). Owner resolved C1/C3; C2 narrowed to sentinel-firetest2.
   Observed cut (15:48 UTC) predates these; projection meta pins both timestamps honestly.
 - E7 Canonical advanced again ~18:19 local: gov 6b8c971 → 5f53273 (#45 Platform Fabrics v0.1).
+- E8 Unknown-author enhancement (found in worktree, fully reviewed ll.85-143 of derive.js):
+  aliasMap extended with slug normalization + C1-pair + C4-shadow linking, 3 new tests.
+  Design sound, contract-consistent, 19/19 + DOM PASS → ACCEPTED. Author unidentified
+  (not QA child per transcript, cron loop not yet fired); watch for further ghost writes.
   Topology/deps untouched (144/316/187/2 unchanged); projection regenerated + re-pinned, 9/9 + PASS.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).

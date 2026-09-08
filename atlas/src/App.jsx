@@ -4,8 +4,8 @@ import ELK from 'elkjs/lib/elk.bundled.js';
 import 'reactflow/dist/style.css';
 import {
   deriveGraph,
+  focusGraph,
   indexAssertions,
-  neighborhood,
   moveSelection,
   serializeState,
   parseState,
@@ -91,18 +91,8 @@ export default function App() {
 
   const graph = useMemo(() => {
     if (!projection) return { nodes: [], edges: [], planesUsed: overlay };
-    const g = deriveGraph(projection, overlay);
-    if (narrow && node) {
-      const hood = neighborhood(projection, node, 1);
-      const keep = new Set(hood.nodes);
-      const edgeKeep = new Set(hood.edges);
-      return {
-        nodes: g.nodes.filter((n) => keep.has(n.id)),
-        edges: g.edges.filter((e) => edgeKeep.has(e.id)),
-        planesUsed: g.planesUsed,
-      };
-    }
-    return g;
+    if (narrow && node) return focusGraph(projection, overlay, node, 1);
+    return deriveGraph(projection, overlay);
   }, [projection, overlay, narrow, node]);
 
   useEffect(() => {

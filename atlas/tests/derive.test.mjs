@@ -1,13 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import {
   deriveGraph,
+  focusGraph,
   indexAssertions,
   neighborhood,
+  aliasMap,
   moveSelection,
   serializeState,
   parseState,
   elkOptions,
   PLANES,
+  impactSet,
+  askRetrieve,
+  validateAnswer,
 } from '../src/lib/derive.js';
 
 // Minimal v0.2-shaped fixture: one entity with assertions on two planes each.
@@ -80,6 +85,115 @@ describe('neighborhood', () => {
     expect(n.nodes).toContain('repo:Aftergraph/old');
     expect(n.nodes).toContain('repo:Aftergraph/aie');
   });
+
+  it('links C1 rename pair subjects without identity.aliases', () => {
+    // Fixture conflict C9 (kind rename, as-4 subject old / as-2 subject aie) is
+    // the only link source here — no entity carries aliases.
+    const m = aliasMap(fixture);
+    expect([...(m.get('repo:Aftergraph/old') || [])]).toContain('repo:Aftergraph/aie');
+    expect([...(m.get('repo:Aftergraph/aie') || [])]).toContain('repo:Aftergraph/old');
+  });
+
+  it('expands through C1 legacy/current slugs when aliases are absent', () => {
+    const mk = (id, subject, predicate, plane) => ({
+      id, subject, predicate, value: 'x', truth_plane: plane,
+      provenance: {}, observed_at: 't', freshness: 'fresh', conflict_id: null,
+    });
+    const proj = {
+      ...fixture,
+      entities: [
+        ...fixture.entities,
+        { id: 'repo:Aftergraph/new', kind: 'repository', identity: { full_name: 'Aftergraph/new' } },
+      ],
+      assertions: [
+        ...fixture.assertions,
+        mk('as-old-slug', 'repo:Aftergraph/old', 'slug', 'CANONICAL'),
+        mk('as-new-slug', 'repo:Aftergraph/new', 'slug', 'OBSERVED'),
+      ],
+      conflicts: [
+        ...fixture.conflicts,
+        {
+          id: 'C1', kind: 'rename', status: 'open',
+          pairs: [{ a: 'as-old-slug', b: 'as-new-slug', legacy: 'old', current: 'new' }],
+        },
+      ],
+    };
+    const n = neighborhood(proj, 'repo:Aftergraph/new', 1);
+    expect(n.nodes).toContain('repo:Aftergraph/new');
+    expect(n.nodes).toContain('repo:Aftergraph/old');
+    expect(n.nodes).toContain('repo:Aftergraph/aie');
+  });
+
+  it('C4 links each shadow to its claimant without merging legacies', () => {
+    const proj = {
+      schema: 'atlas-projection/0.2',
+      meta: {},
+      entities: [
+        { id: 'repo:Aftergraph/wi-backend', kind: 'repository', identity: { full_name: 'Aftergraph/wi-backend', aliases: ['work-intelligence-v2'] } },
+        { id: 'repo:Aftergraph/wi-frontend', kind: 'repository', identity: { full_name: 'Aftergraph/wi-frontend', aliases: ['work-intelligence-web'] } },
+        { id: 'repo:Aftergraph/work-intelligence-v2', kind: 'repository', identity: { full_name: 'Aftergraph/work-intelligence-v2', aliases: [] } },
+        { id: 'repo:Aftergraph/work-intelligence-web', kind: 'repository', identity: { full_name: 'Aftergraph/work-intelligence-web', aliases: [] } },
+      ],
+      assertions: [],
+      relations: [],
+      conflicts: [{
+        id: 'C4', kind: 'intra-canonical', status: 'open',
+        subjects: ['repo:Aftergraph/work-intelligence-v2', 'repo:Aftergraph/work-intelligence-web'],
+      }],
+    };
+    const m = aliasMap(proj);
+    expect([...(m.get('repo:Aftergraph/work-intelligence-v2') || [])].sort())
+      .toEqual(['repo:Aftergraph/wi-backend']);
+    expect([...(m.get('repo:Aftergraph/work-intelligence-web') || [])].sort())
+      .toEqual(['repo:Aftergraph/wi-frontend']);
+  });
+});
+
+describe('focusGraph', () => {
+  const ALL = ['CANONICAL', 'OBSERVED', 'PROPOSED'];
+  // Mirrors the live wi-backend shape: the renamed entity holds no direct
+  // relations; the legacy shadow does — including one to a contract that
+  // carries zero assertions and therefore cannot render.
+  const contractProj = {
+    ...fixture,
+    entities: [
+      ...fixture.entities,
+      { id: 'repo:Aftergraph/new', kind: 'repository', identity: { full_name: 'Aftergraph/new', aliases: ['old'] } },
+      { id: 'contract:c1', kind: 'contract', identity: { full_name: 'contract:c1', aliases: [] } },
+    ],
+    relations: [
+      ...fixture.relations,
+      { id: 'rel-3', source: 'repo:Aftergraph/old', target: 'contract:c1', relation: 'provides', truth_plane: 'CANONICAL', provenance: {}, observed_at: 't', freshness: 'fresh', conflict_id: null },
+    ],
+    assertions: [
+      ...fixture.assertions,
+      // Live wi-backend carries its own assertions; the renamed entity renders.
+      { id: 'as-new', subject: 'repo:Aftergraph/new', predicate: 'slug', value: 'new', truth_plane: 'CANONICAL', provenance: {}, observed_at: 't', freshness: 'fresh', conflict_id: null },
+    ],
+  };
+
+  it('keeps alias-inherited neighbors, drops assertion-less contracts', () => {
+    const f = focusGraph(contractProj, ALL, 'repo:Aftergraph/new', 1);
+    const ids = f.nodes.map((n) => n.id);
+    expect(ids).toContain('repo:Aftergraph/new');
+    expect(ids).toContain('repo:Aftergraph/old');
+    expect(ids).toContain('repo:Aftergraph/aie');
+    expect(ids).not.toContain('contract:c1');
+  });
+
+  it('never returns dangling edges', () => {
+    const f = focusGraph(contractProj, ALL, 'repo:Aftergraph/new', 1);
+    const ids = new Set(f.nodes.map((n) => n.id));
+    expect(f.edges.map((e) => e.id)).not.toContain('rel-3');
+    for (const e of f.edges) {
+      expect(ids.has(e.source)).toBe(true);
+      expect(ids.has(e.target)).toBe(true);
+    }
+  });
+
+  it('returns the full plane-filtered graph when no node is selected', () => {
+    expect(focusGraph(contractProj, ALL, null, 1)).toEqual(deriveGraph(contractProj, ALL));
+  });
 });
 
 describe('selection + URL', () => {
@@ -116,5 +230,39 @@ describe('indexAssertions', () => {
   it('groups by subject, sorted by predicate', () => {
     const idx = indexAssertions(fixture);
     expect(idx.get('repo:Aftergraph/aie').map((a) => a.predicate)).toEqual(['head_sha', 'role']);
+  });
+});
+
+describe('impactSet', () => {
+  it('splits upstream (dependents) from downstream (dependencies)', () => {
+    const imp = impactSet(fixture, 'repo:Aftergraph/gov', 2);
+    expect(imp.downstream).toEqual([]);
+    expect(imp.upstream).toEqual(['repo:Aftergraph/aie']);
+  });
+
+  it('caps depth', () => {
+    const imp1 = impactSet(fixture, 'repo:Aftergraph/aie', 1);
+    expect(imp1.downstream).toEqual(['repo:Aftergraph/gov', 'repo:Aftergraph/old']);
+  });
+});
+
+describe('askRetrieve + validateAnswer', () => {
+  it('retrieves by slug and predicate keywords', () => {
+    const hits = askRetrieve(fixture, 'aie head sha');
+    expect(hits[0].id).toBe('as-2');
+    expect(hits.every((h) => typeof h.score === 'number')).toBe(true);
+  });
+
+  it('returns empty for unanswerable queries', () => {
+    expect(askRetrieve(fixture, 'quantum teapot revenue')).toEqual([]);
+  });
+
+  it('validator rejects citations outside the evidence set', () => {
+    const hits = askRetrieve(fixture, 'aie role');
+    const ids = new Set(hits.map((h) => h.id));
+    expect(validateAnswer(fixture, ids, [hits[0].id]).ok).toBe(true);
+    const bad = validateAnswer(fixture, ids, ['as-nonexistent']);
+    expect(bad.ok).toBe(false);
+    expect(bad.missing).toEqual(['as-nonexistent']);
   });
 });
