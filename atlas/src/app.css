@@ -64,6 +64,7 @@ body { margin: 0; background: var(--ag-canvas); color: var(--ag-text); font-fami
 .panel th, .panel td { text-align: left; padding: 5px 10px; border-bottom: 1px solid var(--ag-border); }
 .panel th { color: var(--ag-muted); font-weight: 600; }
 button.link { background: none; border: none; color: var(--ag-control); cursor: pointer; padding: 0; font-size: inherit; }
+button:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--ag-control); outline-offset: 2px; }
 .panel form { display: flex; gap: 8px; margin: 8px 0; }
 .panel input { flex: 1; background: var(--ag-raised); border: 1px solid var(--ag-border); color: var(--ag-text); border-radius: 6px; padding: 6px 10px; }
 .panel button[type='submit'], .inspector button { background: var(--ag-surface); border: 1px solid var(--ag-control); color: var(--ag-text); border-radius: 6px; padding: 5px 12px; cursor: pointer; margin: 6px 0; }

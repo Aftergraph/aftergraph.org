@@ -57,7 +57,34 @@ try {
     if (!contracts.includes('Contracts')) fail('contracts view missing');
     await page.close();
   }
-  // Search filter narrows the tree; cut chip shows age
+  // Accessibility smoke: names, labels, lang, headings, focus visibility
+  {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(2000);
+    const lang = await page.evaluate(() => document.documentElement.lang);
+    if (!lang) fail('html lang missing');
+    const unnamed = await page.evaluate(() =>
+      [...document.querySelectorAll('button')].filter((b) => !(b.innerText || '').trim() && !b.getAttribute('aria-label')).length
+    );
+    if (unnamed > 0) fail(`${unnamed} buttons without accessible names`);
+    const unlabeled = await page.evaluate(() =>
+      [...document.querySelectorAll('input')].filter((i) => !i.getAttribute('aria-label') && !i.getAttribute('placeholder') && !(i.labels || []).length).length
+    );
+    if (unlabeled > 0) fail(`${unlabeled} inputs without labels`);
+    const h1 = await page.locator('h1').count();
+    if (h1 < 1) fail('no h1 heading');
+    await page.keyboard.press('Tab');
+    const focused = await page.evaluate(() => document.activeElement?.tagName);
+    if (!focused || focused === 'BODY') fail('keyboard Tab does not move focus');
+    const outline = await page.evaluate(() => {
+      const el = document.activeElement;
+      const st = getComputedStyle(el);
+      return st.outlineWidth !== '0px' || st.boxShadow !== 'none';
+    });
+    if (!outline) fail('focused element has no visible focus indicator');
+    await page.close();
+  }
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
