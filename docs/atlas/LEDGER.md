@@ -96,6 +96,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E16 System x-ray live: tracePath BFS + per-hop plane badges (32/32 vitest),
   inspector from/to + graph highlight + honest no-path gap, DOM-covered.
   Pushed fc07b9c.
+- E17 Performance: function-form manualChunks (react/flow/elk/d3/lib) after
+  finding reactflow is scoped multi-package; app entry 30KB, vendors cached
+  independently (32/32, DOM PASS). Pushed 3ee78d7.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
