@@ -138,6 +138,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   gate covers it. Open Jonas decision: fixtures.json draft names predate this
   in git history (keep-vs-purge). Build-sequence rule documented (vite wipe →
   build-worker restore bit us mid-slice, repaired c00c0ed). Pushed e1312b0.
+- E27 Owner brief rewritten: decision-pack.md refreshed to current cut/gov,
+  WI-gate disagreement verified resolved (dropped), 3 new Jonas decisions
+  (fixtures history, visual review, merge auth). Pushed d0d6608.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
