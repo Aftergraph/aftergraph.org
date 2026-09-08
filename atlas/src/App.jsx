@@ -13,8 +13,7 @@ import {
   elkOptions,
   shortLabel,
   impactSet,
-  askRetrieve,
-  validateAnswer,
+  answerFromEvidence,
   filterEntities,
   cutAge,
   tracePath,
@@ -261,9 +260,8 @@ function AskView({ projection, q, setQ, hits, setHits }) {
   const byId = new Map(projection.assertions.map((a) => [a.id, a]));
   const run = (e) => {
     e.preventDefault();
-    const found = askRetrieve(projection, q);
-    const v = validateAnswer(projection, new Set(found.map((h) => h.id)), found.map((h) => h.id));
-    setHits({ found, valid: v.ok });
+    const r = answerFromEvidence(projection, q);
+    setHits({ found: r.hits, valid: r.valid });
   };
   return (
     <div className="panel" aria-label="Ask Atlas">

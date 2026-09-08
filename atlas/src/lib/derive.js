@@ -261,6 +261,20 @@ export function validateAnswer(projection, evidenceIds, citations) {
   return { ok: missing.length === 0, missing };
 }
 
+// Ask Atlas pipeline boundary (V0 extractive; future grounded-reasoning plug point):
+// question -> retrieve -> evidence set -> validate -> verdict. Returns
+// { status: 'answered'|'unanswerable', hits, valid }. A later LLM synthesis layer
+// may ONLY rephrase these hits: any citation it emits must pass validateAnswer
+// against this evidence set, so the model can explain evidence but never
+// manufacture or upgrade it.
+export function answerFromEvidence(projection, query, limit = 8) {
+  const hits = askRetrieve(projection, query, limit);
+  if (!hits.length) return { status: 'unanswerable', hits: [], valid: true };
+  const evidenceIds = new Set(hits.map((h) => h.id));
+  const v = validateAnswer(projection, evidenceIds, hits.map((h) => h.id));
+  return { status: 'answered', hits, valid: v.ok };
+}
+
 // Tree search: label substring match (case-insensitive). Empty query matches all.
 export function filterEntities(projection, query) {
   const q = (query || '').trim().toLowerCase();

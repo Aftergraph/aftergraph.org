@@ -13,6 +13,7 @@ import {
   impactSet,
   askRetrieve,
   validateAnswer,
+  answerFromEvidence,
   filterEntities,
   cutAge,
   tracePath,
@@ -261,13 +262,33 @@ describe('askRetrieve + validateAnswer', () => {
     expect(askRetrieve(fixture, 'quantum teapot revenue')).toEqual([]);
   });
 
-  it('validator rejects citations outside the evidence set', () => {
+  it('validator rejects smuggled citations that exist but were not retrieved', () => {
     const hits = askRetrieve(fixture, 'aie role');
     const ids = new Set(hits.map((h) => h.id));
-    expect(validateAnswer(fixture, ids, [hits[0].id]).ok).toBe(true);
-    const bad = validateAnswer(fixture, ids, ['as-nonexistent']);
+    // as-4 exists in the fixture but was not retrieved for this query.
+    const smuggled = fixture.assertions.map((a) => a.id).find((id) => !ids.has(id));
+    expect(smuggled).toBeDefined();
+    const bad = validateAnswer(fixture, ids, [hits[0].id, smuggled]);
     expect(bad.ok).toBe(false);
-    expect(bad.missing).toEqual(['as-nonexistent']);
+    expect(bad.missing).toEqual([smuggled]);
+    const ghost = validateAnswer(fixture, ids, ['as-nonexistent']);
+    expect(ghost.ok).toBe(false);
+    expect(ghost.missing).toEqual(['as-nonexistent']);
+  });
+});
+
+describe('answerFromEvidence', () => {
+  it('returns answered with validated hits for answerable queries', () => {
+    const r = answerFromEvidence(fixture, 'aie head sha');
+    expect(r.status).toBe('answered');
+    expect(r.hits.length).toBeGreaterThan(0);
+    expect(r.valid).toBe(true);
+  });
+
+  it('returns unanswerable with empty evidence for out-of-scope queries', () => {
+    const r = answerFromEvidence(fixture, 'quantum teapot revenue');
+    expect(r.status).toBe('unanswerable');
+    expect(r.hits).toEqual([]);
   });
 });
 
