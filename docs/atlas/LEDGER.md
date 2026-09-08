@@ -132,6 +132,12 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E25 Screenshots refreshed (4 shots, atlas/qa-shots, committed d08976c) against
   19:30 cut; DOM assertions green. Human visual review still open: vision tool
   errored this session (provider 400 on reasoning param) — shots await eyeballs.
+- E26 Audit find: fixture previews published clearance-flagged private names
+  (skill name, candidate release filenames) despite their own boundary flags.
+  PreviewView now withholds flagged subject+value (shape + reason only), DOM
+  gate covers it. Open Jonas decision: fixtures.json draft names predate this
+  in git history (keep-vs-purge). Build-sequence rule documented (vite wipe →
+  build-worker restore bit us mid-slice, repaired c00c0ed). Pushed e1312b0.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).

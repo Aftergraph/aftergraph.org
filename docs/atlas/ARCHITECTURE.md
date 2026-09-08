@@ -19,6 +19,12 @@ as one deterministic, provenance-labelled workspace. It owns nothing it displays
   browser, no runtime CDN dependencies (no esm.sh/unpkg in production): reproducible builds,
   pinned lockfile versions, CSP-compatible, unit-testable, visual-testable, reliable offline CI.
 - No local build step for the REST of the site: only `atlas/` is a JS application.
+- Build sequence (order matters): `npm --prefix atlas run build` (vite wipes
+  `site/atlas/` via emptyOutDir, including the copied projection/snapshots) →
+  `node site/build-worker.cjs` (restores `site/atlas/projection.json` +
+  `site/atlas/snapshots/` copies, rebuilds `site/worker.js`) → verify
+  (`verify-atlas.cjs`, DOM smoke). Never commit a tree where vite ran without
+  the build-worker restore.
 - Respects aftergraph.org ownership: aggregation + routing only; private repos surface as
   name + plane/role + explicitly public description (private-source boundary).
 
