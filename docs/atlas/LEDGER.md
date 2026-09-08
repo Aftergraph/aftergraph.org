@@ -141,6 +141,19 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E27 Owner brief rewritten: decision-pack.md refreshed to current cut/gov,
   WI-gate disagreement verified resolved (dropped), 3 new Jonas decisions
   (fixtures history, visual review, merge auth). Pushed d0d6608.
+- E28 Completion-gate scorecard (exact head ac54ff6, CI 34271209430 success):
+  GREEN — truth refresh (E23), assertion schema v0.2, generator (+capture),
+  provenance on all assertions/relations, leakage gate (poison-proven),
+  topology workspace, drift/conflicts, inspector, impact (2-hop+tests),
+  pulse (latest-cut table, no fake windows), contracts, capability/AFM as
+  labeled PREVIEW fixtures (E26 redaction), research exploratory label,
+  snapshots + diff, Ask V0 + code boundary (E24), responsive + mobile
+  neighborhood, keyboard, reduced-motion CSS, empty/malformed/stale states,
+  bundle split, all suites green (13/13, 39/39, verify, DOM+a11y smoke),
+  docs match, branch clean + pushed, CI green.
+  OPEN — screenshots human review (E25 vision outage); pulse 24h/7d/30d
+  windows (no history captured yet — honestly absent, not faked);
+  fixtures.json history keep-vs-purge; production merge (Jonas auth).
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
