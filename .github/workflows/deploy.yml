@@ -1,0 +1,93 @@
+name: Aftergraph Production Deploy
+
+on:
+  pull_request:
+    paths:
+      - 'site/**'
+      - 'DEPLOYMENT.md'
+      - '.github/workflows/deploy.yml'
+  push:
+    branches: ['main']
+    paths:
+      - 'site/**'
+      - 'DEPLOYMENT.md'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aftergraph-production
+  cancel-in-progress: false
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Compile canonical worker
+        run: node site/build-worker.cjs
+      - name: Verify V2 contract
+        run: node site/verify-v2.cjs
+      - name: Generated bundle is current
+        run: git diff --exit-code -- site/worker.js site/wrangler.toml
+      - name: Diff check
+        run: git diff --check
+
+  deploy:
+    needs: gates
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ENABLE_DEPLOY == 'true')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Bind deployment provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "AG_SHA=$GITHUB_SHA" >> "$GITHUB_ENV"
+          echo "AG_DEPLOYED=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+      - name: Verify deploy build
+        run: |
+          node site/build-worker.cjs
+          node site/verify-v2.cjs
+      - name: Deploy exact HEAD to Cloudflare Workers
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: site
+          command: deploy --config wrangler.toml --name aftergraph-site
+      - name: Verify production exact HEAD and routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://aftergraph.org'
+
+          health="$(curl --fail --silent --show-error --retry 5 --retry-delay 2 "$base/healthz?verify=$GITHUB_SHA")"
+          printf '%s\n' "$health" | jq -e --arg sha "$GITHUB_SHA" '.status == "ok" and .sha == $sha' >/dev/null
+
+          paths=(/ /launch /status /sentinel /robots.txt /sitemap.xml)
+          if grep -q "p === '/community'" site/worker.js; then
+            paths+=(/community)
+          fi
+
+          for path in "${paths[@]}"; do
+            code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' --retry 5 --retry-delay 2 "$base$path?verify=$GITHUB_SHA")"
+            test "$code" = '200' || { echo "smoke failed: $path -> $code" >&2; exit 1; }
+          done
+
+          echo "production verified at exact HEAD $GITHUB_SHA"
