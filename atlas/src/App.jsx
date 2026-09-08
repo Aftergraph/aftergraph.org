@@ -501,7 +501,7 @@ export default function App() {
       <nav className="tree" aria-label="Entities">
         <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Filter entities… (live filter)" aria-label="Filter entities" />
         {search.trim() && [...treeRepos, ...treeContracts].filter((n) => matched.has(n.id)).length === 0 && (
-          <p className="prov" role="status">No entities match “{search.trim()}”.</p>
+          <p className="prov" role="status"><img src="assets/empty-no-result.svg" width="80" height="60" alt="" aria-hidden="true" />No entities match “{search.trim()}”.</p>
         )}
         <div className="prov">repositories ({treeRepos.length})</div>
         {treeRepos.filter((n) => matched.has(n.id)).map((n) => (

@@ -255,6 +255,11 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   decisions D9-D13; open PRs 1->0). Full re-cut 25/25, projection
   144/319/190/2 unchanged, 5th snapshot indexed, vite+worker rebuilt per E51.
   14/14 + verify + 0 leaks + DOM PASS.
+- E55 Asset phase-1 direct (agent stalled at 0 files/20min, stopped):
+  docs/atlas/VISUAL-SYSTEM.md + ASSET-MANIFEST.md, 14 hand-authored SVGs in
+  atlas/public/assets (all <1.3KB, LF, valid XML, brand-hex only).
+  empty-no-result wired into filter empty-state (aria-hidden, text stays
+  carrier). vite+worker rebuilt, SVGs confirmed in bundle, DOM PASS.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
