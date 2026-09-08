@@ -24,6 +24,38 @@ try {
     }
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (overflow > 1) fail(`desktop horizontal overflow: ${overflow}px`);
+    // Quantitative visual QA (no eyeballs needed): node boxes must not overlap
+    const overlaps = await page.evaluate(() => {
+      const boxes = [...document.querySelectorAll('.rf-node')].map((el) => {
+        const r = el.getBoundingClientRect();
+        return { x: r.x, y: r.y, w: r.width, h: r.height };
+      });
+      let hits = 0;
+      for (let i = 0; i < boxes.length; i++) {
+        for (let j = i + 1; j < boxes.length; j++) {
+          const a = boxes[i], b = boxes[j];
+          const x = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+          const y = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+          if (x > 2 && y > 2) hits++;
+        }
+      }
+      return { nodes: boxes.length, hits };
+    });
+    if (overlaps.hits > 0) fail(`topology node overlap: ${overlaps.hits} overlapping pairs among ${overlaps.nodes} nodes`);
+    // Body-text contrast vs page background (WCAG AA 4.5 for normal text)
+    const contrast = await page.evaluate(() => {
+      const lum = (rgb) => {
+        const m = rgb.match(/[\d.]+/g).map(Number);
+        const f = (c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+        const [r, g, b] = m.slice(0, 3).map((v) => f(v / 255));
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const fg = getComputedStyle(document.body).color;
+      const bg = getComputedStyle(document.body).backgroundColor;
+      const l1 = lum(fg), l2 = lum(bg);
+      return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    });
+    if (!(contrast >= 4.5)) fail(`body text contrast ${contrast.toFixed(2)}:1 below WCAG AA 4.5`);
     // Inspector via URL state
     await page.goto(`${base}?node=${encodeURIComponent('repo:Aftergraph/aie')}`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
