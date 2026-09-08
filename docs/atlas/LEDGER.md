@@ -206,6 +206,12 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E42 Overlay toggles: DOM never touched plane filters. Now flips PROPOSED
   off/on asserting aria-pressed, URL persistence and a non-empty graph.
   PASS. Pushed 78c88d4.
+- E43 Keyboard Raphael (real bug): Escape never cleared selection — React Flow
+  stops its propagation AND focus rests on BODY after pane clicks. Window-
+  capture handler scoped to pane + engagement ref; arrows stay in-pane.
+  DOM covers arrows-select + Escape-clear. Also caught: local rollup native
+  dep rotted while `| tail` masked non-zero exits — npm ci restored, builds
+  now assert exit codes (CI was unaffected). PASS. Pushed 05c8393.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
