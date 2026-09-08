@@ -24,6 +24,11 @@ const shots = [
     url: `${base}?node=${encodeURIComponent('repo:Aftergraph/wi-backend')}`,
     viewport: { width: 390, height: 844 },
   },
+  {
+    name: 'atlas-capabilities-1440.png',
+    url: `${base}?view=capabilities`,
+    viewport: { width: 1440, height: 900 },
+  },
 ];
 
 const browser = await chromium.launch();
