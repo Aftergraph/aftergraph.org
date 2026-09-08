@@ -68,11 +68,13 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   #51 org-state regen, #41). Owner resolved C1/C3; C2 narrowed to sentinel-firetest2.
   Observed cut (15:48 UTC) predates these; projection meta pins both timestamps honestly.
 - E7 Canonical advanced again ~18:19 local: gov 6b8c971 → 5f53273 (#45 Platform Fabrics v0.1).
+  Topology/deps untouched (144/316/187/2 unchanged); projection regenerated + re-pinned, 9/9 + PASS.
 - E8 Unknown-author enhancement (found in worktree, fully reviewed ll.85-143 of derive.js):
   aliasMap extended with slug normalization + C1-pair + C4-shadow linking, 3 new tests.
   Design sound, contract-consistent, 19/19 + DOM PASS → ACCEPTED. Author unidentified
   (not QA child per transcript, cron loop not yet fired); watch for further ghost writes.
-  Topology/deps untouched (144/316/187/2 unchanged); projection regenerated + re-pinned, 9/9 + PASS.
+- E9 Wakeup: pushed feat/atlas to origin (bd9593b). Shipped tree search + cut-freshness
+  chip (27/27 vitest, DOM PASS incl. new checks). Next: CI wiring per qa/BASELINE.md.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
