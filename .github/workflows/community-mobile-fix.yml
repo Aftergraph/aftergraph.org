@@ -1,0 +1,40 @@
+name: Materialize community mobile nav fix
+
+on:
+  push:
+    branches: ['community/public-plane']
+    paths:
+      - '.github/workflows/community-mobile-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: community/public-plane
+      - name: Raise responsive nav breakpoint
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('site/index.html')
+          text = p.read_text()
+          old = '@media(max-width:640px)'
+          if old not in text:
+            raise SystemExit('expected mobile breakpoint missing')
+          p.write_text(text.replace(old, '@media(max-width:780px)', 1))
+      - name: Regenerate and verify
+        run: |
+          node site/build-worker.cjs
+          node site/verify-v2.cjs
+          git diff --check
+      - name: Commit materialized fix
+        run: |
+          git config user.name "aftergraph-community-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add site/index.html site/worker.js site/wrangler.toml
+          git commit -m "fix: prevent community nav overflow on tablets"
+          git push origin HEAD:community/public-plane
