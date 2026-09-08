@@ -42,8 +42,10 @@ jobs:
 
   deploy:
     needs: gates
+    # Manual dispatch is intentionally main-only. A convenient branch selector
+    # must not become a path for deploying code that never passed the merge queue.
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ENABLE_DEPLOY == 'true')
     runs-on: ubuntu-latest
     environment: production
