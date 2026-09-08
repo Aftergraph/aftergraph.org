@@ -198,6 +198,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E39 Time-machine click path: DOM only checked the snapshots heading, never
   the diff itself. Now clicks 'diff vs current' and asserts the comparing
   block + added/removed counts render. PASS. Pushed 411695c.
+- E40 Ask interaction: DOM never submitted a question. Now drives answered
+  (plane-tagged citations render) + unanswerable (honest state) paths;
+  fixed a strict-mode locator collision on the way. PASS. Pushed a30146d.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
