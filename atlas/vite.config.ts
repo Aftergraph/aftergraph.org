@@ -18,6 +18,20 @@ export default defineConfig({
         entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
+        // Function form: split by real package path (robust against deep imports
+        // such as elkjs/lib/elk.bundled.js). Stable vendor hashes across deploys.
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+          const segs = id.split(/[\\/]/);
+          const nm = segs.lastIndexOf('node_modules');
+          const first = segs[nm + 1] || '';
+          const pkg = first.startsWith('@') ? `${first}/${segs[nm + 2] || ''}` : first;
+          if (pkg === 'react' || pkg === 'react-dom' || pkg === 'scheduler') return 'vendor-react';
+          if (pkg === 'reactflow' || pkg.startsWith('@reactflow/') || pkg === 'zustand' || pkg === 'd3-dag') return 'vendor-flow';
+          if (pkg === 'elkjs') return 'vendor-elk';
+          if (pkg === 'd3' || pkg.startsWith('d3-') || pkg === 'internmap' || pkg === 'delaunator' || pkg === 'robust-predicates') return 'vendor-d3';
+          return 'vendor-lib';
+        },
       },
     },
   },
