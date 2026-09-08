@@ -59,6 +59,13 @@ try {
     await page.waitForTimeout(1500);
     const snaps = await page.locator('.panel').innerText();
     if (!snaps.includes('Snapshots')) fail('snapshots view missing');
+    // Fixture previews must honor their own publication boundary
+    await page.goto(`${base}?view=capabilities`, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(1500);
+    const caps = await page.locator('.panel').innerText();
+    if (!caps.includes('PREVIEW')) fail('capabilities preview label missing');
+    if (!caps.includes('withheld')) fail('capabilities preview does not withhold flagged fixture content');
+    if (caps.includes('aftergraph-observer')) fail('capabilities preview publishes clearance-flagged skill name');
     await page.close();
   }
   // System x-ray traces a directed path from live relations

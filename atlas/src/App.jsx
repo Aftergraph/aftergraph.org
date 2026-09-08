@@ -130,16 +130,20 @@ function ContractsView({ projection, onSelect }) {
 }
 
 function PreviewView({ title, draft, kind }) {
+  // Fixtures carry their own publication boundary: when flagged, neither the
+  // example subject nor its value is publishable — show shape only + reason.
+  const gated = !!draft.boundary_flag;
+  const withhold = (content) =>
+    gated ? <span>withheld — {draft.boundary_flag}</span> : <span>{content}</span>;
   return (
     <div className="panel" aria-label={title}>
       <h2>{title} <span className="prov">PREVIEW — survey fixture, not generated assertions</span></h2>
-      <p className="prov">{draft.note}</p>
       <dl className="prov">
-        <dt>example subject</dt><dd>{draft.subject}</dd>
+        <dt>example subject</dt><dd>{withhold(draft.subject)}</dd>
         <dt>predicate</dt><dd>{draft.predicate}</dd>
-        <dt>value</dt><dd>{JSON.stringify(draft.value)}</dd>
+        <dt>value</dt><dd>{gated ? withhold(null) : JSON.stringify(draft.value)}</dd>
         <dt>plane</dt><dd>{draft.truth_plane}</dd>
-        <dt>boundary</dt><dd>{draft.boundary_flag}</dd>
+        <dt>boundary</dt><dd>{draft.boundary_flag || 'none'}</dd>
       </dl>
       <p className="prov">Activates with generator v0.3 ({kind} entity set). See docs/atlas/enrich/SOURCES.md.</p>
     </div>
