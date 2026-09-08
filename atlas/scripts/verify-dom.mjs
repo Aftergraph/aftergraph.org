@@ -178,6 +178,17 @@ try {
     if (overflow > 1) fail(`mobile horizontal overflow: ${overflow}px`);
     await page.close();
   }
+  // Tablet: full graph in a narrower viewport — must render without overflow
+  {
+    const page = await browser.newPage({ viewport: { width: 820, height: 1180 } });
+    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(2500);
+    const nodes = await page.locator('.rf-node').count();
+    if (nodes < 20) fail(`tablet shows ${nodes} nodes, expected full topology (>= 20)`);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (overflow > 1) fail(`tablet horizontal overflow: ${overflow}px`);
+    await page.close();
+  }
 } finally {
   await browser.close();
 }
