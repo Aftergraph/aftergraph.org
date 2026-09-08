@@ -61,7 +61,19 @@ try {
     if (!snaps.includes('Snapshots')) fail('snapshots view missing');
     await page.close();
   }
-  // Accessibility smoke: names, labels, lang, headings, focus visibility
+  // System x-ray traces a directed path from live relations
+  {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(2000);
+    await page.getByLabel('Trace from').selectOption('repo:Aftergraph/studio');
+    await page.getByLabel('Trace to').selectOption('repo:Aftergraph/works-execution');
+    await page.getByRole('button', { name: 'Trace' }).click();
+    await page.waitForTimeout(500);
+    const xray = await page.locator('.inspector').innerText();
+    if (!xray.includes('consumes') && !xray.includes('No directed path')) fail('x-ray produced neither path nor honest gap');
+    await page.close();
+  }
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });

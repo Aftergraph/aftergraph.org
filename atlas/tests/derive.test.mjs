@@ -15,6 +15,7 @@ import {
   validateAnswer,
   filterEntities,
   cutAge,
+  tracePath,
 } from '../src/lib/derive.js';
 
 // Minimal v0.2-shaped fixture: one entity with assertions on two planes each.
@@ -289,5 +290,31 @@ describe('filterEntities + cutAge', () => {
     expect(old.stale).toBe(true);
     expect(old.label).toMatch(/48h/);
     expect(cutAge('not-a-date', '2026-09-10T16:00:00Z').stale).toBe(true);
+  });
+});
+
+describe('tracePath', () => {
+  it('finds the shortest directed path with relation labels', () => {
+    const t = tracePath(fixture, 'repo:Aftergraph/aie', 'repo:Aftergraph/gov');
+    expect(t.path).toEqual(['repo:Aftergraph/aie', 'repo:Aftergraph/gov']);
+    expect(t.hops).toEqual([{ from: 'repo:Aftergraph/aie', relation: 'consumes', to: 'repo:Aftergraph/gov', plane: 'CANONICAL' }]);
+  });
+
+  it('returns null when no directed path exists', () => {
+    expect(tracePath(fixture, 'repo:Aftergraph/gov', 'repo:Aftergraph/old')).toBe(null);
+    expect(tracePath(fixture, 'repo:Aftergraph/nope', 'repo:Aftergraph/aie')).toBe(null);
+  });
+
+  it('prefers fewer hops deterministically', () => {
+    const multi = {
+      ...fixture,
+      relations: [
+        ...fixture.relations,
+        { id: 'rel-3', source: 'repo:Aftergraph/old', target: 'repo:Aftergraph/gov', relation: 'owns', truth_plane: 'CANONICAL', provenance: {}, observed_at: 't', freshness: 'fresh', conflict_id: null },
+      ],
+    };
+    // Direct rel-1 wins over the 2-hop aie -> old -> gov detour.
+    const t = tracePath(multi, 'repo:Aftergraph/aie', 'repo:Aftergraph/gov');
+    expect(t.path).toEqual(['repo:Aftergraph/aie', 'repo:Aftergraph/gov']);
   });
 });

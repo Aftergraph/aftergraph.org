@@ -33,6 +33,9 @@ body { margin: 0; background: var(--ag-canvas); color: var(--ag-text); font-fami
 .graph:focus { outline: 2px solid var(--ag-control); outline-offset: -2px; }
 .inspector { border-left: 1px solid var(--ag-border); overflow: auto; padding: 12px 14px; }
 .inspector h2 { font-size: 14px; margin: 0 0 4px; word-break: break-all; }
+.inspector h3 { font-size: 13px; margin: 12px 0 4px; }
+.inspector select { background: var(--ag-raised); border: 1px solid var(--ag-border); color: var(--ag-text); border-radius: 6px; padding: 5px 8px; margin: 2px 4px 2px 0; max-width: 100%; }
+.inspector ol.prov { margin: 6px 0; padding-left: 20px; }
 .prov { font-family: var(--ag-mono); font-size: 11px; color: var(--ag-muted); }
 .prov dt { color: var(--ag-text); margin-top: 8px; }
 .prov dd { margin: 2px 0 0; word-break: break-all; }

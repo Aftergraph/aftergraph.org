@@ -17,6 +17,7 @@ import {
   validateAnswer,
   filterEntities,
   cutAge,
+  tracePath,
 } from './lib/derive.js';
 import enrichFixtures from '../../docs/atlas/enrich/fixtures.json';
 import { pulseRows, contractRows, diffProjections } from './lib/sliceC.js';
@@ -296,6 +297,9 @@ export default function App() {
   const [askQ, setAskQ] = useState('');
   const [askHits, setAskHits] = useState(null);
   const [search, setSearch] = useState('');
+  const [xray, setXray] = useState(null);
+  const [xFrom, setXFrom] = useState('');
+  const [xTo, setXTo] = useState('');
   const [nowTick, setNowTick] = useState(() => Date.now());
   useEffect(() => {
     const t = setInterval(() => setNowTick(Date.now()), 60000);
@@ -326,7 +330,11 @@ export default function App() {
     (async () => {
       const { pos } = await layouted(graph);
       if (cancelled) return;
-      const hot = impact ? new Set([...impact.upstream, ...impact.downstream, node]) : null;
+      const hot = impact
+        ? new Set([...impact.upstream, ...impact.downstream, node])
+        : xray
+          ? new Set(xray.path)
+          : null;
       setNodes(
         graph.nodes.map((n) => ({
           id: n.id,
@@ -351,7 +359,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [graph, drift, node, impact, setNodes, setEdges]);
+  }, [graph, drift, node, impact, xray, setNodes, setEdges]);
 
   useEffect(() => {
     window.history.replaceState(null, '', serializeState({ node, overlay, view: drift && view === 'topology' ? 'drift' : view }));
@@ -475,6 +483,36 @@ export default function App() {
       </div>
       )}
       <aside className="inspector" ref={inspectorRef} tabIndex={-1} aria-label="Inspector">
+        <section aria-label="System x-ray">
+          <h3>X-ray <span className="prov">directed path from relations</span></h3>
+          <div>
+            <select value={xFrom} onChange={(e) => setXFrom(e.target.value)} aria-label="Trace from">
+              <option value="">from…</option>
+              {projection.entities.filter((e) => e.kind === 'repository').map((e) => (
+                <option key={e.id} value={e.id}>{shortLabel(e)}</option>
+              ))}
+            </select>
+            <select value={xTo} onChange={(e) => setXTo(e.target.value)} aria-label="Trace to">
+              <option value="">to…</option>
+              {projection.entities.filter((e) => e.kind === 'repository').map((e) => (
+                <option key={e.id} value={e.id}>{shortLabel(e)}</option>
+              ))}
+            </select>
+            <button onClick={() => setXray(xFrom && xTo ? tracePath(projection, xFrom, xTo) || { path: [], hops: [], none: true } : null)}>
+              Trace
+            </button>
+            {xray && <button onClick={() => setXray(null)}>Clear</button>}
+          </div>
+          {xray && (xray.none || !xray.path.length ? (
+            <p className="prov">No directed path in this cut — honest gap, not a healthy system.</p>
+          ) : (
+            <ol className="prov">
+              {xray.hops.map((h, i) => (
+                <li key={i}>{shortLabel({ identity: { full_name: h.from.split(':')[1] } })} —{h.relation}→ {shortLabel({ identity: { full_name: h.to.split(':')[1] } })} <span className={`plane-tag plane-${h.plane}`}>{h.plane}</span></li>
+              ))}
+            </ol>
+          ))}
+        </section>
         {!node && <p className="prov">Select a node for assertions + provenance.</p>}
         {node && (
           <>

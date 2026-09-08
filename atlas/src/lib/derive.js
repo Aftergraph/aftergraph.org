@@ -280,6 +280,47 @@ export function cutAge(cutISO, nowISO) {
   return { label, stale: now - cut > 24 * 3600 * 1000 };
 }
 
+// System x-ray: shortest directed path between two entities (BFS, deterministic).
+// Returns {path: [ids], hops: [{from, relation, to}]} or null when unreachable.
+// Self-scoped proposes loops are not traversable (they carry no impact).
+export function tracePath(projection, fromId, toId) {
+  if (fromId === toId) return { path: [fromId], hops: [] };
+  const adj = new Map();
+  for (const r of projection.relations) {
+    if (r.source === r.target) continue;
+    if (!adj.has(r.source)) adj.set(r.source, []);
+    adj.get(r.source).push({ to: r.target, relation: r.relation, plane: r.truth_plane });
+  }
+  for (const list of adj.values()) {
+    list.sort((a, b) => (a.to < b.to ? -1 : a.to > b.to ? 1 : a.relation < b.relation ? -1 : 1));
+  }
+  const prev = new Map([[fromId, null]]);
+  let frontier = [fromId];
+  while (frontier.length) {
+    const next = [];
+    for (const cur of frontier) {
+      for (const e of adj.get(cur) || []) {
+        if (prev.has(e.to)) continue;
+        prev.set(e.to, { from: cur, relation: e.relation, plane: e.plane });
+        next.push(e.to);
+      }
+    }
+    if (prev.has(toId)) break;
+    frontier = next;
+  }
+  if (!prev.has(toId)) return null;
+  const path = [toId];
+  const hops = [];
+  let cur = toId;
+  while (cur !== fromId) {
+    const p = prev.get(cur);
+    hops.unshift({ from: p.from, relation: p.relation, to: cur, plane: p.plane });
+    cur = p.from;
+    path.unshift(cur);
+  }
+  return { path, hops };
+}
+
 // Linear keyboard selection over a sorted id list.
 export function moveSelection(sortedIds, currentId, dir) {
   if (!sortedIds.length) return null;
