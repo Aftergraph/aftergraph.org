@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ReactFlow, { Background, Controls, Handle, Position, useNodesState, useEdgesState } from 'reactflow';
 import ELK from 'elkjs/lib/elk.bundled.js';
 import * as d3 from 'd3';
@@ -319,6 +319,8 @@ export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const inspectorRef = useRef(null);
+  const graphRef = useRef(null);
+  const graphEngaged = useRef(false);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 760px)');
@@ -376,19 +378,39 @@ export default function App() {
   }, [node, overlay, drift, view]);
 
   const sortedIds = useMemo(() => graph.nodes.map((n) => n.id), [graph]);
-  const onKey = useCallback(
-    (e) => {
+  // Keyboard traversal scoped to the graph pane. Window-capture (not div
+  // onKeyDown): React Flow stops propagation of some keys (notably Escape),
+  // which would otherwise never reach a bubble-phase pane handler. Scoped by
+  // event target so panel scrolling/inputs are never hijacked. Escape additionally
+  // honors graph engagement: after pointer interaction with the pane, focus often
+  // rests on BODY (React Flow does not retain pane focus), and Escape has no
+  // scroll side effect to protect — arrows stay strictly in-pane.
+  useEffect(() => {
+    const onPointer = (e) => {
+      graphEngaged.current = !!(graphRef.current && e.target instanceof Node && graphRef.current.contains(e.target));
+    };
+    const h = (e) => {
+      if (!graphRef.current || !(e.target instanceof Node)) return;
+      const inPane = graphRef.current.contains(e.target);
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (!inPane) return;
         e.preventDefault();
         setNode(moveSelection(sortedIds, node, e.key === 'ArrowDown' ? 1 : -1));
       } else if (e.key === 'Enter') {
+        if (!inPane) return;
         inspectorRef.current?.focus();
       } else if (e.key === 'Escape') {
+        if (!inPane && !(e.target === document.body && graphEngaged.current)) return;
         setNode(null);
       }
-    },
-    [sortedIds, node]
-  );
+    };
+    window.addEventListener('pointerdown', onPointer, true);
+    window.addEventListener('keydown', h, true);
+    return () => {
+      window.removeEventListener('pointerdown', onPointer, true);
+      window.removeEventListener('keydown', h, true);
+    };
+  }, [sortedIds, node]);
 
   const togglePlane = (p) =>
     setOverlay((o) => (o.includes(p) ? o.filter((x) => x !== p) : [...o, p]));
@@ -485,7 +507,7 @@ export default function App() {
         {treeContracts.length > 60 && <div className="prov">+ {treeContracts.length - 60} more (refine via search in Slice C)</div>}
       </nav>
       {view === 'topology' ? (
-      <div className="graph" tabIndex={0} onKeyDown={onKey} aria-label="Directed topology. Arrow keys move selection, Enter focuses inspector, Escape clears.">
+      <div className="graph" ref={graphRef} tabIndex={0} aria-label="Directed topology. Arrow keys move selection, Enter focuses inspector, Escape clears.">
         <ReactFlow
           nodes={nodes}
           edges={edges}

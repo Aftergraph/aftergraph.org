@@ -227,6 +227,22 @@ try {
     if (overflow > 1) fail(`mobile horizontal overflow: ${overflow}px`);
     await page.close();
   }
+  // Keyboard traversal: arrows move graph selection, Escape clears it
+  {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(2500);
+    await page.locator('.graph').click();
+    await page.keyboard.press('ArrowDown');
+    await page.waitForTimeout(1000);
+    const sel = await page.locator('.inspector').innerText();
+    if (!sel.includes('repo:Aftergraph/')) fail('ArrowDown did not move graph selection into the inspector');
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(1000);
+    const cleared = await page.locator('.inspector').innerText();
+    if (cleared.includes('repo:Aftergraph/')) fail('Escape did not clear the selection');
+    await page.close();
+  }
   // Tablet: full graph in a narrower viewport — must render without overflow
   {
     const page = await browser.newPage({ viewport: { width: 820, height: 1180 } });
