@@ -72,6 +72,25 @@ try {
     }
     await page.close();
   }
+  // Truth-plane overlay toggles drive the graph + URL state
+  {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(2500);
+    // Truth-plane overlay toggles: aria-pressed flips and URL state follows
+    const prop = page.getByRole('button', { name: 'PROPOSED', exact: true });
+    if (await prop.getAttribute('aria-pressed') !== 'true') fail('PROPOSED overlay not pressed by default');
+    await prop.click();
+    await page.waitForTimeout(1500);
+    if (await prop.getAttribute('aria-pressed') !== 'false') fail('PROPOSED toggle did not flip aria-pressed');
+    if (!page.url().includes('overlay=')) fail('overlay toggle did not persist to URL state');
+    const nodesOff = await page.locator('.rf-node').count();
+    if (nodesOff < 1) fail('topology emptied after PROPOSED toggle');
+    await prop.click();
+    await page.waitForTimeout(1500);
+    if (await prop.getAttribute('aria-pressed') !== 'true') fail('PROPOSED toggle did not flip back');
+    await page.close();
+  }
   // Drift view
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
