@@ -1,14 +1,14 @@
 {
   "schema": "atlas-projection/0.2",
   "meta": {
-    "evidence_cut": "2026-09-08T19:30:48Z",
+    "evidence_cut": "2026-09-08T21:12:42Z",
     "generator": "site/generate-atlas-projection.mjs",
     "gov_sha": "5f5327314e804573b2acb273abf72db9aa522370",
     "gov_topology": "docs/platform-topology/1.0.json",
     "repo_pins": {
       "Aftergraph/.github": "e9662a4c638e653ca1ce893ed3f45d44584ebd01",
       "Aftergraph/after-graph-governance": "5f5327314e804573b2acb273abf72db9aa522370",
-      "Aftergraph/aftergraph-cron-fabric": "44e578fac54b462af56ac3e4868db71457f8e099",
+      "Aftergraph/aftergraph-cron-fabric": "ac7ad2bde65648f6554377fe3f6bed4884c29419",
       "Aftergraph/aftergraph.org": "ec549794ec80b0f96c9764af04d15c88fd330c09",
       "Aftergraph/aie": "3c999d222e7c6d9dbc466cd84c11e96ea8ed3041",
       "Aftergraph/brand": "f0171b501a8460850e769db462934b9a33dd8952",
@@ -1352,7 +1352,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1370,7 +1370,7 @@
         "ref": "e9662a4c638e653ca1ce893ed3f45d44584ebd01",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T13:02:27Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -1388,7 +1388,7 @@
         "ref": "3c999d222e7c6d9dbc466cd84c11e96ea8ed3041",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1406,7 +1406,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1424,7 +1424,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1442,7 +1442,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1460,7 +1460,7 @@
         "ref": "e59ce259306303f08fcdfed328f957e6434a1299",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T12:21:40Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -1486,7 +1486,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1512,7 +1512,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1530,7 +1530,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1548,7 +1548,7 @@
         "ref": "f2c7843b30d3cffaa8756399463edfed90a01fc0",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T13:10:26Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -1566,7 +1566,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1584,7 +1584,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1602,7 +1602,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1620,7 +1620,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1638,7 +1638,7 @@
         "ref": "5cc016c62199db78ab71567df8661124695dd6c4",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:40:40Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -1656,7 +1656,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1674,7 +1674,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1692,7 +1692,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1710,7 +1710,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1728,7 +1728,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1754,7 +1754,7 @@
         "ref": "97f3f79707ee8792beb7972a6e68aaf60dfcf339",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T12:36:50Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -1772,7 +1772,7 @@
         "ref": "e9662a4c638e653ca1ce893ed3f45d44584ebd01",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1790,7 +1790,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1808,7 +1808,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1826,7 +1826,7 @@
         "ref": "d332fe03d12211879ff28ddee02ca35341b6e291",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:51:16Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -1844,7 +1844,7 @@
         "ref": "5cc016c62199db78ab71567df8661124695dd6c4",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1862,7 +1862,7 @@
         "ref": "f0171b501a8460850e769db462934b9a33dd8952",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:49:46Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -1880,7 +1880,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1898,7 +1898,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1916,7 +1916,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1942,7 +1942,7 @@
         "ref": "780971fefb0d523fb16e54acdbc58e4c35cb7076",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:41:31Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -1968,7 +1968,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -1994,7 +1994,7 @@
         "ref": "1abb17a67cdc9611eaa13ab9361616019c011c96",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T07:37:48Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -2012,7 +2012,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2030,7 +2030,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2048,7 +2048,7 @@
         "ref": "5ec9dc45b123be712eea78580c3de008bf7e3745",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:52:01Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -2066,7 +2066,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2084,7 +2084,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2102,7 +2102,7 @@
         "ref": "f2c7843b30d3cffaa8756399463edfed90a01fc0",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T13:10:26Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -2128,7 +2128,7 @@
         "ref": "7a69c89deff9cf28f8f4850cbd5509bf2d4335c3",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:48:49Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -2146,7 +2146,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2164,7 +2164,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2182,7 +2182,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2200,7 +2200,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2218,7 +2218,7 @@
         "ref": "1267f03b7ae50212173f3f93cca6d93547fb2906",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:53:34Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -2236,7 +2236,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2254,7 +2254,7 @@
         "ref": "f2c7843b30d3cffaa8756399463edfed90a01fc0",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2272,7 +2272,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2290,7 +2290,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2308,7 +2308,7 @@
         "ref": "f0171b501a8460850e769db462934b9a33dd8952",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2326,7 +2326,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2344,7 +2344,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2359,13 +2359,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2380,13 +2380,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2404,7 +2404,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2422,7 +2422,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2440,7 +2440,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2455,13 +2455,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2479,7 +2479,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2497,7 +2497,7 @@
         "ref": "5ec9dc45b123be712eea78580c3de008bf7e3745",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2515,7 +2515,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2533,7 +2533,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2559,8 +2559,26 @@
         "ref": "23149acc57d2e949cb22de4da9351826c743c88f",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T07:35:45Z",
+      "freshness": "fresh",
+      "conflict_id": null
+    },
+    {
+      "id": "as-31c6a547338d",
+      "subject": "repo:Aftergraph/docs",
+      "predicate": "pushed_at",
+      "value": "2026-09-08T20:49:28Z",
+      "truth_plane": "OBSERVED",
+      "provenance": {
+        "source": "github-api repos/Aftergraph/docs",
+        "source_type": "github-api",
+        "repository": "Aftergraph/docs",
+        "ref": "5cc016c62199db78ab71567df8661124695dd6c4",
+        "evidence_level": "observed"
+      },
+      "observed_at": "2026-09-08T21:12:42Z",
+      "valid_at": "2026-09-08T20:49:28Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -2577,7 +2595,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2595,7 +2613,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2613,7 +2631,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2631,7 +2649,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2646,13 +2664,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2670,7 +2688,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2688,7 +2706,7 @@
         "ref": "ec549794ec80b0f96c9764af04d15c88fd330c09",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:35:44Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -2706,7 +2724,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2724,7 +2742,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2750,7 +2768,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2776,26 +2794,8 @@
         "ref": "4568cce7c9e767ed220e94063acbacd39a72d496",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T12:44:36Z",
-      "freshness": "fresh",
-      "conflict_id": null
-    },
-    {
-      "id": "as-3a3d44605225",
-      "subject": "repo:Aftergraph/aftergraph-cron-fabric",
-      "predicate": "head_msg",
-      "value": "docs: proven Phase C receipt chain procedure (live-verified) (#18)",
-      "truth_plane": "OBSERVED",
-      "provenance": {
-        "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
-        "source_type": "github-api",
-        "repository": "Aftergraph/aftergraph-cron-fabric",
-        "ref": "44e578fac54b462af56ac3e4868db71457f8e099",
-        "evidence_level": "observed"
-      },
-      "observed_at": "2026-09-08T19:30:48Z",
-      "valid_at": "2026-09-08T17:45:20Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -2809,13 +2809,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2833,7 +2833,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2859,8 +2859,26 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
+      "freshness": "fresh",
+      "conflict_id": null
+    },
+    {
+      "id": "as-3f1cc48c10a4",
+      "subject": "repo:Aftergraph/aftergraph-cron-fabric",
+      "predicate": "head_sha",
+      "value": "ac7ad2bde65648f6554377fe3f6bed4884c29419",
+      "truth_plane": "OBSERVED",
+      "provenance": {
+        "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
+        "source_type": "github-api",
+        "repository": "Aftergraph/aftergraph-cron-fabric",
+        "ref": "ac7ad2bde65648f6554377fe3f6bed4884c29419",
+        "evidence_level": "observed"
+      },
+      "observed_at": "2026-09-08T21:12:42Z",
+      "valid_at": "2026-09-08T21:02:18Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -2877,7 +2895,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2895,7 +2913,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2913,26 +2931,8 @@
         "ref": "e9662a4c638e653ca1ce893ed3f45d44584ebd01",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T13:02:27Z",
-      "freshness": "fresh",
-      "conflict_id": null
-    },
-    {
-      "id": "as-41758e288179",
-      "subject": "repo:Aftergraph/docs",
-      "predicate": "pushed_at",
-      "value": "2026-09-08T16:42:03Z",
-      "truth_plane": "OBSERVED",
-      "provenance": {
-        "source": "github-api repos/Aftergraph/docs",
-        "source_type": "github-api",
-        "repository": "Aftergraph/docs",
-        "ref": "5cc016c62199db78ab71567df8661124695dd6c4",
-        "evidence_level": "observed"
-      },
-      "observed_at": "2026-09-08T19:30:48Z",
-      "valid_at": "2026-09-08T16:42:03Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -2949,7 +2949,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2967,7 +2967,7 @@
         "ref": "d332fe03d12211879ff28ddee02ca35341b6e291",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -2985,7 +2985,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3003,7 +3003,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3029,7 +3029,7 @@
         "ref": "0dd68cf4ff8a55a4dcc154edba16d07d2348480f",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:47:03Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3055,7 +3055,7 @@
         "ref": "1985aefc02cc3a6022cf66c6aab8848b5be6834a",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T00:18:34Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3070,13 +3070,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3102,7 +3102,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3120,7 +3120,7 @@
         "ref": "f0171b501a8460850e769db462934b9a33dd8952",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:50:04Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3135,13 +3135,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3167,7 +3167,7 @@
         "ref": "7b8d3954852e34a04878a931c7ec87232206117c",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T15:42:15Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3185,7 +3185,7 @@
         "ref": "e59ce259306303f08fcdfed328f957e6434a1299",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3203,7 +3203,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3221,7 +3221,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3247,7 +3247,7 @@
         "ref": "af066dc7397f58090f980cbdf52b5cfc840822b0",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T12:56:35Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3265,7 +3265,7 @@
         "ref": "75fee89e00256ba381d0c2dce36b03c72979e0b4",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3283,7 +3283,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3301,7 +3301,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3319,7 +3319,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3337,7 +3337,7 @@
         "ref": "1267f03b7ae50212173f3f93cca6d93547fb2906",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3355,7 +3355,7 @@
         "ref": "3c999d222e7c6d9dbc466cd84c11e96ea8ed3041",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:03:47Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3373,7 +3373,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3391,7 +3391,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3409,7 +3409,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3427,7 +3427,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3445,7 +3445,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3463,7 +3463,7 @@
         "ref": "d332fe03d12211879ff28ddee02ca35341b6e291",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3481,7 +3481,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3499,7 +3499,7 @@
         "ref": "5cc016c62199db78ab71567df8661124695dd6c4",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3525,7 +3525,7 @@
         "ref": "003f9717a99149aad6b953554a387027f0c2eb9a",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T13:04:09Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3543,7 +3543,7 @@
         "ref": "d3da7f2f867322874a49a2d1410f3f6066f7001c",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3561,7 +3561,7 @@
         "ref": "5ec9dc45b123be712eea78580c3de008bf7e3745",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:07:55Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3579,7 +3579,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3597,7 +3597,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3615,7 +3615,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3641,7 +3641,7 @@
         "ref": "554c02616048829169156e956b93da2399631e19",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:00:40Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3656,13 +3656,13 @@
       },
       "truth_plane": "CANONICAL",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3680,8 +3680,26 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
+      "freshness": "fresh",
+      "conflict_id": null
+    },
+    {
+      "id": "as-579437abc3cf",
+      "subject": "repo:Aftergraph/aftergraph-cron-fabric",
+      "predicate": "head_msg",
+      "value": "test: automate offline receipt-bridge chain proof (113 checks) + fix time-bomb fixture (#20)",
+      "truth_plane": "OBSERVED",
+      "provenance": {
+        "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
+        "source_type": "github-api",
+        "repository": "Aftergraph/aftergraph-cron-fabric",
+        "ref": "ac7ad2bde65648f6554377fe3f6bed4884c29419",
+        "evidence_level": "observed"
+      },
+      "observed_at": "2026-09-08T21:12:42Z",
+      "valid_at": "2026-09-08T21:02:18Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -3698,7 +3716,7 @@
         "ref": "d332fe03d12211879ff28ddee02ca35341b6e291",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:51:34Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3713,13 +3731,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3737,7 +3755,7 @@
         "ref": "5ec9dc45b123be712eea78580c3de008bf7e3745",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3763,7 +3781,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3781,7 +3799,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3799,7 +3817,7 @@
         "ref": "f2c7843b30d3cffaa8756399463edfed90a01fc0",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T13:10:29Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3817,7 +3835,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3835,7 +3853,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3853,7 +3871,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3871,7 +3889,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3889,7 +3907,7 @@
         "ref": "3c999d222e7c6d9dbc466cd84c11e96ea8ed3041",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:03:29Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -3907,7 +3925,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3925,7 +3943,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3943,8 +3961,26 @@
         "ref": "5cc016c62199db78ab71567df8661124695dd6c4",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:40:40Z",
+      "freshness": "fresh",
+      "conflict_id": null
+    },
+    {
+      "id": "as-68c1e9c04d38",
+      "subject": "repo:Aftergraph/aftergraph-cron-fabric",
+      "predicate": "pushed_at",
+      "value": "2026-09-08T21:09:01Z",
+      "truth_plane": "OBSERVED",
+      "provenance": {
+        "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
+        "source_type": "github-api",
+        "repository": "Aftergraph/aftergraph-cron-fabric",
+        "ref": "ac7ad2bde65648f6554377fe3f6bed4884c29419",
+        "evidence_level": "observed"
+      },
+      "observed_at": "2026-09-08T21:12:42Z",
+      "valid_at": "2026-09-08T21:09:01Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -3961,7 +3997,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3979,7 +4015,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -3997,26 +4033,8 @@
         "ref": "d3da7f2f867322874a49a2d1410f3f6066f7001c",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:50:31Z",
-      "freshness": "fresh",
-      "conflict_id": null
-    },
-    {
-      "id": "as-6d882591c959",
-      "subject": "repo:Aftergraph/aftergraph.org",
-      "predicate": "pushed_at",
-      "value": "2026-09-08T19:26:44Z",
-      "truth_plane": "OBSERVED",
-      "provenance": {
-        "source": "github-api repos/Aftergraph/aftergraph.org",
-        "source_type": "github-api",
-        "repository": "Aftergraph/aftergraph.org",
-        "ref": "ec549794ec80b0f96c9764af04d15c88fd330c09",
-        "evidence_level": "observed"
-      },
-      "observed_at": "2026-09-08T19:30:48Z",
-      "valid_at": "2026-09-08T19:26:44Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -4041,7 +4059,7 @@
         "ref": "e2601a796398247ba1281b644faee82f0f3674cd",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-07T16:57:53Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -4059,7 +4077,7 @@
         "ref": "d3da7f2f867322874a49a2d1410f3f6066f7001c",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:50:50Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -4077,7 +4095,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4095,7 +4113,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4110,11 +4128,11 @@
         "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
         "source_type": "github-api",
         "repository": "Aftergraph/aftergraph-cron-fabric",
-        "ref": "44e578fac54b462af56ac3e4868db71457f8e099",
+        "ref": "ac7ad2bde65648f6554377fe3f6bed4884c29419",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
-      "valid_at": "2026-09-08T17:45:20Z",
+      "observed_at": "2026-09-08T21:12:42Z",
+      "valid_at": "2026-09-08T21:02:18Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -4139,7 +4157,7 @@
         "ref": "6a5d99d797b8f4b1a6208ee5e52a6513f3f5557b",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T10:28:04Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -4157,7 +4175,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4175,7 +4193,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4193,7 +4211,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4211,7 +4229,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4229,7 +4247,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4247,7 +4265,7 @@
         "ref": "e59ce259306303f08fcdfed328f957e6434a1299",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T12:17:53Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -4265,7 +4283,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4283,7 +4301,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4301,7 +4319,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4319,26 +4337,8 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
-      "freshness": "fresh",
-      "conflict_id": null
-    },
-    {
-      "id": "as-7cc624365a91",
-      "subject": "repo:Aftergraph/aftergraph-cron-fabric",
-      "predicate": "pushed_at",
-      "value": "2026-09-08T18:01:05Z",
-      "truth_plane": "OBSERVED",
-      "provenance": {
-        "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
-        "source_type": "github-api",
-        "repository": "Aftergraph/aftergraph-cron-fabric",
-        "ref": "44e578fac54b462af56ac3e4868db71457f8e099",
-        "evidence_level": "observed"
-      },
-      "observed_at": "2026-09-08T19:30:48Z",
-      "valid_at": "2026-09-08T18:01:05Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -4355,7 +4355,7 @@
         "ref": "e9662a4c638e653ca1ce893ed3f45d44584ebd01",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4373,7 +4373,7 @@
         "ref": "75fee89e00256ba381d0c2dce36b03c72979e0b4",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4391,7 +4391,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4409,7 +4409,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4427,7 +4427,7 @@
         "ref": "1267f03b7ae50212173f3f93cca6d93547fb2906",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:53:34Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -4442,13 +4442,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4466,7 +4466,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4484,7 +4484,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4502,7 +4502,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4520,7 +4520,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4538,7 +4538,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4556,7 +4556,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4574,7 +4574,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4589,13 +4589,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4613,7 +4613,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4631,7 +4631,7 @@
         "ref": "f0171b501a8460850e769db462934b9a33dd8952",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:49:46Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -4649,7 +4649,7 @@
         "ref": "f0171b501a8460850e769db462934b9a33dd8952",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:49:46Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -4667,7 +4667,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4685,7 +4685,7 @@
         "ref": "e59ce259306303f08fcdfed328f957e6434a1299",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T12:17:53Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -4700,13 +4700,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4721,13 +4721,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4753,7 +4753,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4771,7 +4771,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4789,7 +4789,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4807,7 +4807,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4825,7 +4825,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4843,7 +4843,7 @@
         "ref": "f2c7843b30d3cffaa8756399463edfed90a01fc0",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4861,7 +4861,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4879,7 +4879,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4897,7 +4897,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4915,7 +4915,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4930,13 +4930,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4954,7 +4954,7 @@
         "ref": "5cc016c62199db78ab71567df8661124695dd6c4",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:40:40Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -4972,7 +4972,7 @@
         "ref": "ec549794ec80b0f96c9764af04d15c88fd330c09",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -4990,7 +4990,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5008,7 +5008,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5026,7 +5026,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5044,7 +5044,7 @@
         "ref": "75fee89e00256ba381d0c2dce36b03c72979e0b4",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:40:43Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -5062,7 +5062,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5080,7 +5080,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5098,7 +5098,7 @@
         "ref": "f0171b501a8460850e769db462934b9a33dd8952",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5113,13 +5113,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5137,7 +5137,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5155,34 +5155,8 @@
         "ref": "5ec9dc45b123be712eea78580c3de008bf7e3745",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:52:01Z",
-      "freshness": "fresh",
-      "conflict_id": null
-    },
-    {
-      "id": "as-9f14a8936d01",
-      "subject": "repo:Aftergraph/aftergraph-cron-fabric",
-      "predicate": "open_pr",
-      "value": {
-        "number": 19,
-        "title": "docs: refresh stale verification counts (111 checks, 17/17 fixtures, 15+1 layout)",
-        "base": "main",
-        "head_ref": "docs/conformance-count-refresh",
-        "head_sha": "5f3fa32d4b9f8644b66c93b02b37961ad893807e",
-        "is_draft": false,
-        "updated_at": "2026-09-08T18:02:41Z"
-      },
-      "truth_plane": "PROPOSED",
-      "provenance": {
-        "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
-        "source_type": "github-api",
-        "repository": "Aftergraph/aftergraph-cron-fabric",
-        "ref": "5f3fa32d4b9f8644b66c93b02b37961ad893807e",
-        "evidence_level": "proposed"
-      },
-      "observed_at": "2026-09-08T19:30:48Z",
-      "valid_at": "2026-09-08T18:02:41Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -5199,7 +5173,7 @@
         "ref": "1267f03b7ae50212173f3f93cca6d93547fb2906",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5214,13 +5188,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5238,7 +5212,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:13:41Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -5256,7 +5230,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5271,13 +5245,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5295,7 +5269,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5313,7 +5287,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5331,7 +5305,7 @@
         "ref": "1267f03b7ae50212173f3f93cca6d93547fb2906",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T12:56:59Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -5349,7 +5323,7 @@
         "ref": "ec549794ec80b0f96c9764af04d15c88fd330c09",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:35:44Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -5367,7 +5341,7 @@
         "ref": "75fee89e00256ba381d0c2dce36b03c72979e0b4",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:40:43Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -5385,7 +5359,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5403,7 +5377,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5421,7 +5395,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5439,7 +5413,7 @@
         "ref": "f2c7843b30d3cffaa8756399463edfed90a01fc0",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T13:10:26Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -5457,7 +5431,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:13:41Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -5475,7 +5449,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5493,7 +5467,7 @@
         "ref": "d3da7f2f867322874a49a2d1410f3f6066f7001c",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:50:31Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -5511,7 +5485,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:13:41Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -5529,7 +5503,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5547,7 +5521,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5573,7 +5547,7 @@
         "ref": "1bd03b58c57deed8f297e20e66b6dbd3aec8617d",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:41:43Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -5588,13 +5562,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5609,14 +5583,40 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
+      "freshness": "fresh",
+      "conflict_id": null
+    },
+    {
+      "id": "as-b193fdd19205",
+      "subject": "repo:Aftergraph/aftergraph-cron-fabric",
+      "predicate": "open_pr",
+      "value": {
+        "number": 21,
+        "title": "test: freeze telegram-live-status renderer-call contract (113 checks)",
+        "base": "main",
+        "head_ref": "test/renderer-contract",
+        "head_sha": "8e8ab7cf17d4cd1088d8c21069469b5c9deb9d5a",
+        "is_draft": false,
+        "updated_at": "2026-09-08T21:09:02Z"
+      },
+      "truth_plane": "PROPOSED",
+      "provenance": {
+        "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
+        "source_type": "github-api",
+        "repository": "Aftergraph/aftergraph-cron-fabric",
+        "ref": "8e8ab7cf17d4cd1088d8c21069469b5c9deb9d5a",
+        "evidence_level": "proposed"
+      },
+      "observed_at": "2026-09-08T21:12:42Z",
+      "valid_at": "2026-09-08T21:09:02Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -5633,7 +5633,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5651,7 +5651,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5669,7 +5669,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5684,13 +5684,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5705,10 +5705,10 @@
         "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
         "source_type": "github-api",
         "repository": "Aftergraph/aftergraph-cron-fabric",
-        "ref": "44e578fac54b462af56ac3e4868db71457f8e099",
+        "ref": "ac7ad2bde65648f6554377fe3f6bed4884c29419",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5726,7 +5726,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5744,7 +5744,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5762,7 +5762,7 @@
         "ref": "e59ce259306303f08fcdfed328f957e6434a1299",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T12:17:53Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -5780,7 +5780,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5798,7 +5798,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5824,7 +5824,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5842,7 +5842,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5860,7 +5860,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5875,13 +5875,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5899,8 +5899,26 @@
         "ref": "e59ce259306303f08fcdfed328f957e6434a1299",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
+      "freshness": "fresh",
+      "conflict_id": null
+    },
+    {
+      "id": "as-c14aaa28d4cb",
+      "subject": "repo:Aftergraph/aftergraph.org",
+      "predicate": "pushed_at",
+      "value": "2026-09-08T21:10:59Z",
+      "truth_plane": "OBSERVED",
+      "provenance": {
+        "source": "github-api repos/Aftergraph/aftergraph.org",
+        "source_type": "github-api",
+        "repository": "Aftergraph/aftergraph.org",
+        "ref": "ec549794ec80b0f96c9764af04d15c88fd330c09",
+        "evidence_level": "observed"
+      },
+      "observed_at": "2026-09-08T21:12:42Z",
+      "valid_at": "2026-09-08T21:10:59Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -5917,7 +5935,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5935,7 +5953,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5953,7 +5971,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5971,7 +5989,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -5989,7 +6007,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6004,13 +6022,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": "C2"
@@ -6025,10 +6043,10 @@
         "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
         "source_type": "github-api",
         "repository": "Aftergraph/aftergraph-cron-fabric",
-        "ref": "44e578fac54b462af56ac3e4868db71457f8e099",
+        "ref": "ac7ad2bde65648f6554377fe3f6bed4884c29419",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6043,13 +6061,13 @@
       },
       "truth_plane": "CANONICAL",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6075,26 +6093,8 @@
         "ref": "df81866dee0e30190b753256abbab602d14c5fba",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:41:34Z",
-      "freshness": "fresh",
-      "conflict_id": null
-    },
-    {
-      "id": "as-c94b201c7d80",
-      "subject": "repo:Aftergraph/aftergraph-cron-fabric",
-      "predicate": "head_sha",
-      "value": "44e578fac54b462af56ac3e4868db71457f8e099",
-      "truth_plane": "OBSERVED",
-      "provenance": {
-        "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
-        "source_type": "github-api",
-        "repository": "Aftergraph/aftergraph-cron-fabric",
-        "ref": "44e578fac54b462af56ac3e4868db71457f8e099",
-        "evidence_level": "observed"
-      },
-      "observed_at": "2026-09-08T19:30:48Z",
-      "valid_at": "2026-09-08T17:45:20Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -6111,7 +6111,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6137,7 +6137,7 @@
         "ref": "cbbe7b44cc6120c0d7102068d1ea28a331cb080f",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:13:01Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6155,7 +6155,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6173,7 +6173,7 @@
         "ref": "5ec9dc45b123be712eea78580c3de008bf7e3745",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:52:01Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6191,7 +6191,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6209,7 +6209,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6224,13 +6224,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6248,7 +6248,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6266,7 +6266,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6284,7 +6284,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6302,7 +6302,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6320,7 +6320,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6338,7 +6338,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6356,7 +6356,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6374,7 +6374,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6392,7 +6392,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:13:44Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6410,7 +6410,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6428,7 +6428,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6446,7 +6446,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6464,7 +6464,7 @@
         "ref": "75fee89e00256ba381d0c2dce36b03c72979e0b4",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:40:43Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6482,7 +6482,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6500,7 +6500,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6518,7 +6518,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6536,7 +6536,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6554,7 +6554,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6572,7 +6572,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6598,7 +6598,7 @@
         "ref": "1ab7dc11470a80879bbd45c5b57408339cc3376e",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:42:05Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6616,7 +6616,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6634,7 +6634,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6652,7 +6652,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6667,13 +6667,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6691,7 +6691,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6709,7 +6709,7 @@
         "ref": "3c999d222e7c6d9dbc466cd84c11e96ea8ed3041",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:03:29Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6727,7 +6727,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6745,7 +6745,7 @@
         "ref": "1267f03b7ae50212173f3f93cca6d93547fb2906",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:53:34Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6763,7 +6763,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6781,7 +6781,7 @@
         "ref": "75fee89e00256ba381d0c2dce36b03c72979e0b4",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:40:46Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6799,7 +6799,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6817,7 +6817,7 @@
         "ref": "d332fe03d12211879ff28ddee02ca35341b6e291",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:51:16Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6843,7 +6843,7 @@
         "ref": "92c3fbb7386773833d306591858a7b9a99173f49",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:41:40Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6861,7 +6861,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6879,7 +6879,7 @@
         "ref": "e9662a4c638e653ca1ce893ed3f45d44584ebd01",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T13:02:28Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6897,7 +6897,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6915,7 +6915,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6933,7 +6933,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6951,7 +6951,7 @@
         "ref": "e9662a4c638e653ca1ce893ed3f45d44584ebd01",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T13:02:27Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -6969,7 +6969,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -6987,7 +6987,7 @@
         "ref": "d332fe03d12211879ff28ddee02ca35341b6e291",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:51:16Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -7005,7 +7005,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7023,7 +7023,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7041,7 +7041,7 @@
         "ref": "ec549794ec80b0f96c9764af04d15c88fd330c09",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7067,7 +7067,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7085,7 +7085,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7103,7 +7103,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7121,7 +7121,7 @@
         "ref": "ec549794ec80b0f96c9764af04d15c88fd330c09",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:35:44Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -7136,13 +7136,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7168,7 +7168,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7186,7 +7186,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7204,7 +7204,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7219,13 +7219,13 @@
       },
       "truth_plane": "OBSERVED",
       "provenance": {
-        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T19:30:48Z)",
+        "source": "atlas-generator derivation (topology@5f53273 + cut 2026-09-08T21:12:42Z)",
         "source_type": "generated-derivation",
         "repository": "Aftergraph/after-graph-governance",
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "derived"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7243,7 +7243,7 @@
         "ref": "d3da7f2f867322874a49a2d1410f3f6066f7001c",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7261,7 +7261,7 @@
         "ref": "d3da7f2f867322874a49a2d1410f3f6066f7001c",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T11:50:31Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -7279,7 +7279,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7297,7 +7297,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7315,7 +7315,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7333,7 +7333,7 @@
         "ref": "3c999d222e7c6d9dbc466cd84c11e96ea8ed3041",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": "2026-09-08T16:03:29Z",
       "freshness": "fresh",
       "conflict_id": null
@@ -7351,7 +7351,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7369,7 +7369,7 @@
         "ref": "3c999d222e7c6d9dbc466cd84c11e96ea8ed3041",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7387,7 +7387,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7405,7 +7405,7 @@
         "ref": "main",
         "evidence_level": "observed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "valid_at": null,
       "freshness": "fresh",
       "conflict_id": null
@@ -7425,7 +7425,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7442,7 +7442,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7459,7 +7459,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7476,7 +7476,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7493,7 +7493,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7510,7 +7510,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7527,7 +7527,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7544,7 +7544,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7561,7 +7561,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7578,7 +7578,7 @@
         "ref": "1985aefc02cc3a6022cf66c6aab8848b5be6834a",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7595,7 +7595,7 @@
         "ref": "df81866dee0e30190b753256abbab602d14c5fba",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7612,7 +7612,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7629,7 +7629,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7646,7 +7646,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7663,7 +7663,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7680,7 +7680,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7697,7 +7697,7 @@
         "ref": "003f9717a99149aad6b953554a387027f0c2eb9a",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7714,7 +7714,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7731,7 +7731,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7748,7 +7748,24 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
+      "freshness": "fresh",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-184d31c7c9c6",
+      "source": "repo:Aftergraph/aftergraph-cron-fabric",
+      "relation": "proposes",
+      "target": "repo:Aftergraph/aftergraph-cron-fabric",
+      "truth_plane": "PROPOSED",
+      "provenance": {
+        "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
+        "source_type": "github-api",
+        "repository": "Aftergraph/aftergraph-cron-fabric",
+        "ref": "8e8ab7cf17d4cd1088d8c21069469b5c9deb9d5a",
+        "evidence_level": "proposed"
+      },
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7765,7 +7782,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7782,7 +7799,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7799,7 +7816,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7816,7 +7833,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7833,7 +7850,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7850,7 +7867,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7867,7 +7884,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7884,7 +7901,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7901,7 +7918,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7918,7 +7935,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7935,7 +7952,7 @@
         "ref": "23149acc57d2e949cb22de4da9351826c743c88f",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7952,7 +7969,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7969,7 +7986,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -7986,7 +8003,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8003,7 +8020,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8020,7 +8037,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8037,7 +8054,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8054,7 +8071,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8071,7 +8088,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8088,7 +8105,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8105,7 +8122,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8122,7 +8139,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8139,7 +8156,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8156,7 +8173,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8173,7 +8190,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8190,7 +8207,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8207,7 +8224,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8224,7 +8241,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8241,7 +8258,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8258,7 +8275,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8275,7 +8292,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8292,7 +8309,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8309,7 +8326,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8326,7 +8343,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8343,7 +8360,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8360,7 +8377,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8377,7 +8394,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8394,7 +8411,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8411,7 +8428,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8428,7 +8445,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8445,7 +8462,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8462,7 +8479,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8479,7 +8496,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8496,7 +8513,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8513,7 +8530,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8530,7 +8547,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8547,7 +8564,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8564,7 +8581,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8581,7 +8598,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8598,7 +8615,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8615,7 +8632,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8632,7 +8649,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8649,7 +8666,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8666,7 +8683,7 @@
         "ref": "92c3fbb7386773833d306591858a7b9a99173f49",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8683,7 +8700,7 @@
         "ref": "cbbe7b44cc6120c0d7102068d1ea28a331cb080f",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8700,7 +8717,7 @@
         "ref": "4568cce7c9e767ed220e94063acbacd39a72d496",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8717,7 +8734,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8734,7 +8751,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8751,7 +8768,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8768,7 +8785,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8785,7 +8802,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8802,7 +8819,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8819,7 +8836,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8836,7 +8853,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8853,7 +8870,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8870,7 +8887,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8887,7 +8904,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8904,7 +8921,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8921,7 +8938,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8938,7 +8955,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8955,7 +8972,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8972,7 +8989,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -8989,7 +9006,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9006,7 +9023,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9023,7 +9040,7 @@
         "ref": "af066dc7397f58090f980cbdf52b5cfc840822b0",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9040,7 +9057,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9057,7 +9074,7 @@
         "ref": "1bd03b58c57deed8f297e20e66b6dbd3aec8617d",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9074,7 +9091,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9091,7 +9108,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9108,7 +9125,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9125,24 +9142,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
-      "freshness": "fresh",
-      "conflict_id": null
-    },
-    {
-      "id": "rel-7f048e58b2ae",
-      "source": "repo:Aftergraph/aftergraph-cron-fabric",
-      "relation": "proposes",
-      "target": "repo:Aftergraph/aftergraph-cron-fabric",
-      "truth_plane": "PROPOSED",
-      "provenance": {
-        "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
-        "source_type": "github-api",
-        "repository": "Aftergraph/aftergraph-cron-fabric",
-        "ref": "5f3fa32d4b9f8644b66c93b02b37961ad893807e",
-        "evidence_level": "proposed"
-      },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9159,7 +9159,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9176,7 +9176,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9193,7 +9193,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9210,7 +9210,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9227,7 +9227,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9244,7 +9244,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9261,7 +9261,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9278,7 +9278,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9295,7 +9295,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9312,7 +9312,7 @@
         "ref": "1abb17a67cdc9611eaa13ab9361616019c011c96",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9329,7 +9329,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9346,7 +9346,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9363,7 +9363,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9380,7 +9380,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9397,7 +9397,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9414,7 +9414,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9431,7 +9431,7 @@
         "ref": "780971fefb0d523fb16e54acdbc58e4c35cb7076",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9448,7 +9448,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9465,7 +9465,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9482,7 +9482,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9499,7 +9499,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9516,7 +9516,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9533,7 +9533,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9550,7 +9550,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9567,7 +9567,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9584,7 +9584,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9601,7 +9601,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9618,7 +9618,7 @@
         "ref": "1ab7dc11470a80879bbd45c5b57408339cc3376e",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9635,7 +9635,7 @@
         "ref": "7a69c89deff9cf28f8f4850cbd5509bf2d4335c3",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9652,7 +9652,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9669,7 +9669,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9686,7 +9686,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9703,7 +9703,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9720,7 +9720,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9737,7 +9737,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9754,7 +9754,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9771,7 +9771,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9788,7 +9788,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9805,7 +9805,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9822,7 +9822,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9839,7 +9839,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9856,7 +9856,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9873,7 +9873,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9890,7 +9890,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9907,7 +9907,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9924,7 +9924,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9941,7 +9941,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9958,7 +9958,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9975,7 +9975,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -9992,7 +9992,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10009,7 +10009,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10026,7 +10026,7 @@
         "ref": "7b8d3954852e34a04878a931c7ec87232206117c",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10043,7 +10043,7 @@
         "ref": "554c02616048829169156e956b93da2399631e19",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10060,7 +10060,7 @@
         "ref": "0dd68cf4ff8a55a4dcc154edba16d07d2348480f",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10077,7 +10077,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10094,7 +10094,7 @@
         "ref": "6a5d99d797b8f4b1a6208ee5e52a6513f3f5557b",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10111,7 +10111,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10128,7 +10128,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10145,7 +10145,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10162,7 +10162,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10179,7 +10179,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10196,7 +10196,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10213,7 +10213,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10230,7 +10230,7 @@
         "ref": "e2601a796398247ba1281b644faee82f0f3674cd",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10247,7 +10247,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10264,7 +10264,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10281,7 +10281,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10298,7 +10298,7 @@
         "ref": "97f3f79707ee8792beb7972a6e68aaf60dfcf339",
         "evidence_level": "proposed"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10315,7 +10315,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10332,7 +10332,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10349,7 +10349,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10366,7 +10366,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10383,7 +10383,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10400,7 +10400,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10417,7 +10417,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10434,7 +10434,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10451,7 +10451,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10468,7 +10468,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10485,7 +10485,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10502,7 +10502,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10519,7 +10519,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10536,7 +10536,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10553,7 +10553,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10570,7 +10570,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10587,7 +10587,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10604,7 +10604,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10621,7 +10621,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     },
@@ -10638,7 +10638,7 @@
         "ref": "5f5327314e804573b2acb273abf72db9aa522370",
         "evidence_level": "canonical"
       },
-      "observed_at": "2026-09-08T19:30:48Z",
+      "observed_at": "2026-09-08T21:12:42Z",
       "freshness": "fresh",
       "conflict_id": null
     }
