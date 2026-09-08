@@ -174,6 +174,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E33 Tablet QA: DOM smoke covered desktop + mobile but not tablet. Added
   820x1180 pass (full topology renders, zero horizontal overflow). PASS.
   Pushed 6db24df.
+- E34 Shots re-taken: prior set predated E26/E30/E32 visual changes. All
+  5 views re-shot on current UI + capabilities view added to shoot.mjs.
+  Pushed 32f0f24.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
