@@ -8,7 +8,9 @@ export default defineConfig({
   base: '/atlas/',
   build: {
     outDir: '../site/atlas',
-    emptyOutDir: false,
+    // Wipe stale hashed bundles every build. projection.json is NOT build output:
+    // it lives at site/atlas-projection.json and is copied in by build-worker.cjs.
+    emptyOutDir: true,
     assetsDir: 'assets',
     sourcemap: false,
     rollupOptions: {

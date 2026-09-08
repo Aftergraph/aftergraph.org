@@ -73,8 +73,11 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   aliasMap extended with slug normalization + C1-pair + C4-shadow linking, 3 new tests.
   Design sound, contract-consistent, 19/19 + DOM PASS → ACCEPTED. Author unidentified
   (not QA child per transcript, cron loop not yet fired); watch for further ghost writes.
-- E9 Wakeup: pushed feat/atlas to origin (bd9593b). Shipped tree search + cut-freshness
-  chip (27/27 vitest, DOM PASS incl. new checks). Next: CI wiring per qa/BASELINE.md.
+- E10 Ghost author appended AFM/AVC sections into the Atlas owner brief (twice). Split:
+  brief restored to Atlas-only (38 lines); AFM content relocated to docs/atlas/afm-inbox.md
+  (UNVERIFIED by Atlas mission). Newest ghost refinement lost via volatile /tmp — lesson:
+  never stage through /tmp, use workspace paths. Co-author still unidentified; code
+  contributions remain welcome but file-mixing into owner briefs is out of bounds.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).

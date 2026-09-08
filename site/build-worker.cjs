@@ -21,8 +21,10 @@ const llms = read('llms.txt');
 const security = read('security.txt');
 
 // ---- Atlas (/atlas): vite-built observatory, inlined as static routes ----
-// Built by `npm --prefix ../atlas run build` into site/atlas/ BEFORE this script.
+// Built by `npm --prefix ../atlas run build` into site/atlas/ BEFORE this script
+// (vite wipes stale hashed bundles; projection.json is source data, copied in here).
 // Fails closed when the build is absent or references non-existent hashed assets.
+fs.copyFileSync(path.join(SITE, 'atlas-projection.json'), path.join(SITE, 'atlas', 'projection.json'));
 const ATLAS_DIR = path.join(SITE, 'atlas');
 const ATLAS_ASSETS_DIR = path.join(ATLAS_DIR, 'assets');
 assert(fs.existsSync(path.join(ATLAS_DIR, 'index.html')), 'atlas build missing: run `npm --prefix ../atlas run build` first');

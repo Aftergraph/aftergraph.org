@@ -24,7 +24,7 @@ import { pulseRows, contractRows } from './lib/sliceC.js';
 const VIEWS = ['topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask'];
 
 const GENERATOR_CMD =
-  'node site/generate-atlas-projection.mjs --ledger <ledger-dir> --gov <governance-clone> --out site/atlas/projection.json';
+  'node site/generate-atlas-projection.mjs --ledger <ledger-dir> --gov <governance-clone> --out site/atlas-projection.json';
 
 function useProjection() {
   const [state, setState] = useState({ status: 'loading', projection: null, origin: null });
@@ -32,7 +32,7 @@ function useProjection() {
     let cancelled = false;
     (async () => {
       try {
-        const mod = await import('../../site/atlas/projection.json');
+        const mod = await import('../../site/atlas-projection.json');
         if (!cancelled) setState({ status: 'ready', projection: mod.default, origin: 'build' });
         return;
       } catch {

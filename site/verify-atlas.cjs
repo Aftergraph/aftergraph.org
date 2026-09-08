@@ -1,10 +1,10 @@
 // Fail-closed gate for AtlasProjection v0.2 artifacts.
-// Usage: node site/verify-atlas.cjs [site/atlas/projection.json]
+// Usage: node site/verify-atlas.cjs [site/atlas-projection.json]
 // Exit 0 = PASS, exit 1 = FAIL with VERIFY-FAIL lines. No network, no writes.
 const fs = require('fs');
 const path = require('path');
 
-const FILE = process.argv[2] || path.join(__dirname, 'atlas', 'projection.json');
+const FILE = process.argv[2] || path.join(__dirname, 'atlas-projection.json');
 let failCount = 0;
 const fail = (message) => {
   console.error(`VERIFY-FAIL: ${message}`);

@@ -1,6 +1,8 @@
 # AtlasProjection schema v0.2 (frozen 2026-09-08, supersedes v0.1)
 
-`site/atlas/projection.json` is the ONLY data source the Atlas UI may read.
+`site/atlas-projection.json` is the ONLY data source the Atlas UI may read (source data,
+committed). The vite build compiles it in; `build-worker.cjs` copies it to
+`site/atlas/projection.json` as the served runtime fallback.
 Generator: `site/generate-atlas-projection.mjs`. The UI must render `meta` provenance
 and refuse to upgrade any claim beyond its recorded `evidence_level`.
 

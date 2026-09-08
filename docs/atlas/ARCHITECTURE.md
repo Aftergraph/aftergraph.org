@@ -14,8 +14,8 @@ as one deterministic, provenance-labelled workspace. It owns nothing it displays
   files via a `build-worker.cjs` addition. The rest of aftergraph.org is untouched — it is not
   converted into a JS application.
 - Data input: `site/generate-atlas-projection.mjs` (node stdlib only) emits
-  `site/atlas/projection.json` BEFORE the vite build; the build validates it against the
-  projection shape test and inlines/copies it as a static asset. No live GitHub calls from the
+  `site/atlas-projection.json` (committed source data) BEFORE the vite build, which compiles
+  it in; `build-worker.cjs` copies it to `site/atlas/projection.json` for runtime fallback. No live GitHub calls from the
   browser, no runtime CDN dependencies (no esm.sh/unpkg in production): reproducible builds,
   pinned lockfile versions, CSP-compatible, unit-testable, visual-testable, reliable offline CI.
 - No local build step for the REST of the site: only `atlas/` is a JS application.
