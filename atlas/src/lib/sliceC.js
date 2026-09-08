@@ -87,3 +87,31 @@ export function contractRows(projection) {
   rows.sort((a, b) => (a.id < b.id ? -1 : 1));
   return rows;
 }
+
+// Time-machine diff: old projection vs new projection. Assertion identity is the
+// assertion id; a changed VALUE with the same id is a change, not add+remove.
+// Conflict identity is the conflict id; presence-only transitions are reported.
+export function diffProjections(oldP, newP) {
+  const keySet = (arr, k) => new Set(arr.map((x) => x[k]));
+  const oldE = keySet(oldP.entities, 'id');
+  const newE = keySet(newP.entities, 'id');
+  const oldA = new Map(oldP.assertions.map((a) => [a.id, JSON.stringify(a)]));
+  const newA = new Map(newP.assertions.map((a) => [a.id, JSON.stringify(a)]));
+  const oldR = keySet(oldP.relations, 'id');
+  const newR = keySet(newP.relations, 'id');
+  const oldC = keySet(oldP.conflicts || [], 'id');
+  const newC = keySet(newP.conflicts || [], 'id');
+  const sub = (a, b) => [...a].filter((x) => !b.has(x)).sort();
+  const changedAssertions = [...newA.keys()]
+    .filter((id) => oldA.has(id) && oldA.get(id) !== newA.get(id))
+    .sort();
+  return {
+    addedEntities: sub(newE, oldE),
+    removedEntities: sub(oldE, newE),
+    changedAssertions,
+    addedRelations: sub(newR, oldR),
+    removedRelations: sub(oldR, newR),
+    openedConflicts: sub(newC, oldC),
+    resolvedConflicts: sub(oldC, newC),
+  };
+}

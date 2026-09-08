@@ -19,7 +19,7 @@ import {
   cutAge,
 } from './lib/derive.js';
 import enrichFixtures from '../../docs/atlas/enrich/fixtures.json';
-import { pulseRows, contractRows } from './lib/sliceC.js';
+import { pulseRows, contractRows, diffProjections } from './lib/sliceC.js';
 
 const VIEWS = ['topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask'];
 
@@ -178,16 +178,73 @@ function ResearchView({ projection }) {
 }
 
 function SnapshotsView({ projection }) {
+  const [index, setIndex] = React.useState(null);
+  const [sel, setSel] = React.useState(null);
+  const [diff, setDiff] = React.useState(null);
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('snapshots/index.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const idx = await res.json();
+        if (!cancelled) setIndex(idx);
+      } catch {
+        if (!cancelled) setIndex([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  const inspect = async (file) => {
+    setSel(file);
+    try {
+      const res = await fetch(`snapshots/${file}`, { cache: 'no-store' });
+      const old = await res.json();
+      setDiff(diffProjections(old, projection));
+    } catch {
+      setDiff({ error: `cannot load ${file}` });
+    }
+  };
   return (
     <div className="panel" aria-label="Snapshots">
-      <h2>Snapshots</h2>
+      <h2>Snapshots <span className="prov">immutable versioned cuts — history is never rewritten</span></h2>
       <dl className="prov">
         <dt>current cut</dt><dd>{projection.meta.evidence_cut}</dd>
         <dt>gov SHA</dt><dd>{projection.meta.gov_sha}</dd>
-        <dt>entities / assertions / relations / conflicts</dt>
-        <dd>{projection.entities.length} / {projection.assertions.length} / {projection.relations.length} / {projection.conflicts.length}</dd>
       </dl>
-      <p className="prov">No prior snapshot files in this build — diff view activates once versioned projection-&lt;cut&gt;.json files ship alongside.</p>
+      {index === null && <p className="prov">Loading snapshot index…</p>}
+      {index !== null && index.length === 0 && (
+        <p className="prov">No versioned snapshots ship with this build yet — run the generator with --snapshot-dir.</p>
+      )}
+      {index !== null && index.length > 0 && (
+        <table>
+          <thead><tr><th>cut</th><th>gov</th><th>entities</th><th>conflicts</th><th></th></tr></thead>
+          <tbody>
+            {index.map((s) => (
+              <tr key={s.file}>
+                <td className="prov">{s.evidence_cut}</td>
+                <td className="prov">{String(s.gov_sha).slice(0, 7)}</td>
+                <td>{s.entities}</td>
+                <td className="prov">{(s.conflicts || []).join(', ')}</td>
+                <td><button className="link" onClick={() => inspect(s.file)}>diff vs current</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {diff && !diff.error && (
+        <dl className="prov">
+          <dt>comparing {sel} → current</dt>
+          <dd>added entities: {diff.addedEntities.join(', ') || '—'}</dd>
+          <dd>removed entities: {diff.removedEntities.join(', ') || '—'}</dd>
+          <dd>changed assertions: {diff.changedAssertions.join(', ') || '—'}</dd>
+          <dd>relations +{diff.addedRelations.length}/−{diff.removedRelations.length}</dd>
+          <dd>opened conflicts: {diff.openedConflicts.join(', ') || '—'} · resolved: {diff.resolvedConflicts.join(', ') || '—'}</dd>
+        </dl>
+      )}
+      {diff && diff.error && <p className="prov">{diff.error}</p>}
     </div>
   );
 }

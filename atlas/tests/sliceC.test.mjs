@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { impactRings, pulseRows, contractRows } from '../src/lib/sliceC.js';
+import { impactRings, pulseRows, contractRows, diffProjections } from '../src/lib/sliceC.js';
 
 const proj = {
   schema: 'atlas-projection/0.2',
@@ -48,5 +48,34 @@ describe('impactRings', () => {
       { id: 'repo:Aftergraph/a', depth: 1, dir: 'up' },
       { id: 'repo:Aftergraph/b', depth: 1, dir: 'up' },
     ]);
+  });
+});
+
+describe('diffProjections', () => {
+  const newer = JSON.parse(JSON.stringify(proj));
+  it('detects added/removed entities, changed assertions, removed relations', () => {
+    // Remove b (+ its assertions/relations), add c, change a's head value.
+    newer.entities = newer.entities.filter((e) => e.id !== 'repo:Aftergraph/b');
+    newer.entities.push({ id: 'repo:Aftergraph/c', kind: 'repository', identity: { full_name: 'Aftergraph/c' } });
+    newer.assertions = newer.assertions.filter((a) => a.subject !== 'repo:Aftergraph/b');
+    newer.assertions.find((a) => a.id === 'as-1').value = 'a2';
+    newer.relations = newer.relations.filter((r) => r.source !== 'repo:Aftergraph/b');
+    newer.conflicts = [];
+    const d = diffProjections(proj, newer);
+    expect(d.addedEntities).toEqual(['repo:Aftergraph/c']);
+    expect(d.removedEntities).toEqual(['repo:Aftergraph/b']);
+    expect(d.changedAssertions).toEqual(['as-1']);
+    expect(d.addedRelations).toEqual([]);
+    expect(d.removedRelations).toEqual(['rel-2']);
+    expect(d.resolvedConflicts).toEqual([]);
+    expect(d.openedConflicts).toEqual([]);
+  });
+
+  it('is empty for identical projections', () => {
+    const d = diffProjections(proj, JSON.parse(JSON.stringify(proj)));
+    expect(d).toEqual({
+      addedEntities: [], removedEntities: [], changedAssertions: [],
+      addedRelations: [], removedRelations: [], openedConflicts: [], resolvedConflicts: [],
+    });
   });
 });

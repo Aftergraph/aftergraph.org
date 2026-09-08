@@ -26,6 +26,7 @@ const GOV = arg('--gov');
 const OUT = arg('--out');
 const BRANCH = arg('--gov-branch', 'main');
 const NOW = arg('--now', new Date().toISOString().replace(/\.\d+Z$/, 'Z'));
+const SNAPSHOT_DIR = arg('--snapshot-dir', null);
 
 // Rename map: canonical legacy slug -> observed slug (kept as data, edges NOT rewritten).
 const RENAMES = {
@@ -457,6 +458,41 @@ const projection = {
 };
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
-fs.writeFileSync(OUT, JSON.stringify(projection, null, 2) + '\n');
+const outText = JSON.stringify(projection, null, 2) + '\n';
+fs.writeFileSync(OUT, outText);
 const n = (k) => projection[k].length;
 console.log(`projection v0.2: ${n('entities')} entities, ${n('assertions')} assertions, ${n('relations')} relations, ${n('conflicts')} conflicts -> ${OUT}`);
+
+// Versioned snapshots: immutable history. An existing snapshot for the same cut
+// must be byte-identical or generation fails closed (never rewrite history).
+if (SNAPSHOT_DIR) {
+  fs.mkdirSync(SNAPSHOT_DIR, { recursive: true });
+  const stamp = CUT.replace(/[:]/g, '-');
+  const snapFile = `projection-${stamp}.json`;
+  const snapPath = path.join(SNAPSHOT_DIR, snapFile);
+  if (fs.existsSync(snapPath)) {
+    const prior = fs.readFileSync(snapPath, 'utf8');
+    if (prior !== outText) {
+      throw new Error(`snapshot ${snapFile} exists with different content — history is immutable (new cut required)`);
+    }
+  } else {
+    fs.writeFileSync(snapPath, outText);
+  }
+  const indexPath = path.join(SNAPSHOT_DIR, 'index.json');
+  let index = [];
+  if (fs.existsSync(indexPath)) index = JSON.parse(fs.readFileSync(indexPath, 'utf8'));
+  if (!index.some((e) => e.file === snapFile)) {
+    index.push({
+      file: snapFile,
+      evidence_cut: CUT,
+      gov_sha: govSha,
+      entities: n('entities'),
+      assertions: n('assertions'),
+      relations: n('relations'),
+      conflicts: conflicts.map((c) => c.id),
+    });
+    index.sort((a, b) => (a.evidence_cut < b.evidence_cut ? -1 : 1));
+    fs.writeFileSync(indexPath, JSON.stringify(index, null, 2) + '\n');
+  }
+  console.log(`snapshot: ${snapFile} (${index.length} in index)`);
+}

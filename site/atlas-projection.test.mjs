@@ -23,10 +23,10 @@ execFileSync('node', [MKFIX, FIX], { stdio: 'pipe' });
 const LEDGER = path.join(FIX, 'ledger');
 const GOV = path.join(FIX, 'gov');
 
-function build(out) {
+function build(out, extra = []) {
   execFileSync(
     'node',
-    [GEN, '--ledger', LEDGER, '--gov', GOV, '--out', out, '--now', '2026-09-08T16:00:00Z'],
+    [GEN, '--ledger', LEDGER, '--gov', GOV, '--out', out, '--now', '2026-09-08T16:00:00Z', ...extra],
     { stdio: 'pipe' }
   );
   return JSON.parse(fs.readFileSync(out, 'utf8'));
@@ -137,4 +137,22 @@ test('generator is deterministic: two runs are byte-identical', () => {
   const b1 = fs.readFileSync(path.join(tmp, 'p1.json'));
   const b2 = fs.readFileSync(path.join(tmp, 'p2.json'));
   assert.equal(b1.toString(), b2.toString());
+});
+
+test('snapshots are versioned, indexed, idempotent, and immutable', () => {
+  const snapDir = path.join(tmp, 'snaps');
+  build(path.join(tmp, 's1.json'), ['--snapshot-dir', snapDir]);
+  const snapFile = 'projection-2026-09-08T15-48-21Z.json';
+  assert.ok(fs.existsSync(path.join(snapDir, snapFile)), 'snapshot file written');
+  const index = JSON.parse(fs.readFileSync(path.join(snapDir, 'index.json'), 'utf8'));
+  assert.equal(index.length, 1);
+  assert.equal(index[0].file, snapFile);
+  assert.equal(index[0].evidence_cut, '2026-09-08T15:48:21Z');
+  assert.match(index[0].gov_sha, /^[0-9a-f]{40}$/);
+  // Rerun: idempotent, no duplicate index entry.
+  build(path.join(tmp, 's2.json'), ['--snapshot-dir', snapDir]);
+  assert.equal(JSON.parse(fs.readFileSync(path.join(snapDir, 'index.json'), 'utf8')).length, 1);
+  // Tampered history fails closed.
+  fs.writeFileSync(path.join(snapDir, snapFile), '{"tampered":true}');
+  assert.throws(() => build(path.join(tmp, 's3.json'), ['--snapshot-dir', snapDir]), /immutable/);
 });

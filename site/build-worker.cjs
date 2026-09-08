@@ -40,6 +40,21 @@ for (const f of fs.readdirSync(ATLAS_ASSETS_DIR).sort()) {
     'application/octet-stream';
   ATLAS_FILES[`/atlas/assets/${f}`] = { body: buf.toString('utf8'), ct };
 }
+// Versioned snapshot history: committed source lives in site/atlas-snapshots/,
+// copied into the served tree (vite wipes site/atlas/ on every build).
+const ATLAS_SNAPS_SRC = path.join(SITE, 'atlas-snapshots');
+const ATLAS_SNAPS_DIR = path.join(ATLAS_DIR, 'snapshots');
+fs.mkdirSync(ATLAS_SNAPS_DIR, { recursive: true });
+if (fs.existsSync(ATLAS_SNAPS_SRC)) {
+  for (const f of fs.readdirSync(ATLAS_SNAPS_SRC).sort()) {
+    if (!f.endsWith('.json')) continue;
+    fs.copyFileSync(path.join(ATLAS_SNAPS_SRC, f), path.join(ATLAS_SNAPS_DIR, f));
+    ATLAS_FILES[`/atlas/snapshots/${f}`] = {
+      body: fs.readFileSync(path.join(ATLAS_SNAPS_DIR, f), 'utf8'),
+      ct: 'application/json;charset=utf-8',
+    };
+  }
+}
 const ATLAS_PROJECTION_RAW = fs.readFileSync(path.join(ATLAS_DIR, 'projection.json'), 'utf8');
 let atlasProjectionParsed;
 try {

@@ -55,6 +55,10 @@ try {
     await page.waitForTimeout(1500);
     const contracts = await page.locator('.panel').innerText();
     if (!contracts.includes('Contracts')) fail('contracts view missing');
+    await page.goto(`${base}?view=snapshots`, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(1500);
+    const snaps = await page.locator('.panel').innerText();
+    if (!snaps.includes('Snapshots')) fail('snapshots view missing');
     await page.close();
   }
   // Accessibility smoke: names, labels, lang, headings, focus visibility
