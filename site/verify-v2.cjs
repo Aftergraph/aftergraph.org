@@ -7,6 +7,7 @@ const read = (name) => fs.readFileSync(path.join(root, name), 'utf8');
 const landing = read('index.html');
 const launcher = read('launch.html');
 const sentinelPage = read('sentinel.html');
+const communityPage = read('community.html');
 const buildWorker = read('build-worker.cjs');
 const statusPage = read('status.html');
 const statusDataText = read('status-data.json');
@@ -27,6 +28,7 @@ has(landing, 'Evidence', 'evidence trace');
 has(landing, 'Verified', 'verified outcome trace');
 has(landing, 'runtime authority', 'research-integrity principle');
 has(landing, 'href="https://docs.aftergraph.org', 'docs cross-link');
+has(landing, 'href="/community"', 'community navigation route');
 has(landing, 'href="/status"', 'landing operational status route');
 has(landing, 'prefers-reduced-motion', 'reduced-motion support');
 has(landing, ':focus-visible', 'visible focus');
@@ -57,8 +59,25 @@ for (const privateUrl of [
   assert.ok(!launcher.includes(privateUrl), `private repository link leaked into public launcher: ${privateUrl}`);
 }
 
+// Community is a public deliberation projection, never a new source of truth.
+has(communityPage, 'Public deliberation plane', 'community purpose');
+has(communityPage, 'github.com/orgs/Aftergraph/discussions', 'organization Discussions route');
+has(communityPage, 'PUBLIC-ROADMAP.md', 'public roadmap route');
+has(communityPage, 'RFC-PROCESS.md', 'RFC process route');
+has(communityPage, 'Discussion is not authority', 'community evidence boundary');
+has(communityPage, 'discussions/12', 'MISSION-Bench registry');
+has(communityPage, 'discussions/13', 'prior-art challenge');
+has(communityPage, 'discussions/14', 'architecture RFC');
+has(communityPage, 'discussions/15', 'Sentinel verdict thread');
+assert.ok(!communityPage.includes('https://github.com/Aftergraph/runtime'), 'private Runtime source leaked into community page');
+assert.ok(!communityPage.includes('https://github.com/Aftergraph/context-continuity'), 'private Continuity source leaked into community page');
+
 has(llms, '## Deep index (from the Knowledge Plane)', 'federated Knowledge Plane deep index');
 has(llms, 'https://docs.aftergraph.org/llms.txt', 'Knowledge Plane llms federation');
+has(llms, 'https://aftergraph.org/community', 'community llms entry');
+has(llms, 'https://github.com/orgs/Aftergraph/discussions', 'Discussions llms entry');
+has(llms, 'PUBLIC-ROADMAP.md', 'roadmap llms entry');
+has(llms, 'RFC-PROCESS.md', 'RFC process llms entry');
 has(llms, '## Platform topology (from Aftergraph/after-graph-governance)', 'public repository allowlist');
 has(llms, '## Context packs (ACC-shaped, machine-usable)', 'ACC-shaped context-pack index');
 for (const contextPack of [
@@ -88,13 +107,18 @@ assert.ok(!llms.includes('work-intelligence-v2'), 'legacy Work Intelligence repo
 assert.ok(!llms.includes('13 canonical cross-repo contracts'), 'volatile contract count must not be hardcoded in llms');
 
 has(buildWorker, "read('status.html')", 'status source included in worker build');
+has(buildWorker, "read('community.html')", 'community source included in worker build');
 has(buildWorker, 'https://aftergraph.org/status', 'status sitemap entry');
+has(buildWorker, 'https://aftergraph.org/community', 'community sitemap entry');
 has(buildWorker, "p === '/status' || p === '/status/'", 'status worker route');
+has(buildWorker, "p === '/community' || p === '/community/'", 'community worker route');
 has(worker, "'Content-Security-Policy'", 'CSP');
 has(worker, "'Strict-Transport-Security'", 'HSTS');
 has(worker, 'aftergraph-site v', 'versioned health route');
 has(worker, 'const STATUS =', 'compiled status surface');
+has(worker, 'const COMMUNITY =', 'compiled community surface');
 has(worker, "p === '/status' || p === '/status/'", 'compiled status route');
+has(worker, "p === '/community' || p === '/community/'", 'compiled community route');
 
 assert.ok(Array.isArray(statusData.repos), 'status-data repos must be an array');
 assert.ok(statusData.repos.length > 0, 'status-data must contain public repositories');
@@ -111,13 +135,14 @@ assert.ok(!statusPage.includes('work-intelligence-v2'), 'legacy Work Intelligenc
 assert.ok(!statusPage.includes('github.com/Aftergraph/runtime'), 'private Runtime repository link leaked into status page');
 has(statusPage, 'docs.aftergraph.org', 'Knowledge Plane evidence link');
 
-const publicSurface = `${landing}\n${launcher}\n${statusPage}\n${statusDataText}\n${llms}\n${worker}`.toLowerCase();
+const publicSurface = `${landing}\n${launcher}\n${statusPage}\n${statusDataText}\n${llms}\n${communityPage}\n${worker}`.toLowerCase();
 for (const privateRepo of ['context-continuity', 'skills-vault']) {
   assert.ok(!publicSurface.includes(privateRepo), `private repository leaked into public surface: ${privateRepo}`);
 }
 
 for (const forbidden of ['customer logos', 'trusted by thousands', 'industry-leading production']) {
   assert.ok(!landing.toLowerCase().includes(forbidden), `forbidden marketing claim: ${forbidden}`);
+  assert.ok(!communityPage.toLowerCase().includes(forbidden), `forbidden marketing claim on community page: ${forbidden}`);
 }
 
 has(sentinelPage, 'Maturity: <b>prototype</b>', 'sentinel maturity label');
