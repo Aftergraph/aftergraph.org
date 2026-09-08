@@ -73,15 +73,19 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   aliasMap extended with slug normalization + C1-pair + C4-shadow linking, 3 new tests.
   Design sound, contract-consistent, 19/19 + DOM PASS → ACCEPTED. Author unidentified
   (not QA child per transcript, cron loop not yet fired); watch for further ghost writes.
-- E10 Ghost author appended AFM/AVC sections into the Atlas owner brief (twice). Split:
+- E10 Ghost file-mixing: AFM/AVC sections appended into the Atlas owner brief (twice).
+  Split — brief restored to Atlas-only (38 lines); AFM content relocated to
+  docs/atlas/afm-inbox.md (UNVERIFIED by Atlas mission). Newest ghost refinement lost
+  via volatile /tmp — lesson: never stage through /tmp. Co-author still unidentified;
+  code contributions welcome but file-mixing into owner briefs is out of bounds.
 - E11 CI wired (v2-interface.yml: install/test/build/verify steps, feat/atlas trigger,
   bundle gate covers site/atlas/). Full CI sequence proven locally from clean `npm ci`.
   Fixed 13MB stale-hash bloat (emptyOutDir + projection.json as committed source data).
-  Ghost AFM appendage split to afm-inbox.md. Pushed 61d1068.
-  brief restored to Atlas-only (38 lines); AFM content relocated to docs/atlas/afm-inbox.md
-  (UNVERIFIED by Atlas mission). Newest ghost refinement lost via volatile /tmp — lesson:
-  never stage through /tmp, use workspace paths. Co-author still unidentified; code
-  contributions remain welcome but file-mixing into owner briefs is out of bounds.
+  Pushed 61d1068.
+- E12 CI red → root-caused: projection tests used hardcoded C:/ paths + network git fetch
+  (spawnSync /bin/sh ENOENT on runner). Fixed with hermetic fixtures
+  (site/atlas-fixtures/mkfixtures.mjs: frozen cut + local gov git repo): 11/11 green,
+  live-input path re-proven (144/316/187/2 + gate PASS).
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
