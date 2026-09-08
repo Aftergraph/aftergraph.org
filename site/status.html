@@ -4,32 +4,42 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Status — Aftergraph</title>
+<meta name="description" content="Aftergraph operational status — public platform snapshot, topology totals and evidence boundaries.">
+<meta name="theme-color" content="#0a0c12">
+<link rel="canonical" href="https://aftergraph.org/status">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23080c14'/><path d='M16 5l9 5v12l-9 5-9-5V10z' fill='none' stroke='%2342c7e8' stroke-width='2'/></svg>">
+<meta property="og:site_name" content="Aftergraph">
 <meta property="og:title" content="Status — Aftergraph">
+<meta property="og:description" content="Public platform snapshot: topology totals, evidence boundaries and independent verification.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aftergraph.org/status">
+<meta property="og:image" content="https://aftergraph.org/og-image.svg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Status — Aftergraph">
+<meta name="twitter:description" content="Public platform snapshot and evidence boundaries.">
 <style>
-:root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;padding:0}body{background:#0a0c12;color:#f2f4f8;font-family:Inter,"SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}a{color:#42c7e8;text-decoration:none}a:hover{color:#8fe0f5}.wrap{max-width:980px;margin:0 auto;padding:56px 32px 88px}.brand{font-weight:600;letter-spacing:.02em;font-size:15px;margin-bottom:40px}.brand i{font-style:normal;color:#42c7e8}h1{font-size:40px;line-height:1.05;letter-spacing:-.8px;font-weight:600;margin:0 0 10px}.lede{color:#9aa3b2;font-size:16px;margin:0 0 36px;max-width:700px}.card{border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);border-radius:12px;padding:24px;margin-bottom:18px}.card h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#42c7e8;font-weight:600;margin:0 0 16px}.ok{display:inline-block;width:8px;height:8px;border-radius:50%;background:#24c4ad;margin-right:8px;vertical-align:middle}table{width:100%;border-collapse:collapse;font-size:13.5px}th{text-align:left;color:#7b8494;font-weight:500;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.08)}td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}.rname{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;white-space:nowrap;color:#d7dbe2}.muted{color:#9aa3b2}.meta{color:#5d6878;font-size:12px;margin-top:8px}.nav a{color:#9aa3b2;font-size:13px;margin-right:16px}.nav a:hover{color:#f2f4f8}@media(max-width:760px){.wrap{padding-left:18px;padding-right:18px}table{font-size:12px}.rname{white-space:normal}}
+:root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;padding:0}body{background:#0a0c12;color:#f2f4f8;font-family:Inter,"SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}a{color:#42c7e8;text-decoration:none}a:hover{color:#8fe0f5}.wrap{max-width:980px;margin:0 auto;padding:56px 32px 88px}.brand{font-weight:600;letter-spacing:.02em;font-size:15px;margin-bottom:40px}.brand a{color:inherit}.brand i{font-style:normal;color:#42c7e8}h1{font-size:40px;line-height:1.05;letter-spacing:-.8px;font-weight:600;margin:0 0 10px}.lede{color:#9aa3b2;font-size:16px;margin:0 0 36px;max-width:700px}.card{border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);border-radius:12px;padding:24px;margin-bottom:18px}.card h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#42c7e8;font-weight:600;margin:0 0 16px}.ok{display:inline-block;width:8px;height:8px;border-radius:50%;background:#24c4ad;margin-right:8px;vertical-align:middle}table{width:100%;border-collapse:collapse;font-size:13.5px}th{text-align:left;color:#7b8494;font-weight:500;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.08)}td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}.rname{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;white-space:nowrap;color:#d7dbe2}.muted{color:#9aa3b2}.meta{color:#7b8494;font-size:12px;margin-top:8px}.nav a{color:#9aa3b2;font-size:13px;margin-right:16px}.nav a:hover{color:#f2f4f8}@media(max-width:760px){.wrap{padding-left:18px;padding-right:18px}table{font-size:12px}.rname{white-space:normal}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="brand">AFTERGRAPH<i>.</i> <span class="nav"><a href="/">Landing</a><a href="/launch">Launcher</a><a href="/healthz">Health</a></span></div>
+<div class="brand"><a href="/" aria-label="Aftergraph home">AFTERGRAPH<i>.</i></a> <span class="nav" role="navigation" aria-label="Status sections"><a href="/">Landing</a><a href="/launch">Launcher</a><a href="/healthz">Health</a></span></div>
 <h1>Status</h1>
 <p class="lede">Public platform projection. Canonical repository topology is governed in <a href="https://github.com/Aftergraph/after-graph-governance">Aftergraph/after-graph-governance</a>; exact Git heads come from its generated org-state surface. This page is not canonical repository truth.</p>
 <div class="card">
 <h2><span class="ok"></span>Platform &amp; site</h2>
 <table>
-<tr><th>Surface</th><th>Status</th><th>Boundary</th></tr>
+<tr><th scope="col">Surface</th><th scope="col">Status</th><th scope="col">Boundary</th></tr>
 <tr><td class="rname">aftergraph.org</td><td>Operational</td><td class="muted">Public presentation and launcher only</td></tr>
 <tr><td class="rname">docs.aftergraph.org</td><td>Live</td><td class="muted">Provenance-pinned Knowledge Plane</td></tr>
-<tr><td class="rname"><a href="/studio/">aftergraph.org/studio/</a></td><td>Tier-0 demo</td><td class="muted">Interactive local-fixture demo; no production backend implied</td></tr>
+<tr><td class="rname"><a href="/studio/">aftergraph.org/studio/</a></td><td>Tier-0 demo</td><td class="muted">Tier-0 demo — interactive, local-only fixture data, no backend.</td></tr>
 <tr><td class="rname"><a href="https://wie.aftergraph.org/">wie.aftergraph.org</a></td><td>Production web experience</td><td class="muted">Wie frontend/BFF over canonical wi-backend state</td></tr>
 </table>
 </div>
 <div class="card">
 <h2>Platform topology <span class="meta">21 canonical · 12 public · 9 private</span></h2>
 <table>
-<tr><th>Public repository</th><th>Canonical role</th></tr>
+<tr><th scope="col">Public repository</th><th scope="col">Canonical role</th></tr>
 <tr><td class="rname">.github</td><td>Organization/community infrastructure</td></tr>
 <tr><td class="rname">after-graph-governance</td><td>Canonical topology, contracts and exact-head generation</td></tr>
 <tr><td class="rname">aftergraph.org</td><td>Public front door and launcher</td></tr>
@@ -37,11 +47,11 @@
 <tr><td class="rname">brand</td><td>Brand OS and design system</td></tr>
 <tr><td class="rname">docs</td><td>Knowledge Plane</td></tr>
 <tr><td class="rname">intelligence-systems-research</td><td>Research, SPEC-001, MISSION-Bench and assurance evidence</td></tr>
-<tr><td class="rname">sentinel</td><td>Exact-HEAD software review and cited verification evidence</td></tr>
 <tr><td class="rname">studio</td><td>General-purpose human operating environment</td></tr>
 <tr><td class="rname">trust-gateway</td><td>Runtime admission and enforcement</td></tr>
-<tr><td class="rname">wi-backend</td><td>Wie observation → canonical WorkItem inference</td></tr>
+<tr><td class="rname">wi-backend</td><td>Wie — Work Intelligence Engine by Aftergraph: observation → canonical WorkItem inference</td></tr>
 <tr><td class="rname">works-execution</td><td>Durable execution and execution evidence</td></tr>
+<tr><td class="rname">sentinel</td><td>Exact-HEAD software review and cited verification evidence</td></tr>
 </table>
 <p class="meta">Nine private repositories participate in the canonical topology. Their source repository names are not enumerated on this public allowlist. Public capability names are not source-disclosure claims.</p>
 </div>
