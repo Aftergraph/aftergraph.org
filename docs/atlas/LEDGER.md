@@ -91,9 +91,11 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E14 Snapshots/time-machine live: --snapshot-dir (immutable, indexed, 12/12),
   SnapshotsView with diffProjections before/after (29/29 vitest, DOM PASS),
   first real snapshot seeded. Pushed 3ad919d.
-- E15 CI green on 0f48af4 (27s). Earlier red was a genuinely stale committed bundle;
-  the 'bundle is current' gate worked as designed. Rule: rebuild + check
-  site/atlas/ status before every push. Next: system x-ray path tracing.
+- E15 CI green on 0f48af4 (27s). Rebuilt-bundle rule: rebuild + check
+  site/atlas/ status before every push.
+- E16 System x-ray live: tracePath BFS + per-hop plane badges (32/32 vitest),
+  inspector from/to + graph highlight + honest no-path gap, DOM-covered.
+  Pushed fc07b9c.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
