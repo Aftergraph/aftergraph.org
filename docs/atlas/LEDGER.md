@@ -212,6 +212,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   DOM covers arrows-select + Escape-clear. Also caught: local rollup native
   dep rotted while `| tail` masked non-zero exits — npm ci restored, builds
   now assert exit codes (CI was unaffected). PASS. Pushed 05c8393.
+- E44 Cut #3 (21:12:42Z): cron-fabric moved after ~2h quiet. Full re-cut
+  25/25, projection 144/319/190/2, 3rd snapshot indexed, ledger table
+  re-pinned. 14/14 + 40/40 + verify + DOM PASS, 0 leaks. Pushed cdef3c9.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
@@ -231,14 +234,14 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - RISK: worker.js is 2.5MB (1.7MB atlas bundle inlined) — Cloudflare script-size limits
   unverified; code-split or Static Assets if deploy rejects.
 
-## Exact heads (cut 2026-09-08T19:30:48Z; full SHAs in `workspace/.tmp-atlas-ledger-2/obs_*.json`; prior 15:48:21Z cut in `workspace/.tmp-atlas-ledger/`)
+## Exact heads (cut 2026-09-08T21:12:42Z; full SHAs in `workspace/.tmp-atlas-ledger-3/obs_*.json`)
 
 | repo | head | branch | open PRs |
 |---|---|---|---|
 | .github | e9662a4 | main | 0 |
 | afm | private-withheld | main | withheld |
 | after-graph-governance | 5f53273 | main | 3 |
-| aftergraph-cron-fabric | 44e578f | main | 2 |
+| aftergraph-cron-fabric | ac7ad2b | main | 2 |
 | aftergraph.org | ec54979 | main | 3 |
 | aie | 3c999d2 | main | 0 |
 | autonomous-venture-company | private-withheld | main | withheld |
