@@ -158,6 +158,11 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   DOM smoke now asserts what eyeballs would check first — zero overlapping
   topology node pairs + body-text contrast >= WCAG AA 4.5. PASS. Human
   aesthetic review stays open; structural-visual is gated. Pushed 5c702d3.
+- E30 CI Raphael paid off same-day: the new overlap gate FAILED in CI (1 pair,
+  Ubuntu fonts) while passing locally. Root cause: .rf-node content-sized vs
+  ELK fixed 190x54 contract. Fixed in CSS (fixed boxes + ellipsis, full id in
+  title/inspector) + DOM now covers all remaining views (no error boundary).
+  DOM PASS, pushed 9c25e5f; CI re-run pending.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
