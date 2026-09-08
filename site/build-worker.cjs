@@ -20,15 +20,24 @@ const monogram = read('monogram.svg');
 const llms = read('llms.txt');
 const security = read('security.txt');
 
-// Reconciliation gates. These intentionally fail closed when a public surface
-// drifts back to the pre-V1 repository inventory.
-assert(landing.includes('21 repositories'), 'landing must declare the 19-repository topology');
-assert(landing.includes('13 public') && landing.includes('8 private'), 'landing visibility totals must be reconciled');
-assert(statusPage.includes('21 installed') && statusPage.includes('13 public') && statusPage.includes('8 private'), 'status topology totals must be reconciled');
-assert(llms.includes('Installed platform topology: 21 repositories'), 'llms.txt must carry topology total');
-assert(llms.includes('Public repositories: 13') && llms.includes('Private repositories: 8'), 'llms.txt visibility totals must be reconciled');
+// Public topology is a Governance projection. These gates fail closed when a
+// source surface drifts from the current canonical/public boundary.
+assert(landing.includes('21 canonical repositories'), 'landing must declare the canonical 21-repository topology');
+assert(landing.includes('12 public') && landing.includes('9 private'), 'landing visibility totals must be reconciled');
+assert(statusPage.includes('21 canonical') && statusPage.includes('12 public') && statusPage.includes('9 private'), 'status topology totals must be reconciled');
+assert(llms.includes('Canonical platform topology: 21 repositories'), 'llms.txt must carry canonical topology total');
+assert(llms.includes('Public repositories: 12') && llms.includes('Private repositories: 9'), 'llms.txt visibility totals must be reconciled');
+const llmsPublic = llms.split('### Public')[1]?.split('### Private')[0] || '';
+assert(llmsPublic.includes('- `wi-backend`'), 'public repository list must use canonical wi-backend slug');
+assert(llmsPublic.includes('- `sentinel`'), 'public repository list must include Sentinel');
+assert(!llmsPublic.includes('- `runtime`'), 'private Runtime repository must not appear in the public-repository list');
+assert(!llms.includes('work-intelligence-v2'), 'legacy Work Intelligence repository slug must not appear in llms.txt');
+assert(!llms.includes('13 canonical cross-repo contracts'), 'volatile contract counts must not be hardcoded in llms.txt');
 assert(!llms.includes('- `context-continuity`') && !llms.includes('- `skills-vault`'), 'private repositories must not appear in the public-repository list');
 assert(!landing.includes('https://github.com/Aftergraph/context-continuity'), 'public landing must not link directly to private Continuity source');
+assert(!landing.includes('https://github.com/Aftergraph/runtime'), 'public landing must not link directly to private Runtime source');
+assert(statusPage.includes('wie.aftergraph.org/api/healthz'), 'status must use canonical Wie production health endpoint');
+assert(!statusPage.includes('work-intelligence-v2'), 'status must not use legacy Work Intelligence repository slug');
 assert(statusPage.includes('__AG_SHA__') && statusPage.includes('__AG_DEPLOYED__'), 'status must carry build-provenance placeholders');
 
 const FAVICON = '<link rel="icon" type="image/svg+xml" href="/favicon.ico">';
@@ -74,9 +83,8 @@ let statusBuilt = statusPage.replaceAll('__AG_SHA__', process.env.AG_SHA || 'loc
 
 const health = JSON.stringify({
   status: 'ok',
-  // ponytail: deterministic per tree — wall-clock here made every rebuild
-  // differ, so CI's "generated bundle is current" gate could never pass.
-  // Freshness is still observable via the deployed worker's build time.
+  // Deterministic per tree: wall-clock output here would make every rebuild
+  // differ, defeating the generated-bundle-current gate.
   deployed: process.env.AG_DEPLOYED || 'build-time',
   route: 'aftergraph-site v1.2.0',
   sha: process.env.AG_SHA || 'local'

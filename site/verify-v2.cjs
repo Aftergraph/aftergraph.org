@@ -42,8 +42,6 @@ has(launcher, 'https://docs.aftergraph.org/', 'launcher Knowledge Plane route');
 has(launcher, 'ArrowDown', 'launcher keyboard navigation');
 has(launcher, 'ArrowUp', 'launcher keyboard navigation');
 has(launcher, 'Escape', 'launcher Escape behavior');
-// ponytail: merged launcher now carries full ARIA listbox semantics
-// (shipped in the launcher-aria slice); these pin the contract.
 has(launcher, 'role="listbox"', 'launcher listbox role');
 has(launcher, 'role="option"', 'launcher option semantics');
 has(launcher, 'aria-selected', 'launcher selected-state semantics');
@@ -54,6 +52,7 @@ for (const privateUrl of [
   'https://github.com/Aftergraph/afm',
   'https://github.com/Aftergraph/context-continuity',
   'https://github.com/Aftergraph/skills-vault',
+  'https://github.com/Aftergraph/runtime',
 ]) {
   assert.ok(!launcher.includes(privateUrl), `private repository link leaked into public launcher: ${privateUrl}`);
 }
@@ -73,6 +72,21 @@ for (const contextPack of [
   has(llms, `https://docs.aftergraph.org/${contextPack}`, `context pack ${contextPack}`);
 }
 
+// Reconciled against aftergraph.org main after #54 so topology/privacy assertions
+// remain independent of the newer copy, metadata, navigation and a11y surface.
+// Canonical public topology is a projection of Governance truth, not installed
+// repo discovery. Runtime is currently private and therefore must not appear in
+// the public source allowlist even though the Runtime capability is public-facing.
+has(llms, 'Canonical platform topology: 21 repositories', 'canonical topology count');
+has(llms, 'Public repositories: 12', 'canonical public repository count');
+has(llms, 'Private repositories: 9', 'canonical private repository count');
+const llmsPublic = llms.split('### Public')[1]?.split('### Private')[0] || '';
+has(llmsPublic, '`wi-backend`', 'canonical Wie backend repo');
+has(llmsPublic, '`sentinel`', 'Sentinel public repo');
+assert.ok(!llmsPublic.includes('`runtime`'), 'private Runtime repository leaked into llms public allowlist');
+assert.ok(!llms.includes('work-intelligence-v2'), 'legacy Work Intelligence repo slug leaked into llms');
+assert.ok(!llms.includes('13 canonical cross-repo contracts'), 'volatile contract count must not be hardcoded in llms');
+
 has(buildWorker, "read('status.html')", 'status source included in worker build');
 has(buildWorker, 'https://aftergraph.org/status', 'status sitemap entry');
 has(buildWorker, "p === '/status' || p === '/status/'", 'status worker route');
@@ -85,8 +99,16 @@ has(worker, "p === '/status' || p === '/status/'", 'compiled status route');
 assert.ok(Array.isArray(statusData.repos), 'status-data repos must be an array');
 assert.ok(statusData.repos.length > 0, 'status-data must contain public repositories');
 assert.ok(statusData.repos.every((repo) => repo.visibility === 'public'), 'status-data must contain public repositories only');
-has(statusPage, '21 installed', 'status page installed-repository count');
-has(statusPage, '13 public', 'status page public repository count');
+assert.ok(!statusData.repos.some((repo) => repo.name === 'runtime'), 'private Runtime repository leaked into status data');
+assert.ok(!statusData.repos.some((repo) => repo.name === 'work-intelligence-v2'), 'legacy Work Intelligence slug leaked into status data');
+assert.ok(statusData.repos.some((repo) => repo.name === 'wi-backend'), 'status data must use canonical wi-backend slug');
+has(statusPage, '21 canonical', 'status page canonical repository count');
+has(statusPage, '12 public', 'status page public repository count');
+has(statusPage, '9 private', 'status page private repository count');
+has(statusPage, 'wi-backend', 'status page canonical Wie backend slug');
+has(statusPage, 'wie.aftergraph.org/api/healthz', 'Wie production health endpoint');
+assert.ok(!statusPage.includes('work-intelligence-v2'), 'legacy Work Intelligence slug leaked into status page');
+assert.ok(!statusPage.includes('github.com/Aftergraph/runtime'), 'private Runtime repository link leaked into status page');
 has(statusPage, 'docs.aftergraph.org', 'Knowledge Plane evidence link');
 
 const publicSurface = `${landing}\n${launcher}\n${statusPage}\n${statusDataText}\n${llms}\n${worker}`.toLowerCase();

@@ -25,7 +25,7 @@
 <div class="wrap">
 <div class="brand"><a href="/" aria-label="Aftergraph home">AFTERGRAPH<i>.</i></a> <span class="nav" role="navigation" aria-label="Status sections"><a href="/">Landing</a><a href="/launch">Launcher</a><a href="/healthz">Health</a></span></div>
 <h1>Status</h1>
-<p class="lede">Public platform snapshot. Repository topology is governed in <a href="https://github.com/Aftergraph/after-graph-governance">Aftergraph/after-graph-governance</a>; exact Git heads come from its generated org-state surface. This page is a public projection, not canonical repository truth.</p>
+<p class="lede">Public platform projection. Canonical repository topology is governed in <a href="https://github.com/Aftergraph/after-graph-governance">Aftergraph/after-graph-governance</a>; exact Git heads come from its generated org-state surface. This page is not canonical repository truth.</p>
 <div class="card">
 <h2><span class="ok"></span>Platform &amp; site</h2>
 <table>
@@ -33,10 +33,11 @@
 <tr><td class="rname">aftergraph.org</td><td>Operational</td><td class="muted">Public presentation and launcher only</td></tr>
 <tr><td class="rname">docs.aftergraph.org</td><td>Live</td><td class="muted">Provenance-pinned Knowledge Plane</td></tr>
 <tr><td class="rname"><a href="/studio/">aftergraph.org/studio/</a></td><td>Tier-0 demo</td><td class="muted">Tier-0 demo — interactive, local-only fixture data, no backend.</td></tr>
+<tr><td class="rname"><a href="https://wie.aftergraph.org/">wie.aftergraph.org</a></td><td>Production web experience</td><td class="muted">Wie frontend/BFF over canonical wi-backend state</td></tr>
 </table>
 </div>
 <div class="card">
-<h2>Platform topology <span class="meta">21 installed · 13 public · 8 private</span></h2>
+<h2>Platform topology <span class="meta">21 canonical · 12 public · 9 private</span></h2>
 <table>
 <tr><th scope="col">Public repository</th><th scope="col">Canonical role</th></tr>
 <tr><td class="rname">.github</td><td>Organization/community infrastructure</td></tr>
@@ -48,22 +49,21 @@
 <tr><td class="rname">intelligence-systems-research</td><td>Research, SPEC-001, MISSION-Bench and assurance evidence</td></tr>
 <tr><td class="rname">studio</td><td>General-purpose human operating environment</td></tr>
 <tr><td class="rname">trust-gateway</td><td>Runtime admission and enforcement</td></tr>
-<tr><td class="rname">work-intelligence-v2</td><td>Wie — Work Intelligence Engine by Aftergraph: observation → WorkItem inference</td></tr>
+<tr><td class="rname">wi-backend</td><td>Wie — Work Intelligence Engine by Aftergraph: observation → canonical WorkItem inference</td></tr>
 <tr><td class="rname">works-execution</td><td>Durable execution and execution evidence</td></tr>
-<tr><td class="rname">runtime</td><td>Agent lifecycle, orchestration and dispatch</td></tr>
-<tr><td class="rname">sentinel</td><td>Verified code-review verdicts</td></tr>
+<tr><td class="rname">sentinel</td><td>Exact-HEAD software review and cited verification evidence</td></tr>
 </table>
-<p class="meta">Eight private repositories participate in the topology but their source content is not rendered on this public surface.</p>
+<p class="meta">Nine private repositories participate in the canonical topology. Their source repository names are not enumerated on this public allowlist. Public capability names are not source-disclosure claims.</p>
 </div>
 <div class="card">
 <h2>Evidence boundaries</h2>
-<p class="muted" style="font-size:14px;margin:0 0 10px">Visibility never upgrades evidence. Runtime evidence, AIE conformance, scientific evidence and production authority are separate states. Exact-head state also does not prove functional conformance.</p>
-<p class="meta">Evidence cut: 2026-09-07 · topology count reconciled against the installed Aftergraph GitHub organization</p>
+<p class="muted" style="font-size:14px;margin:0 0 10px">Visibility never upgrades evidence. Runtime evidence, AIE conformance, scientific evidence and production authority are separate states. Exact-head state and topology membership also do not prove functional or APC conformance.</p>
+<p class="meta">Evidence cut: 2026-09-08 · visibility reconciled against live GitHub repository metadata</p>
 </div>
 <div class="card">
 <h2>Independent verification</h2>
-<p class="muted" style="font-size:14px;margin:0 0 10px">This page is served only when every build gate passes. Re-run any line below against the live site and the deployed bundle:</p>
-<p class="meta">bundle sha: __AG_SHA__ · deployed: __AG_DEPLOYED__<br>curl -s https://aftergraph.org/healthz<br>curl -s https://work-intelligence.aftergraph.org/api/healthz<br>Work Intelligence console: <a href="https://work-intelligence.aftergraph.org/">work-intelligence.aftergraph.org</a></p>
+<p class="muted" style="font-size:14px;margin:0 0 10px">This page is served only when the build contract passes. Re-run the public checks below against the deployed surfaces:</p>
+<p class="meta">bundle sha: __AG_SHA__ · deployed: __AG_DEPLOYED__<br>curl -s https://aftergraph.org/healthz<br>curl -s https://wie.aftergraph.org/api/healthz<br>Wie console: <a href="https://wie.aftergraph.org/">wie.aftergraph.org</a></p>
 </div>
 </div>
 </body>
