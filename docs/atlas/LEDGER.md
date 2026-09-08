@@ -154,6 +154,10 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   OPEN — screenshots human review (E25 vision outage); pulse 24h/7d/30d
   windows (no history captured yet — honestly absent, not faked);
   fixtures.json history keep-vs-purge; production merge (Jonas auth).
+- E29 Machine visual QA: vision tool still down (same provider 400), so the
+  DOM smoke now asserts what eyeballs would check first — zero overlapping
+  topology node pairs + body-text contrast >= WCAG AA 4.5. PASS. Human
+  aesthetic review stays open; structural-visual is gated. Pushed 5c702d3.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
