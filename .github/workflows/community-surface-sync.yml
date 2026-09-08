@@ -1,0 +1,105 @@
+name: Materialize community surface
+
+on:
+  push:
+    branches: ['community/public-plane']
+    paths:
+      - '.github/workflows/community-surface-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: community/public-plane
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Patch public surfaces
+        shell: python
+        run: |
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              if old not in text:
+                  raise SystemExit(f'expected pattern missing in {path}: {old[:80]!r}')
+              p.write_text(text.replace(old, new, 1))
+
+          # Landing: expose Community as a first-class route.
+          replace_once(
+              'site/index.html',
+              '<a href="/status">Status</a><a class="launch" href="/launch">Launch</a>',
+              '<a href="/community">Community</a><a href="/status">Status</a><a class="launch" href="/launch">Launch</a>',
+          )
+          replace_once(
+              'site/index.html',
+              '<a href="https://github.com/Aftergraph">GitHub organization</a><a href="/status">System status</a>',
+              '<a href="/community">Community</a><a href="https://github.com/orgs/Aftergraph/discussions">Discussions</a><a href="https://github.com/Aftergraph">GitHub organization</a><a href="/status">System status</a>',
+          )
+
+          # Worker: compile and serve community.html like the other public source pages.
+          replace_once(
+              'site/build-worker.cjs',
+              "let sentinel = read('sentinel.html');\nconst monogram = read('monogram.svg');",
+              "let sentinel = read('sentinel.html');\nlet community = read('community.html');\nconst monogram = read('monogram.svg');",
+          )
+          replace_once(
+              'site/build-worker.cjs',
+              "assert(landing.includes('21 canonical repositories'), 'landing must declare the canonical 21-repository topology');",
+              "assert(landing.includes('21 canonical repositories'), 'landing must declare the canonical 21-repository topology');\nassert(community.includes('github.com/orgs/Aftergraph/discussions'), 'community must route to organization Discussions');\nassert(community.includes('PUBLIC-ROADMAP.md') && community.includes('RFC-PROCESS.md'), 'community must expose roadmap and RFC process');",
+          )
+          replace_once(
+              'site/build-worker.cjs',
+              "const SENTINEL = ${JSON.stringify(sentinel)};\nconst HEALTH = ${JSON.stringify(health)};",
+              "const SENTINEL = ${JSON.stringify(sentinel)};\nconst COMMUNITY = ${JSON.stringify(community)};\nconst HEALTH = ${JSON.stringify(health)};",
+          )
+          replace_once(
+              'site/build-worker.cjs',
+              "  else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }\n  else if (p === '/404')",
+              "  else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }\n  else if (p === '/community' || p === '/community/') { body = COMMUNITY; }\n  else if (p === '/404')",
+          )
+          replace_once(
+              'site/build-worker.cjs',
+              '  <url><loc>https://aftergraph.org/sentinel</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>\n</urlset>',
+              '  <url><loc>https://aftergraph.org/sentinel</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>\n  <url><loc>https://aftergraph.org/community</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n</urlset>',
+          )
+
+          # Machine-readable discovery.
+          replace_once(
+              'site/llms.txt',
+              '- [Status](https://aftergraph.org/status): Operational public projection (build-time)',
+              '- [Status](https://aftergraph.org/status): Operational public projection (build-time)\n- [Community](https://aftergraph.org/community): Discussions, roadmap, RFC intake and contribution routing\n- [Organization Discussions](https://github.com/orgs/Aftergraph/discussions): Public deliberation and research review\n- [Public roadmap](https://github.com/Aftergraph/.github/blob/main/PUBLIC-ROADMAP.md): Gate-driven public priorities\n- [RFC process](https://github.com/Aftergraph/.github/blob/main/RFC-PROCESS.md): Organization-wide proposal lifecycle',
+          )
+
+          # Repository reader route.
+          p = Path('README.md')
+          text = p.read_text()
+          marker = '## Local development\n'
+          block = '''## Public community plane\n\n- Human entry: https://aftergraph.org/community\n- Organization Discussions: https://github.com/orgs/Aftergraph/discussions\n- Public roadmap: https://github.com/Aftergraph/.github/blob/main/PUBLIC-ROADMAP.md\n- RFC process: https://github.com/Aftergraph/.github/blob/main/RFC-PROCESS.md\n\nDiscussion is a deliberation surface, not a canonical specification or evidence upgrade.\n\n'''
+          if marker not in text:
+              raise SystemExit('README local-development marker missing')
+          p.write_text(text.replace(marker, block + marker, 1))
+
+      - name: Regenerate canonical worker bundle
+        run: node site/build-worker.cjs
+      - name: Verify V2 contract
+        run: node site/verify-v2.cjs
+      - name: Diff check
+        run: git diff --check
+      - name: Commit materialized surface
+        run: |
+          git config user.name "aftergraph-community-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add site/index.html site/build-worker.cjs site/worker.js site/wrangler.toml site/llms.txt README.md
+          if git diff --cached --quiet; then
+            echo 'No generated changes'
+          else
+            git commit -m "community: wire discussions into public site"
+            git push origin HEAD:community/public-plane
+          fi
