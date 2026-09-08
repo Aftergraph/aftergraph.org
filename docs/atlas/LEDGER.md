@@ -182,6 +182,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   and the merged tree passes 14/14 + verify + worker + V2 contract.
   Worktree removed after. Merge is Jonas-gated as ever — this only proves
   it will be clean whenever he says go.
+- E36 Docs gap closed: ARCHITECTURE.md had no known-limitations section
+  (completion gate demands it). Added 8 verified limitations, each checked
+  against code (incl. 24h STALE threshold in cutAge). Pushed 3d13390.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
