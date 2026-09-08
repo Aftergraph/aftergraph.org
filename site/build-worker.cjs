@@ -20,6 +20,45 @@ const monogram = read('monogram.svg');
 const llms = read('llms.txt');
 const security = read('security.txt');
 
+// ---- Atlas (/atlas): vite-built observatory, inlined as static routes ----
+// Built by `npm --prefix ../atlas run build` into site/atlas/ BEFORE this script.
+// Fails closed when the build is absent or references non-existent hashed assets.
+const ATLAS_DIR = path.join(SITE, 'atlas');
+const ATLAS_ASSETS_DIR = path.join(ATLAS_DIR, 'assets');
+assert(fs.existsSync(path.join(ATLAS_DIR, 'index.html')), 'atlas build missing: run `npm --prefix ../atlas run build` first');
+let atlasHtml = fs.readFileSync(path.join(ATLAS_DIR, 'index.html'), 'utf8');
+const ATLAS_FILES = {};
+for (const f of fs.readdirSync(ATLAS_ASSETS_DIR).sort()) {
+  const buf = fs.readFileSync(path.join(ATLAS_ASSETS_DIR, f));
+  const ext = path.extname(f).toLowerCase();
+  const ct =
+    ext === '.js' ? 'text/javascript;charset=utf-8' :
+    ext === '.css' ? 'text/css;charset=utf-8' :
+    ext === '.svg' ? 'image/svg+xml;charset=utf-8' :
+    'application/octet-stream';
+  ATLAS_FILES[`/atlas/assets/${f}`] = { body: buf.toString('utf8'), ct };
+}
+const ATLAS_PROJECTION_RAW = fs.readFileSync(path.join(ATLAS_DIR, 'projection.json'), 'utf8');
+let atlasProjectionParsed;
+try {
+  atlasProjectionParsed = JSON.parse(ATLAS_PROJECTION_RAW);
+} catch {
+  assert(false, 'site/atlas/projection.json is not valid JSON');
+}
+assert(atlasProjectionParsed.schema === 'atlas-projection/0.2', 'atlas projection must be atlas-projection/0.2');
+for (const ref of [...atlasHtml.matchAll(/(?:src|href)="(\/atlas\/assets\/[^"]+)"/g)].map((m) => m[1])) {
+  assert(ATLAS_FILES[ref], `atlas index.html references missing bundled asset ${ref}`);
+}
+assert(!/src="https?:\/\//.test(atlasHtml), 'atlas must not load runtime CDN scripts (bundled deps only)');
+assert(!/href="https?:\/\/[^"]*\.(js|css)"/.test(atlasHtml), 'atlas must not load runtime CDN styles/scripts');
+const OG_ATLAS = `
+<meta property="og:site_name" content="Aftergraph">
+<meta property="og:title" content="Atlas — Development Observatory">
+<meta property="og:description" content="Read-only evidence-aware digital twin of Aftergraph development. Every claim carries provenance.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aftergraph.org/atlas">`;
+atlasHtml = atlasHtml.replace('</head>', `<link rel="icon" type="image/svg+xml" href="/favicon.ico">${OG_ATLAS}\n</head>`);
+
 // Public topology is a Governance projection. These gates fail closed when a
 // source surface drifts from the current canonical/public boundary.
 assert(landing.includes('21 canonical repositories'), 'landing must declare the canonical 21-repository topology');
@@ -111,6 +150,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
   <url><loc>https://aftergraph.org/launch</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://aftergraph.org/status</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://aftergraph.org/sentinel</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://aftergraph.org/atlas</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>
 `;
 
@@ -132,6 +172,9 @@ const LLMS = ${JSON.stringify(llms)};
 const SECURITY = ${JSON.stringify(security)};
 const STATUS = ${JSON.stringify(statusBuilt)};
 const SENTINEL = ${JSON.stringify(sentinel)};
+const ATLAS_HTML = ${JSON.stringify(atlasHtml)};
+const ATLAS_PROJECTION = ${JSON.stringify(ATLAS_PROJECTION_RAW)};
+const ATLAS_FILES = ${JSON.stringify(ATLAS_FILES)};
 const HEALTH = ${JSON.stringify(health)};
 const ROBOTS = ${JSON.stringify(robots)};
 const SITEMAP = ${JSON.stringify(sitemap)};
@@ -151,6 +194,9 @@ addEventListener('fetch', event => {
   else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
   else if (p === '/status' || p === '/status/') { body = STATUS; }
   else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }
+  else if (p === '/atlas' || p === '/atlas/') { body = ATLAS_HTML; cache = 'public, max-age=300'; }
+  else if (p === '/atlas/projection.json') { body = ATLAS_PROJECTION; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
+  else if (ATLAS_FILES[p]) { body = ATLAS_FILES[p].body; contentType = ATLAS_FILES[p].ct; cache = 'public, max-age=31536000, immutable'; }
   else if (p === '/404') { body = NOTFOUND; }
   else if (p === '/') { body = LANDING; }
   else { body = NOTFOUND; responseStatus = 404; cache = 'no-store'; }
@@ -173,6 +219,7 @@ command = "node build-worker.cjs"
 `);
 
 console.log('worker.js bytes:', worker.length);
+console.log('atlas: html', atlasHtml.length, '| projection', ATLAS_PROJECTION_RAW.length, '| assets', Object.keys(ATLAS_FILES).join(','));
 console.log('landing with meta bytes:', landing.length, '| launch:', launch.length);
 console.log('topology gates: PASS');
 console.log('favicon injected:', landing.includes('/favicon.ico'), '| JSON-LD:', landing.includes('application/ld+json'));

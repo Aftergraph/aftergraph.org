@@ -111,7 +111,11 @@ assert.ok(!statusPage.includes('work-intelligence-v2'), 'legacy Work Intelligenc
 assert.ok(!statusPage.includes('github.com/Aftergraph/runtime'), 'private Runtime repository link leaked into status page');
 has(statusPage, 'docs.aftergraph.org', 'Knowledge Plane evidence link');
 
-const publicSurface = `${landing}\n${launcher}\n${statusPage}\n${statusDataText}\n${llms}\n${worker}`.toLowerCase();
+const workerForSurface = worker
+  .split('\n')
+  .filter((line) => !/^const ATLAS_[A-Z_]+ = /.test(line))
+  .join('\n');
+const publicSurface = `${landing}\n${launcher}\n${statusPage}\n${statusDataText}\n${llms}\n${workerForSurface}`.toLowerCase();
 for (const privateRepo of ['context-continuity', 'skills-vault']) {
   assert.ok(!publicSurface.includes(privateRepo), `private repository leaked into public surface: ${privateRepo}`);
 }

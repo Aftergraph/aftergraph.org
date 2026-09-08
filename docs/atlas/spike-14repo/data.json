@@ -1,0 +1,1560 @@
+[
+ {
+  "name": "aftergraph-cron-fabric",
+  "full": "Aftergraph/aftergraph-cron-fabric",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Aftergraph Cron Fabric: Telegram-first drift monitors, event dedupe, enforced read-only sensors.",
+  "homepage": "https://aftergraph.org",
+  "language": "Python",
+  "license": "MIT",
+  "open_issues": 1,
+  "pushed_at": "2026-09-08T13:31:02Z",
+  "languages": {
+   "Python": 79736,
+   "Shell": 964
+  },
+  "open_prs": [],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T13:31:02Z",
+    "msg": "chore(baseline): freeze live reference for volume check (#7)",
+    "sha": "cd8652f"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T13:27:38Z",
+    "msg": "feat(verify): close Codex CONDITIONAL findings (receipts, fail-closed, baseline) (#5)",
+    "sha": "303520a"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T13:08:33Z",
+    "msg": "feat: map canonical topology roles to Cron Fabric concerns",
+    "sha": "a216a88"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T13:00:13Z",
+    "msg": "fix: align v0.4 proof semantics and review contract",
+    "sha": "34b9123"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T12:54:16Z",
+    "msg": "fix: v0.4 correctness core for atomic events and semantic sensors",
+    "sha": "d9607fc"
+   },
+   {
+    "author": "Jonas ABde",
+    "date": "2026-09-08T10:52:46Z",
+    "msg": "docs: remove em-dash in CONFORMANCE.md heading (ASCII-clean)",
+    "sha": "a10888e"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:22:06Z",
+    "msg": "Merge pull request #1 from Aftergraph/fix/workflow-action-pinning",
+    "sha": "b6b0fa1"
+   },
+   {
+    "author": "Jonas ABde",
+    "date": "2026-09-08T10:21:01Z",
+    "msg": "spec: document real verify_tick source semantics (Hermes records builtin, not scheduler)",
+    "sha": "08d9669"
+   },
+   {
+    "author": "Jonas ABde",
+    "date": "2026-09-08T10:15:06Z",
+    "msg": "verify_tick: prove Hermes 'builtin' source passes TICK-VERIFIED (41 checks)",
+    "sha": "a327f40"
+   },
+   {
+    "author": "Jonas ABde",
+    "date": "2026-09-08T10:10:51Z",
+    "msg": "verify_tick: correct misleading docstring (Hermes records scheduled runs as builtin, check accepts non-manual_run)",
+    "sha": "f5f8cc6"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T13:31:05Z",
+    "head_sha": "cd8652f",
+    "name": "CI",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T13:29:53Z",
+    "head_sha": "c9ace2e",
+    "name": "CI",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T13:27:41Z",
+    "head_sha": "303520a",
+    "name": "CI",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": "wi-backend",
+  "full": "Aftergraph/wi-backend",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Source-neutral work intelligence: observations become structured, attributable WorkItems for downstream autonomous systems.",
+  "homepage": "https://aftergraph.org",
+  "language": "Python",
+  "license": "Apache-2.0",
+  "open_issues": 2,
+  "pushed_at": "2026-09-08T13:10:29Z",
+  "languages": {
+   "Python": 806811,
+   "Shell": 32053,
+   "Dockerfile": 1178,
+   "Batchfile": 72
+  },
+  "open_prs": [],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T13:10:26Z",
+    "msg": "fix: drift collector/policy track renamed wi-backend/wi-frontend units (#66)",
+    "sha": "f2c7843"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T12:56:04Z",
+    "msg": "CI: point fail-closed boundary CORS at wie host (#63)",
+    "sha": "575a938"
+   },
+   {
+    "author": "V2 Build",
+    "date": "2026-09-08T12:45:39Z",
+    "msg": "fix: align deploy path pins with canonical /opt/wi-backend runtime (tests + deploy preflight)",
+    "sha": "4323b8f"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T12:31:13Z",
+    "msg": "Rename public domain to wie.aftergraph.org (#62)",
+    "sha": "abb577a"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T12:30:30Z",
+    "msg": "Docs: finish Wie prose rebrand (#61)",
+    "sha": "fc61934"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T12:24:54Z",
+    "msg": "Rebrand backend to Wie by Aftergraph (#60)",
+    "sha": "6ba4736"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T12:24:16Z",
+    "msg": "Works execution-status readback + HMAC coverage (#58)",
+    "sha": "e416583"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:52:48Z",
+    "msg": "ci(auto-merge): job-level pull-requests: write only (#65)",
+    "sha": "e484311"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:14:40Z",
+    "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS (#64)",
+    "sha": "9b5bce9"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T20:09:05Z",
+    "msg": "feat(security): allow docs.aftergraph.org CORS origin for read-only Try-it (#59)",
+    "sha": "a926f26"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T13:10:30Z",
+    "head_sha": "f2c7843",
+    "name": "OpenSSF Scorecard",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T13:10:30Z",
+    "head_sha": "f2c7843",
+    "name": "CI",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T13:10:30Z",
+    "head_sha": "f2c7843",
+    "name": "CodeQL",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": ".github",
+  "full": "Aftergraph/.github",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Organization profile",
+  "homepage": null,
+  "language": "Python",
+  "license": null,
+  "open_issues": 2,
+  "pushed_at": "2026-09-08T13:02:28Z",
+  "languages": {
+   "Python": 23088
+  },
+  "open_prs": [],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T13:02:27Z",
+    "msg": "docs(org): align public front door with current repository identities",
+    "sha": "e9662a4"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T12:04:37Z",
+    "msg": "community: expose roadmap and RFC discussion threads",
+    "sha": "a46de3c"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:56:42Z",
+    "msg": "ci(seed-discussions): move discussions: write to job level; top-level contents: read (#18)",
+    "sha": "8e3d0d5"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:55:43Z",
+    "msg": "community: register roadmap and RFC threads",
+    "sha": "651c419"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:46:53Z",
+    "msg": "community: publish roadmap and RFC intake",
+    "sha": "c805ca8"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:35:09Z",
+    "msg": "community: expand canonical discussion seeding",
+    "sha": "e190b96"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:34:53Z",
+    "msg": "community: add Sentinel verdict discussion seed",
+    "sha": "338f546"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:34:43Z",
+    "msg": "community: add architecture RFC seed",
+    "sha": "ce3535f"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:34:33Z",
+    "msg": "community: add prior-art challenge seed",
+    "sha": "3ccfd33"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:34:23Z",
+    "msg": "community: add MISSION-Bench reproduction seed",
+    "sha": "810abf6"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T13:02:31Z",
+    "head_sha": "e9662a4",
+    "name": "Brand Assets",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T13:02:13Z",
+    "head_sha": "58aef30",
+    "name": "Brand Assets",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:30:29Z",
+    "head_sha": "a46de3c",
+    "name": "Seed Aftergraph discussions",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": "docs",
+  "full": "Aftergraph/docs",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Aftergraph Knowledge Plane \u2014 public developer & research portal. Provenance-stamped docs, contracts, claims + agent surfaces. Live: https://docs.aftergraph.org",
+  "homepage": "https://docs.aftergraph.org",
+  "language": "MDX",
+  "license": "Apache-2.0",
+  "open_issues": 2,
+  "pushed_at": "2026-09-08T12:46:52Z",
+  "languages": {
+   "MDX": 119872,
+   "JavaScript": 69185,
+   "CSS": 20748,
+   "Astro": 18376,
+   "TypeScript": 3751
+  },
+  "open_prs": [],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T12:46:52Z",
+    "msg": "ci: verify exact production docs head (#10)",
+    "sha": "10a8f39"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T12:03:43Z",
+    "msg": "docs: add public community and RFC plane (#9)",
+    "sha": "6659774"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:46:32Z",
+    "msg": "ci(verifier): move write scopes to job level; top-level contents: read (#8)",
+    "sha": "6d04139"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:29:33Z",
+    "msg": "fix(ci): verifier appends to stable verifier-log branch; keep --previous continuity (#7)",
+    "sha": "2d6aa01"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:10:52Z",
+    "msg": "fix(ci): verifier log falls back to PR when direct push is blocked (#5)",
+    "sha": "59aea8e"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:38:36Z",
+    "msg": "fix(ci): restore astro build in build chain (regression from 2ffedc8) (#4)",
+    "sha": "9e14b00"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:22:30Z",
+    "msg": "Merge pull request #3 from Aftergraph/fix/docs-status-route-order",
+    "sha": "ed89ae8"
+   },
+   {
+    "author": "JonasAbde",
+    "date": "2026-09-08T10:06:50Z",
+    "msg": "chore(security): add role-based CODEOWNERS and SECURITY.md per baseline matrix",
+    "sha": "0b1fd20"
+   },
+   {
+    "author": "JonasAbde",
+    "date": "2026-09-08T10:06:49Z",
+    "msg": "fix(ci): generate /status content before link validation",
+    "sha": "2ffedc8"
+   },
+   {
+    "author": "JonasAbde",
+    "date": "2026-09-08T10:06:49Z",
+    "msg": "ci(workflows): pin action refs to SHA, declare explicit permissions, guard Dependabot callers",
+    "sha": "b1853f1"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:46:55Z",
+    "head_sha": "10a8f39",
+    "name": "knowledge-plane-ci",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:46:00Z",
+    "head_sha": "352ee58",
+    "name": "knowledge-plane-ci",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:38:38Z",
+    "head_sha": "6659774",
+    "name": "knowledge-plane-verifier",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": "sentinel-firetest2",
+  "full": "Aftergraph/sentinel-firetest2",
+  "archived": false,
+  "default_branch": "main",
+  "description": null,
+  "homepage": null,
+  "language": "JavaScript",
+  "license": null,
+  "open_issues": 0,
+  "pushed_at": "2026-09-08T12:21:40Z",
+  "languages": {
+   "JavaScript": 51
+  },
+  "open_prs": [],
+  "commits": [
+   {
+    "author": "proof",
+    "date": "2026-09-08T12:17:53Z",
+    "msg": "mover 8 (pre-pushed)",
+    "sha": "e59ce25"
+   },
+   {
+    "author": "proof",
+    "date": "2026-09-08T12:17:13Z",
+    "msg": "mover 7 (pre-pushed)",
+    "sha": "4f5da07"
+   },
+   {
+    "author": "proof",
+    "date": "2026-09-08T12:16:42Z",
+    "msg": "mover 6 (pre-pushed)",
+    "sha": "eb27a48"
+   },
+   {
+    "author": "proof",
+    "date": "2026-09-08T12:15:56Z",
+    "msg": "mover 5 (pre-pushed)",
+    "sha": "6c74bd5"
+   },
+   {
+    "author": "proof",
+    "date": "2026-09-08T12:15:17Z",
+    "msg": "mover 4 (unpushed)",
+    "sha": "4871882"
+   },
+   {
+    "author": "proof",
+    "date": "2026-09-08T12:14:47Z",
+    "msg": "mover 3 (unpushed)",
+    "sha": "1a55032"
+   },
+   {
+    "author": "proof",
+    "date": "2026-09-08T12:14:19Z",
+    "msg": "mover 2 (unpushed)",
+    "sha": "4bb7d63"
+   },
+   {
+    "author": "proof",
+    "date": "2026-09-08T12:13:23Z",
+    "msg": "base mover (unpushed)",
+    "sha": "172692d"
+   },
+   {
+    "author": "proof",
+    "date": "2026-09-08T12:12:31Z",
+    "msg": "base",
+    "sha": "c0d5766"
+   }
+  ],
+  "ci": []
+ },
+ {
+  "name": "works-execution",
+  "full": "Aftergraph/works-execution",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Durable execution plane for autonomous work \u2014 missions, WorkGraph scheduling, workers, leases, budgets, recovery and execution evidence.",
+  "homepage": "https://aftergraph.org",
+  "language": "Go",
+  "license": "Apache-2.0",
+  "open_issues": 1,
+  "pushed_at": "2026-09-08T12:56:59Z",
+  "languages": {
+   "Go": 1908215,
+   "Python": 32426,
+   "Open Policy Agent": 6216,
+   "Shell": 1752,
+   "Makefile": 1707,
+   "Dockerfile": 727
+  },
+  "open_prs": [
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T11:53:41Z",
+    "draft": false,
+    "head": "feat/platform-event-ref-v0-1",
+    "number": 67,
+    "title": "feat(works): add platform event correlation projection"
+   }
+  ],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:53:34Z",
+    "msg": "ci(auto-merge): job-level pull-requests: write only (#66)",
+    "sha": "1267f03"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:35:05Z",
+    "msg": "ci(release-drafter): job-level contents: write only (#65)",
+    "sha": "94c9e02"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:39:21Z",
+    "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#64)",
+    "sha": "e3cca87"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:36:05Z",
+    "msg": "docs(works): reconcile Apache-2.0 license truth (#63)",
+    "sha": "e5f89e7"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T20:16:11Z",
+    "msg": "test(works): freeze workgraph State vocabulary (#62)",
+    "sha": "372bc3f"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T04:14:17Z",
+    "msg": "fix: pin codeql-action to commit SHA (#61)",
+    "sha": "79914a5"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T04:04:27Z",
+    "msg": "fix: pin scorecard-action to commit SHA (#60)",
+    "sha": "fe95394"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T04:03:50Z",
+    "msg": "feat(authz+publisher): v0.3.5 wave \u2014 k-065/066/067/068 (#39)",
+    "sha": "7c2335c"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T00:29:59Z",
+    "msg": "chore: SHA-pin third-party GitHub Actions (#59)",
+    "sha": "9551eaa"
+   },
+   {
+    "author": "dependabot[bot]",
+    "date": "2026-09-06T23:31:01Z",
+    "msg": "chore(deps): bump golang from 1.25-alpine to 1.27-alpine (#49)",
+    "sha": "85e9274"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:57:16Z",
+    "head_sha": "1267f03",
+    "name": "Release Drafter",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:57:04Z",
+    "head_sha": "554c026",
+    "name": "CodeQL",
+    "status": "completed"
+   },
+   {
+    "conclusion": "failure",
+    "created_at": "2026-09-08T12:57:04Z",
+    "head_sha": "554c026",
+    "name": "Go tests",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": "trust-gateway",
+  "full": "Aftergraph/trust-gateway",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Fail-closed runtime control and enforcement plane for governed autonomous agents, approvals, policy, budgets and tamper-evident audit.",
+  "homepage": "https://aftergraph.org",
+  "language": "JavaScript",
+  "license": "Apache-2.0",
+  "open_issues": 2,
+  "pushed_at": "2026-09-08T12:55:23Z",
+  "languages": {
+   "JavaScript": 3559567,
+   "CSS": 49248,
+   "HTML": 34027,
+   "Shell": 23137,
+   "Python": 11670,
+   "Dockerfile": 705
+  },
+  "open_prs": [
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T11:49:44Z",
+    "draft": false,
+    "head": "feat/platform-event-ref-v0-1",
+    "number": 78,
+    "title": "feat(tg): add platform event correlation projection"
+   },
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T07:08:26Z",
+    "draft": false,
+    "head": "feat/verified-auto-router-v02",
+    "number": 74,
+    "title": "feat(router): Verified Auto policy-aware shadow routing v0.2"
+   }
+  ],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:52:01Z",
+    "msg": "ci(auto-merge): job-level pull-requests: write only (#79)",
+    "sha": "5ec9dc4"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:35:13Z",
+    "msg": "ci(release-drafter): job-level contents: write only (#77)",
+    "sha": "bd96a79"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:34:39Z",
+    "msg": "feat(gateway): Verified Auto Phase 0 advisory policy fields on router (#75)",
+    "sha": "ca23f44"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:34:31Z",
+    "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#76)",
+    "sha": "85da103"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T20:31:27Z",
+    "msg": "test(trust): attach audit content boundary (#73)",
+    "sha": "736e96b"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T20:03:55Z",
+    "msg": "test(trust): capability conformance vs governed mirror (#72)",
+    "sha": "d207485"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T19:54:09Z",
+    "msg": "test(trust): principal conformance vs AIE principal/1.0 (#71)",
+    "sha": "5751907"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T15:46:46Z",
+    "msg": "feat: add canonical tenant and principal identity projection (#70)",
+    "sha": "97ba8f6"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T04:14:15Z",
+    "msg": "fix: pin codeql-action to commit SHA (#69)",
+    "sha": "bfe126e"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T04:04:25Z",
+    "msg": "fix: pin scorecard-action to commit SHA (#68)",
+    "sha": "6deb6fc"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "failure",
+    "created_at": "2026-09-08T12:55:28Z",
+    "head_sha": "f85d9ff",
+    "name": "Cross-repo Integration Gate",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:55:28Z",
+    "head_sha": "f85d9ff",
+    "name": "CodeQL",
+    "status": "completed"
+   },
+   {
+    "conclusion": "failure",
+    "created_at": "2026-09-08T12:55:28Z",
+    "head_sha": "f85d9ff",
+    "name": "CI",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": "studio",
+  "full": "Aftergraph/studio",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Operator and product experience for Aftergraph systems: mission status, evidence, approvals, needs-you flows and verified outcomes.",
+  "homepage": "https://aftergraph.org",
+  "language": "JavaScript",
+  "license": "Apache-2.0",
+  "open_issues": 1,
+  "pushed_at": "2026-09-08T11:51:34Z",
+  "languages": {
+   "JavaScript": 882774,
+   "Python": 139342,
+   "CSS": 22534,
+   "TypeScript": 13863,
+   "Swift": 12850,
+   "HTML": 1166,
+   "Batchfile": 209,
+   "Shell": 153
+  },
+  "open_prs": [
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-07T15:14:28Z",
+    "draft": false,
+    "head": "chore/sentinel-dogfood",
+    "number": 42,
+    "title": "ci: non-blocking Sentinel dogfood (informational only)"
+   }
+  ],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:51:16Z",
+    "msg": "ci(auto-merge): job-level pull-requests: write only (#45)",
+    "sha": "d332fe0"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:34:58Z",
+    "msg": "ci(release-drafter): job-level contents: write only (#44)",
+    "sha": "75d662a"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:33:00Z",
+    "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#43)",
+    "sha": "afef293"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T08:06:49Z",
+    "msg": "style(p1-001): map muted text family to text-3 token (#41)",
+    "sha": "ca3da75"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T07:51:15Z",
+    "msg": "style(p1-001): reuse text-2 for institutional body cluster (#40)",
+    "sha": "d6850dc"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T07:40:06Z",
+    "msg": "style(p1-001): text-emphasis token for institutional heading cluster (#39)",
+    "sha": "661ac69"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T07:29:09Z",
+    "msg": "style(p1-001): text-active token for active highlight cluster (#38)",
+    "sha": "8803e82"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T07:17:16Z",
+    "msg": "docs: V9.0 changelog plus current test counts (#37)",
+    "sha": "59a41cf"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T07:09:23Z",
+    "msg": "feat(auth): operator user-invite form with grantable capability directory (#36)",
+    "sha": "903ef43"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T06:54:24Z",
+    "msg": "feat(v90): human-authored outcome lessons with verdict filter (#35)",
+    "sha": "1c1bb37"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:52:43Z",
+    "head_sha": "d332fe0",
+    "name": "Release Drafter",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T11:51:49Z",
+    "head_sha": "d332fe0",
+    "name": "OpenSSF Scorecard",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T11:51:35Z",
+    "head_sha": "d332fe0",
+    "name": "Release Drafter",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": "intelligence-systems-research",
+  "full": "Aftergraph/intelligence-systems-research",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Research program for verifiable intelligent systems \u2014 SPEC-001 Mission Contracts, MISSION-Bench, assurance, replication and empirical evidence.",
+  "homepage": "https://aftergraph.org",
+  "language": "Python",
+  "license": "Apache-2.0",
+  "open_issues": 1,
+  "pushed_at": "2026-09-08T11:50:50Z",
+  "languages": {
+   "Python": 1474835,
+   "PowerShell": 21789,
+   "JavaScript": 19500,
+   "Shell": 2826
+  },
+  "open_prs": [],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:50:31Z",
+    "msg": "ci(auto-merge): job-level pull-requests: write only (#48)",
+    "sha": "d3da7f2"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:35:45Z",
+    "msg": "ci(release-drafter): job-level contents: write only (#47)",
+    "sha": "d0a78f3"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:31:58Z",
+    "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#46)",
+    "sha": "f767e7e"
+   },
+   {
+    "author": "dependabot[bot]",
+    "date": "2026-09-07T15:48:40Z",
+    "msg": "chore(deps): bump github/codeql-action/init from 5ba2889ada762081db2c4f32a729827dce632c7b to 6f5948dfacef28e207b48d0905cf90c03365536d (#40)",
+    "sha": "08c9846"
+   },
+   {
+    "author": "dependabot[bot]",
+    "date": "2026-09-07T15:48:34Z",
+    "msg": "chore(deps): bump github/codeql-action/analyze from 5ba2889ada762081db2c4f32a729827dce632c7b to 6f5948dfacef28e207b48d0905cf90c03365536d (#39)",
+    "sha": "0417dac"
+   },
+   {
+    "author": "dependabot[bot]",
+    "date": "2026-09-07T15:48:28Z",
+    "msg": "chore(deps): bump github/codeql-action/upload-sarif from 5ba2889ada762081db2c4f32a729827dce632c7b to 6f5948dfacef28e207b48d0905cf90c03365536d (#38)",
+    "sha": "9c88dfe"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T05:49:46Z",
+    "msg": "roadmap: assign STUDY-014 to continuity/state-transfer (ACC) proposal (#45)",
+    "sha": "b8812ca"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T05:17:03Z",
+    "msg": "chore(deps): move pip dependabot schedule to quarterly (#43)",
+    "sha": "59c61fd"
+   },
+   {
+    "author": "dependabot[bot]",
+    "date": "2026-09-07T05:11:42Z",
+    "msg": "chore(deps): bump the pip-minor-and-patch group with 92 updates (#41)",
+    "sha": "92a59b3"
+   },
+   {
+    "author": "dependabot[bot]",
+    "date": "2026-09-07T04:55:14Z",
+    "msg": "chore(deps): bump ossf/scorecard-action SHA (v2.4.4) (#37)",
+    "sha": "52b5988"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:51:13Z",
+    "head_sha": "d3da7f2",
+    "name": "Release Drafter",
+    "status": "completed"
+   },
+   {
+    "conclusion": null,
+    "created_at": "2026-09-08T12:40:37Z",
+    "head_sha": "d3da7f2",
+    "name": "JAR-EXP-0013 controlled host",
+    "status": "queued"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:39:22Z",
+    "head_sha": "d3da7f2",
+    "name": "CI",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": "brand",
+  "full": "Aftergraph/brand",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Aftergraph Brand OS and design system: identity, tokens, canonical assets and public communication contracts.",
+  "homepage": "https://aftergraph.org",
+  "language": "JavaScript",
+  "license": "Apache-2.0",
+  "open_issues": 1,
+  "pushed_at": "2026-09-08T11:50:04Z",
+  "languages": {
+   "JavaScript": 12701,
+   "CSS": 4270
+  },
+  "open_prs": [
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T00:18:29Z",
+    "draft": false,
+    "head": "docs/reconcile-masterbrand-positioning",
+    "number": 15,
+    "title": "docs(brand): reconcile canonical masterbrand positioning"
+   }
+  ],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:49:46Z",
+    "msg": "ci(auto-merge): job-level pull-requests: write only (#18)",
+    "sha": "f0171b5"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:35:42Z",
+    "msg": "ci(release-drafter): job-level contents: write only (#17)",
+    "sha": "9025b1f"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:30:39Z",
+    "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#16)",
+    "sha": "a20d701"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T19:00:14Z",
+    "msg": "docs(brand): product naming masterbrand rule (#14)",
+    "sha": "138f474"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T04:14:24Z",
+    "msg": "fix: pin codeql-action to commit SHA (#13)",
+    "sha": "fe7485a"
+   },
+   {
+    "author": "dependabot[bot]",
+    "date": "2026-09-07T04:11:50Z",
+    "msg": "chore(deps): bump ossf/scorecard-action from 2.4.2 to 2.4.4 (#6)",
+    "sha": "f7735a9"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T04:04:34Z",
+    "msg": "fix: pin scorecard-action to commit SHA (#12)",
+    "sha": "dc0c9f3"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T03:57:12Z",
+    "msg": "chore: SHA-pin third-party GitHub Actions (#10)",
+    "sha": "2851487"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T03:52:04Z",
+    "msg": "fix(ci): verify SVG assets from manifest.json canonical layout (#11)",
+    "sha": "312d9f4"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-06T23:27:04Z",
+    "msg": "chore: add Apache-2.0 LICENSE (org standard, matches aie) (#9)",
+    "sha": "cc1a22f"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:37:08Z",
+    "head_sha": "f0171b5",
+    "name": "Release Drafter",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T11:50:19Z",
+    "head_sha": "f0171b5",
+    "name": "OpenSSF Scorecard",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T11:50:05Z",
+    "head_sha": "f0171b5",
+    "name": "Release Drafter",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": "aie",
+  "full": "Aftergraph/aie",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Agentic Institution Engineering \u2014 portable semantics for authority, delegation, revocation, budgets, lifecycle, topology governance and evidence.",
+  "homepage": "https://aftergraph.org",
+  "language": "Python",
+  "license": "Apache-2.0",
+  "open_issues": 6,
+  "pushed_at": "2026-09-08T15:30:24Z",
+  "languages": {
+   "Python": 532933,
+   "Shell": 40429,
+   "Dockerfile": 867
+  },
+  "open_prs": [],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T15:30:05Z",
+    "msg": "fix(s1): greenlight aie workflows (otel deps, mission enum, SSE race) (#51)",
+    "sha": "66af7e8"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:48:59Z",
+    "msg": "ci(auto-merge): job-level pull-requests: write only (#50)",
+    "sha": "8ac0629"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:35:40Z",
+    "msg": "ci(release-drafter): job-level contents: write only (#49)",
+    "sha": "426ea07"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:29:42Z",
+    "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#48)",
+    "sha": "668d7be"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T15:34:59Z",
+    "msg": "feat(aie): canonical principal/1.0 compatibility boundary (#47)",
+    "sha": "29f6a9b"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T04:14:12Z",
+    "msg": "fix: pin codeql-action to commit SHA (#46)",
+    "sha": "7ab61a2"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T04:04:22Z",
+    "msg": "fix: pin scorecard-action to commit SHA (#45)",
+    "sha": "221c570"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T00:32:12Z",
+    "msg": "chore: SHA-pin third-party GitHub Actions (#44)",
+    "sha": "4b4f921"
+   },
+   {
+    "author": "dependabot[bot]",
+    "date": "2026-09-06T23:50:59Z",
+    "msg": "chore(deps): bump ossf/scorecard-action in the actions-minor-patch group (#43)",
+    "sha": "064d329"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-06T23:05:49Z",
+    "msg": "chore: dependabot ignore semver-major (#42)",
+    "sha": "c9684e4"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T15:30:48Z",
+    "head_sha": "66af7e8",
+    "name": "CI",
+    "status": "completed"
+   },
+   {
+    "conclusion": "failure",
+    "created_at": "2026-09-08T15:30:46Z",
+    "head_sha": "66af7e8",
+    "name": "AIE v0.4 S1 External Interop",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T15:30:28Z",
+    "head_sha": "66af7e8",
+    "name": "Configured Graph Update: pip in /. #1563881084",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": "after-graph-governance",
+  "full": "Aftergraph/after-graph-governance",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Canonical cross-repository contracts, architecture, terminology, exact-head state and evidence boundaries for the Aftergraph ecosystem.",
+  "homepage": "https://aftergraph.org",
+  "language": "Python",
+  "license": "NOASSERTION",
+  "open_issues": 10,
+  "pushed_at": "2026-09-08T12:58:20Z",
+  "languages": {
+   "Python": 63880,
+   "Shell": 8894
+  },
+  "open_prs": [
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T12:53:33Z",
+    "draft": false,
+    "head": "fix/topology-2026-09-08",
+    "number": 49,
+    "title": "fix(topology): reconcile current 24-repo Aftergraph org"
+   },
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T12:34:48Z",
+    "draft": false,
+    "head": "reconcile/runtime-continuity-ownership-v2",
+    "number": 48,
+    "title": "docs(governance): finish continuity and runtime ownership split"
+   },
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T11:42:26Z",
+    "draft": false,
+    "head": "feat/platform-fabrics-v0-1",
+    "number": 45,
+    "title": "feat: add Platform Fabrics v0.1 conformance slice"
+   },
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T07:01:36Z",
+    "draft": false,
+    "head": "spec/verified-auto-execution",
+    "number": 41,
+    "title": "docs: define Verified Auto execution architecture"
+   },
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-07T23:09:20Z",
+    "draft": false,
+    "head": "chore/reconcile-runtime-wie-topology",
+    "number": 40,
+    "title": "fix(governance): reconcile Runtime and Wie topology truth"
+   },
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-07T22:02:27Z",
+    "draft": false,
+    "head": "feat/ari-phase1-registry-rbom-query",
+    "number": 39,
+    "title": "feat(governance): complete ARI Phase 1 registry, RBOM, and query"
+   },
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-07T21:32:27Z",
+    "draft": false,
+    "head": "feat/ari-phase0-1",
+    "number": 38,
+    "title": "feat(governance): build ARI Phase 0/1 compatibility foundation"
+   }
+  ],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:48:14Z",
+    "msg": "ci(auto-merge): job-level pull-requests: write only (#46)",
+    "sha": "856c6f6"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:35:37Z",
+    "msg": "ci(release-drafter): job-level contents: write only (#43)",
+    "sha": "0f902b0"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:28:39Z",
+    "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#42)",
+    "sha": "3a0fddb"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:27:45Z",
+    "msg": "docs(governance): define Aftergraph 26, APC-1, and Release Intelligence (#36)",
+    "sha": "14e1c37"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T20:57:15Z",
+    "msg": "feat(topology): register runtime (21st repo) (#37)",
+    "sha": "20257c0"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T20:53:21Z",
+    "msg": "docs(governance): AVC tenant mapping verdicts (#35)",
+    "sha": "f1b5378"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T20:46:07Z",
+    "msg": "docs(governance): AVC identity mapping verdicts (#34)",
+    "sha": "6230603"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T20:21:50Z",
+    "msg": "docs(governance): matrix row 16 audit envelope gap (#33)",
+    "sha": "6dacc29"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T20:00:44Z",
+    "msg": "feat(contracts): capability/1.0 TG vocabulary mirror (#32)",
+    "sha": "f8a777d"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T18:55:51Z",
+    "msg": "docs(governance): platform architecture V3 contract (#31)",
+    "sha": "d5972d1"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:58:25Z",
+    "head_sha": "97cc2e4",
+    "name": "Brand Assets",
+    "status": "completed"
+   },
+   {
+    "conclusion": "skipped",
+    "created_at": "2026-09-08T12:58:25Z",
+    "head_sha": "97cc2e4",
+    "name": "Auto-merge Dependabot",
+    "status": "completed"
+   },
+   {
+    "conclusion": "skipped",
+    "created_at": "2026-09-08T12:53:37Z",
+    "head_sha": "b0ec1af",
+    "name": "Auto-merge Dependabot",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": "aftergraph.org",
+  "full": "Aftergraph/aftergraph.org",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Canonical public platform for aftergraph.org: marketing site, organization front door and system launcher for the Aftergraph ecosystem.",
+  "homepage": null,
+  "language": "HTML",
+  "license": "Apache-2.0",
+  "open_issues": 3,
+  "pushed_at": "2026-09-08T13:03:39Z",
+  "languages": {
+   "HTML": 67623,
+   "JavaScript": 54878,
+   "CSS": 4537
+  },
+  "open_prs": [
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T13:04:04Z",
+    "draft": false,
+    "head": "plan/aftergraph-v3-product-front-door",
+    "number": 59,
+    "title": "docs: define Aftergraph V3 product front door"
+   },
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T12:41:55Z",
+    "draft": false,
+    "head": "ops/production-deploy-gate",
+    "number": 58,
+    "title": "ci: add gated exact-head production deployment"
+   },
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T11:53:30Z",
+    "draft": false,
+    "head": "community/public-plane",
+    "number": 57,
+    "title": "community: expose public discussions and RFC plane"
+   }
+  ],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:35:44Z",
+    "msg": "ci(release-drafter): job-level contents: write only (#56)",
+    "sha": "ec54979"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:17:58Z",
+    "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#55)",
+    "sha": "4354c55"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T10:17:03Z",
+    "msg": "fix(site): reconcile public topology with Runtime and Wie truth (#53)",
+    "sha": "2a62635"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T23:38:01Z",
+    "msg": "fix(site): Wie copy/meta/nav/a11y improvement pass (#54)",
+    "sha": "769723a"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T22:17:49Z",
+    "msg": "feat(site): Sentinel product page + Studio demo surface (#46)",
+    "sha": "5fea114"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T21:58:27Z",
+    "msg": "fix(site): resolve Wie rebrand PRs \u2014 stray conflict marker (#52)",
+    "sha": "cddc2bd"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T21:13:53Z",
+    "msg": "feat(site): Sentinel product page at /sentinel (#38)",
+    "sha": "f4e98ac"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T21:00:37Z",
+    "msg": "feat(site): topology totals 21/13/8 with runtime (#50)",
+    "sha": "4ba07ed"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T19:53:36Z",
+    "msg": "fix(site): mobile rail readability (#48)",
+    "sha": "8276285"
+   },
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-07T19:07:24Z",
+    "msg": "Mobile nav menu + Status links (#43)",
+    "sha": "4614e1c"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:43:55Z",
+    "head_sha": "4568cce",
+    "name": "Aftergraph Production Deploy",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:43:22Z",
+    "head_sha": "4568cce",
+    "name": "Aftergraph Production Deploy",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:41:58Z",
+    "head_sha": "31228de",
+    "name": "Aftergraph Production Deploy",
+    "status": "completed"
+   }
+  ]
+ },
+ {
+  "name": "sentinel",
+  "full": "Aftergraph/sentinel",
+  "archived": false,
+  "default_branch": "main",
+  "description": "Sentinel by Aftergraph \u2014 verified code-review: PRs into merge-ready verdicts (strategy docs, prototype-first)",
+  "homepage": null,
+  "language": "JavaScript",
+  "license": null,
+  "open_issues": 1,
+  "pushed_at": "2026-09-08T12:56:15Z",
+  "languages": {
+   "JavaScript": 853864,
+   "CSS": 12489,
+   "HTML": 9050,
+   "Shell": 2044
+  },
+  "open_prs": [
+   {
+    "author": "JonasAbde",
+    "created_at": "2026-09-08T12:56:31Z",
+    "draft": false,
+    "head": "docs/evidence-reconcile-v1-7",
+    "number": 5,
+    "title": "docs: reconcile Sentinel evidence with v1.7 implementation"
+   }
+  ],
+  "commits": [
+   {
+    "author": "Jonas Abde",
+    "date": "2026-09-08T11:11:03Z",
+    "msg": "fix(test): pass PATH explicitly in runner flood/timeout test (#4)",
+    "sha": "c09eb71"
+   },
+   {
+    "author": "JonasAbde",
+    "date": "2026-09-08T10:06:50Z",
+    "msg": "chore(security): add role-based CODEOWNERS and SECURITY.md per baseline matrix",
+    "sha": "ff6ef35"
+   },
+   {
+    "author": "JonasAbde",
+    "date": "2026-09-07T23:21:56Z",
+    "msg": "Pack v1.7.0: no-hardcoded-api-token-in-diff (26 rules)",
+    "sha": "4ef111f"
+   },
+   {
+    "author": "JonasAbde",
+    "date": "2026-09-07T23:17:32Z",
+    "msg": "Product surfaces: site shell, demo, customer docs, reconciled indexes",
+    "sha": "4338af0"
+   },
+   {
+    "author": "JonasAbde",
+    "date": "2026-09-07T23:17:23Z",
+    "msg": "Bench 24+2 held-out live, 26 scored @ 1.0/1.0",
+    "sha": "54792d9"
+   },
+   {
+    "author": "JonasAbde",
+    "date": "2026-09-07T23:17:13Z",
+    "msg": "S2 context graph + wiring + headers + rule hardening (JS/TS+Python)",
+    "sha": "9e81dd5"
+   },
+   {
+    "author": "root",
+    "date": "2026-09-07T22:18:25Z",
+    "msg": "feat(sentinel): P0 docs-reconcile + v1.6.0 bench case",
+    "sha": "6873af0"
+   },
+   {
+    "author": "root",
+    "date": "2026-09-07T21:55:19Z",
+    "msg": "feat(sentinel): wave-29 security-review improvements (gitignore, no-shell MCP, pr validation)",
+    "sha": "ca7ce52"
+   },
+   {
+    "author": "Jonas ABde",
+    "date": "2026-09-07T21:51:29Z",
+    "msg": "docs(sentinel): README pack line tracks v1.6.0 (25 rules)",
+    "sha": "7b70894"
+   },
+   {
+    "author": "Jonas ABde",
+    "date": "2026-09-07T21:44:14Z",
+    "msg": "feat(sentinel): pack v1.6.0 promotes gap #9 (replicas:1+Recreate combo rule)",
+    "sha": "fb27d8c"
+   }
+  ],
+  "ci": [
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:56:34Z",
+    "head_sha": "af066dc",
+    "name": "sentinel-ci",
+    "status": "completed"
+   },
+   {
+    "conclusion": "success",
+    "created_at": "2026-09-08T12:08:12Z",
+    "head_sha": "bf52087",
+    "name": "Reconcile Sentinel current docs",
+    "status": "completed"
+   },
+   {
+    "conclusion": "failure",
+    "created_at": "2026-09-08T11:11:17Z",
+    "head_sha": "6e96fb8",
+    "name": "Reconcile Sentinel current docs",
+    "status": "completed"
+   }
+  ]
+ }
+]

@@ -1,0 +1,45 @@
+{
+  "note": "v0.2 Assertion drafts (no ids) for generator v0.3. Values from real repo-owned files, 2026-09-08.",
+  "capability_example": {
+    "subject": "capability:skills-vault/aftergraph-observer",
+    "predicate": "trust",
+    "value": { "trust": "first-party", "lifecycle": "candidate", "digest": "sha256:c3f54c43b09c231cf574c30bc13d5c3901a2102fdcd8fd298a75bb9aed6c1170" },
+    "truth_plane": "OBSERVED",
+    "provenance": {
+      "source": "Aftergraph/skills-vault vault.lock.json",
+      "source_type": "repo-file",
+      "repository": "Aftergraph/skills-vault",
+      "ref": "<40-hex vault HEAD at generation>",
+      "evidence_level": "observed"
+    },
+    "boundary_flag": "private-source: skill NAME publication needs Jonas clearance; else aggregate-only"
+  },
+  "model_example": {
+    "subject": "model:model-registry/afm",
+    "predicate": "lifecycle_state",
+    "value": { "schema": "schemas/model-version.schema.json", "releases_seen": ["afm-0.12-arm-e-r3-candidate.0"] },
+    "truth_plane": "OBSERVED",
+    "provenance": {
+      "source": "Aftergraph/model-registry releases/",
+      "source_type": "repo-file",
+      "repository": "Aftergraph/model-registry",
+      "ref": "<40-hex registry HEAD at generation>",
+      "evidence_level": "observed"
+    },
+    "boundary_flag": "private-source: release filenames are candidate internals; aggregate-only until cleared"
+  },
+  "study_example": {
+    "subject": "study:isr/MISSION-Bench",
+    "predicate": "evidence_class",
+    "value": { "class": "unverified", "design_doc": "16-MISSION-BENCH-AND-EXPERIMENT-DESIGN.md" },
+    "truth_plane": "OBSERVED",
+    "provenance": {
+      "source": "Aftergraph/intelligence-systems-research",
+      "source_type": "repo-file",
+      "repository": "Aftergraph/intelligence-systems-research",
+      "ref": "<40-hex ISR HEAD at generation>",
+      "evidence_level": "observed"
+    },
+    "boundary_flag": "public repo: titles + classes OK; result claims only from study-owned result files"
+  }
+}

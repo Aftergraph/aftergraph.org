@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aftergraph — Development Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --canvas:#080C14; --raised:#0E1630; --surface:rgba(14,22,48,.78); --surface-strong:rgba(20,31,64,.92);
+    --text:#F5F7FA; --muted:#8993A4; --border:rgba(137,147,164,.20); --border-strong:rgba(66,199,232,.40);
+    --cyan:#42C7E8; --teal:#24C4AD; --violet:#7759E8; --amber:#F0A64A; --blue:#4C8BD8; --danger:#FF6B7A;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--canvas); color:var(--text);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-size:14px; line-height:1.5; min-height:100vh;
+    background-image:
+      radial-gradient(1200px 600px at 15% -10%, rgba(119,89,232,.10), transparent 60%),
+      radial-gradient(1000px 500px at 90% 0%, rgba(66,199,232,.08), transparent 55%),
+      radial-gradient(900px 700px at 50% 110%, rgba(36,196,173,.06), transparent 60%);
+  }
+  a{color:var(--cyan); text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1280px; margin:0 auto; padding:0 24px 80px}
+
+  /* ---------- header ---------- */
+  header{
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    padding:28px 0 20px; border-bottom:1px solid var(--border);
+  }
+  .logo{height:52px; width:52px}
+  h1{font-family:'Source Serif 4',Georgia,serif; font-size:30px; font-weight:700; letter-spacing:-.02em}
+  .tagline{color:var(--muted); font-size:13px; margin-top:2px}
+  .head-right{margin-left:auto; display:flex; flex-direction:column; align-items:flex-end; gap:6px}
+  .pill{
+    display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:500;
+    border:1px solid var(--border); border-radius:999px; padding:5px 12px; color:var(--muted);
+    background:var(--surface);
+  }
+  .dot{width:8px; height:8px; border-radius:50%; flex:none}
+  .dot.ok{background:var(--teal); box-shadow:0 0 8px rgba(36,196,173,.8)}
+  .dot.warn{background:var(--amber); box-shadow:0 0 8px rgba(240,166,74,.8)}
+  .dot.bad{background:var(--danger); box-shadow:0 0 8px rgba(255,107,122,.8)}
+
+  /* ---------- kpis ---------- */
+  .kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; padding:26px 0 10px}
+  .kpi{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px;
+    position:relative; overflow:hidden;
+  }
+  .kpi::before{content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--accent,var(--cyan))}
+  .kpi .n{font-size:28px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+  .kpi .l{color:var(--muted); font-size:12px; margin-top:2px}
+
+  /* ---------- section titles ---------- */
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin:42px 0 6px; flex-wrap:wrap}
+  .sec-head h2{font-family:'Source Serif 4',Georgia,serif; font-size:22px; font-weight:700}
+  .sec-head .sub{color:var(--muted); font-size:13px}
+  .sec-head input{
+    margin-left:auto; background:var(--raised); border:1px solid var(--border); color:var(--text);
+    border-radius:10px; padding:8px 14px; font-size:13px; width:240px; outline:none; font-family:inherit;
+  }
+  .sec-head input:focus{border-color:var(--border-strong)}
+
+  /* ---------- repo grid ---------- */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(390px,1fr)); gap:16px; margin-top:16px}
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px 18px 14px;
+    display:flex; flex-direction:column; gap:10px; transition:border-color .2s, transform .2s;
+  }
+  .card:hover{border-color:var(--border-strong); transform:translateY(-2px)}
+  .card.flash{border-color:var(--cyan); box-shadow:0 0 0 3px rgba(66,199,232,.15)}
+  .card-top{display:flex; align-items:center; gap:10px}
+  .card-top h3{font-size:15.5px; font-weight:700; letter-spacing:-.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .card-top h3 a{color:var(--text)}
+  .card-top h3 a:hover{color:var(--cyan)}
+  .ci-dots{margin-left:auto; display:flex; gap:5px; align-items:center}
+  .ci-dot{width:9px; height:9px; border-radius:3px; display:inline-block}
+  .desc{color:var(--muted); font-size:13px; min-height:38px}
+  .meta{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  .chip{font-size:11px; border:1px solid var(--border); border-radius:999px; padding:2.5px 9px; color:var(--muted)}
+  .chip.team{color:var(--text)}
+  .langbar{display:flex; height:5px; border-radius:3px; overflow:hidden; background:rgba(137,147,164,.12)}
+  .langbar i{display:block; height:100%}
+  .latest{font-size:12px; color:var(--muted); border-top:1px solid var(--border); padding-top:9px; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .latest b{color:var(--teal); font-weight:600}
+  .prs{display:flex; flex-direction:column; gap:5px}
+  .pr{font-size:12px; display:flex; gap:8px; align-items:center; background:rgba(20,31,64,.55); border-radius:8px; padding:5px 10px}
+  .pr .no{color:var(--violet); font-family:'JetBrains Mono',monospace; font-size:11px; flex:none}
+  .pr .t{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .pr.draft{opacity:.55}
+  .lang-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}
+
+  /* ---------- mindmap ---------- */
+  .map-box{
+    margin-top:16px; background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:10px;
+  }
+  .map-box svg{width:100%; height:auto; display:block}
+  .map-legend{display:flex; gap:18px; flex-wrap:wrap; padding:12px 14px 8px; font-size:12px; color:var(--muted)}
+  .map-legend span{display:inline-flex; align-items:center; gap:7px}
+  .edge{fill:none; stroke-width:2; opacity:.5}
+  .edge.flow{stroke-dasharray:5 7; animation:flow 1.4s linear infinite}
+  @keyframes flow{to{stroke-dashoffset:-12}}
+  .mnode{cursor:pointer}
+  .mnode rect{transition:filter .15s}
+  .mnode:hover rect{filter:brightness(1.35)}
+  .mnode text{pointer-events:none}
+
+  /* ---------- ci table ---------- */
+  table{width:100%; border-collapse:collapse; margin-top:16px; font-size:13px}
+  th{color:var(--muted); text-align:left; font-weight:500; font-size:12px; text-transform:uppercase; letter-spacing:.06em; padding:10px 12px; border-bottom:1px solid var(--border)}
+  td{padding:10px 12px; border-bottom:1px solid rgba(137,147,164,.10)}
+  tr:hover td{background:rgba(20,31,64,.5)}
+  td .mono{font-family:'JetBrains Mono',monospace; font-size:12px}
+
+  footer{margin-top:60px; border-top:1px solid var(--border); padding-top:22px; color:var(--muted); font-size:12.5px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  @media (max-width:720px){ .grid{grid-template-columns:1fr} .head-right{align-items:flex-start; margin-left:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img class="logo" src="assets/svg/aftergraph-monogram.svg" alt="Aftergraph monogram">
+    <div>
+      <h1>Aftergraph — Development Overview</h1>
+      <div class="tagline">Infrastructure and open research for verifiable intelligent systems · live org status</div>
+    </div>
+    <div class="head-right">
+      <span class="pill"><span class="dot ok"></span><span id="gen-date"></span></span>
+      <span class="pill"><span class="dot" id="pulse-dot"></span><span id="pulse-txt"></span></span>
+    </div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+
+  <div class="sec-head">
+    <h2>System mindmap</h2>
+    <div class="sub">how the org fits together — click a node to jump to its repo card</div>
+  </div>
+  <div class="map-box">
+    <div class="map-legend" id="map-legend"></div>
+    <svg id="mindmap" viewBox="0 0 1240 640" role="img" aria-label="Aftergraph architecture mindmap"></svg>
+  </div>
+
+  <div class="sec-head">
+    <h2>Repositories</h2>
+    <div class="sub" id="repo-count"></div>
+    <input id="filter" type="text" placeholder="Filter repositories…">
+  </div>
+  <section class="grid" id="grid"></section>
+
+  <div class="sec-head">
+    <h2>Open pull requests</h2>
+    <div class="sub">across the organization</div>
+  </div>
+  <table id="prtable">
+    <thead><tr><th>Repo</th><th>#</th><th>Title</th><th>Author</th><th>Opened</th></tr></thead>
+    <tbody id="prbody"></tbody>
+  </table>
+
+  <div class="sec-head">
+    <h2>Recent commits</h2>
+    <div class="sub">latest activity per repository</div>
+  </div>
+  <table>
+    <thead><tr><th>Repo</th><th>SHA</th><th>Message</th><th>Author</th><th>Date</th></tr></thead>
+    <tbody id="cbody"></tbody>
+  </table>
+
+  <footer>
+    <span>Generated from the live GitHub API for <a href="https://github.com/orgs/Aftergraph/repositories">github.com/Aftergraph</a>.</span>
+    <span>·</span><a href="https://docs.aftergraph.org">docs.aftergraph.org</a>
+    <span>·</span><a href="https://github.com/orgs/Aftergraph/discussions">Discussions</a>
+    <span>·</span><span>Brand tokens from Aftergraph/brand · colors: institution black, control cyan, evidence teal</span>
+  </footer>
+</div>
+
+<script id="org-data" type="application/json">[{"name": "aftergraph-cron-fabric", "full": "Aftergraph/aftergraph-cron-fabric", "description": "Aftergraph Cron Fabric: Telegram-first drift monitors, event dedupe, enforced read-only sensors.", "language": "Python", "pushed_at": "2026-09-08T13:31:02Z", "homepage": "https://aftergraph.org", "languages": {"Python": 79736, "Shell": 964}, "open_prs": [], "commits": [{"sha": "cd8652f", "msg": "chore(baseline): freeze live reference for volume check (#7)", "author": "Jonas Abde", "date": "2026-09-08T13:31:02Z"}, {"sha": "303520a", "msg": "feat(verify): close Codex CONDITIONAL findings (receipts, fail-closed, baseline) (#5)", "author": "Jonas Abde", "date": "2026-09-08T13:27:38Z"}, {"sha": "a216a88", "msg": "feat: map canonical topology roles to Cron Fabric concerns", "author": "Jonas Abde", "date": "2026-09-08T13:08:33Z"}, {"sha": "34b9123", "msg": "fix: align v0.4 proof semantics and review contract", "author": "Jonas Abde", "date": "2026-09-08T13:00:13Z"}], "ci": [{"name": "CI", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T13:31:05Z"}, {"name": "CI", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T13:29:53Z"}, {"name": "CI", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T13:27:41Z"}]}, {"name": "wi-backend", "full": "Aftergraph/wi-backend", "description": "Source-neutral work intelligence: observations become structured, attributable WorkItems for downstream autonomous systems.", "language": "Python", "pushed_at": "2026-09-08T13:10:29Z", "homepage": "https://aftergraph.org", "languages": {"Python": 806811, "Shell": 32053, "Dockerfile": 1178, "Batchfile": 72}, "open_prs": [], "commits": [{"sha": "f2c7843", "msg": "fix: drift collector/policy track renamed wi-backend/wi-frontend units (#66)", "author": "Jonas Abde", "date": "2026-09-08T13:10:26Z"}, {"sha": "575a938", "msg": "CI: point fail-closed boundary CORS at wie host (#63)", "author": "Jonas Abde", "date": "2026-09-08T12:56:04Z"}, {"sha": "4323b8f", "msg": "fix: align deploy path pins with canonical /opt/wi-backend runtime (tests + deploy preflight)", "author": "V2 Build", "date": "2026-09-08T12:45:39Z"}, {"sha": "abb577a", "msg": "Rename public domain to wie.aftergraph.org (#62)", "author": "Jonas Abde", "date": "2026-09-08T12:31:13Z"}], "ci": [{"name": "OpenSSF Scorecard", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T13:10:30Z"}, {"name": "CI", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T13:10:30Z"}, {"name": "CodeQL", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T13:10:30Z"}]}, {"name": ".github", "full": "Aftergraph/.github", "description": "Organization profile", "language": "Python", "pushed_at": "2026-09-08T13:02:28Z", "homepage": null, "languages": {"Python": 23088}, "open_prs": [], "commits": [{"sha": "e9662a4", "msg": "docs(org): align public front door with current repository identities", "author": "Jonas Abde", "date": "2026-09-08T13:02:27Z"}, {"sha": "a46de3c", "msg": "community: expose roadmap and RFC discussion threads", "author": "Jonas Abde", "date": "2026-09-08T12:04:37Z"}, {"sha": "8e3d0d5", "msg": "ci(seed-discussions): move discussions: write to job level; top-level contents: read (#18)", "author": "Jonas Abde", "date": "2026-09-08T11:56:42Z"}, {"sha": "651c419", "msg": "community: register roadmap and RFC threads", "author": "Jonas Abde", "date": "2026-09-08T11:55:43Z"}], "ci": [{"name": "Brand Assets", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T13:02:31Z"}, {"name": "Brand Assets", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T13:02:13Z"}, {"name": "Seed Aftergraph discussions", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:30:29Z"}]}, {"name": "docs", "full": "Aftergraph/docs", "description": "Aftergraph Knowledge Plane — public developer & research portal. Provenance-stamped docs, contracts, claims + agent surfaces. Live: https://docs.aftergraph.org", "language": "MDX", "pushed_at": "2026-09-08T12:46:52Z", "homepage": "https://docs.aftergraph.org", "languages": {"MDX": 119872, "JavaScript": 69185, "CSS": 20748, "Astro": 18376, "TypeScript": 3751}, "open_prs": [], "commits": [{"sha": "10a8f39", "msg": "ci: verify exact production docs head (#10)", "author": "Jonas Abde", "date": "2026-09-08T12:46:52Z"}, {"sha": "6659774", "msg": "docs: add public community and RFC plane (#9)", "author": "Jonas Abde", "date": "2026-09-08T12:03:43Z"}, {"sha": "6d04139", "msg": "ci(verifier): move write scopes to job level; top-level contents: read (#8)", "author": "Jonas Abde", "date": "2026-09-08T11:46:32Z"}, {"sha": "2d6aa01", "msg": "fix(ci): verifier appends to stable verifier-log branch; keep --previous continuity (#7)", "author": "Jonas Abde", "date": "2026-09-08T11:29:33Z"}], "ci": [{"name": "knowledge-plane-ci", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:46:55Z"}, {"name": "knowledge-plane-ci", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:46:00Z"}, {"name": "knowledge-plane-verifier", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:38:38Z"}]}, {"name": "sentinel-firetest2", "full": "Aftergraph/sentinel-firetest2", "description": null, "language": "JavaScript", "pushed_at": "2026-09-08T12:21:40Z", "homepage": null, "languages": {"JavaScript": 51}, "open_prs": [], "commits": [{"sha": "e59ce25", "msg": "mover 8 (pre-pushed)", "author": "proof", "date": "2026-09-08T12:17:53Z"}, {"sha": "4f5da07", "msg": "mover 7 (pre-pushed)", "author": "proof", "date": "2026-09-08T12:17:13Z"}, {"sha": "eb27a48", "msg": "mover 6 (pre-pushed)", "author": "proof", "date": "2026-09-08T12:16:42Z"}, {"sha": "6c74bd5", "msg": "mover 5 (pre-pushed)", "author": "proof", "date": "2026-09-08T12:15:56Z"}], "ci": []}, {"name": "works-execution", "full": "Aftergraph/works-execution", "description": "Durable execution plane for autonomous work — missions, WorkGraph scheduling, workers, leases, budgets, recovery and execution evidence.", "language": "Go", "pushed_at": "2026-09-08T12:56:59Z", "homepage": "https://aftergraph.org", "languages": {"Go": 1908215, "Python": 32426, "Open Policy Agent": 6216, "Shell": 1752, "Makefile": 1707, "Dockerfile": 727}, "open_prs": [{"number": 67, "title": "feat(works): add platform event correlation projection", "author": "JonasAbde", "created_at": "2026-09-08T11:53:41Z", "draft": false}], "commits": [{"sha": "1267f03", "msg": "ci(auto-merge): job-level pull-requests: write only (#66)", "author": "Jonas Abde", "date": "2026-09-08T11:53:34Z"}, {"sha": "94c9e02", "msg": "ci(release-drafter): job-level contents: write only (#65)", "author": "Jonas Abde", "date": "2026-09-08T11:35:05Z"}, {"sha": "e3cca87", "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#64)", "author": "Jonas Abde", "date": "2026-09-08T10:39:21Z"}, {"sha": "e5f89e7", "msg": "docs(works): reconcile Apache-2.0 license truth (#63)", "author": "Jonas Abde", "date": "2026-09-08T10:36:05Z"}], "ci": [{"name": "Release Drafter", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:57:16Z"}, {"name": "CodeQL", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:57:04Z"}, {"name": "Go tests", "conclusion": "failure", "status": "completed", "created_at": "2026-09-08T12:57:04Z"}]}, {"name": "trust-gateway", "full": "Aftergraph/trust-gateway", "description": "Fail-closed runtime control and enforcement plane for governed autonomous agents, approvals, policy, budgets and tamper-evident audit.", "language": "JavaScript", "pushed_at": "2026-09-08T12:55:23Z", "homepage": "https://aftergraph.org", "languages": {"JavaScript": 3559567, "CSS": 49248, "HTML": 34027, "Shell": 23137, "Python": 11670, "Dockerfile": 705}, "open_prs": [{"number": 78, "title": "feat(tg): add platform event correlation projection", "author": "JonasAbde", "created_at": "2026-09-08T11:49:44Z", "draft": false}, {"number": 74, "title": "feat(router): Verified Auto policy-aware shadow routing v0.2", "author": "JonasAbde", "created_at": "2026-09-08T07:08:26Z", "draft": false}], "commits": [{"sha": "5ec9dc4", "msg": "ci(auto-merge): job-level pull-requests: write only (#79)", "author": "Jonas Abde", "date": "2026-09-08T11:52:01Z"}, {"sha": "bd96a79", "msg": "ci(release-drafter): job-level contents: write only (#77)", "author": "Jonas Abde", "date": "2026-09-08T11:35:13Z"}, {"sha": "ca23f44", "msg": "feat(gateway): Verified Auto Phase 0 advisory policy fields on router (#75)", "author": "Jonas Abde", "date": "2026-09-08T10:34:39Z"}, {"sha": "85da103", "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#76)", "author": "Jonas Abde", "date": "2026-09-08T10:34:31Z"}], "ci": [{"name": "Cross-repo Integration Gate", "conclusion": "failure", "status": "completed", "created_at": "2026-09-08T12:55:28Z"}, {"name": "CodeQL", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:55:28Z"}, {"name": "CI", "conclusion": "failure", "status": "completed", "created_at": "2026-09-08T12:55:28Z"}]}, {"name": "studio", "full": "Aftergraph/studio", "description": "Operator and product experience for Aftergraph systems: mission status, evidence, approvals, needs-you flows and verified outcomes.", "language": "JavaScript", "pushed_at": "2026-09-08T11:51:34Z", "homepage": "https://aftergraph.org", "languages": {"JavaScript": 882774, "Python": 139342, "CSS": 22534, "TypeScript": 13863, "Swift": 12850, "HTML": 1166, "Batchfile": 209, "Shell": 153}, "open_prs": [{"number": 42, "title": "ci: non-blocking Sentinel dogfood (informational only)", "author": "JonasAbde", "created_at": "2026-09-07T15:14:28Z", "draft": false}], "commits": [{"sha": "d332fe0", "msg": "ci(auto-merge): job-level pull-requests: write only (#45)", "author": "Jonas Abde", "date": "2026-09-08T11:51:16Z"}, {"sha": "75d662a", "msg": "ci(release-drafter): job-level contents: write only (#44)", "author": "Jonas Abde", "date": "2026-09-08T11:34:58Z"}, {"sha": "afef293", "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#43)", "author": "Jonas Abde", "date": "2026-09-08T10:33:00Z"}, {"sha": "ca3da75", "msg": "style(p1-001): map muted text family to text-3 token (#41)", "author": "Jonas Abde", "date": "2026-09-07T08:06:49Z"}], "ci": [{"name": "Release Drafter", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:52:43Z"}, {"name": "OpenSSF Scorecard", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T11:51:49Z"}, {"name": "Release Drafter", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T11:51:35Z"}]}, {"name": "intelligence-systems-research", "full": "Aftergraph/intelligence-systems-research", "description": "Research program for verifiable intelligent systems — SPEC-001 Mission Contracts, MISSION-Bench, assurance, replication and empirical evidence.", "language": "Python", "pushed_at": "2026-09-08T11:50:50Z", "homepage": "https://aftergraph.org", "languages": {"Python": 1474835, "PowerShell": 21789, "JavaScript": 19500, "Shell": 2826}, "open_prs": [], "commits": [{"sha": "d3da7f2", "msg": "ci(auto-merge): job-level pull-requests: write only (#48)", "author": "Jonas Abde", "date": "2026-09-08T11:50:31Z"}, {"sha": "d0a78f3", "msg": "ci(release-drafter): job-level contents: write only (#47)", "author": "Jonas Abde", "date": "2026-09-08T11:35:45Z"}, {"sha": "f767e7e", "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#46)", "author": "Jonas Abde", "date": "2026-09-08T10:31:58Z"}, {"sha": "08c9846", "msg": "chore(deps): bump github/codeql-action/init from 5ba2889ada762081db2c4f32a729827dce632c7b to 6f5948dfacef28e207b48d0905cf90c03365536d (#40)", "author": "dependabot[bot]", "date": "2026-09-07T15:48:40Z"}], "ci": [{"name": "Release Drafter", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:51:13Z"}, {"name": "JAR-EXP-0013 controlled host", "conclusion": null, "status": "queued", "created_at": "2026-09-08T12:40:37Z"}, {"name": "CI", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:39:22Z"}]}, {"name": "brand", "full": "Aftergraph/brand", "description": "Aftergraph Brand OS and design system: identity, tokens, canonical assets and public communication contracts.", "language": "JavaScript", "pushed_at": "2026-09-08T11:50:04Z", "homepage": "https://aftergraph.org", "languages": {"JavaScript": 12701, "CSS": 4270}, "open_prs": [{"number": 15, "title": "docs(brand): reconcile canonical masterbrand positioning", "author": "JonasAbde", "created_at": "2026-09-08T00:18:29Z", "draft": false}], "commits": [{"sha": "f0171b5", "msg": "ci(auto-merge): job-level pull-requests: write only (#18)", "author": "Jonas Abde", "date": "2026-09-08T11:49:46Z"}, {"sha": "9025b1f", "msg": "ci(release-drafter): job-level contents: write only (#17)", "author": "Jonas Abde", "date": "2026-09-08T11:35:42Z"}, {"sha": "a20d701", "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#16)", "author": "Jonas Abde", "date": "2026-09-08T10:30:39Z"}, {"sha": "138f474", "msg": "docs(brand): product naming masterbrand rule (#14)", "author": "Jonas Abde", "date": "2026-09-07T19:00:14Z"}], "ci": [{"name": "Release Drafter", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:37:08Z"}, {"name": "OpenSSF Scorecard", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T11:50:19Z"}, {"name": "Release Drafter", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T11:50:05Z"}]}, {"name": "aie", "full": "Aftergraph/aie", "description": "Agentic Institution Engineering — portable semantics for authority, delegation, revocation, budgets, lifecycle, topology governance and evidence.", "language": "Python", "pushed_at": "2026-09-08T15:30:24Z", "homepage": "https://aftergraph.org", "languages": {"Python": 532933, "Shell": 40429, "Dockerfile": 867}, "open_prs": [], "commits": [{"sha": "66af7e8", "msg": "fix(s1): greenlight aie workflows (otel deps, mission enum, SSE race) (#51)", "author": "Jonas Abde", "date": "2026-09-08T15:30:05Z"}, {"sha": "8ac0629", "msg": "ci(auto-merge): job-level pull-requests: write only (#50)", "author": "Jonas Abde", "date": "2026-09-08T11:48:59Z"}, {"sha": "426ea07", "msg": "ci(release-drafter): job-level contents: write only (#49)", "author": "Jonas Abde", "date": "2026-09-08T11:35:40Z"}, {"sha": "668d7be", "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#48)", "author": "Jonas Abde", "date": "2026-09-08T10:29:42Z"}], "ci": [{"name": "CI", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T15:30:48Z"}, {"name": "AIE v0.4 S1 External Interop", "conclusion": "failure", "status": "completed", "created_at": "2026-09-08T15:30:46Z"}, {"name": "Configured Graph Update: pip in /. #1563881084", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T15:30:28Z"}]}, {"name": "after-graph-governance", "full": "Aftergraph/after-graph-governance", "description": "Canonical cross-repository contracts, architecture, terminology, exact-head state and evidence boundaries for the Aftergraph ecosystem.", "language": "Python", "pushed_at": "2026-09-08T12:58:20Z", "homepage": "https://aftergraph.org", "languages": {"Python": 63880, "Shell": 8894}, "open_prs": [{"number": 49, "title": "fix(topology): reconcile current 24-repo Aftergraph org", "author": "JonasAbde", "created_at": "2026-09-08T12:53:33Z", "draft": false}, {"number": 48, "title": "docs(governance): finish continuity and runtime ownership split", "author": "JonasAbde", "created_at": "2026-09-08T12:34:48Z", "draft": false}, {"number": 45, "title": "feat: add Platform Fabrics v0.1 conformance slice", "author": "JonasAbde", "created_at": "2026-09-08T11:42:26Z", "draft": false}, {"number": 41, "title": "docs: define Verified Auto execution architecture", "author": "JonasAbde", "created_at": "2026-09-08T07:01:36Z", "draft": false}, {"number": 40, "title": "fix(governance): reconcile Runtime and Wie topology truth", "author": "JonasAbde", "created_at": "2026-09-07T23:09:20Z", "draft": false}, {"number": 39, "title": "feat(governance): complete ARI Phase 1 registry, RBOM, and query", "author": "JonasAbde", "created_at": "2026-09-07T22:02:27Z", "draft": false}, {"number": 38, "title": "feat(governance): build ARI Phase 0/1 compatibility foundation", "author": "JonasAbde", "created_at": "2026-09-07T21:32:27Z", "draft": false}], "commits": [{"sha": "856c6f6", "msg": "ci(auto-merge): job-level pull-requests: write only (#46)", "author": "Jonas Abde", "date": "2026-09-08T11:48:14Z"}, {"sha": "0f902b0", "msg": "ci(release-drafter): job-level contents: write only (#43)", "author": "Jonas Abde", "date": "2026-09-08T11:35:37Z"}, {"sha": "3a0fddb", "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#42)", "author": "Jonas Abde", "date": "2026-09-08T10:28:39Z"}, {"sha": "14e1c37", "msg": "docs(governance): define Aftergraph 26, APC-1, and Release Intelligence (#36)", "author": "Jonas Abde", "date": "2026-09-08T10:27:45Z"}], "ci": [{"name": "Brand Assets", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:58:25Z"}, {"name": "Auto-merge Dependabot", "conclusion": "skipped", "status": "completed", "created_at": "2026-09-08T12:58:25Z"}, {"name": "Auto-merge Dependabot", "conclusion": "skipped", "status": "completed", "created_at": "2026-09-08T12:53:37Z"}]}, {"name": "aftergraph.org", "full": "Aftergraph/aftergraph.org", "description": "Canonical public platform for aftergraph.org: marketing site, organization front door and system launcher for the Aftergraph ecosystem.", "language": "HTML", "pushed_at": "2026-09-08T13:03:39Z", "homepage": null, "languages": {"HTML": 67623, "JavaScript": 54878, "CSS": 4537}, "open_prs": [{"number": 59, "title": "docs: define Aftergraph V3 product front door", "author": "JonasAbde", "created_at": "2026-09-08T13:04:04Z", "draft": false}, {"number": 58, "title": "ci: add gated exact-head production deployment", "author": "JonasAbde", "created_at": "2026-09-08T12:41:55Z", "draft": false}, {"number": 57, "title": "community: expose public discussions and RFC plane", "author": "JonasAbde", "created_at": "2026-09-08T11:53:30Z", "draft": false}], "commits": [{"sha": "ec54979", "msg": "ci(release-drafter): job-level contents: write only (#56)", "author": "Jonas Abde", "date": "2026-09-08T11:35:44Z"}, {"sha": "4354c55", "msg": "ci(workflows): pin actions, explicit permissions; add CODEOWNERS + SECURITY.md (#55)", "author": "Jonas Abde", "date": "2026-09-08T10:17:58Z"}, {"sha": "2a62635", "msg": "fix(site): reconcile public topology with Runtime and Wie truth (#53)", "author": "Jonas Abde", "date": "2026-09-08T10:17:03Z"}, {"sha": "769723a", "msg": "fix(site): Wie copy/meta/nav/a11y improvement pass (#54)", "author": "Jonas Abde", "date": "2026-09-07T23:38:01Z"}], "ci": [{"name": "Aftergraph Production Deploy", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:43:55Z"}, {"name": "Aftergraph Production Deploy", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:43:22Z"}, {"name": "Aftergraph Production Deploy", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:41:58Z"}]}, {"name": "sentinel", "full": "Aftergraph/sentinel", "description": "Sentinel by Aftergraph — verified code-review: PRs into merge-ready verdicts (strategy docs, prototype-first)", "language": "JavaScript", "pushed_at": "2026-09-08T12:56:15Z", "homepage": null, "languages": {"JavaScript": 853864, "CSS": 12489, "HTML": 9050, "Shell": 2044}, "open_prs": [{"number": 5, "title": "docs: reconcile Sentinel evidence with v1.7 implementation", "author": "JonasAbde", "created_at": "2026-09-08T12:56:31Z", "draft": false}], "commits": [{"sha": "c09eb71", "msg": "fix(test): pass PATH explicitly in runner flood/timeout test (#4)", "author": "Jonas Abde", "date": "2026-09-08T11:11:03Z"}, {"sha": "ff6ef35", "msg": "chore(security): add role-based CODEOWNERS and SECURITY.md per baseline matrix", "author": "JonasAbde", "date": "2026-09-08T10:06:50Z"}, {"sha": "4ef111f", "msg": "Pack v1.7.0: no-hardcoded-api-token-in-diff (26 rules)", "author": "JonasAbde", "date": "2026-09-07T23:21:56Z"}, {"sha": "4338af0", "msg": "Product surfaces: site shell, demo, customer docs, reconciled indexes", "author": "JonasAbde", "date": "2026-09-07T23:17:32Z"}], "ci": [{"name": "sentinel-ci", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:56:34Z"}, {"name": "Reconcile Sentinel current docs", "conclusion": "success", "status": "completed", "created_at": "2026-09-08T12:08:12Z"}, {"name": "Reconcile Sentinel current docs", "conclusion": "failure", "status": "completed", "created_at": "2026-09-08T11:11:17Z"}]}]</script>
+<script>
+const DATA = JSON.parse(document.getElementById('org-data').textContent);
+
+/* ---------- team taxonomy (colors from Aftergraph brand tokens) ---------- */
+const TEAMS = {
+  research:    {label:'Research & Semantics',  color:'#7759E8', svg:'assets/svg/team-research.svg',
+                repos:['intelligence-systems-research','aie']},
+  platform:    {label:'Execution Platform',    color:'#42C7E8', svg:'assets/svg/team-platform.svg',
+                repos:['works-execution','trust-gateway','wi-backend','aftergraph-cron-fabric']},
+  experience:  {label:'Product & Experience',  color:'#24C4AD', svg:'assets/svg/team-product.svg',
+                repos:['studio','aftergraph.org','brand','docs']},
+  governance:  {label:'Governance & Contracts',color:'#F0A64A', svg:'assets/svg/team-infrastructure.svg',
+                repos:['after-graph-governance','.github']},
+  verification:{label:'Verification & Security',color:'#FF6B7A', svg:'assets/svg/team-security.svg',
+                repos:['sentinel','sentinel-firetest2']},
+};
+const LANG_COLORS = {Python:'#4C8BD8',JavaScript:'#F0A64A',Go:'#42C7E8',MDX:'#7759E8',HTML:'#24C4AD',CSS:'#7759E8',TypeScript:'#42C7E8',Astro:'#FF6B7A',Shell:'#8993A4',PowerShell:'#4C8BD8',Dockerfile:'#24C4AD',Batchfile:'#8993A4'};
+const teamOf = name => Object.keys(TEAMS).find(t => TEAMS[t].repos.includes(name)) || 'experience';
+
+/* ---------- helpers ---------- */
+const byName = Object.fromEntries(DATA.map(r => [r.name, r]));
+const ciState = r => {
+  if (!r.ci || !r.ci.length) return 'none';
+  const c = r.ci.map(x => x.conclusion);
+  if (c.includes('failure')) return 'bad';
+  if (c.includes('success')) return 'ok';
+  return 'run';
+};
+const fmtDate = iso => iso ? iso.slice(0,10) : '—';
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+/* ---------- KPIs ---------- */
+const totalPRs = DATA.reduce((a,r)=>a+r.open_prs.length,0);
+const failing  = DATA.filter(r=>ciState(r)==='bad').length;
+const green    = DATA.filter(r=>ciState(r)==='ok').length;
+const today    = DATA.filter(r=>r.commits.some(c=>c.date && c.date.startsWith(new Date().toISOString().slice(0,10)))).length;
+const LANGS    = new Set(); DATA.forEach(r=>Object.keys(r.languages||{}).forEach(l=>LANGS.add(l)));
+
+document.getElementById('kpis').innerHTML = [
+  ['Repositories', DATA.length, 'var(--cyan)'],
+  ['Open PRs',     totalPRs,    'var(--violet)'],
+  ['CI green',     green,       'var(--teal)'],
+  ['CI failing',   failing,     'var(--danger)'],
+  ['Active today', today,       'var(--amber)'],
+].map(([l,n,c])=>`<div class="kpi" style="--accent:${c}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+
+const pd = document.getElementById('pulse-dot');
+if (failing>0){ pd.className='dot bad'; document.getElementById('pulse-txt').textContent = `${failing} repo${failing>1?'s':''} with failing CI`; }
+else { pd.className='dot ok'; document.getElementById('pulse-txt').textContent = 'All monitored CI green'; }
+document.getElementById('gen-date').textContent = 'Live · ' + new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+
+/* ---------- repo cards ---------- */
+const SORT_ORDER = ['works-execution','trust-gateway','wi-backend','sentinel','intelligence-systems-research','aie','after-graph-governance','studio','aftergraph.org','docs','aftergraph-cron-fabric','brand','.github','sentinel-firetest2'];
+function renderGrid(filter=''){
+  const q = filter.trim().toLowerCase();
+  const repos = DATA
+    .filter(r => !q || r.name.toLowerCase().includes(q) || (r.description||'').toLowerCase().includes(q))
+    .sort((a,b)=>(SORT_ORDER.indexOf(a.name)+1||99)-(SORT_ORDER.indexOf(b.name)+1||99));
+  document.getElementById('repo-count').textContent = `${repos.length} of ${DATA.length} repositories`;
+  document.getElementById('grid').innerHTML = repos.map(r=>{
+    const st = ciState(r), tk = teamOf(r.name), T = TEAMS[tk];
+    const tot = Object.values(r.languages||{}).reduce((a,b)=>a+b,0)||1;
+    const langs = Object.entries(r.languages||{}).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const dot = st==='ok'?'ok':st==='bad'?'bad':st==='run'?'warn':'';
+    const ciTitle = (r.ci||[]).map(x=>`${x.name}: ${x.conclusion||x.status}`).join('\n') || 'no CI runs';
+    const ciDots = (r.ci||[]).slice(0,4).map(x=>{
+      const c = x.conclusion==='success'?'var(--teal)':x.conclusion==='failure'?'var(--danger)':'var(--muted)';
+      return `<span class="ci-dot" style="background:${c}" title="${esc(x.name)}: ${esc(x.conclusion||x.status||'')}"></span>`;
+    }).join('') || `<span class="ci-dot" style="background:var(--muted)" title="no CI"></span>`;
+    const prs = r.open_prs.map(p=>`
+      <a class="pr ${p.draft?'draft':''}" href="https://github.com/${r.full}/pull/${p.number}" target="_blank">
+        <span class="no">#${p.number}</span><span class="t">${esc(p.title)}</span>
+      </a>`).join('');
+    const lc = r.commits[0];
+    const langChips = langs.slice(0,4).map(([l])=>
+      `<span class="chip"><span class="lang-dot" style="background:${LANG_COLORS[l]||'#8993A4'}"></span>${l}</span>`).join('');
+    return `
+    <article class="card" id="repo-${r.name.replace(/[^a-z0-9]/gi,'-')}" data-name="${esc(r.name)}">
+      <div class="card-top">
+        <img src="${T.svg}" alt="" style="height:22px;width:22px">
+        <h3><a href="https://github.com/${r.full}" target="_blank">${esc(r.name)}</a></h3>
+        <span class="ci-dots" title="${esc(ciTitle)}">${ciDots}</span>
+      </div>
+      <div class="desc">${esc(r.description||'No description.')}</div>
+      <div class="meta">
+        <span class="chip team" style="border-color:${T.color}55; color:${T.color}">${T.label}</span>
+        ${r.language?`<span class="chip">${esc(r.language)}</span>`:''}
+        ${r.open_prs.length?`<span class="chip" style="border-color:var(--violet); color:var(--violet)">${r.open_prs.length} open PR${r.open_prs.length>1?'s':''}</span>`:''}
+        <span class="chip">pushed ${fmtDate(r.pushed_at)}</span>
+      </div>
+      <div class="langbar">${langs.map(([l,v])=>`<i style="width:${(v/tot*100).toFixed(1)}%; background:${LANG_COLORS[l]||'#8993A4'}"></i>`).join('')}</div>
+      ${prs?`<div class="prs">${prs}</div>`:''}
+      ${lc?`<div class="latest"><b>${lc.sha}</b> ${esc(lc.msg).slice(0,80)}</div>`:''}
+    </article>`;
+  }).join('');
+}
+renderGrid();
+document.getElementById('filter').addEventListener('input', e => renderGrid(e.target.value));
+
+/* ---------- PR table ---------- */
+const allPRs = DATA.flatMap(r=>r.open_prs.map(p=>({...p, repo:r.name, full:r.full})))
+  .sort((a,b)=>b.created_at.localeCompare(a.created_at));
+document.getElementById('prbody').innerHTML = allPRs.map(p=>`
+  <tr><td><a href="https://github.com/${p.full}" target="_blank">${esc(p.repo)}</a></td>
+  <td class="mono" style="color:var(--violet)">#${p.number}</td>
+  <td><a href="https://github.com/${p.full}/pull/${p.number}" target="_blank" style="${p.draft?'opacity:.55':''}">${esc(p.title)}</a></td>
+  <td>${esc(p.author)}</td><td style="color:var(--muted)">${fmtDate(p.created_at)}</td></tr>`).join('')
+  || '<tr><td colspan="5" style="color:var(--muted)">No open pull requests.</td></tr>';
+
+/* ---------- commit table ---------- */
+const commits = DATA.flatMap(r=>(r.commits||[]).slice(0,4).map(c=>({...c, repo:r.name, full:r.full})))
+  .sort((a,b)=>b.date.localeCompare(a.date)).slice(0,30);
+document.getElementById('cbody').innerHTML = commits.map(c=>`
+  <tr><td><a href="https://github.com/${c.full}" target="_blank">${esc(c.repo)}</a></td>
+  <td class="mono" style="color:var(--teal)">${c.sha}</td>
+  <td class="mono">${esc(c.msg.slice(0,80))}</td>
+  <td style="color:var(--muted)">${esc(c.author)}</td>
+  <td style="color:var(--muted)">${fmtDate(c.date)}</td></tr>`).join('');
+
+/* ---------- mindmap ---------- */
+const NS='http://www.w3.org/2000/svg';
+const svg = document.getElementById('mindmap');
+function el(t,attrs,text){ const n=document.createElementNS(NS,t); for(const k in attrs)n.setAttribute(k,attrs[k]); if(text!=null)n.textContent=text; return n; }
+
+const CX=620, CY=300;
+// branch anchor positions around center
+const BRANCH_POS = {
+  platform:    {x:300,  y:110, anchor:'r'},
+  research:    {x:300,  y:470, anchor:'r'},
+  experience:  {x:940,  y:110, anchor:'l'},
+  verification:{x:940,  y:470, anchor:'l'},
+  governance:  {x:620,  y:560, anchor:'t'},
+};
+// repo node layout per branch (column offsets)
+const NODE_SIZE = {w:210, h:34};
+function repoPos(team, i){
+  const b = BRANCH_POS[team];
+  if (team==='platform' || team==='research'){
+    return {x: b.x + (team==='platform'?-40:40), y: b.y + (i - (TEAMS[team].repos.length-1)/2) * 72};
+  }
+  if (team==='governance') return {x: CX-160 + i*260, y: b.y};
+  const n = TEAMS[team].repos.length;
+  const cols = Math.ceil(n/2);
+  const col = i%2, row = Math.floor(i/2);
+  const x = b.x + (col===0 ? -60 : 60);
+  const y = b.y + (row - (Math.ceil(n/2)-1)/2) * 66;
+  return {x, y};
+}
+
+// center hub
+const hub = el('g',{class:'mnode'});
+hub.appendChild(el('circle',{cx:CX,cy:CY,r:74,fill:'rgba(14,22,48,.9)',stroke:'#42C7E8','stroke-width':2}));
+hub.appendChild(el('circle',{cx:CX,cy:CY,r:60,fill:'none',stroke:'rgba(66,199,232,.25)','stroke-width':1,'stroke-dasharray':'3 6'}));
+hub.appendChild(el('text',{x:CX,y:CY-8,'text-anchor':'middle',fill:'#F5F7FA','font-size':19,'font-weight':700,'font-family':'Source Serif 4, Georgia, serif'},'Aftergraph'));
+hub.appendChild(el('text',{x:CX,y:CY+14,'text-anchor':'middle',fill:'#8993A4','font-size':10.5},'verifiable intelligent'));
+hub.appendChild(el('text',{x:CX,y:CY+28,'text-anchor':'middle',fill:'#8993A4','font-size':10.5},'systems'));
+svg.appendChild(hub);
+
+// legend
+document.getElementById('map-legend').innerHTML =
+  Object.entries(TEAMS).map(([k,t])=>`<span><span class="dot" style="background:${t.color}"></span>${t.label}</span>`).join('');
+
+const CARD_ID = n => 'repo-' + n.replace(/[^a-z0-9]/gi,'-');
+
+Object.entries(TEAMS).forEach(([tk,T])=>{
+  const b = BRANCH_POS[tk];
+  // edge center -> branch hub
+  const mx = (CX + b.x)/2, my = (CY + b.y)/2;
+  const path = el('path',{class:'edge flow', stroke:T.color, d:`M ${CX} ${CY} Q ${mx + (b.y<CY? -60: 60)} ${my} ${b.x} ${b.y}`});
+  svg.appendChild(path);
+  // branch hub node
+  const gh = el('g',{class:'mnode'});
+  gh.appendChild(el('rect',{x:b.x-NODE_SIZE.w/2-6, y:b.y-22, width:NODE_SIZE.w+12, height:44, rx:12, fill:T.color+'22', stroke:T.color,'stroke-width':1.5}));
+  gh.appendChild(el('text',{x:b.x, y:b.y-2,'text-anchor':'middle',fill:T.color,'font-size':13,'font-weight':700,'font-family':'Inter'},T.label));
+  gh.appendChild(el('text',{x:b.x, y:b.y+14,'text-anchor':'middle',fill:'#8993A4','font-size':10.5},`${T.repos.length} repos`));
+  svg.appendChild(gh);
+  // repo leaf nodes
+  T.repos.forEach((rn,i)=>{
+    const p = repoPos(tk,i);
+    const r = byName[rn]; if(!r) return;
+    const st = ciState(r);
+    const stc = st==='ok'?'#24C4AD':st==='bad'?'#FF6B7A':'#8993A4';
+    const g = el('g',{class:'mnode', 'data-repo':rn});
+    // connector from branch hub to leaf
+    svg.appendChild(el('line',{x1:b.x,y1:b.y,x2:p.x,y2:p.y,stroke:T.color,'stroke-width':1.2,opacity:.30}));
+    g.appendChild(el('rect',{x:p.x-NODE_SIZE.w/2, y:p.y-NODE_SIZE.h/2, width:NODE_SIZE.w, height:NODE_SIZE.h, rx:9, fill:'rgba(20,31,64,.92)', stroke:T.color+'88','stroke-width':1}));
+    g.appendChild(el('circle',{cx:p.x-NODE_SIZE.w/2+14, cy:p.y, r:4, fill:stc}));
+    g.appendChild(el('text',{x:p.x-NODE_SIZE.w/2+26, y:p.y+4.5, fill:'#F5F7FA','font-size':12,'font-weight':600,'font-family':'JetBrains Mono, monospace'},rn.length>24?rn.slice(0,23)+'…':rn));
+    const prn = r.open_prs.length;
+    if (prn) g.appendChild(el('text',{x:p.x+NODE_SIZE.w/2-10, y:p.y+4.5,'text-anchor':'end',fill:T.color,'font-size':10,'font-weight':700},prn+' PR'));
+    g.addEventListener('click',()=>{
+      const target = document.getElementById(CARD_ID(rn));
+      if (!target) return;
+      renderGrid(''); // reset filter so card is visible
+      requestAnimationFrame(()=>{
+        const t = document.getElementById(CARD_ID(rn));
+        t.scrollIntoView({behavior:'smooth', block:'center'});
+        t.classList.add('flash');
+        setTimeout(()=>t.classList.remove('flash'), 2200);
+      });
+    });
+    svg.appendChild(g);
+  });
+});
+
+// subtle bg grid
+const defs = el('defs',{});
+const pat = el('pattern',{id:'gridp',width:34,height:34,patternUnits:'userSpaceOnUse'});
+pat.appendChild(el('path',{d:'M 34 0 L 0 0 0 34',fill:'none',stroke:'rgba(137,147,164,.06)','stroke-width':1}));
+defs.appendChild(pat); svg.prepend(defs);
+svg.insertBefore(el('rect',{x:0,y:0,width:1240,height:640,fill:'url(#gridp)'}), svg.children[1]);
+</script>
+</body>
+</html>
