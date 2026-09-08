@@ -70,6 +70,13 @@ try {
     if (!impact.includes('dependents (') || !impact.includes('dependencies (')) {
       fail('impact analysis did not render dependents/dependencies');
     }
+    // Tree filter empty-state: nonsense query must say so instead of silent empty
+    await page.getByLabel('Filter entities').fill('zzz-no-such-entity-qqq');
+    await page.waitForTimeout(800);
+    const filtra = await page.locator('.tree').innerText();
+    if (!filtra.includes('No entities match')) fail('tree filter hides empty state');
+    await page.getByLabel('Filter entities').fill('');
+    await page.waitForTimeout(800);
     await page.close();
   }
   // Truth-plane overlay toggles drive the graph + URL state
