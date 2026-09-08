@@ -244,6 +244,13 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   Fresh vite+worker rebuild from final sources, 40/40 vitest + 14/14 +
   verify + DOM PASS, LF clean. New helpers: scripts/proof-polish.mjs (49L),
   scripts/shoot-focus.mjs (17L); after-shots committed as evidence.
+- E53 QA sweep (commander-direct, killed QA-agent scope): new
+  scripts/qa-sweep.mjs — tablet 768x1024 across all 9 views, fail-closed on
+  error states. PASS. proof-polish generalized to BASE argv and re-proven on
+  :8471 (focus 2px solid rgb(66,199,232); 3 conflict nodes, danger border +
+  glow). Interaction-polish verdict: already covered — hover/cursor/focus
+  rules present, Ask submits via form (Enter native), E48 empty/loading
+  states; no churn added.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).

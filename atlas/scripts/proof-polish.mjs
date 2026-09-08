@@ -1,9 +1,10 @@
 // One-off proof: (1) keyboard focus ring on the filter input, (2) drift-mode
 // conflict highlight (node border/shadow + orange conflict edge strokes).
 import { chromium } from 'playwright';
+const BASE = process.argv[2] || 'http://localhost:8471/atlas/';
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
-await page.goto('http://localhost:8492/atlas/', { waitUntil: 'networkidle', timeout: 60000 });
+await page.goto(BASE, { waitUntil: 'networkidle', timeout: 60000 });
 await page.waitForTimeout(2500);
 
 // 1) Tab until the filter input has keyboard focus (real key presses => :focus-visible)
