@@ -84,10 +84,19 @@ describe('diffProjections', () => {
     const touched = JSON.parse(JSON.stringify(proj));
     // Timestamp-only touch: invisible to the semantic diff.
     touched.assertions.forEach((a) => { a.observed_at = '2030-01-01T00:00:00Z'; });
+    // Cut-label-only touch inside a derivation source: also procedural, not fact.
+    // Give both sides the same derivation source with different cuts.
+    const oldSide = JSON.parse(JSON.stringify(proj));
+    oldSide.assertions.forEach((a) => {
+      a.provenance.source = 'atlas-generator derivation (topology@abc1234 + cut 2026-09-08T15:48:21Z)';
+    });
+    touched.assertions.forEach((a) => {
+      a.provenance.source = 'atlas-generator derivation (topology@abc1234 + cut 2026-09-08T19:30:48Z)';
+    });
     // Value-hash id change (what the generator emits on real value change).
     const moved = touched.assertions.find((a) => a.id === 'as-1');
     moved.id = 'as-1b';
-    const d = diffProjections(proj, touched);
+    const d = diffProjections(oldSide, touched);
     expect(d.changedAssertions).toEqual([]);
     expect(d.addedAssertions).toEqual(['as-1b']);
     expect(d.removedAssertions).toEqual(['as-1']);

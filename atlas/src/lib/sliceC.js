@@ -97,11 +97,14 @@ export function diffProjections(oldP, newP) {
   const newE = keySet(newP.entities, 'id');
   // Semantic comparison: observed_at records WHEN we looked, not WHAT changed.
   // Without stripping it every re-cut reports the whole projection as changed.
-  // Assertion ids embed the value hash, so genuine value changes surface as
-  // added/removed ids — tracked explicitly instead of silently dropped.
+  // Same for the cut label inside derivation source strings (presence): it names
+  // the run, not the fact. Assertion ids embed the value hash, so genuine value
+  // changes surface as added/removed ids — tracked explicitly instead of
+  // silently dropped.
   const sem = (a) => {
     const { observed_at, ...rest } = a;
-    return JSON.stringify(rest);
+    const s = JSON.stringify(rest).replace(/cut \d{4}-\d{2}-\d{2}T[\d:.]+Z/g, 'cut <cut>');
+    return s;
   };
   const oldA = new Map(oldP.assertions.map((a) => [a.id, sem(a)]));
   const newA = new Map(newP.assertions.map((a) => [a.id, sem(a)]));
