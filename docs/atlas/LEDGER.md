@@ -163,6 +163,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   ELK fixed 190x54 contract. Fixed in CSS (fixed boxes + ellipsis, full id in
   title/inspector) + DOM now covers all remaining views (no error boundary).
   CI re-run 34272221503: all 13 steps green incl. smoke. Closed.
+- E31 Growth probe: atlas/scripts/perf-probe.mjs synthesizes N-repo projections
+  (derive + ELK layout timed). N=25/100/200 → elk 102/114/178ms, derive ~0ms,
+  all positioned. Org can grow 8x with headroom. Pushed 01eaea5.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
