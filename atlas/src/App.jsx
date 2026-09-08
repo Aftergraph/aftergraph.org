@@ -21,8 +21,9 @@ import {
 } from './lib/derive.js';
 import enrichFixtures from '../../docs/atlas/enrich/fixtures.json';
 import { pulseRows, contractRows, diffProjections } from './lib/sliceC.js';
+import Home from './Home.jsx';
 
-const VIEWS = ['topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask'];
+const VIEWS = ['home', 'topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask'];
 
 const GENERATOR_CMD =
   'node site/generate-atlas-projection.mjs --ledger <ledger-dir> --gov <governance-clone> --out site/atlas-projection.json';
@@ -312,7 +313,10 @@ export default function App() {
   const [node, setNode] = useState(() => parseState(window.location.search).node);
   const initialView = parseState(window.location.search).view;
   const [drift, setDrift] = useState(() => initialView === 'drift');
-  const [view, setView] = useState(() => (VIEWS.includes(initialView) ? initialView : 'topology'));
+  const [view, setView] = useState(() => {
+    if (initialView === 'drift') return 'topology';
+    return VIEWS.includes(initialView) ? initialView : 'home';
+  });
   const [impact, setImpact] = useState(null);
   const [askQ, setAskQ] = useState('');
   const [askHits, setAskHits] = useState(null);
@@ -425,6 +429,16 @@ export default function App() {
   const togglePlane = (p) =>
     setOverlay((o) => (o.includes(p) ? o.filter((x) => x !== p) : [...o, p]));
 
+  const openView = (v) => {
+    if (v === 'drift') {
+      setDrift(true);
+      setView('topology');
+      return;
+    }
+    if (v === 'home') setDrift(false);
+    setView(v);
+  };
+
   if (status === 'loading') return <div className="empty"><p>Loading Atlas projection…</p></div>;
   if (status === 'malformed') {
     return (
@@ -490,7 +504,7 @@ export default function App() {
       </header>
       <nav className="views" aria-label="Views">
         {VIEWS.map((v) => (
-          <button key={v} aria-selected={view === v} onClick={() => setView(v)}>
+          <button key={v} aria-selected={view === v} onClick={() => openView(v)}>
             {v}
           </button>
         ))}
@@ -498,6 +512,7 @@ export default function App() {
       {origin === 'fetch' && (
         <div className="banner" role="status">Serving runtime-fetched projection — rebuild for a pinned cut.</div>
       )}
+      {view !== 'home' && (
       <nav className="tree" aria-label="Entities">
         <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Filter entities… (live filter)" aria-label="Filter entities" />
         {search.trim() && [...treeRepos, ...treeContracts].filter((n) => matched.has(n.id)).length === 0 && (
@@ -519,7 +534,12 @@ export default function App() {
         ))}
         {treeContracts.length > 60 && <div className="prov">+ {treeContracts.length - 60} more (refine via search in Slice C)</div>}
       </nav>
-      {view === 'topology' ? (
+      )}
+      {view === 'home' ? (
+      <div className="ag-home-wrap">
+        <Home onNavigate={openView} />
+      </div>
+      ) : view === 'topology' ? (
       <div className="graph" ref={graphRef} tabIndex={0} aria-label="Directed topology. Arrow keys move selection, Enter focuses inspector, Escape clears.">
         <ReactFlow
           nodes={nodes}
@@ -546,6 +566,7 @@ export default function App() {
         {view === 'ask' && <AskView projection={projection} q={askQ} setQ={setAskQ} hits={askHits} setHits={setAskHits} />}
       </div>
       )}
+      {view !== 'home' && (
       <aside className="inspector" ref={inspectorRef} tabIndex={-1} aria-label="Inspector">
         <section aria-label="System x-ray">
           <h3>X-ray <span className="prov">directed path from relations</span></h3>
@@ -618,6 +639,7 @@ export default function App() {
           </>
         )}
       </aside>
+      )}
       {drift && (
         <section className="drift-list" aria-label="Drift: open disagreements">
           <h3>Drift ({conflicts.length} open)</h3>

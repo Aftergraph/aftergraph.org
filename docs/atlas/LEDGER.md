@@ -260,6 +260,12 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   atlas/public/assets (all <1.3KB, LF, valid XML, brand-hex only).
   empty-no-result wired into filter empty-state (aria-hidden, text stays
   carrier). vite+worker rebuilt, SVGs confirmed in bundle, DOM PASS.
+- E56 Redesign landing integrated (builder-agent A delivered, B stopped at
+  0 files, CSS direct): Home.jsx landing (living-map teaser, working entry
+  buttons, no stats, no em dash) as default view; drift toggle preserved;
+  atlas-redesign.css (focal graph, whisper panels, trace divider) via
+  main.jsx. Antislop gate: purpose-written rules, AA tokens, gates green.
+  vite+worker rebuilt, DOM PASS, LF clean.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
