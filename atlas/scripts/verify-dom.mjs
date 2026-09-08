@@ -83,6 +83,19 @@ try {
     await page.waitForTimeout(2000);
     const ask = await page.locator('.panel').innerText();
     if (!ask.includes('Ask Atlas')) fail('ask view missing');
+    // Real Ask behavior: submit a question, citations must render
+    await page.getByLabel('Question').fill('wi-backend head');
+    await page.getByRole('button', { name: 'Ask', exact: true }).click();
+    await page.waitForTimeout(1500);
+    const answered = await page.locator('.panel').innerText();
+    if (!answered.includes('wi-backend')) fail('ask produced no wi-backend evidence');
+    if (!answered.includes('CANONICAL') && !answered.includes('OBSERVED')) fail('ask citations lack truth-plane tags');
+    // Unanswerable path must say so honestly
+    await page.getByLabel('Question').fill('quantum teapot revenue synergies');
+    await page.getByRole('button', { name: 'Ask', exact: true }).click();
+    await page.waitForTimeout(1500);
+    const unans = await page.locator('.panel').innerText();
+    if (!unans.includes('Unanswerable')) fail('ask hides unanswerable state');
     await page.goto(`${base}?view=contracts`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(1500);
     const contracts = await page.locator('.panel').innerText();
