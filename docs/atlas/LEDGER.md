@@ -122,6 +122,10 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   a11y: named controls, labels, Tab focus, focus indicator), V2 contract,
   bundle-current, diff-check — all green. Watch: checkout pin logs Node20
   deprecation (forced to 24, still green).
+- E23 Truth refresh: 5/14 public repos moved since 15:48 cut → new cut
+  19:30:48Z via site/capture-observed.mjs (reproducible gh-CLI, 25/25).
+  Projection 144/319/190/2, old snapshot preserved, 0 private SHAs,
+  13/13 + 37/37 + verify + DOM PASS. Pushed 232e567.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
