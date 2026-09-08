@@ -78,7 +78,13 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - V1 Truth refresh: COMPLETE (25/25 repos at cut 2026-09-08T15:48:21Z in `workspace/.tmp-atlas-ledger/`).
 - V2 Schema frozen: `docs/atlas/PROJECTION-SCHEMA.md` v0.2 (entities + assertions; supersedes v0.1).
 - V3 Architecture frozen: `docs/atlas/ARCHITECTURE.md` (vite build, read-plane, Ask V0 boundary).
-- V4 TDD scaffold + tests + screenshots + responsive QA + exact-head proof: PENDING.
+- V4 TDD: generator 9/9 + gate PASS; app vitest 10/10; proxy tests 12/12 (all green, this branch).
+- V5 Worker: build PASS with /atlas routes; v2 gate PASS (atlas segments scoped out, documented).
+  verify-site FAILs are PRE-EXISTING (stale 21-totals, proven via stash); studio gate needs
+  STUDIO_SHA env (CI-only, unrelated).
+- V6 Screenshots: browser backend 2×420s timeout (infra); local headless Chromium installing.
+- RISK: worker.js is 2.5MB (1.7MB atlas bundle inlined) — Cloudflare script-size limits
+  unverified; code-split or Static Assets if deploy rejects.
 
 ## Exact heads (cut 2026-09-08T15:48:21Z; full 40-hex SHAs in `workspace/.tmp-atlas-ledger/obs_*.json`)
 

@@ -66,6 +66,20 @@ describe('neighborhood', () => {
     expect(n.nodes).toEqual(['repo:Aftergraph/aie', 'repo:Aftergraph/gov', 'repo:Aftergraph/old']);
     expect(n.edges).toEqual(['rel-1', 'rel-2']);
   });
+
+  it('expands through identity.aliases (rename-aware)', () => {
+    const aliased = {
+      ...fixture,
+      entities: [
+        ...fixture.entities,
+        { id: 'repo:Aftergraph/new', kind: 'repository', identity: { full_name: 'Aftergraph/new', aliases: ['old'] } },
+      ],
+    };
+    const n = neighborhood(aliased, 'repo:Aftergraph/new', 1);
+    expect(n.nodes).toContain('repo:Aftergraph/new');
+    expect(n.nodes).toContain('repo:Aftergraph/old');
+    expect(n.nodes).toContain('repo:Aftergraph/aie');
+  });
 });
 
 describe('selection + URL', () => {

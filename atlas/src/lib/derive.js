@@ -79,8 +79,37 @@ export function shortLabel(entity) {
   return full.includes('/') ? full.split('/').slice(-1)[0] : full;
 }
 
+// Alias expansion: entities linked via identity.aliases (e.g. wi-backend aliases
+// work-intelligence-v2) share a neighborhood, so renamed entities inherit the
+// dependency context that canonical sources still attach to legacy slugs.
+export function aliasMap(projection) {
+  const bySlug = new Map();
+  for (const e of projection.entities) {
+    const short = e.identity?.full_name?.split('/').slice(-1)[0];
+    if (!short) continue;
+    if (!bySlug.has(short)) bySlug.set(short, new Set());
+    bySlug.get(short).add(e.id);
+  }
+  const map = new Map();
+  const link = (a, b) => {
+    if (a === b) return;
+    if (!map.has(a)) map.set(a, new Set());
+    if (!map.has(b)) map.set(b, new Set());
+    map.get(a).add(b);
+    map.get(b).add(a);
+  };
+  for (const e of projection.entities) {
+    for (const a of e.identity?.aliases || []) {
+      for (const id of bySlug.get(a) || []) link(e.id, id);
+    }
+  }
+  return map;
+}
+
 // 1-hop (or depth-N) neighborhood for mobile focus mode.
 export function neighborhood(projection, nodeId, depth = 1) {
+  const aliases = aliasMap(projection);
+  const seeds = new Set([nodeId, ...(aliases.get(nodeId) || [])]);
   const adj = new Map();
   const add = (a, b, rel) => {
     if (!adj.has(a)) adj.set(a, []);
@@ -90,9 +119,9 @@ export function neighborhood(projection, nodeId, depth = 1) {
     add(r.source, r.target, r.relation);
     add(r.target, r.source, r.relation);
   }
-  const seen = new Set([nodeId]);
+  const seen = new Set(seeds);
   const edgeIds = new Set();
-  let frontier = [nodeId];
+  let frontier = [...seeds];
   for (let d = 0; d < depth && frontier.length; d++) {
     const next = [];
     for (const cur of frontier) {
