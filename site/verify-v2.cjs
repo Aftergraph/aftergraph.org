@@ -41,6 +41,9 @@ has(launcher, 'Verify', 'launcher Verify group');
 has(launcher, 'Research', 'launcher Research group');
 has(launcher, 'Knowledge Plane (docs)', 'launcher Knowledge Plane destination');
 has(launcher, 'https://docs.aftergraph.org/', 'launcher Knowledge Plane route');
+has(launcher, 'Aftergraph Discussions', 'launcher community destination');
+has(launcher, 'PUBLIC-ROADMAP.md', 'launcher public roadmap destination');
+has(launcher, 'discussions/17', 'launcher RFC intake destination');
 has(launcher, 'ArrowDown', 'launcher keyboard navigation');
 has(launcher, 'ArrowUp', 'launcher keyboard navigation');
 has(launcher, 'Escape', 'launcher Escape behavior');
@@ -69,6 +72,8 @@ has(communityPage, 'discussions/12', 'MISSION-Bench registry');
 has(communityPage, 'discussions/13', 'prior-art challenge');
 has(communityPage, 'discussions/14', 'architecture RFC');
 has(communityPage, 'discussions/15', 'Sentinel verdict thread');
+has(communityPage, 'discussions/16', 'public roadmap thread');
+has(communityPage, 'discussions/17', 'RFC intake thread');
 assert.ok(!communityPage.includes('https://github.com/Aftergraph/runtime'), 'private Runtime source leaked into community page');
 assert.ok(!communityPage.includes('https://github.com/Aftergraph/context-continuity'), 'private Continuity source leaked into community page');
 
