@@ -185,12 +185,16 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E36 Docs gap closed: ARCHITECTURE.md had no known-limitations section
   (completion gate demands it). Added 8 verified limitations, each checked
   against code (incl. 24h STALE threshold in cutAge). Pushed 3d13390.
+- E37 Ledger evidence refreshed: exact-heads table still showed 15:48 pins
+  after the 19:30 re-cut. All 14 public rows re-pinned + PR counts from the
+  live projection; private rows now withhold heads AND PR counts (counts are
+  activity state the projection itself withholds).
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
 - E4 Spike 14: `aftergraph-site/data.json` (14 entries, governance 7 PRs / site 3 PRs — stale).
 - E5 Brand tokens v1.0.0 provisional-not-trademark-cleared (`.tmp-brand/tokens.json` mirror; canonical `Aftergraph/brand`).
-- Exact cuts: OBSERVED raw cut `2026-09-08T15:48:21Z` generating in `workspace/.tmp-atlas-ledger/obs_*.json`.
+- Exact cuts: OBSERVED raw cut `2026-09-08T15:48:21Z` in `workspace/.tmp-atlas-ledger/obs_*.json`; refresh cut `2026-09-08T19:30:48Z` in `workspace/.tmp-atlas-ledger-2/obs_*.json` (via site/capture-observed.mjs).
 
 ## Verification status
 - V1 Truth refresh: COMPLETE (25/25 repos at cut 2026-09-08T15:48:21Z in `workspace/.tmp-atlas-ledger/`).
@@ -204,34 +208,34 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - RISK: worker.js is 2.5MB (1.7MB atlas bundle inlined) — Cloudflare script-size limits
   unverified; code-split or Static Assets if deploy rejects.
 
-## Exact heads (cut 2026-09-08T15:48:21Z; full 40-hex SHAs in `workspace/.tmp-atlas-ledger/obs_*.json`)
+## Exact heads (cut 2026-09-08T19:30:48Z; full SHAs in `workspace/.tmp-atlas-ledger-2/obs_*.json`; prior 15:48:21Z cut in `workspace/.tmp-atlas-ledger/`)
 
 | repo | head | branch | open PRs |
 |---|---|---|---|
 | .github | e9662a4 | main | 0 |
-| afm | private-withheld | main | 0 |
-| after-graph-governance | 856c6f6 | main | 7 |
-| aftergraph-cron-fabric | cd8652f | main | 0 |
+| afm | private-withheld | main | withheld |
+| after-graph-governance | 5f53273 | main | 3 |
+| aftergraph-cron-fabric | 44e578f | main | 2 |
 | aftergraph.org | ec54979 | main | 3 |
-| aie | 88c1889 | main | 0 |
-| autonomous-venture-company | private-withheld | main | 20 |
+| aie | 3c999d2 | main | 0 |
+| autonomous-venture-company | private-withheld | main | withheld |
 | brand | f0171b5 | main | 1 |
-| context-continuity | private-withheld | main | 0 |
-| continuum | private-withheld | main | 0 |
-| docs | 10a8f39 | main | 0 |
+| context-continuity | private-withheld | main | withheld |
+| continuum | private-withheld | main | withheld |
+| docs | 5cc016c | main | 5 |
 | intelligence-systems-research | d3da7f2 | main | 0 |
-| llm-research-development | private-withheld | main | 1 |
-| model-registry | private-withheld | main | 1 |
-| runtime | private-withheld | main | 2 |
-| sentinel-firetest | private-withheld | main | 0 |
+| llm-research-development | private-withheld | main | withheld |
+| model-registry | private-withheld | main | withheld |
+| runtime | private-withheld | main | withheld |
+| sentinel-firetest | private-withheld | main | withheld |
 | sentinel-firetest2 | e59ce25 | main | 0 |
-| sentinel | c09eb71 | main | 2 |
-| skills-vault | private-withheld | main | 0 |
+| sentinel | 75fee89 | main | 2 |
+| skills-vault | private-withheld | main | withheld |
 | studio | d332fe0 | main | 1 |
 | trust-gateway | 5ec9dc4 | main | 2 |
-| veranza | private-withheld | main | 0 |
+| veranza | private-withheld | main | withheld |
 | wi-backend | f2c7843 | main | 0 |
-| wi-frontend | private-withheld | main | 0 |
+| wi-frontend | private-withheld | main | withheld |
 | works-execution | 1267f03 | main | 1 |
 
 Base pins: aftergraph.org main `ec549794ec80b0f96c9764af04d15c88fd330c09` (local == origin).
