@@ -105,6 +105,16 @@ try {
   // Slice C views render through the tab strip
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await page.goto(`${base}?view=pulse`, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(2000);
+    const pulse = await page.locator('.panel').innerText();
+    if (!pulse.includes('Pulse')) fail('pulse view missing');
+    // Pulse row navigates into the topology inspector
+    await page.locator('.panel tbody tr').first().locator('button').click();
+    await page.waitForTimeout(1500);
+    if (!page.url().includes('node=')) fail('pulse selection did not address the node in URL');
+    const pins = await page.locator('.inspector').innerText();
+    if (!pins.includes('repo:Aftergraph/')) fail('pulse inspector missing after row navigation');
     await page.goto(`${base}?view=ask`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
     const ask = await page.locator('.panel').innerText();
