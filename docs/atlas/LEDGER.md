@@ -189,6 +189,12 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   after the 19:30 re-cut. All 14 public rows re-pinned + PR counts from the
   live projection; private rows now withhold heads AND PR counts (counts are
   activity state the projection itself withholds).
+- E38 Time-machine Raphael: exercising the real 15:48→19:30 diff showed 293
+  'changed' (whole-projection timestamp churn) while genuine value changes
+  were invisible (ids embed value hash; added/removed untracked). diffProjections
+  is now semantic (observed_at stripped) + tracks added/removed ids: real cuts
+  diff as 42 changed + 26/23 added/removed. Snapshots view shows +/- counts.
+  40/40 vitest, DOM PASS. Pushed f03fa8a.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
