@@ -57,12 +57,27 @@ for (const r of proj.relations || []) {
 }
 
 // Private-source boundary: public artifact must not carry private repo internals.
+const privateSubjects = new Set([...privateRepos].map((n) => `repo:${n}`));
+// The public governance SHA is exempt: canonical assertions legitimately cite it.
+const govSha = (proj.meta && proj.meta.gov_sha) || '';
+const leaksHead = (subject, ref) =>
+  privateSubjects.has(subject) && /^[0-9a-f]{40}$/.test(ref || '') && ref !== govSha;
 for (const a of proj.assertions || []) {
   const e = entities.get(a.subject);
   if (e && e.kind === 'repository' && e.identity && e.identity.visibility === 'private') {
     if (['head_sha', 'head_msg', 'pushed_at', 'open_pr'].includes(a.predicate)) {
       fail(`private-source leak: ${a.predicate} on ${a.subject}`);
     }
+  }
+  // E18 second vector: exact private HEADs must not hide in provenance refs of
+  // otherwise-allowed predicates either (refs for private repos are branch-pinned).
+  if (leaksHead(a.subject, a.provenance && a.provenance.ref)) {
+    fail(`private-source leak: exact-head ref on ${a.subject} (${a.id})`);
+  }
+}
+for (const r of proj.relations || []) {
+  if (leaksHead(r.source, r.provenance && r.provenance.ref) || leaksHead(r.target, r.provenance && r.provenance.ref)) {
+    fail(`private-source leak: exact-head ref on relation ${r.id}`);
   }
 }
 
