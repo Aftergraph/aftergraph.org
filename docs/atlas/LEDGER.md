@@ -86,6 +86,8 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   (spawnSync /bin/sh ENOENT on runner). Fixed with hermetic fixtures
   (site/atlas-fixtures/mkfixtures.mjs: frozen cut + local gov git repo): 11/11 green,
   live-input path re-proven (144/316/187/2 + gate PASS).
+- E13 CI green on branch (run 34260260745, 27s). Shipped :focus-visible styles +
+  DOM a11y smoke (names/labels/lang/headings/Tab/focus indicator). Pushed 1db53b9.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
