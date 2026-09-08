@@ -91,6 +91,16 @@ try {
     await page.waitForTimeout(1500);
     const snaps = await page.locator('.panel').innerText();
     if (!snaps.includes('Snapshots')) fail('snapshots view missing');
+    // Exercise the real time-machine path: diff oldest snapshot vs current
+    const diffButtons = await page.getByRole('button', { name: 'diff vs current' }).count();
+    if (diffButtons < 1) fail('snapshots view has no diff buttons');
+    else {
+      await page.getByRole('button', { name: 'diff vs current' }).first().click();
+      await page.waitForTimeout(1500);
+      const dl = await page.locator('.panel').innerText();
+      if (!dl.includes('comparing')) fail('snapshot diff never rendered');
+      if (!/assertions \+\d+\/−\d+/.test(dl)) fail('snapshot diff missing added/removed assertion counts');
+    }
     // Every remaining view must render without crashing (no error boundary:
     // a throw in any view blanks the whole app for that URL).
     for (const [v, needle] of [['pulse', 'Pulse'], ['models', 'AFM lineage'], ['research', 'Proposal constellation']]) {
