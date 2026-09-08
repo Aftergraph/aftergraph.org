@@ -1,8 +1,8 @@
 # Site deployment — aftergraph.org (v2.0.0)
 
 Serves the canonical public platform: landing (`/`), system launcher (`/launch`),
-health (`/healthz`), operational status (`/status`), `robots.txt` and `sitemap.xml` from the `aftergraph-site`
-Cloudflare Worker.
+community (`/community`), health (`/healthz`), operational status (`/status`),
+`robots.txt` and `sitemap.xml` from the `aftergraph-site` Cloudflare Worker.
 
 ## Build
 
@@ -15,9 +15,9 @@ node site/verify-v2.cjs
 git diff --exit-code -- site/worker.js site/wrangler.toml
 ```
 
-`build-worker.cjs` embeds `index.html`, `launch.html`, security headers (CSP,
-HSTS, frame/content-type/referrer/permissions policies), robots/sitemap and
-machine surfaces into `site/worker.js`.
+`build-worker.cjs` embeds `index.html`, `launch.html`, `community.html`, security
+headers (CSP, HSTS, frame/content-type/referrer/permissions policies),
+robots/sitemap and machine surfaces into `site/worker.js`.
 
 ## Deploy
 
@@ -35,7 +35,7 @@ npx wrangler@4.129.0 deploy --config wrangler.toml --name aftergraph-site
 
 Routes: `aftergraph.org/*` + `www.aftergraph.org/*` → `aftergraph-site`.
 Production is verified through `/healthz` plus HTTP 200 smoke checks for `/`,
-`/launch`, `/status`, `/robots.txt` and `/sitemap.xml`.
+`/launch`, `/community`, `/status`, `/robots.txt` and `/sitemap.xml`.
 
 ## Studio demo (aftergraph-studio, Tier-0)
 
@@ -72,6 +72,8 @@ attach the `aftergraph.org/studio/*` route (dashboard or API token).
 - Launcher: intent groups Build / Operate / Verify / Research, tokenized search,
   ↑↓/Enter/Escape keyboard control, accessible selection semantics and mobile
   touch layouts.
+- Community: a deliberative routing plane for research reproduction, prior art,
+  roadmap input and RFC formation; it does not become canonical authority.
 - Evidence rule: visibility never upgrades evidence. Research, specifications,
   runtime implementations and independently checkable production behavior stay
   explicitly distinct.
