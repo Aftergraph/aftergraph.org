@@ -63,6 +63,13 @@ try {
     for (const needle of ['repo:Aftergraph/aie', 'CANONICAL', 'OBSERVED', 'source:', 'ref:', 'observed:']) {
       if (!insp.includes(needle)) fail(`inspector missing ${needle}`);
     }
+    // Real impact behavior: blast-radius analysis renders on demand
+    await page.getByRole('button', { name: 'Show impact (2-hop)' }).click();
+    await page.waitForTimeout(1000);
+    const impact = await page.locator('.inspector').innerText();
+    if (!impact.includes('dependents (') || !impact.includes('dependencies (')) {
+      fail('impact analysis did not render dependents/dependencies');
+    }
     await page.close();
   }
   // Drift view
