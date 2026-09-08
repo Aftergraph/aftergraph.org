@@ -106,6 +106,10 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   valid_at, ledger table scrubbed, old snapshot redacted+regenerated from same
   cut (144/316/187/2 unchanged), tree-wide scan 0 SHAs, 13/13 + 32/32 + DOM PASS.
   Pushed 1c0c5eb.
+- E19 Failure states: UI now fail-closed on malformed projection —
+  derive.validateProjection gates build+fetch sources, dedicated malformed state
+  with reasons (no mid-render crash). 5 new vitest (37/37), DOM/verify PASS.
+  Pushed ffab6ca.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
