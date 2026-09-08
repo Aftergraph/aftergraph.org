@@ -15,6 +15,8 @@ import {
   impactSet,
   askRetrieve,
   validateAnswer,
+  filterEntities,
+  cutAge,
 } from './lib/derive.js';
 import enrichFixtures from '../../docs/atlas/enrich/fixtures.json';
 import { pulseRows, contractRows } from './lib/sliceC.js';
@@ -236,6 +238,12 @@ export default function App() {
   const [impact, setImpact] = useState(null);
   const [askQ, setAskQ] = useState('');
   const [askHits, setAskHits] = useState(null);
+  const [search, setSearch] = useState('');
+  const [nowTick, setNowTick] = useState(() => Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNowTick(Date.now()), 60000);
+    return () => clearInterval(t);
+  }, []);
   const [narrow, setNarrow] = useState(() => window.matchMedia('(max-width: 760px)').matches);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -332,13 +340,15 @@ export default function App() {
   const selected = node ? bySubject.get(node) || [] : [];
   const conflicts = projection.conflicts || [];
   const assertionById = new Map(projection.assertions.map((a) => [a.id, a]));
+  const age = cutAge(projection.meta.evidence_cut, new Date(nowTick).toISOString());
+  const matched = new Set(filterEntities(projection, search));
 
   return (
     <div className="atlas">
       <header className="atlas-head">
         <h1>Aftergraph Atlas</h1>
         <span className="cut">
-          cut {projection.meta.evidence_cut} · gov {String(projection.meta.gov_sha).slice(0, 7)}
+          cut {projection.meta.evidence_cut} ({age.label} old{age.stale ? ', STALE — regenerate' : ''}) · gov {String(projection.meta.gov_sha).slice(0, 7)}
           {origin === 'fetch' ? ' · live fetch (may be stale)' : ''}
         </span>
         <div className="overlays" role="group" aria-label="Truth plane overlays">
@@ -363,15 +373,16 @@ export default function App() {
         <div className="banner" role="status">Serving runtime-fetched projection — rebuild for a pinned cut.</div>
       )}
       <nav className="tree" aria-label="Entities">
+        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Filter entities…" aria-label="Filter entities" />
         <div className="prov">repositories ({treeRepos.length})</div>
-        {treeRepos.map((n) => (
+        {treeRepos.filter((n) => matched.has(n.id)).map((n) => (
           <button key={n.id} aria-selected={n.id === node} onClick={() => setNode(n.id)}>
             {n.label}
             {n.inConflict && <span className="conf"> ⚠</span>}
           </button>
         ))}
         <div className="prov">contracts ({treeContracts.length})</div>
-        {treeContracts.slice(0, 60).map((n) => (
+        {treeContracts.filter((n) => matched.has(n.id)).slice(0, 60).map((n) => (
           <button key={n.id} aria-selected={n.id === node} onClick={() => setNode(n.id)}>
             {n.label}
             <span className="kind">contract</span>

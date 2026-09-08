@@ -26,6 +26,7 @@ body { margin: 0; background: var(--ag-canvas); color: var(--ag-text); font-fami
 .tree { border-right: 1px solid var(--ag-border); overflow: auto; padding: 8px; }
 .tree button { display: block; width: 100%; text-align: left; background: none; border: none; color: var(--ag-text); padding: 4px 8px; cursor: pointer; border-radius: 6px; font-size: 13px; }
 .tree button[aria-selected='true'] { background: var(--ag-surface); outline: 1px solid var(--ag-control); }
+.tree input { width: 100%; background: var(--ag-raised); border: 1px solid var(--ag-border); color: var(--ag-text); border-radius: 6px; padding: 6px 10px; margin-bottom: 8px; }
 .tree .kind { color: var(--ag-muted); font-size: 11px; margin-left: 6px; }
 .tree .conf { color: var(--ag-decision); }
 .graph { position: relative; min-height: 0; }

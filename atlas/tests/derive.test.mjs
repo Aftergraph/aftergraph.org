@@ -13,6 +13,8 @@ import {
   impactSet,
   askRetrieve,
   validateAnswer,
+  filterEntities,
+  cutAge,
 } from '../src/lib/derive.js';
 
 // Minimal v0.2-shaped fixture: one entity with assertions on two planes each.
@@ -264,5 +266,28 @@ describe('askRetrieve + validateAnswer', () => {
     const bad = validateAnswer(fixture, ids, ['as-nonexistent']);
     expect(bad.ok).toBe(false);
     expect(bad.missing).toEqual(['as-nonexistent']);
+  });
+});
+
+describe('filterEntities + cutAge', () => {
+  it('matches label substrings case-insensitively', () => {
+    expect(filterEntities(fixture, 'AIE')).toEqual(['repo:Aftergraph/aie']);
+    expect(filterEntities(fixture, 'gov')).toEqual(['repo:Aftergraph/gov']);
+    expect(filterEntities(fixture, '')).toEqual([
+      'repo:Aftergraph/aie',
+      'repo:Aftergraph/gov',
+      'repo:Aftergraph/old',
+    ]);
+    expect(filterEntities(fixture, 'zzz')).toEqual([]);
+  });
+
+  it('labels cut age and flags stale cuts', () => {
+    const fresh = cutAge('2026-09-08T15:48:21Z', '2026-09-08T16:00:00Z');
+    expect(fresh.stale).toBe(false);
+    expect(fresh.label).toMatch(/12m/);
+    const old = cutAge('2026-09-08T15:48:21Z', '2026-09-10T16:00:00Z');
+    expect(old.stale).toBe(true);
+    expect(old.label).toMatch(/48h/);
+    expect(cutAge('not-a-date', '2026-09-10T16:00:00Z').stale).toBe(true);
   });
 });

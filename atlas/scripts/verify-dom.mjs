@@ -57,6 +57,19 @@ try {
     if (!contracts.includes('Contracts')) fail('contracts view missing');
     await page.close();
   }
+  // Search filter narrows the tree; cut chip shows age
+  {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(2000);
+    await page.getByLabel('Filter entities').fill('wi-backend');
+    await page.waitForTimeout(500);
+    const buttons = await page.locator('.tree button').count();
+    if (buttons !== 1) fail(`search 'wi-backend' shows ${buttons} tree buttons, expected 1`);
+    const head = await page.locator('.atlas-head').innerText();
+    if (!head.includes('old')) fail('header cut chip missing age');
+    await page.close();
+  }
   {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
     await page.goto(`${base}?node=${encodeURIComponent('repo:Aftergraph/wi-backend')}`, { waitUntil: 'networkidle', timeout: 60000 });

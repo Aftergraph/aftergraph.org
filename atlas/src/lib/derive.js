@@ -261,6 +261,25 @@ export function validateAnswer(projection, evidenceIds, citations) {
   return { ok: missing.length === 0, missing };
 }
 
+// Tree search: label substring match (case-insensitive). Empty query matches all.
+export function filterEntities(projection, query) {
+  const q = (query || '').trim().toLowerCase();
+  return projection.entities
+    .filter((e) => !q || shortLabel(e).toLowerCase().includes(q) || e.id.toLowerCase().includes(q))
+    .map((e) => e.id)
+    .sort();
+}
+
+// Cut freshness: label + stale flag (stale = older than 24h or unparseable).
+export function cutAge(cutISO, nowISO) {
+  const cut = Date.parse(cutISO);
+  const now = Date.parse(nowISO);
+  if (!Number.isFinite(cut) || !Number.isFinite(now)) return { label: 'unknown age', stale: true };
+  const mins = Math.max(0, Math.round((now - cut) / 60000));
+  const label = mins < 60 ? `${mins}m` : `${Math.round(mins / 60)}h`;
+  return { label, stale: now - cut > 24 * 3600 * 1000 };
+}
+
 // Linear keyboard selection over a sorted id list.
 export function moveSelection(sortedIds, currentId, dir) {
   if (!sortedIds.length) return null;
