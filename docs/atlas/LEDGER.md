@@ -251,6 +251,10 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   glow). Interaction-polish verdict: already covered — hover/cursor/focus
   rules present, Ask submits via form (Enter native), E48 empty/loading
   states; no churn added.
+- E54 Cut #5 (22:23:58Z): cron-fabric f6a211c->8ebbdeb (merged PR #26 docs
+  decisions D9-D13; open PRs 1->0). Full re-cut 25/25, projection
+  144/319/190/2 unchanged, 5th snapshot indexed, vite+worker rebuilt per E51.
+  14/14 + verify + 0 leaks + DOM PASS.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
@@ -270,14 +274,14 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - RISK: worker.js is 2.5MB (1.7MB atlas bundle inlined) — Cloudflare script-size limits
   unverified; code-split or Static Assets if deploy rejects.
 
-## Exact heads (cut 2026-09-08T21:47:10Z; full SHAs in `workspace/.tmp-atlas-ledger-4/obs_*.json`)
+## Exact heads (cut 2026-09-08T22:23:58Z; full SHAs in `workspace/.tmp-atlas-ledger-5/obs_*.json`)
 
 | repo | head | branch | open PRs |
 |---|---|---|---|
 | .github | e9662a4 | main | 0 |
 | afm | private-withheld | main | withheld |
 | after-graph-governance | 5f53273 | main | 3 |
-| aftergraph-cron-fabric | f6a211c | main | 1 |
+| aftergraph-cron-fabric | 8ebbdeb | main | 0 |
 | aftergraph.org | ec54979 | main | 3 |
 | aie | 3c999d2 | main | 0 |
 | autonomous-venture-company | private-withheld | main | withheld |
