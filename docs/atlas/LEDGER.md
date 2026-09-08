@@ -226,6 +226,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - E48 Empty/loading states: tree filter now reports "No entities match" (role
   status) instead of silent empty list; snapshot inspect shows Loading + clears
   stale diff on re-click. 40/40 vitest + projection tests + verify PASS.
+- E49 Cut #4 (21:47:10Z): cron-fabric moved ac7ad2b->f6a211c (merged PR #22
+  per-run shadow receipts; open PRs 2->1). Full re-cut 25/25, projection
+  144/319/190/2 unchanged, 4th snapshot indexed. 14/14 + verify + 0 leaks.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
@@ -245,14 +248,14 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - RISK: worker.js is 2.5MB (1.7MB atlas bundle inlined) — Cloudflare script-size limits
   unverified; code-split or Static Assets if deploy rejects.
 
-## Exact heads (cut 2026-09-08T21:12:42Z; full SHAs in `workspace/.tmp-atlas-ledger-3/obs_*.json`)
+## Exact heads (cut 2026-09-08T21:47:10Z; full SHAs in `workspace/.tmp-atlas-ledger-4/obs_*.json`)
 
 | repo | head | branch | open PRs |
 |---|---|---|---|
 | .github | e9662a4 | main | 0 |
 | afm | private-withheld | main | withheld |
 | after-graph-governance | 5f53273 | main | 3 |
-| aftergraph-cron-fabric | ac7ad2b | main | 2 |
+| aftergraph-cron-fabric | f6a211c | main | 1 |
 | aftergraph.org | ec54979 | main | 3 |
 | aie | 3c999d2 | main | 0 |
 | autonomous-venture-company | private-withheld | main | withheld |
