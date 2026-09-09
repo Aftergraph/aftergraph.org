@@ -102,5 +102,16 @@
     "conflicts": [
       "C2"
     ]
+  },
+  {
+    "file": "projection-2026-09-09T18-04-08Z.json",
+    "evidence_cut": "2026-09-09T18:04:08Z",
+    "gov_sha": "3e59010133bb73063fb2e1748ca7b5ce49341c41",
+    "entities": 156,
+    "assertions": 330,
+    "relations": 226,
+    "conflicts": [
+      "C2"
+    ]
   }
 ]
