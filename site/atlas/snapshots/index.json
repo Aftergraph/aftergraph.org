@@ -1,0 +1,73 @@
+[
+  {
+    "file": "projection-2026-09-08T15-48-21Z.json",
+    "evidence_cut": "2026-09-08T15:48:21Z",
+    "gov_sha": "5f5327314e804573b2acb273abf72db9aa522370",
+    "entities": 144,
+    "assertions": 316,
+    "relations": 187,
+    "conflicts": [
+      "C2",
+      "C4"
+    ]
+  },
+  {
+    "file": "projection-2026-09-08T19-30-48Z.json",
+    "evidence_cut": "2026-09-08T19:30:48Z",
+    "gov_sha": "5f5327314e804573b2acb273abf72db9aa522370",
+    "entities": 144,
+    "assertions": 319,
+    "relations": 190,
+    "conflicts": [
+      "C2",
+      "C4"
+    ]
+  },
+  {
+    "file": "projection-2026-09-08T21-12-42Z.json",
+    "evidence_cut": "2026-09-08T21:12:42Z",
+    "gov_sha": "5f5327314e804573b2acb273abf72db9aa522370",
+    "entities": 144,
+    "assertions": 319,
+    "relations": 190,
+    "conflicts": [
+      "C2",
+      "C4"
+    ]
+  },
+  {
+    "file": "projection-2026-09-08T21-47-10Z.json",
+    "evidence_cut": "2026-09-08T21:47:10Z",
+    "gov_sha": "5f5327314e804573b2acb273abf72db9aa522370",
+    "entities": 144,
+    "assertions": 319,
+    "relations": 190,
+    "conflicts": [
+      "C2",
+      "C4"
+    ]
+  },
+  {
+    "file": "projection-2026-09-08T22-23-58Z.json",
+    "evidence_cut": "2026-09-08T22:23:58Z",
+    "gov_sha": "5f5327314e804573b2acb273abf72db9aa522370",
+    "entities": 144,
+    "assertions": 319,
+    "relations": 190,
+    "conflicts": [
+      "C2",
+      "C4"
+    ]
+  },
+  {
+    "file": "projection-2026-09-08T23-23-16Z.json",
+    "evidence_cut": "2026-09-08T23:23:16Z",
+    "gov_sha": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+    "entities": 156,
+    "assertions": 316,
+    "relations": 212,
+    "conflicts": [
+      "C2"
+    ]
+  }
+]

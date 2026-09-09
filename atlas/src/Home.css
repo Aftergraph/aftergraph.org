@@ -1,0 +1,185 @@
+/* Home landing view. Uses --ag-* tokens from app.css. No new custom props. */
+.ag-home-wrap {
+  grid-column: 1 / -1;
+  overflow: auto;
+  min-height: 0;
+}
+
+.ag-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--ag-space-5) var(--ag-space-4);
+  max-width: 960px;
+  margin: 0 auto;
+  gap: var(--ag-space-5);
+}
+
+/* Masthead */
+.ag-home-masthead {
+  text-align: center;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ag-space-3);
+}
+.ag-home-eyebrow {
+  font-family: var(--ag-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ag-muted);
+  margin: 0;
+}
+.ag-home-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--ag-text);
+}
+.ag-home-sub {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ag-muted);
+  margin: 0;
+}
+.ag-home-cta {
+  display: flex;
+  gap: var(--ag-space-3);
+  margin-top: var(--ag-space-2);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.ag-home-btn {
+  background: var(--ag-surface);
+  border: 1px solid var(--ag-border-strong);
+  color: var(--ag-text);
+  border-radius: var(--ag-radius);
+  padding: var(--ag-space-2) var(--ag-space-4);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.ag-home-btn:hover {
+  background: var(--ag-surface-hover);
+  border-color: var(--ag-control);
+}
+.ag-home-btn-primary {
+  background: rgba(66, 199, 232, 0.12);
+  border-color: var(--ag-control);
+  color: var(--ag-control);
+}
+.ag-home-btn-primary:hover {
+  background: rgba(66, 199, 232, 0.22);
+}
+
+/* Living map teaser SVG */
+.ag-home-map {
+  width: 100%;
+  max-width: 640px;
+  margin: 0;
+  padding: var(--ag-space-4);
+  background: var(--ag-raised);
+  border: 1px solid var(--ag-border);
+  border-radius: var(--ag-radius);
+  box-shadow: var(--ag-shadow-md);
+}
+.ag-home-map svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.ag-home-edges path {
+  stroke: var(--ag-border-strong);
+  stroke-width: 1.5;
+  fill: none;
+}
+.ag-home-trace {
+  stroke: var(--ag-evidence);
+  stroke-width: 2.5;
+  fill: none;
+  stroke-dasharray: 8 4;
+  animation: ag-trace-flow 3s linear infinite;
+}
+@keyframes ag-trace-flow {
+  to { stroke-dashoffset: -24; }
+}
+.ag-home-nodes circle {
+  fill: var(--ag-control);
+}
+.ag-home-labels text {
+  fill: var(--ag-muted);
+  font-family: var(--ag-mono);
+  font-size: 11px;
+  text-anchor: middle;
+}
+.ag-home-caption {
+  font-family: var(--ag-mono);
+  font-size: 11px;
+  color: var(--ag-muted);
+  text-align: center;
+  margin-top: var(--ag-space-3);
+}
+
+/* Entry points */
+.ag-home-entries {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--ag-space-3);
+  width: 100%;
+}
+.ag-home-entry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ag-space-2);
+  text-align: left;
+  background: var(--ag-raised);
+  border: 1px solid var(--ag-border);
+  border-radius: var(--ag-radius);
+  padding: var(--ag-space-4);
+  cursor: pointer;
+  color: var(--ag-text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.ag-home-entry:hover {
+  border-color: var(--ag-control);
+  box-shadow: var(--ag-shadow-sm);
+}
+.ag-home-entry-kicker {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ag-control);
+}
+.ag-home-entry-body {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ag-muted);
+}
+.ag-home-entry-action {
+  font-family: var(--ag-mono);
+  font-size: 11px;
+  color: var(--ag-evidence);
+  margin-top: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ag-home-trace { animation: none; }
+}
+
+@media (max-width: 760px) {
+  .ag-home {
+    padding: var(--ag-space-4) var(--ag-space-3);
+  }
+  .ag-home-title {
+    font-size: 22px;
+  }
+  .ag-home-entries {
+    grid-template-columns: 1fr;
+  }
+}

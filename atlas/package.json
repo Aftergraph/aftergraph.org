@@ -1,0 +1,26 @@
+{
+  "name": "aftergraph-atlas",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aftergraph Atlas — read-only evidence-aware development observatory (scoped build, outputs immutable assets to ../site/atlas).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run",
+    "verify": "node ../site/verify-atlas.cjs ../site/atlas-projection.json"
+  },
+  "dependencies": {
+    "d3": "7.9.0",
+    "elkjs": "0.9.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "reactflow": "11.11.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.3.4",
+    "playwright": "1.63.0",
+    "vite": "5.4.8",
+    "vitest": "2.1.9"
+  }
+}

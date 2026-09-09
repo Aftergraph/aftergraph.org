@@ -4,12 +4,14 @@ on:
   pull_request:
     paths:
       - 'site/**'
+      - 'atlas/**'
       - 'DEPLOYMENT.md'
       - '.github/workflows/v2-interface.yml'
   push:
     branches:
       - 'main'
       - 'feat/aftergraph-v2-implementation'
+      - 'feat/atlas'
 
 permissions:
   contents: read
@@ -20,11 +22,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Install Atlas dependencies (lockfile)
+        run: npm --prefix atlas ci
+      - name: Atlas unit tests
+        run: npm --prefix atlas test
+      - name: Atlas projection tests
+        run: node --test site/atlas-projection.test.mjs
+      - name: Build Atlas frontend
+        run: npm --prefix atlas run build
+      - name: Verify Atlas projection
+        run: node site/verify-atlas.cjs
       - name: Compile worker
         run: node site/build-worker.cjs
+      - name: Install Playwright chromium
+        run: npx --prefix atlas playwright install --with-deps chromium
+      - name: Atlas browser smoke (DOM)
+        run: |
+          node site/serve-local.cjs 8471 site &
+          SRV=$!
+          node atlas/scripts/verify-dom.mjs "http://localhost:8471/atlas/"
+          STATUS=$?
+          kill $SRV
+          exit $STATUS
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is current
-        run: git diff --exit-code -- site/worker.js site/wrangler.toml
+        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/
       - name: Diff check
         run: git diff --check
