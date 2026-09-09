@@ -32,6 +32,8 @@ jobs:
         run: npm --prefix atlas run build
       - name: Verify Atlas projection
         run: node site/verify-atlas.cjs
+      - name: Sync canonical Brand OS inputs
+        run: node scripts/sync-brand.mjs
       - name: Compile worker
         run: node site/build-worker.cjs
       - name: Install Playwright chromium

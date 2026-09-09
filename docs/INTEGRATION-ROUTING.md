@@ -22,7 +22,8 @@ independent of creation order.** `aftergraph.org/studio/api/*` > `aftergraph.org
 | `/sitemap.xml` | aftergraph-site | 200 XML incl. `/studio/` entry, `max-age=3600` |
 | `/llms.txt` | aftergraph-site | 200 text incl. Studio demo entry |
 | `/.well-known/security.txt` | aftergraph-site | 200 text |
-| `/favicon.ico`, `/og-image.svg` | aftergraph-site | 200 monogram SVG (`image/svg+xml`, `max-age=86400`) |
+| `/favicon.ico` | aftergraph-site | 200 canonical Brand OS `svg/favicon.svg` (`image/svg+xml`, `max-age=86400`) |
+| `/og-image.svg` | aftergraph-site | 200 canonical Brand OS `svg/aftergraph-social-banner.svg` (`image/svg+xml`, `max-age=86400`) |
 | `/404` | aftergraph-site | 200 the 404 page body (explicit path) |
 | any other root path (`/api/*`, `/studio` without route, unknown) | aftergraph-site | **404** NOTFOUND HTML, `no-store` + site CSP. Today this includes `/api/*` and bare `/studio*` if the studio route is absent |
 | `/studio`, `/studio/` | aftergraph-studio | Prefix stripped to `/`; 200 Studio shell (`index.html`), studio `_headers` CSP (`script-src 'self'`, `connect-src 'self'`, `frame-ancestors 'self'`) |

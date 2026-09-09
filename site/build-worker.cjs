@@ -16,7 +16,12 @@ let launch = read('launch.html');
 const notFound = read('404.html');
 const statusPage = read('status.html');
 let sentinel = read('sentinel.html');
-const monogram = read('monogram.svg');
+// Canonical Brand OS bytes (run node scripts/sync-brand.mjs first; .brand/ is gitignored build input).
+const assertBrand = (f) => { assert(fs.existsSync(path.join(SITE, '.brand', f)), `brand sync missing: run node scripts/sync-brand.mjs (.brand/${f})`); };
+assertBrand('favicon.svg');
+assertBrand('og-image.svg');
+const favicon = read('.brand/favicon.svg');
+const ogImage = read('.brand/og-image.svg');
 const llms = read('llms.txt');
 const security = read('security.txt');
 
@@ -184,7 +189,8 @@ const worker = `${secureHeaders}
 const LANDING = ${JSON.stringify(landing)};
 const LAUNCH = ${JSON.stringify(launch)};
 const NOTFOUND = ${JSON.stringify(notFound)};
-const MONOGRAM = ${JSON.stringify(monogram)};
+const FAVICON = ${JSON.stringify(favicon)};
+const OGIMAGE = ${JSON.stringify(ogImage)};
 const LLMS = ${JSON.stringify(llms)};
 const SECURITY = ${JSON.stringify(security)};
 const STATUS = ${JSON.stringify(statusBuilt)};
@@ -207,7 +213,8 @@ addEventListener('fetch', event => {
   else if (p === '/sitemap.xml') { body = SITEMAP; contentType = 'application/xml;charset=utf-8'; cache = 'public, max-age=3600'; }
   else if (p === '/llms.txt') { body = LLMS; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
   else if (p === '/.well-known/security.txt') { body = SECURITY; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
-  else if (p === '/favicon.ico' || p === '/og-image.svg') { body = MONOGRAM; contentType = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
+  else if (p === '/favicon.ico') { body = FAVICON; contentType = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
+  else if (p === '/og-image.svg') { body = OGIMAGE; contentType = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
   else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
   else if (p === '/status' || p === '/status/') { body = STATUS; }
   else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }

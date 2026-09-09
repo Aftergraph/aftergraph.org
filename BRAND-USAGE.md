@@ -53,16 +53,13 @@ Available variants (see `Aftergraph/brand/manifest.json`):
 - `aftergraph-lockup-horizontal.svg` / `-light` / `-stacked`
 - `aftergraph-app-icon.svg`
 
-### Favicon (❌ GAP)
+### Favicon (✅ resolved via Brand OS 1.1.0)
 
-**The brand repo does not include a favicon.** No `.ico`, no `<link rel="icon">` SVG, no 32×32 or 16×16 export exists in `Aftergraph/brand/svg/`.
-
-**Action required**: Add favicon exports to `Aftergraph/brand`:
-- `svg/aftergraph-favicon.svg` (16×16 or 32×32 simplified monogram)
-- `public/favicon.ico` (multi-size ICO for legacy browsers)
-- Update `manifest.json` → `assets.favicon`
-
-Until resolved, this site has **no favicon**. Do NOT invent one locally.
+`scripts/sync-brand.mjs` fetches pinned `@aftergraph/brand v1.1.0` bytes:
+`svg/favicon.svg` → served at `/favicon.ico`,
+`svg/aftergraph-social-banner.svg` → served at `/og-image.svg`.
+The former local `site/monogram.svg` stopgap is removed. Token primitives in
+`src/styles/tokens.css` are drift-guarded against the release by the same script.
 
 ## Theme Contract
 

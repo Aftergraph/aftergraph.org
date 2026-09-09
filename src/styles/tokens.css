@@ -1,6 +1,7 @@
 /**
  * Aftergraph Design Tokens — Astro Site Integration
- * Source: @aftergraph/brand v1.0.0 (tokens.css + tokens.json)
+ * Source: @aftergraph/brand v1.1.0 (tokens.css + tokens.json)
+ * Guard: scripts/sync-brand.mjs verifies these primitives against the release
  * Sync: Build-time copy from Aftergraph/brand repo; do NOT edit manually.
  * Theme: Dark-first (institutional default). Light via [data-theme="light"].
  */
