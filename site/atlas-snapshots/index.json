@@ -69,5 +69,38 @@
     "conflicts": [
       "C2"
     ]
+  },
+  {
+    "file": "projection-2026-09-09T03-37-45Z.json",
+    "evidence_cut": "2026-09-09T03:37:45Z",
+    "gov_sha": "d44ff3ba9bf8da7b3fe80b4067becd263ff1c42b",
+    "entities": 156,
+    "assertions": 316,
+    "relations": 212,
+    "conflicts": [
+      "C2"
+    ]
+  },
+  {
+    "file": "projection-2026-09-09T11-36-07Z.json",
+    "evidence_cut": "2026-09-09T11:36:07Z",
+    "gov_sha": "d6bc99b29d91e41f3f7f6c14066d25e4e514fcbb",
+    "entities": 156,
+    "assertions": 324,
+    "relations": 220,
+    "conflicts": [
+      "C2"
+    ]
+  },
+  {
+    "file": "projection-2026-09-09T12-25-59Z.json",
+    "evidence_cut": "2026-09-09T12:25:59Z",
+    "gov_sha": "74179de44d48be58694d66524ebc10fd6a36bec8",
+    "entities": 156,
+    "assertions": 324,
+    "relations": 220,
+    "conflicts": [
+      "C2"
+    ]
   }
 ]
