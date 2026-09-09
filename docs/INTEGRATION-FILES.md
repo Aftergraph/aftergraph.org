@@ -42,7 +42,8 @@ workspace/
 
 | Group | Files | Role |
 |---|---|---|
-| Sources (hand-edit) | `index.html launch.html sentinel.html status.html status-data.json llms.txt monogram.svg security.txt 404.html` | Public surfaces; topology totals pinned (20 / 12 public / 8 private) |
+| Sources (hand-edit) | `index.html launch.html sentinel.html status.html status-data.json llms.txt security.txt 404.html` | Public surfaces; topology totals pinned (20 / 12 public / 8 private) |
+| Sources (generated) | `site/.brand/favicon.svg`, `site/.brand/og-image.svg` via `scripts/sync-brand.mjs` from `@aftergraph/brand v1.1.0` (gitignored) | Canonical favicon + OG bytes; local `monogram.svg` stopgap removed |
 | Generated (never hand-edit) | `worker.js` | Built by `build-worker.cjs` from sources; inline LANDING/LAUNCH/… consts + health/robots/sitemap |
 | Studio-* (demo lane) | `studio-build.cjs studio-dist/ studio-static.mjs studio-wrangler.toml studio-api-proxy.js` | Tier-0 static demo pipeline (see §3) |
 | Verifiers | `verify-site.cjs verify-v2.cjs verify-studio.cjs` | Topology, V2-contract, and demo-lane gates |

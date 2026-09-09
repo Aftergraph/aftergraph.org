@@ -14,7 +14,7 @@ aftergraph.org
 │   ├── 404.html            public not-found surface
 │   ├── llms.txt            machine-readable public orientation
 │   ├── security.txt        security contact/routing
-│   ├── monogram.svg        public site asset
+│   ├── .brand/              gitignored Brand OS build inputs (favicon.svg, og-image.svg)
 │   ├── worker.js           Cloudflare Worker/runtime entry
 │   ├── build-worker.cjs    deterministic worker build step
 │   └── wrangler.toml       Cloudflare deployment configuration

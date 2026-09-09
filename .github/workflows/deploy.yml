@@ -31,6 +31,8 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 24
+      - name: Sync canonical Brand OS inputs
+        run: node scripts/sync-brand.mjs
       - name: Compile canonical worker
         run: node site/build-worker.cjs
       - name: Verify V2 contract
@@ -64,6 +66,7 @@ jobs:
           echo "AG_DEPLOYED=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
       - name: Verify deploy build
         run: |
+          node scripts/sync-brand.mjs
           node site/build-worker.cjs
           node site/verify-v2.cjs
       - name: Deploy exact HEAD to Cloudflare Workers
