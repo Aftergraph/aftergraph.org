@@ -81,6 +81,29 @@ for (const r of proj.relations || []) {
   }
 }
 
+
+// Public Experience view is a deterministic, narrower publication surface.
+const experienceFile = path.join(__dirname, 'atlas-experience.json');
+let experience;
+try {
+  experience = JSON.parse(fs.readFileSync(experienceFile, 'utf8'));
+} catch (e) {
+  fail(`cannot read experience JSON at ${experienceFile}: ${e.message}`);
+}
+if (experience) {
+  if (experience.schema !== 'aftergraph-experience/0.1') fail(`experience schema is ${JSON.stringify(experience.schema)}, want aftergraph-experience/0.1`);
+  if (experience.cut !== (proj.meta && proj.meta.evidence_cut)) fail('experience cut does not match Atlas evidence cut');
+  const privateNames = new Set((proj.meta && proj.meta.private_repos) || []);
+  for (const entity of experience.entities || []) {
+    if (privateNames.has(entity.id.replace(/^repo:/, ''))) fail(`experience publishes private repository entity ${entity.id}`);
+    for (const source of entity.sources || []) {
+      if ((privateNames.has(source.repository) || privateNames.has(source.source)) && /^[0-9a-f]{40}$/.test(source.ref || '')) {
+        fail(`experience publishes exact private ref for ${entity.id}`);
+      }
+    }
+  }
+}
+
 // Conflict references must resolve.
 const assertionIds = new Set((proj.assertions || []).map((a) => a.id));
 const proposedById = new Map();

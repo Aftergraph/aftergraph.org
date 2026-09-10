@@ -24,6 +24,7 @@ const favicon = read('.brand/favicon.svg');
 const ogImage = read('.brand/og-image.svg');
 const llms = read('llms.txt');
 const security = read('security.txt');
+const experienceHero = read('experience-hero.js');
 
 // ---- Atlas (/atlas): vite-built observatory, inlined as static routes ----
 // Built by `npm --prefix ../atlas run build` into site/atlas/ BEFORE this script
@@ -61,13 +62,22 @@ if (fs.existsSync(ATLAS_SNAPS_SRC)) {
   }
 }
 const ATLAS_PROJECTION_RAW = fs.readFileSync(path.join(ATLAS_DIR, 'projection.json'), 'utf8');
+const ATLAS_EXPERIENCE_RAW = read('atlas-experience.json');
 let atlasProjectionParsed;
+let atlasExperienceParsed;
 try {
   atlasProjectionParsed = JSON.parse(ATLAS_PROJECTION_RAW);
 } catch {
   assert(false, 'site/atlas/projection.json is not valid JSON');
 }
 assert(atlasProjectionParsed.schema === 'atlas-projection/0.2', 'atlas projection must be atlas-projection/0.2');
+try {
+  atlasExperienceParsed = JSON.parse(ATLAS_EXPERIENCE_RAW);
+} catch {
+  assert(false, 'site/atlas-experience.json is not valid JSON');
+}
+assert(atlasExperienceParsed.schema === 'aftergraph-experience/0.1', 'atlas experience must be aftergraph-experience/0.1');
+assert(atlasExperienceParsed.cut === atlasProjectionParsed.meta.evidence_cut, 'atlas experience cut must match atlas projection cut');
 for (const ref of [...atlasHtml.matchAll(/(?:src|href)="(\/atlas\/assets\/[^"]+)"/g)].map((m) => m[1])) {
   assert(ATLAS_FILES[ref], `atlas index.html references missing bundled asset ${ref}`);
 }
@@ -137,6 +147,7 @@ const OG_LAUNCH = `
 <meta property="og:image" content="https://aftergraph.org/og-image.svg">`;
 
 landing = landing.replace('</head>', `${FAVICON}${OG}\n</head>`);
+landing = landing.replace('</body>', `<script>${experienceHero}</script>\n</body>`);
 launch = launch.replace('</head>', `${FAVICON}${OG_LAUNCH}\n</head>`);
 sentinel = sentinel.replace('</head>', `${FAVICON}${OG_SENTINEL}\n</head>`);
 
@@ -197,6 +208,7 @@ const STATUS = ${JSON.stringify(statusBuilt)};
 const SENTINEL = ${JSON.stringify(sentinel)};
 const ATLAS_HTML = ${JSON.stringify(atlasHtml)};
 const ATLAS_PROJECTION = ${JSON.stringify(ATLAS_PROJECTION_RAW)};
+const ATLAS_EXPERIENCE = ${JSON.stringify(ATLAS_EXPERIENCE_RAW)};
 const ATLAS_FILES = ${JSON.stringify(ATLAS_FILES)};
 const HEALTH = ${JSON.stringify(health)};
 const ROBOTS = ${JSON.stringify(robots)};
@@ -220,6 +232,7 @@ addEventListener('fetch', event => {
   else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }
   else if (p === '/atlas' || p === '/atlas/') { body = ATLAS_HTML; cache = 'public, max-age=300'; }
   else if (p === '/atlas/projection.json') { body = ATLAS_PROJECTION; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
+  else if (p === '/atlas/experience.json') { body = ATLAS_EXPERIENCE; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
   else if (ATLAS_FILES[p]) { body = ATLAS_FILES[p].body; contentType = ATLAS_FILES[p].ct; cache = 'public, max-age=31536000, immutable'; }
   else if (p === '/404') { body = NOTFOUND; }
   else if (p === '/') { body = LANDING; }
@@ -243,7 +256,7 @@ command = "node build-worker.cjs"
 `);
 
 console.log('worker.js bytes:', worker.length);
-console.log('atlas: html', atlasHtml.length, '| projection', ATLAS_PROJECTION_RAW.length, '| assets', Object.keys(ATLAS_FILES).join(','));
+console.log('atlas: html', atlasHtml.length, '| projection', ATLAS_PROJECTION_RAW.length, '| experience', ATLAS_EXPERIENCE_RAW.length, '| assets', Object.keys(ATLAS_FILES).join(','));
 console.log('landing with meta bytes:', landing.length, '| launch:', launch.length);
 console.log('topology gates: PASS');
 console.log('favicon injected:', landing.includes('/favicon.ico'), '| JSON-LD:', landing.includes('application/ld+json'));

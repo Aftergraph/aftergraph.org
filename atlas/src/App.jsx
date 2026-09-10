@@ -309,9 +309,13 @@ function AskView({ projection, q, setQ, hits, setHits }) {
 
 export default function App() {
   const { status, projection, origin, errors } = useProjection();
-  const [overlay, setOverlay] = useState(() => parseState(window.location.search).overlay);
-  const [node, setNode] = useState(() => parseState(window.location.search).node);
-  const initialView = parseState(window.location.search).view;
+  const initialState = useMemo(() => parseState(window.location.search), []);
+  const [overlay, setOverlay] = useState(() => initialState.overlay);
+  const [node, setNode] = useState(() => initialState.node);
+  const [lens, setLens] = useState(() => initialState.lens || 'SYSTEM');
+  const [related] = useState(() => initialState.related || null);
+  const [snapshot] = useState(() => initialState.snapshot || null);
+  const initialView = initialState.view;
   const [drift, setDrift] = useState(() => initialView === 'drift');
   const [view, setView] = useState(() => {
     if (initialView === 'drift') return 'topology';
@@ -388,8 +392,15 @@ export default function App() {
   }, [graph, drift, node, impact, xray, setNodes, setEdges]);
 
   useEffect(() => {
-    window.history.replaceState(null, '', serializeState({ node, overlay, view: drift && view === 'topology' ? 'drift' : view }));
-  }, [node, overlay, drift, view]);
+    window.history.replaceState(null, '', serializeState({
+      node,
+      overlay,
+      view: drift && view === 'topology' ? 'drift' : view,
+      lens,
+      related,
+      snapshot,
+    }));
+  }, [node, overlay, drift, view, lens, related, snapshot]);
 
   const sortedIds = useMemo(() => graph.nodes.map((n) => n.id), [graph]);
   // Keyboard traversal scoped to the graph pane. Window-capture (not div
@@ -491,6 +502,13 @@ export default function App() {
           cut {projection.meta.evidence_cut} ({age.label} old{age.stale ? ', STALE — regenerate' : ''}) · gov {String(projection.meta.gov_sha).slice(0, 7)}
           {origin === 'fetch' ? ' · live fetch (may be stale)' : ''}
         </span>
+        <div className="experience-lenses" role="group" aria-label="Experience lens">
+          {['SYSTEM', 'AUTHORITY', 'EVIDENCE', 'COST', 'SOURCE'].map((name) => (
+            <button key={name} aria-pressed={lens === name} onClick={() => setLens(name)} title={`View through ${name.toLowerCase()} lens`}>
+              {name}
+            </button>
+          ))}
+        </div>
         <div className="overlays" role="group" aria-label="Truth plane overlays">
           {['CANONICAL', 'OBSERVED', 'PROPOSED'].map((p) => (
             <button key={p} aria-pressed={overlay.includes(p)} onClick={() => togglePlane(p)} title={`Toggle ${p} assertions`}>
@@ -568,6 +586,14 @@ export default function App() {
       )}
       {view !== 'home' && (
       <aside className="inspector" ref={inspectorRef} tabIndex={-1} aria-label="Inspector">
+        <div className="lens-context" role="status">
+          <strong>{lens}</strong> lens
+          {(lens === 'AUTHORITY' || lens === 'COST') && (
+            <span> · no dedicated {lens.toLowerCase()} projection is published in atlas-projection/0.2; no values are inferred.</span>
+          )}
+          {related && <span> · related: {related}</span>}
+          {snapshot && <span> · snapshot context: {snapshot}</span>}
+        </div>
         <section aria-label="System x-ray">
           <h3>X-ray <span className="prov">directed path from relations</span></h3>
           <div>
