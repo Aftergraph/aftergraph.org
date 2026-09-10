@@ -23,43 +23,46 @@ const expectedPublic = [
   'brand',
   'docs',
   'intelligence-systems-research',
+  'sentinel',
   'studio',
   'trust-gateway',
-  'work-intelligence-v2',
+  'wi-backend',
   'works-execution'
 ];
+const atlasProjection = JSON.parse(read('atlas-projection.json'));
+const privateRepos = new Set((atlasProjection.meta && atlasProjection.meta.private_repos) || []);
+const publicSection = llms.split('### Public')[1]?.split('### Private')[0] || '';
 
-const privateRepos = [
-  'autonomous-venture-company',
-  'skills-vault',
-  'work-intelligence-web',
-  'llm-research-development',
-  'afm',
-  'model-registry',
-  'context-continuity',
-  'continuum'
-];
-
-if (!landing.includes('21 repositories') || !landing.includes('13 public') || !landing.includes('8 private')) {
-  fail('landing topology totals are not 21 / 13 public / 8 private');
+if (!landing.includes('21 canonical repositories') || !landing.includes('12 public') || !landing.includes('9 private')) {
+  fail('landing topology totals are not canonical 21 / 12 public / 9 private');
 }
-if (!status.includes('21 installed') || !status.includes('13 public') || !status.includes('8 private')) {
+if (!status.includes('21 canonical') || !status.includes('12 public') || !status.includes('9 private')) {
   fail('status topology totals are not reconciled');
 }
-if (!llms.includes('Installed platform topology: 21 repositories') || !llms.includes('Public repositories: 13') || !llms.includes('Private repositories: 8')) {
+if (!llms.includes('Canonical platform topology: 21 repositories') || !llms.includes('Public repositories: 12') || !llms.includes('Private repositories: 9')) {
   fail('llms.txt topology totals are not reconciled');
 }
 for (const repo of expectedPublic) {
-  if (!llms.includes(`- \`${repo}\``)) fail(`llms.txt missing public repository ${repo}`);
+  if (!publicSection.includes(`- \`${repo}\``)) fail(`llms.txt missing public repository ${repo}`);
 }
 for (const repo of privateRepos) {
-  if (llms.includes(`- \`${repo}\``)) fail(`llms.txt leaks private repository ${repo} into public list`);
+  const slug = repo.replace(/^Aftergraph\//, '');
+  if (publicSection.includes(`- \`${slug}\``)) fail(`llms.txt leaks private repository ${slug} into public list`);
 }
-if (landing.includes('https://github.com/Aftergraph/context-continuity')) {
-  fail('landing links directly to private context-continuity repository');
+if (landing.includes('https://github.com/Aftergraph/context-continuity') || landing.includes('https://github.com/Aftergraph/runtime')) {
+  fail('landing links directly to private repository source');
 }
 if (launch.includes('https://github.com/Aftergraph/context-continuity') || launch.includes('https://github.com/Aftergraph/afm')) {
   fail('launcher links unauthenticated users directly to private repository source');
+}
+if (!landing.includes('data-experience-hero') || !landing.includes('Illustrative system walkthrough') || !landing.includes('data-atlas-inspect')) {
+  fail('landing is missing the Living Atlas experience handoff');
+}
+if (/vendor-(flow|elk|d3)-|reactflow/i.test(landing)) {
+  fail('public landing references a heavy Atlas vendor bundle');
+}
+if (!worker.includes('AftergraphExperienceHero') || !worker.includes('/atlas/experience.json')) {
+  fail('generated worker is missing Experience hero/projection support');
 }
 // ponytail: build-worker embeds canonical sources as string constants (per plan doc Task 4);
 // the text-module import check contradicted the shipped architecture — assert the embedded

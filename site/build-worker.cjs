@@ -24,6 +24,7 @@ const favicon = read('.brand/favicon.svg');
 const ogImage = read('.brand/og-image.svg');
 const llms = read('llms.txt');
 const security = read('security.txt');
+const experienceHero = read('experience-hero.js');
 
 // ---- Atlas (/atlas): vite-built observatory, inlined as static routes ----
 // Built by `npm --prefix ../atlas run build` into site/atlas/ BEFORE this script
@@ -146,6 +147,7 @@ const OG_LAUNCH = `
 <meta property="og:image" content="https://aftergraph.org/og-image.svg">`;
 
 landing = landing.replace('</head>', `${FAVICON}${OG}\n</head>`);
+landing = landing.replace('</body>', `<script>${experienceHero}</script>\n</body>`);
 launch = launch.replace('</head>', `${FAVICON}${OG_LAUNCH}\n</head>`);
 sentinel = sentinel.replace('</head>', `${FAVICON}${OG_SENTINEL}\n</head>`);
 
