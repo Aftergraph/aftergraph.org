@@ -384,3 +384,20 @@ describe('validateProjection', () => {
     expect(r.errors.join(' ')).toMatch(/gov_sha/);
   });
 });
+
+describe('experience-aware Atlas URL state', () => {
+  it('preserves lens, related entity, and snapshot across serialization', () => {
+    const state = {
+      node: 'repo:Aftergraph/aie',
+      overlay: ['CANONICAL'],
+      view: 'topology',
+      lens: 'SOURCE',
+      related: 'contract:AuthorityLease',
+      snapshot: 'cut-1',
+    };
+    const back = parseState(serializeState(state));
+    expect(back.lens).toBe('SOURCE');
+    expect(back.related).toBe('contract:AuthorityLease');
+    expect(back.snapshot).toBe('cut-1');
+  });
+});
