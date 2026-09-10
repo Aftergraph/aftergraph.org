@@ -3,6 +3,7 @@
 import { chromium } from 'playwright';
 
 const base = process.argv[2] || 'http://localhost:8471/atlas/';
+const docsBase = process.argv[3] || null;
 let failures = 0;
 const fail = (m) => {
   console.error(`VERIFY-FAIL: ${m}`);
@@ -268,6 +269,30 @@ try {
     if (cleared.includes('repo:Aftergraph/')) fail('Escape did not clear the selection');
     await page.close();
   }
+  // Experience deep-link state must restore exactly, not merely survive parsing.
+  {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    const related = 'repo:Aftergraph/trust-gateway';
+    await page.goto(`${base}?node=${encodeURIComponent('repo:Aftergraph/aie')}&view=topology&lens=SOURCE&related=${encodeURIComponent(related)}`, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(1800);
+    const sourceLens = page.getByRole('button', { name: 'SOURCE', exact: true });
+    if (await sourceLens.getAttribute('aria-pressed') !== 'true') fail('SOURCE lens did not restore from URL state');
+    const current = new URL(page.url());
+    if (current.searchParams.get('node') !== 'repo:Aftergraph/aie') fail('node state was not preserved in Atlas URL');
+    if (current.searchParams.get('view') !== 'topology') fail('view state was not preserved in Atlas URL');
+    if (current.searchParams.get('lens') !== 'SOURCE') fail('lens state was not preserved in Atlas URL');
+    if (current.searchParams.get('related') !== related) fail('related entity state was not preserved in Atlas URL');
+    await page.close();
+  }
+  // Reduced motion must remove decorative animation without removing required state.
+  {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(800);
+    const lensCount = await page.getByRole('group', { name: 'Experience lens' }).getByRole('button').count();
+    if (lensCount < 3) fail('reduced-motion mode hides required Experience lens state');
+    await page.close();
+  }
   // Tablet: full graph in a narrower viewport — must render without overflow
   {
     const page = await browser.newPage({ viewport: { width: 820, height: 1180 } });
@@ -278,6 +303,45 @@ try {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (overflow > 1) fail(`tablet horizontal overflow: ${overflow}px`);
     await page.close();
+  }
+  if (docsBase) {
+    // Docs Golden Mission: URL-restored lens + keyboard trace selection + mobile overflow.
+    {
+      const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      await page.goto(`${docsBase}/platform/golden-mission/?lens=SOURCE`, { waitUntil: 'networkidle', timeout: 60000 });
+      const sourceLens = page.getByRole('button', { name: 'SOURCE', exact: true });
+      if (await sourceLens.getAttribute('aria-pressed') !== 'true') fail('docs SOURCE lens did not restore from URL');
+      const steps = page.locator('[data-mission-step]');
+      if (await steps.count() !== 10) fail(`Golden Mission renders ${await steps.count()} steps, expected 10`);
+      await steps.nth(1).focus();
+      await page.keyboard.press('ArrowRight');
+      const current = await page.locator('[data-mission-step][aria-current="step"]').getAttribute('data-index');
+      if (current !== '2') fail(`Golden Mission keyboard trace selected index ${current}, expected 2`);
+      await page.close();
+    }
+    // Contract Graph: keyboard selection, Atlas handoff, Escape clear.
+    {
+      const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      await page.goto(`${docsBase}/standards/contract-graph/?lens=SOURCE`, { waitUntil: 'networkidle', timeout: 60000 });
+      const node = page.locator('[data-node-id]').first();
+      await node.focus();
+      await page.keyboard.press('Enter');
+      if (await node.getAttribute('aria-pressed') !== 'true') fail('Contract Graph Enter did not select focused node');
+      const atlasHref = await page.locator('[data-graph-atlas]').getAttribute('href');
+      if (!atlasHref || !atlasHref.includes('node=repo%3AAftergraph%2F') || !atlasHref.includes('lens=SOURCE')) fail('Contract Graph Atlas handoff lost selected source context');
+      await page.keyboard.press('Escape');
+      if (await node.getAttribute('aria-pressed') === 'true') fail('Contract Graph Escape did not clear selection');
+      await page.close();
+    }
+    {
+      const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+      for (const path of ['/platform/golden-mission/', '/standards/contract-graph/']) {
+        await page.goto(`${docsBase}${path}`, { waitUntil: 'networkidle', timeout: 60000 });
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+        if (overflow > 1) fail(`docs mobile horizontal overflow on ${path}: ${overflow}px`);
+      }
+      await page.close();
+    }
   }
 } finally {
   await browser.close();

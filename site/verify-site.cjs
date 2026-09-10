@@ -61,6 +61,12 @@ if (!landing.includes('data-experience-hero') || !landing.includes('Illustrative
 if (/vendor-(flow|elk|d3)-|reactflow/i.test(landing)) {
   fail('public landing references a heavy Atlas vendor bundle');
 }
+if (!/<button[^>]+data-atlas-entity=/.test(landing) || !/aria-pressed="false"/.test(landing)) {
+  fail('Living Atlas system selection is not keyboard/button reachable');
+}
+if (!/prefers-reduced-motion:reduce/.test(landing) || !/animation:none/.test(landing)) {
+  fail('landing lacks a reduced-motion path for decorative animation');
+}
 if (!worker.includes('AftergraphExperienceHero') || !worker.includes('/atlas/experience.json')) {
   fail('generated worker is missing Experience hero/projection support');
 }
