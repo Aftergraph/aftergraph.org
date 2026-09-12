@@ -1,57 +1,42 @@
-# Atlas beslutningspakke til Jonas (2026-09-08, cut 19:30:48Z)
+# Atlas beslutningspakke til Jonas (2026-09-10, cut 04:25:37Z)
 
 Atlas er bygget som read-only observatorium: den foreslår, du beslutter.
-Branch `feat/atlas` er grøn i CI (alle gates: tests, build, verify, DOM-smoke,
-leakage-gate). Fuld evidens: `docs/atlas/LEDGER.md` (E1–E26).
+Branch `feat/atlas` er grøn lokalt (alle gates: tests, build, verify, DOM-smoke,
+leakage-gate). Fuld evidens: `docs/atlas/LEDGER.md` (E1–E57+).
 
-## 1. sentinel-firetest2 er uregistreret (C2, stadig åben)
+## 1. Governance topology 2.0 er live (nyt)
 
-- Observeret: `Aftergraph/sentinel-firetest2` er live og public (cut 2026-09-08T19:30:48Z).
-- Kanonisk: topology (gov `5f53273`) kender `sentinel` + `sentinel-firetest`, men ikke `firetest2`.
-- Anbefaling: arkivér `firetest2`, hvis den er afløst af `sentinel-firetest`; registrér den ellers
-  i `docs/platform-topology/1.0.json` (assurance-planet). Alternativ: eksplicit `excluded`-markering,
-  så Atlas holder op med at flagge den.
+- Gov `d3e5119`: `platform-topology/2.0.json` erstatter 1.0 som kanonisk kilde.
+  Nye felter: `architecture_plane` (7 semantiske planer el. null), `system_class`,
+  `lifecycle`, `must_not_own`. 27 repos registreret (skill-abi + skillport tilføjet #148).
+- Dependencies.yml v4 refererer nu direkte `wi-backend`/`wi-frontend` (ingen legacy-slugs).
+- **Alle tidligere konflikter (C1/C2/C4) er løst upstream** — projection viser 0 åbne.
+- Anbefaling: ingen handling krævet; Atlas generatoren er allerede adapteret.
 
-## 2. dependencies.yml peger stadig på gamle WI-navne (C4, LØST af sig selv)
-
-- Cut #6 (gov `4ad398e`): konflikten er væk — topology og dependencies er enige
-  igen. Intet at beslutte; punktet er flyttet til "Løst siden sidst".
-
-## 3. Bekræft runtime-visibility (stadig privat)
+## 2. Bekræft runtime-visibility (stadig privat)
 
 - Observeret: `Aftergraph/runtime` er privat. Bekræft, at det er hensigten.
-- Anbefaling: hvis privat er korrekt, ingen handling (Atlas viser kun navn/rolle). Hvis den skal være
-  offentlig, åbn repoet — Atlas opdager det ved næste cut.
+- Anbefaling: hvis privat er korrekt, ingen handling (Atlas viser kun navn/rolle).
 
-## 4. Fixture-udkast med private navne i git-historik (nyt)
+## 3. Visuel review af screenshots
 
-- Audit-fund (E26): `docs/atlas/enrich/fixtures.json` indeholder et skill-navn og candidate
-  release-filnavne fra private kilder, flagget "kræver Jonas-clearance". UI'en viser dem ikke
-  længere (withheld + begrundelse), men navnene ligger i historikken på `feat/atlas`.
-- Anbefaling: behold som udkast-eksempel (de er form-shaping, ikke publiseret fakta) — eller
-  sig til, så purger jeg filen fra branch-historikken før merge.
+- Screenshots ligger i `atlas/qa-shots/`. DOM-assertions er grønne, men
+  menneske-øjne har ikke godkendt æstetikken endnu.
+- Anbefaling: kig dem igennem ved lejlighed.
 
-## 5. Visuel review af screenshots (nyt)
+## 4. Merge af feat/atlas til main
 
-- 4 friske screenshots ligger i `atlas/qa-shots/` (desktop, drift, inspector, mobil).
-  DOM-assertions er grønne, men menneske-øjne har ikke set dem endnu.
-- Anbefaling: kig dem igennem ved lejlighed; meld visuelle fejl tilbage, så retter jeg.
-
-## 6. Merge af feat/atlas til main (nyt)
-
-- Verificeret: 14/14 projektionstests, 40/40 vitest, verify PASS, DOM-smoke PASS,
-  0 private SHA'er i artefakter, 1 kendt konflikt (C2) synlig i UI.
-- Anbefaling: review + merge. Atlas deployer med det eksisterende site
-  (ingen særskilt infra).
+- Verificeret: 16/16 projektionstests, 40/40 vitest, verify PASS, DOM-smoke PASS,
+  0 private SHA'er i artefakter, 0 åbne konflikter.
+- Anbefaling: review + merge når du er klar. Atlas deployer med det eksisterende site.
 
 ## Løst siden sidst
 
-- Site-gates var uenige om WI-navnet: nu er begge sider enige om `wi-backend`
-  (legacy-slug forbydes af gates). Punktet er lukket uden handling fra dig.
-- C4 (dependencies.yml vs topology): resolved af governance selv ved gov
-  `4ad398e` (cut #6). Projektionen gik 144→156 entiteter, konflikter 2→1.
+- C1 (WI rename): løst af gov 2.0 (topology bruger nu wi-backend/wi-frontend direkte).
+- C2 (uregistrerede repos): løst af gov #136/#148 (alle 27 repos registreret).
+- C4 (deps.yml legacy slugs): løst af deps.yml v4 (ingen legacy-referencer).
+- Topology 1.0 → 2.0 migration komplet i generator + fixtures + docs.
 
 ## Hvad sker der derefter
 
-Næste Atlas-kørsel (`node site/capture-observed.mjs` + generator) lukker løste konflikter
-af sig selv og skriver nye SHA-pins. Du skal ikke røre Atlas-filerne.
+Næste Atlas-kørsel opdaterer SHA-pins automatisk. Du skal ikke røre Atlas-filerne.

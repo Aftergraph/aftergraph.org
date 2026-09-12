@@ -31,7 +31,7 @@ as one deterministic, provenance-labelled workspace. It owns nothing it displays
 ## 2. Data pipeline (no hand-maintained repo list, no duplicate canonical DB)
 
 ```
-Governance @ pinned SHA ── topology/1.0, contracts, dependencies.yml ─┐
+Governance @ pinned SHA ── topology/2.0, contracts, dependencies.yml ─┐
 GitHub API @ evidence cut ── repos, HEADs, PRs, CI ───────────────────┼─▶ generate-atlas-projection.mjs ─▶ site/atlas/projection.json ─▶ vite build ─▶ site/atlas/ ─▶ Worker
 Docs / Vault / AFM / Registry / ISR (repo-owned files @ pinned SHAs) ┘
 ```

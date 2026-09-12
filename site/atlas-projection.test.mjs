@@ -123,6 +123,28 @@ test('C4 absent when legacy slug is still canonical (no shadow)', () => {
   assert.ok(!proj.conflicts.find((c) => c.id === 'C4'), 'legacy is canonical here, not a shadow');
 });
 
+test('canonical 2.0 fields surface: system_class/lifecycle/expires_at; plane only when present', () => {
+  const canon = (subject, predicate) =>
+    proj.assertions.find((a) => a.subject === subject && a.predicate === predicate && a.truth_plane === 'CANONICAL');
+  assert.equal(canon('repo:Aftergraph/alpha', 'system_class').value, 'test-class');
+  assert.equal(canon('repo:Aftergraph/alpha', 'lifecycle').value, 'active');
+  assert.equal(canon('repo:Aftergraph/alpha', 'plane').value, 'test');
+  assert.equal(canon('repo:Aftergraph/alpha', 'must_not_own').value, 'B');
+  // architecture_plane null: no plane assertion at all (never a null-value one)
+  assert.equal(canon('repo:Aftergraph/beta', 'plane'), undefined);
+  // temporary lifecycle carries its expiry
+  assert.equal(canon('repo:Aftergraph/work-intelligence-v2', 'lifecycle').value, 'temporary');
+  assert.equal(canon('repo:Aftergraph/work-intelligence-v2', 'expires_at').value, '2026-09-30');
+});
+
+test('relation ids are unique: shared contract ownership ships one owns edge', () => {
+  const ids = proj.relations.map((r) => r.id);
+  assert.equal(new Set(ids).size, ids.length, 'duplicate relation ids shipped');
+  // alpha.alpha-thing is consumed by two modules; the derived owns edge must ship once.
+  const owns = proj.relations.filter((r) => r.relation === 'owns' && r.target === 'contract:alpha-thing');
+  assert.equal(owns.length, 1, 'one contract owner, one owns edge — regardless of consumer count');
+});
+
 test('canonical relations keep dependencies.yml targets verbatim', () => {
   const hit = proj.relations.find(
     (r) => r.truth_plane === 'CANONICAL' && r.target === 'repo:Aftergraph/work-intelligence-v2'

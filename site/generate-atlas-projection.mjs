@@ -57,7 +57,7 @@ function govShow(p) {
   return execSync(`git show ${govSha}:${p}`, { cwd: GOV, stdio: 'pipe' }).toString();
 }
 
-const topology = JSON.parse(govShow('docs/platform-topology/1.0.json'));
+const topology = JSON.parse(govShow('docs/platform-topology/2.0.json'));
 const depsYml = govShow('dependencies.yml');
 
 // Minimal indentation parser for the observed dependencies.yml shape:
@@ -104,6 +104,7 @@ const canonByName = new Map(topology.repositories.map((r) => [r.name, r]));
 const entities = new Map(); // id -> {id, kind, identity}
 const assertions = [];
 const relations = [];
+const relationIds = new Set(); // dedupe: identical claims ship once
 const conflicts = [];
 
 function addEntity(id, kind, identity) {
@@ -137,8 +138,11 @@ function addAssertion(subject, predicate, value, truth_plane, provenance, valid_
 }
 
 function addRelation(source, target, relation, truth_plane, provenance, conflict_id = null) {
+  const id = `rel-${sid(source, relation, target, truth_plane, JSON.stringify(provenance))}`;
+  if (relationIds.has(id)) return null; // dedupe: identical claims ship once
+  relationIds.add(id);
   const r = {
-    id: `rel-${sid(source, relation, target, truth_plane, JSON.stringify(provenance))}`,
+    id,
     source,
     relation,
     target,
@@ -154,7 +158,7 @@ function addRelation(source, target, relation, truth_plane, provenance, conflict
 
 const govProv = (evidence_level = 'canonical') =>
   prov(
-    `Aftergraph/after-graph-governance docs/platform-topology/1.0.json@${govSha.slice(0, 7)}`,
+    `Aftergraph/after-graph-governance docs/platform-topology/2.0.json@${govSha.slice(0, 7)}`,
     'governance-file',
     'Aftergraph/after-graph-governance',
     govSha,
@@ -269,10 +273,16 @@ for (const r of topology.repositories) {
   const p = govProv();
   addAssertion(id, 'slug', r.name, 'CANONICAL', p, null);
   addAssertion(id, 'role', r.role, 'CANONICAL', p, null);
-  addAssertion(id, 'plane', r.plane, 'CANONICAL', p, null);
+  // 2.0: architecture_plane is null for repos outside a named plane — emit no
+  // plane assertion at all rather than a null-value one.
+  if (r.architecture_plane != null) addAssertion(id, 'plane', r.architecture_plane, 'CANONICAL', p, null);
   addAssertion(id, 'visibility', r.visibility, 'CANONICAL', p, null);
   addAssertion(id, 'canonical_branch', r.canonical_branch, 'CANONICAL', p, null);
-  if (r.owns) addAssertion(id, 'owns', r.owns, 'CANONICAL', p, null);
+  if (r.owns != null) addAssertion(id, 'owns', r.owns, 'CANONICAL', p, null);
+  if (r.system_class != null) addAssertion(id, 'system_class', r.system_class, 'CANONICAL', p, null);
+  if (r.lifecycle != null) addAssertion(id, 'lifecycle', r.lifecycle, 'CANONICAL', p, null);
+  if (r.expires_at != null) addAssertion(id, 'expires_at', r.expires_at, 'CANONICAL', p, null);
+  if (r.must_not_own != null) addAssertion(id, 'must_not_own', r.must_not_own, 'CANONICAL', p, null);
 }
 
 // ---- OBSERVED + PROPOSED assertions from the evidence cut ----
@@ -409,7 +419,7 @@ function findAssertion(subject, predicate, plane) {
       kind: 'intra-canonical',
       status: 'open',
       subjects,
-      note: 'dependencies.yml still targets legacy WI slugs that platform-topology/1.0 no longer registers; edges kept verbatim as shadows.',
+      note: 'dependencies.yml still targets legacy WI slugs that platform-topology/2.0 no longer registers; edges kept verbatim as shadows.',
     });
   }
 }
@@ -493,7 +503,7 @@ const projection = {
     evidence_cut: CUT,
     generator: 'site/generate-atlas-projection.mjs',
     gov_sha: govSha,
-    gov_topology: 'docs/platform-topology/1.0.json',
+    gov_topology: 'docs/platform-topology/2.0.json',
     repo_pins: Object.fromEntries(Object.entries(repoPins).sort(([a], [b]) => (a < b ? -1 : 1))),
     private_repos: privateRepos,
     snapshot_of: null,

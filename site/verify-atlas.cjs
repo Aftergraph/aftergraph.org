@@ -56,6 +56,22 @@ for (const r of proj.relations || []) {
   if (!entities.has(r.target)) fail(`relation ${r.id} unknown target`);
 }
 
+// Ids are content-addressed: a duplicate id means the identical claim shipped
+// more than once (generator dedupe bug regression gate; poison-proven against
+// the pre-fix cut #11 which shipped one owns edge 4x).
+{
+  const seenA = new Set();
+  for (const a of proj.assertions || []) {
+    if (seenA.has(a.id)) fail(`duplicate assertion id ${a.id} (identical claim shipped twice)`);
+    seenA.add(a.id);
+  }
+  const seenR = new Set();
+  for (const r of proj.relations || []) {
+    if (seenR.has(r.id)) fail(`duplicate relation id ${r.id} (identical claim shipped twice)`);
+    seenR.add(r.id);
+  }
+}
+
 // Private-source boundary: public artifact must not carry private repo internals.
 const privateSubjects = new Set([...privateRepos].map((n) => `repo:${n}`));
 // The public governance SHA is exempt: canonical assertions legitimately cite it.

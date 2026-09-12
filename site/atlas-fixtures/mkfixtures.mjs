@@ -40,24 +40,26 @@ fs.writeFileSync(path.join(ledger, 'obs_wi-backend.json'), JSON.stringify(obs('w
   { baseRefName: 'main', headRefName: 'feat/y', headRefOid: 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', isDraft: false, number: 8, title: 'feat: y', updatedAt: '2026-09-08T14:00:00Z' },
 ])));
 
-// Canonical: alpha + beta shared; legacy WI slug canonical-only; cron-fabric observed-only.
+// Canonical (platform-topology/2.0): alpha + beta shared; legacy WI slug canonical-only.
+// deps.yml: alpha.alpha-thing is consumed by TWO modules so the derived owns edge
+// must be deduped (regression fixture for the duplicate-relation bug, cut #11).
 const topology = {
-  $schema: 'https://json-schema.org/draft/2020-12/schema',
-  schema_version: 'platform-topology/1.0',
+  $schema: './2.0.schema.json',
+  schema_version: 'platform-topology/2.0',
   organization: 'Aftergraph',
   evidence_cut: '2026-09-07',
   description: 'Atlas CI fixture.',
   repositories: [
-    { name: 'alpha', canonical_branch: 'main', visibility: 'public', plane: 'test', role: 'test-a', owns: 'A' },
-    { name: 'beta', canonical_branch: 'main', visibility: 'public', plane: 'test', role: 'test-b', owns: 'B' },
-    { name: 'work-intelligence-v2', canonical_branch: 'main', visibility: 'public', plane: 'test', role: 'legacy', owns: 'legacy WI' },
+    { name: 'alpha', canonical_branch: 'main', visibility: 'public', architecture_plane: 'test', system_class: 'test-class', lifecycle: 'active', role: 'test-a', owns: 'A', must_not_own: 'B' },
+    { name: 'beta', canonical_branch: 'main', visibility: 'public', architecture_plane: null, system_class: 'test-class', lifecycle: 'active', role: 'test-b', owns: 'B', must_not_own: 'A' },
+    { name: 'work-intelligence-v2', canonical_branch: 'main', visibility: 'public', architecture_plane: 'test', system_class: 'legacy-class', lifecycle: 'temporary', expires_at: '2026-09-30', role: 'legacy', owns: 'legacy WI', must_not_own: 'anything permanent' },
   ],
 };
 fs.mkdirSync(path.join(gov, 'docs', 'platform-topology'), { recursive: true });
-fs.writeFileSync(path.join(gov, 'docs', 'platform-topology', '1.0.json'), JSON.stringify(topology, null, 2));
+fs.writeFileSync(path.join(gov, 'docs', 'platform-topology', '2.0.json'), JSON.stringify(topology, null, 2));
 fs.writeFileSync(
   path.join(gov, 'dependencies.yml'),
-  `version: 3\ntopology_ref: docs/platform-topology/1.0.json\nmodules:\n  alpha:\n    repo: Aftergraph/alpha\n    role: test-a\n    consumes: [work-intelligence-v2]\n    provides: [alpha-thing]\n  work-intelligence-v2:\n    repo: Aftergraph/work-intelligence-v2\n    role: legacy\n    consumes: []\n    provides: [observations]\n`
+  `version: 3\ntopology_ref: docs/platform-topology/2.0.json\nmodules:\n  alpha:\n    repo: Aftergraph/alpha\n    role: test-a\n    consumes: [work-intelligence-v2, alpha.alpha-thing]\n    provides: [alpha-thing]\n  work-intelligence-v2:\n    repo: Aftergraph/work-intelligence-v2\n    role: legacy\n    consumes: [alpha.alpha-thing]\n    provides: [observations]\n`
 );
 const env = {
   ...process.env,

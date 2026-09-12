@@ -37,7 +37,7 @@ Entity (stable identity, NO truth_plane)
     "evidence_cut": "2026-09-08T15:48:21Z",
     "generator": "site/generate-atlas-projection.mjs",
     "gov_sha": "<full 40-hex after-graph-governance SHA>",
-    "gov_topology": "docs/platform-topology/1.0.json",
+    "gov_topology": "docs/platform-topology/2.0.json",
     "repo_pins": { "<public full_name>": "<full 40-hex HEAD>" },
     "private_repos": [ "<private full_name>" ],
     "snapshot_of": null

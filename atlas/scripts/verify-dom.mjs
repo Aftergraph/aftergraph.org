@@ -104,11 +104,12 @@ try {
     await page.goto(`${base}?view=drift`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
     const drift = await page.locator('.drift-list').innerText();
-    for (const needle of ['C2', 'sentinel-firetest2']) {
-      if (!drift.includes(needle)) fail(`drift list missing ${needle}`);
+    // Gov d3e5119 (topology 2.0, 27 repos) resolved C1/C2/C4 — drift must show 0 open
+    if (!drift.includes('0 open')) fail(`drift list does not show 0 open conflicts: ${drift.slice(0, 120)}`);
+    // Resolved conflicts must NOT resurface
+    for (const resolved of ['C1', 'C2', 'C4']) {
+      if (new RegExp(`\\b${resolved}\\b`).test(drift)) fail(`drift list shows resolved ${resolved}`);
     }
-    // C4 resolved at gov 4ad398e (cut #6): must NOT resurface as open
-    if (/\bC4\b/.test(drift)) fail('drift list shows resolved C4');
     await page.close();
   }
   // Slice C views render through the tab strip
