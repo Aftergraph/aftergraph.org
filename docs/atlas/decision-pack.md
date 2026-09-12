@@ -1,42 +1,52 @@
-# Atlas beslutningspakke til Jonas (2026-09-10, cut 04:25:37Z)
+# Atlas beslutningspakke til Jonas (2026-09-13, cut #12 10:12:48Z)
 
 Atlas er bygget som read-only observatorium: den foreslår, du beslutter.
 Branch `feat/atlas` er grøn lokalt (alle gates: tests, build, verify, DOM-smoke,
-leakage-gate). Fuld evidens: `docs/atlas/LEDGER.md` (E1–E57+).
+leakage-gate). Fuld evidens: `docs/atlas/LEDGER.md` (E1–E62).
 
-## 1. Governance topology 2.0 er live (nyt)
+## 1. Governance topology 2.0 er live
 
-- Gov `d3e5119`: `platform-topology/2.0.json` erstatter 1.0 som kanonisk kilde.
-  Nye felter: `architecture_plane` (7 semantiske planer el. null), `system_class`,
-  `lifecycle`, `must_not_own`. 27 repos registreret (skill-abi + skillport tilføjet #148).
-- Dependencies.yml v4 refererer nu direkte `wi-backend`/`wi-frontend` (ingen legacy-slugs).
+- Gov `1689e32`: `platform-topology/2.0.json` er kanonisk kilde.
+  28 repos registreret (relay + skillport tilføjet via #151/#152).
 - **Alle tidligere konflikter (C1/C2/C4) er løst upstream** — projection viser 0 åbne.
 - Anbefaling: ingen handling krævet; Atlas generatoren er allerede adapteret.
 
-## 2. Bekræft runtime-visibility (stadig privat)
+## 2. Worker-størrelse verificeret (RISK lukket)
 
-- Observeret: `Aftergraph/runtime` er privat. Bekræft, at det er hensigten.
-- Anbefaling: hvis privat er korrekt, ingen handling (Atlas viser kun navn/rolle).
+- Worker.js er 8MB raw / 950KB gzip. Cloudflare Workers limit er 64 MiB uncompressed,
+  ingen compressed limit. Vi bruger ~12% af kapaciteten.
+- Vækst: ~400KB/snapshot raw (~25KB gz). Plads til ~140 snapshots mere.
+- Anbefaling: ingen handling. RISK lukket i E62.
 
-## 3. Visuel review af screenshots
+## 3. Pulse-vinduer (24h/7d/30d) er live
 
-- Screenshots ligger i `atlas/qa-shots/`. DOM-assertions er grønne, men
-  menneske-øjne har ikke godkendt æstetikken endnu.
+- E61: historisk snapshot-backfill beregner ændringer pr. repo pr. vindue.
+  Private repos er strukturelt fraværende (korrekt per D7).
+- Anbefaling: ingen handling.
+
+## 4. Visuel review af screenshots
+
+- Screenshots ligger i `atlas/qa-shots-after/` (18 filer, alle viewports dækket).
+  DOM-assertions er grønne inkl. overlap-gate og WCAG AA kontrast.
+  Menneske-øjne har ikke godkendt æstetikken endnu.
 - Anbefaling: kig dem igennem ved lejlighed.
 
-## 4. Merge af feat/atlas til main
+## 5. Merge af feat/atlas til main
 
-- Verificeret: 16/16 projektionstests, 40/40 vitest, verify PASS, DOM-smoke PASS,
-  0 private SHA'er i artefakter, 0 åbne konflikter.
+- Verificeret: 16/16 projektionstests, 49/49 vitest, verify PASS, DOM-smoke PASS,
+  0 private SHA'er i artefakter, 0 åbne konflikter. Dry-run merge til main:
+  zero conflicts, alle gates grønne på merged tree.
 - Anbefaling: review + merge når du er klar. Atlas deployer med det eksisterende site.
 
-## Løst siden sidst
+## Løst siden sidste brief
 
-- C1 (WI rename): løst af gov 2.0 (topology bruger nu wi-backend/wi-frontend direkte).
-- C2 (uregistrerede repos): løst af gov #136/#148 (alle 27 repos registreret).
-- C4 (deps.yml legacy slugs): løst af deps.yml v4 (ingen legacy-referencer).
-- Topology 1.0 → 2.0 migration komplet i generator + fixtures + docs.
+- Topology 1.0 → 2.0 migration komplet (gov d3e5119→1689e32).
+- Org vokset 27→28 repos (relay + skillport canonical).
+- Worker-size RISK lukket med dokumentation fra Cloudflare docs.
+- Slice C acceptance fully closed (impact, Ask V0, snapshots, tabs, URL state).
+- CI green on branch (run 34272221503, 13 steps).
 
 ## Hvad sker der derefter
 
 Næste Atlas-kørsel opdaterer SHA-pins automatisk. Du skal ikke røre Atlas-filerne.
+Åbent: human visual review, production merge (din auth).
