@@ -130,3 +130,108 @@ export function diffProjections(oldP, newP) {
     resolvedConflicts: sub(oldC, newC),
   };
 }
+
+// Development pulse history: 24h/7d/30d activity windows derived ONLY from the
+// immutable versioned snapshots. A "change" is an OBSERVED head_sha value that
+// differs from the previous snapshot, stamped with the newer snapshot's cut.
+// Windows are (now - span, now]. Private repos never appear — the withheld
+// boundary is never resolved around, not even historically.
+export function pulseHistoryWindows(snapshots, now) {
+  if (!Array.isArray(snapshots) || snapshots.length === 0) return [];
+  const nowMs = Date.parse(now);
+  const WINDOWS = [
+    ['changes24h', 24 * 3600 * 1000],
+    ['changes7d', 7 * 24 * 3600 * 1000],
+    ['changes30d', 30 * 24 * 3600 * 1000],
+  ];
+  const ordered = [...snapshots].sort((a, b) =>
+    (a.meta?.evidence_cut || '') < (b.meta?.evidence_cut || '') ? -1 : 1
+  );
+  const changes = new Map(); // repoId -> [cutISO, ...]
+  const known = new Set();
+  let prev = null;
+  for (const snap of ordered) {
+    const priv = new Set(snap.meta?.private_repos || []);
+    for (const e of snap.entities || []) {
+      if (e.identity?.visibility === 'private') priv.add(String(e.id).replace(/^repo:/, ''));
+    }
+    const heads = new Map();
+    for (const a of snap.assertions || []) {
+      if (a.predicate !== 'head_sha' || a.truth_plane !== 'OBSERVED') continue;
+      const name = String(a.subject).replace(/^repo:/, '');
+      if (priv.has(name)) continue;
+      heads.set(a.subject, String(a.value));
+      known.add(a.subject);
+    }
+    if (prev) {
+      for (const [id, head] of heads) {
+        const before = prev.get(id);
+        if (before !== undefined && before !== head) {
+          if (!changes.has(id)) changes.set(id, []);
+          changes.get(id).push(snap.meta.evidence_cut);
+        }
+      }
+    }
+    prev = heads;
+  }
+  const rows = [...known].map((id) => {
+    const cuts = changes.get(id) || [];
+    const row = { id };
+    for (const [key, span] of WINDOWS) {
+      row[key] = cuts.filter((c) => {
+        const t = Date.parse(c);
+        return t > nowMs - span && t <= nowMs;
+      }).length;
+    }
+    row.lastActivity = cuts.length ? cuts[cuts.length - 1] : null;
+    return row;
+  });
+  rows.sort((a, b) =>
+    (b.lastActivity || '').localeCompare(a.lastActivity || '') || (a.id < b.id ? -1 : 1)
+  );
+  return rows;
+}
+
+// Pulse windows from the snapshot INDEX alone: each index entry carries a
+// compact public `pulse` activity summary (per-repo head-change cuts, private
+// repos never included — the generator withholds them). One small fetch instead
+// of loading every full snapshot. Same window semantics as pulseHistoryWindows:
+// (now - span, now].
+export function pulseHistoryFromIndex(index, now) {
+  if (!Array.isArray(index) || index.length === 0) return [];
+  const nowMs = Date.parse(now);
+  const WINDOWS = [
+    ['changes24h', 24 * 3600 * 1000],
+    ['changes7d', 7 * 24 * 3600 * 1000],
+    ['changes30d', 30 * 24 * 3600 * 1000],
+  ];
+  const cutsById = new Map(); // repoId -> [cutISO, ...]
+  const repos = new Set();
+  for (const entry of index) {
+    const p = entry?.pulse;
+    if (!p) continue;
+    for (const r of p.repos || []) repos.add(r);
+    for (const act of p.activity || []) {
+      if (!act?.subject || !Array.isArray(act.cuts)) continue;
+      if (!cutsById.has(act.subject)) cutsById.set(act.subject, []);
+      cutsById.get(act.subject).push(...act.cuts);
+      repos.add(act.subject);
+    }
+  }
+  const rows = [...repos].map((id) => {
+    const cuts = (cutsById.get(id) || []).slice().sort();
+    const row = { id };
+    for (const [key, span] of WINDOWS) {
+      row[key] = cuts.filter((c) => {
+        const t = Date.parse(c);
+        return t > nowMs - span && t <= nowMs;
+      }).length;
+    }
+    row.lastActivity = cuts.length ? cuts[cuts.length - 1] : null;
+    return row;
+  });
+  rows.sort((a, b) =>
+    (b.lastActivity || '').localeCompare(a.lastActivity || '') || (a.id < b.id ? -1 : 1)
+  );
+  return rows;
+}

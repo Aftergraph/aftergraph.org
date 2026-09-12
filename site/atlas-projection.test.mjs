@@ -193,6 +193,13 @@ test('snapshots are versioned, indexed, idempotent, and immutable', () => {
   assert.equal(index[0].file, snapFile);
   assert.equal(index[0].evidence_cut, '2026-09-08T15:48:21Z');
   assert.match(index[0].gov_sha, /^[0-9a-f]{40}$/);
+  // Pulse summary: first snapshot has no predecessor so activity is empty.
+  assert.ok(index[0].pulse, 'index entry carries pulse summary');
+  assert.ok(Array.isArray(index[0].pulse.repos), 'pulse.repos is array');
+  assert.ok(Array.isArray(index[0].pulse.activity), 'pulse.activity is array');
+  assert.equal(index[0].pulse.activity.length, 0, 'first snapshot has no activity (no predecessor)');
+  // Private repos never appear in pulse.repos
+  assert.ok(!index[0].pulse.repos.some((r) => r.includes('beta')), 'private repo leaked into pulse.repos');
   // Rerun: idempotent, no duplicate index entry.
   build(path.join(tmp, 's2.json'), ['--snapshot-dir', snapDir]);
   assert.equal(JSON.parse(fs.readFileSync(path.join(snapDir, 'index.json'), 'utf8')).length, 1);

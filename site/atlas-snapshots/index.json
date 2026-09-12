@@ -9,7 +9,26 @@
     "conflicts": [
       "C2",
       "C4"
-    ]
+    ],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": []
+    }
   },
   {
     "file": "projection-2026-09-08T19-30-48Z.json",
@@ -21,7 +40,57 @@
     "conflicts": [
       "C2",
       "C4"
-    ]
+    ],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": [
+        {
+          "subject": "repo:Aftergraph/after-graph-governance",
+          "cuts": [
+            "2026-09-08T19:30:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/aftergraph-cron-fabric",
+          "cuts": [
+            "2026-09-08T19:30:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/aie",
+          "cuts": [
+            "2026-09-08T19:30:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/docs",
+          "cuts": [
+            "2026-09-08T19:30:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/sentinel",
+          "cuts": [
+            "2026-09-08T19:30:48Z"
+          ]
+        }
+      ]
+    }
   },
   {
     "file": "projection-2026-09-08T21-12-42Z.json",
@@ -33,7 +102,33 @@
     "conflicts": [
       "C2",
       "C4"
-    ]
+    ],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": [
+        {
+          "subject": "repo:Aftergraph/aftergraph-cron-fabric",
+          "cuts": [
+            "2026-09-08T21:12:42Z"
+          ]
+        }
+      ]
+    }
   },
   {
     "file": "projection-2026-09-08T21-47-10Z.json",
@@ -45,7 +140,33 @@
     "conflicts": [
       "C2",
       "C4"
-    ]
+    ],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": [
+        {
+          "subject": "repo:Aftergraph/aftergraph-cron-fabric",
+          "cuts": [
+            "2026-09-08T21:47:10Z"
+          ]
+        }
+      ]
+    }
   },
   {
     "file": "projection-2026-09-08T22-23-58Z.json",
@@ -57,7 +178,33 @@
     "conflicts": [
       "C2",
       "C4"
-    ]
+    ],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": [
+        {
+          "subject": "repo:Aftergraph/aftergraph-cron-fabric",
+          "cuts": [
+            "2026-09-08T22:23:58Z"
+          ]
+        }
+      ]
+    }
   },
   {
     "file": "projection-2026-09-08T23-23-16Z.json",
@@ -68,7 +215,39 @@
     "relations": 212,
     "conflicts": [
       "C2"
-    ]
+    ],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": [
+        {
+          "subject": "repo:Aftergraph/after-graph-governance",
+          "cuts": [
+            "2026-09-08T23:23:16Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/aftergraph-cron-fabric",
+          "cuts": [
+            "2026-09-08T23:23:16Z"
+          ]
+        }
+      ]
+    }
   },
   {
     "file": "projection-2026-09-09T03-37-45Z.json",
@@ -79,7 +258,33 @@
     "relations": 212,
     "conflicts": [
       "C2"
-    ]
+    ],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": [
+        {
+          "subject": "repo:Aftergraph/after-graph-governance",
+          "cuts": [
+            "2026-09-09T03:37:45Z"
+          ]
+        }
+      ]
+    }
   },
   {
     "file": "projection-2026-09-09T11-36-07Z.json",
@@ -90,7 +295,39 @@
     "relations": 220,
     "conflicts": [
       "C2"
-    ]
+    ],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": [
+        {
+          "subject": "repo:Aftergraph/after-graph-governance",
+          "cuts": [
+            "2026-09-09T11:36:07Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/aftergraph.org",
+          "cuts": [
+            "2026-09-09T11:36:07Z"
+          ]
+        }
+      ]
+    }
   },
   {
     "file": "projection-2026-09-09T12-25-59Z.json",
@@ -101,7 +338,33 @@
     "relations": 220,
     "conflicts": [
       "C2"
-    ]
+    ],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": [
+        {
+          "subject": "repo:Aftergraph/after-graph-governance",
+          "cuts": [
+            "2026-09-09T12:25:59Z"
+          ]
+        }
+      ]
+    }
   },
   {
     "file": "projection-2026-09-09T18-04-08Z.json",
@@ -112,7 +375,33 @@
     "relations": 226,
     "conflicts": [
       "C2"
-    ]
+    ],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": [
+        {
+          "subject": "repo:Aftergraph/after-graph-governance",
+          "cuts": [
+            "2026-09-09T18:04:08Z"
+          ]
+        }
+      ]
+    }
   },
   {
     "file": "projection-2026-09-10T04-25-37Z.json",
@@ -121,7 +410,106 @@
     "entities": 162,
     "assertions": 429,
     "relations": 237,
-    "conflicts": []
+    "conflicts": [],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/skill-abi",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": [
+        {
+          "subject": "repo:Aftergraph/.github",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/after-graph-governance",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/aftergraph-cron-fabric",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/aftergraph.org",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/aie",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/brand",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/docs",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/intelligence-systems-research",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/sentinel",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/studio",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/trust-gateway",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/wi-backend",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/works-execution",
+          "cuts": [
+            "2026-09-10T04:25:37Z"
+          ]
+        }
+      ]
+    }
   },
   {
     "file": "projection-2026-09-12T10-12-48Z.json",
@@ -130,6 +518,111 @@
     "entities": 169,
     "assertions": 453,
     "relations": 260,
-    "conflicts": []
+    "conflicts": [],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/skill-abi",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": [
+        {
+          "subject": "repo:Aftergraph/.github",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/after-graph-governance",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/aftergraph-cron-fabric",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/aftergraph.org",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/aie",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/brand",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/docs",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/intelligence-systems-research",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/sentinel",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/skill-abi",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/studio",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/trust-gateway",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/wi-backend",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        },
+        {
+          "subject": "repo:Aftergraph/works-execution",
+          "cuts": [
+            "2026-09-12T10:12:48Z"
+          ]
+        }
+      ]
+    }
   }
 ]

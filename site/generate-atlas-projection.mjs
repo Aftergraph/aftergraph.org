@@ -539,6 +539,35 @@ if (SNAPSHOT_DIR) {
   let index = [];
   if (fs.existsSync(indexPath)) index = JSON.parse(fs.readFileSync(indexPath, 'utf8'));
   if (!index.some((e) => e.file === snapFile)) {
+    // Public pulse summary for the Pulse view's 24h/7d/30d windows: which public
+    // repos this cut observes, and which of them moved their OBSERVED head since
+    // the previous snapshot (stamped with THIS cut). Private repos carry no
+    // head_sha assertions, so they can never appear here — the boundary is
+    // structural, not editorial. The index is derived data; snapshot files stay
+    // immutable.
+    const curHeads = new Map();
+    for (const a of assertions) {
+      if (a.predicate === 'head_sha' && a.truth_plane === 'OBSERVED') curHeads.set(a.subject, String(a.value));
+    }
+    let prevHeads = null;
+    if (index.length) {
+      const prevPath = path.join(SNAPSHOT_DIR, index[index.length - 1].file);
+      if (fs.existsSync(prevPath)) {
+        const prevProj = JSON.parse(fs.readFileSync(prevPath, 'utf8'));
+        prevHeads = new Map();
+        for (const a of prevProj.assertions || []) {
+          if (a.predicate === 'head_sha' && a.truth_plane === 'OBSERVED') prevHeads.set(a.subject, String(a.value));
+        }
+      }
+    }
+    const activity = [];
+    if (prevHeads) {
+      for (const [subject, head] of [...curHeads.entries()].sort(([a], [b]) => (a < b ? -1 : 1))) {
+        if (prevHeads.has(subject) && prevHeads.get(subject) !== head) {
+          activity.push({ subject, cuts: [CUT] });
+        }
+      }
+    }
     index.push({
       file: snapFile,
       evidence_cut: CUT,
@@ -547,6 +576,7 @@ if (SNAPSHOT_DIR) {
       assertions: n('assertions'),
       relations: n('relations'),
       conflicts: conflicts.map((c) => c.id),
+      pulse: { repos: [...curHeads.keys()].sort(), activity },
     });
     index.sort((a, b) => (a.evidence_cut < b.evidence_cut ? -1 : 1));
     fs.writeFileSync(indexPath, JSON.stringify(index, null, 2) + '\n');

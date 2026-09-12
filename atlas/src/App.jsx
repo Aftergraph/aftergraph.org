@@ -20,7 +20,7 @@ import {
   validateProjection,
 } from './lib/derive.js';
 import enrichFixtures from '../../docs/atlas/enrich/fixtures.json';
-import { pulseRows, contractRows, diffProjections } from './lib/sliceC.js';
+import { pulseRows, contractRows, diffProjections, pulseHistoryFromIndex } from './lib/sliceC.js';
 import Home from './Home.jsx';
 
 const VIEWS = ['home', 'topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask'];
@@ -94,21 +94,46 @@ async function layouted(graph) {
 
 function PulseView({ projection, onSelect }) {
   const rows = pulseRows(projection);
+  const [history, setHistory] = React.useState(null);
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('snapshots/index.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const idx = await res.json();
+        if (!cancelled) setHistory(pulseHistoryFromIndex(idx, new Date().toISOString()));
+      } catch {
+        if (!cancelled) setHistory([]);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+  const histById = new Map((history || []).map((r) => [r.id, r]));
   return (
     <div className="panel" aria-label="Development pulse">
       <h2>Pulse <span className="prov">OBSERVED heads + PROPOSED PRs, sorted by activity</span></h2>
       <table>
-        <thead><tr><th>repo</th><th>head</th><th>pushed</th><th>open PRs</th></tr></thead>
+        <thead><tr><th>repo</th><th>head</th><th>pushed</th><th>open PRs</th><th>24h</th><th>7d</th><th>30d</th></tr></thead>
         <tbody>
-          {rows.map((r) => (
-            <tr key={r.id}>
-              <td><button className="link" onClick={() => onSelect(r.id)}>{r.label}</button></td>
-              <td className="prov">{r.headSha ? r.headSha.slice(0, 7) : (r.withheld ? `withheld (${r.withheld})` : '—')}</td>
-              <td className="prov">{r.pushedAt || '—'}</td><td>{r.openPrs.length}</td>
-            </tr>
-          ))}
+          {rows.map((r) => {
+            const h = histById.get(r.id);
+            return (
+              <tr key={r.id}>
+                <td><button className="link" onClick={() => onSelect(r.id)}>{r.label}</button></td>
+                <td className="prov">{r.headSha ? r.headSha.slice(0, 7) : (r.withheld ? `withheld (${r.withheld})` : '—')}</td>
+                <td className="prov">{r.pushedAt || '—'}</td><td>{r.openPrs.length}</td>
+                <td className="prov">{h ? h.changes24h : '…'}</td>
+                <td className="prov">{h ? h.changes7d : '…'}</td>
+                <td className="prov">{h ? h.changes30d : '…'}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
+      {history !== null && history.length === 0 && (
+        <p className="prov">No snapshot history yet — windows populate after the second cut.</p>
+      )}
     </div>
   );
 }
