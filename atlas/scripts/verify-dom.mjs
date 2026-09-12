@@ -131,7 +131,8 @@ try {
     } catch {
       fail('pulse 30d window never rendered a number (snapshot-index fetch broken?)');
     }
-    const ths = await page.locator('.panel[aria-label="Development pulse"] thead th').allInnerTexts();
+    // .panel th is CSS-uppercase: compare case-insensitively.
+    const ths = (await page.locator('.panel[aria-label="Development pulse"] thead th').allInnerTexts()).map((t) => t.toLowerCase());
     for (const col of ['24h', '7d', '30d']) {
       if (!ths.includes(col)) fail(`pulse table missing ${col} column`);
     }
