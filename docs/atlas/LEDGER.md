@@ -310,6 +310,12 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   verify-site FAILs are PRE-EXISTING (stale 21-totals, proven via stash); studio gate needs
   STUDIO_SHA env (CI-only, unrelated).
 - V6 Screenshots: browser backend 2×420s timeout (infra); local headless Chromium installing.
+- V7 E61 pulse-window gate matrix (2026-09-12T15:25Z, gov 1689e32 unchanged, all 15
+  public heads static): 49/49 vitest, 16/16 projection, verify-atlas PASS (169/453/260/0),
+  V2 PASS, DOM PASS (deterministic pulse 24h/7d/30d + withheld-boundary assertions),
+  vite+worker rebuilt (bundle index-BJ2JBmHk, pulse strings proven in minified JS),
+  bundle-current + diff-check clean, leak-scan 0 private heads in shipped assets,
+  6 screenshots clean (pulse view added). No re-cut needed.
 - RISK: worker.js is 2.5MB (1.7MB atlas bundle inlined) — Cloudflare script-size limits
   unverified; code-split or Static Assets if deploy rejects.
 
