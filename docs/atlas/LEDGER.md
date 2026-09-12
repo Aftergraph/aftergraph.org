@@ -287,14 +287,11 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   Projection 169/453/260/0, 12th snapshot indexed. Gates: 16/16 projection,
   40/40 vitest, verify-atlas PASS, V2 PASS, vite build green, worker rebuilt,
   leak-scan 0/358. verify-site/studio fails pre-existing.
-- E60 Verification sweep (2026-09-12T13:00Z, no re-cut — gov 1689e32 unchanged,
-  all 15 public heads static): full gate matrix re-run green — 16/16 projection,
-  40/40 vitest, verify-atlas PASS (169/453/260/0), V2 PASS, vite build green
-  (index-CakhugVW byte-identical), build-worker PASS, DOM PASS (16 checks,
-  3 viewports), leak-scan 0/344. Build-sequence rule re-proven: vite emptyOutDir
-  wipes projection.json+snapshots/ → run build-worker AFTER vite. 5 screenshots
-  re-shot against cut-#12 build committed. workspace/ + site/atlas build outputs
-  added to .gitignore (private heads never committed).
+- E61 Pulse 24h/7d/30d windows live (commit 2a7f3c1): generator emits per-entry
+  pulse summary in snapshot index; backfill recomputed 12 entries / 42 events
+  from immutable snapshots; PulseView fetches index.json and renders change
+  counts per repo per window. Private repos structurally absent. 49/49 vitest,
+  16/16 projection, verify-atlas PASS, V2 PASS, DOM PASS, vite+worker rebuilt.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).

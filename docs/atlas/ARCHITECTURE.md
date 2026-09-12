@@ -117,9 +117,10 @@ override via `data-theme`. Typography: Inter / JetBrains Mono / Source Serif 4.
 
 ## 8. Known limitations (verified, not aspirational)
 
-- Temporal axis is cuts + snapshots. Pulse shows the latest cut; snapshot diff
-  compares two cuts. 24h/7d/30d windows do not exist — no history is captured
-  yet, and none is faked.
+- Temporal axis is cuts + snapshots. Pulse shows the latest cut plus 24h/7d/30d
+  head-change windows computed from the snapshot index (pulseHistoryFromIndex).
+  Snapshot diff compares two cuts. Private repos are structurally absent from
+  pulse history (no head_sha assertions ship for them).
 - Capabilities / AFM lineage views are labeled PREVIEW fixtures
   (`docs/atlas/enrich/fixtures.json`), not generated assertions. Generator v0.3
   activates them. Flagged fixture content renders withheld + reason (E26).
