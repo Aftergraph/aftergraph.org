@@ -328,8 +328,16 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   ?view= URL state. qa/BASELINE.md integrated (command list = V7/V8 procedure).
   Remaining beyond-Slice-C: BASELINE's CI proposal (3 run-lines in v2-interface.yml,
   deliberately not applied — touches shared CI, needs owner OK).
-- RISK: worker.js is 2.5MB (1.7MB atlas bundle inlined) — Cloudflare script-size limits
-  unverified; code-split or Static Assets if deploy rejects.
+- E62 Worker-size audit (2026-09-13T01:10Z): ledger RISK entry was stale (claimed 2.5MB;
+  actual 8,045,546 bytes raw / 950,559 gzip). Root cause: 12 accumulated snapshots
+  (4.66MB raw / 295KB gzip) inlined via build-worker.cjs ATLAS_FILES drove growth from
+  ~2.9MB (pre-snapshot era) to 8MB. Without snapshots: 2,836,441 raw / 642,212 gzip.
+  Cloudflare docs confirm: 64 MiB uncompressed limit, NO compressed limit. Worker at
+  ~12% of cap. Growth rate ~400KB/snapshot raw (~25KB gz). Capacity: ~140 more snapshots
+  before hitting 64MiB. RISK CLOSED. Rebuild byte-identical to HEAD (sha256 verified).
+- V9 Worker-size gate (2026-09-13T01:10Z): 16/16 projection, 49/49 vitest, verify-atlas
+  PASS (169/453/260/0), V2 PASS, DOM PASS. Gov 1689e32 unchanged, all 15 public heads
+  static since cut #12. No re-cut needed. Tree clean.
 
 ## Exact heads (cut 2026-09-12T10:12:48Z; full SHAs in `workspace/.tmp-atlas-ledger-12/obs_*.json`)
 
