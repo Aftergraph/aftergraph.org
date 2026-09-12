@@ -338,6 +338,11 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - V9 Worker-size gate (2026-09-13T01:10Z): 16/16 projection, 49/49 vitest, verify-atlas
   PASS (169/453/260/0), V2 PASS, DOM PASS. Gov 1689e32 unchanged, all 15 public heads
   static since cut #12. No re-cut needed. Tree clean.
+- E63 Decision-pack refreshed to cut #12 truth (gov 1689e32, 28 repos, worker RISK
+  closed, pulse live, merge-ready evidence). Vision tool still down (provider 400:
+  'qwen-3.8-max-thinking is not a valid model ID') — human visual review of
+  qa-shots-after/ remains the only open aesthetic gate; DOM overlap + AA contrast
+  gates cover the structural-visual floor.
 
 ## Exact heads (cut 2026-09-12T10:12:48Z; full SHAs in `workspace/.tmp-atlas-ledger-12/obs_*.json`)
 
