@@ -316,6 +316,18 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   vite+worker rebuilt (bundle index-BJ2JBmHk, pulse strings proven in minified JS),
   bundle-current + diff-check clean, leak-scan 0 private heads in shipped assets,
   6 screenshots clean (pulse view added). No re-cut needed.
+- V8 Loop re-verify (2026-09-12T18:58Z): all 15 public heads unchanged since cut #12
+  (checked live via gh API; gov remote == 1689e32) — no re-cut needed. Full gate matrix
+  re-run from d5805d7: 16/16 projection, 49/49 vitest, verify-atlas PASS (169/453/260/0),
+  V2 PASS (14 checks), vite build green (bundle index-BJ2JBmHk unchanged — zero-diff
+  rebuild proves bundle current), worker rebuilt PASS (2511537 bytes, 14 routes), DOM PASS
+  (16/16 checks, 3 viewports, pulse 24h/7d/30d + withheld boundary + C4-absent), 6
+  screenshots 0 JS errors, leak-scan clean (0 foreign full SHAs, 0 private-repo head
+  strings in shipped assets). Slice C acceptance fully closed: impact BFS wired into
+  inspector (depth-capped 2, plane badges), Ask V0 + validateAnswer, snapshot diff,
+  ?view= URL state. qa/BASELINE.md integrated (command list = V7/V8 procedure).
+  Remaining beyond-Slice-C: BASELINE's CI proposal (3 run-lines in v2-interface.yml,
+  deliberately not applied — touches shared CI, needs owner OK).
 - RISK: worker.js is 2.5MB (1.7MB atlas bundle inlined) — Cloudflare script-size limits
   unverified; code-split or Static Assets if deploy rejects.
 
