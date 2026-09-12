@@ -122,5 +122,14 @@
     "assertions": 429,
     "relations": 237,
     "conflicts": []
+  },
+  {
+    "file": "projection-2026-09-12T10-12-48Z.json",
+    "evidence_cut": "2026-09-12T10:12:48Z",
+    "gov_sha": "1689e32ef124e595d3e71e960932093e0412194e",
+    "entities": 169,
+    "assertions": 453,
+    "relations": 260,
+    "conflicts": []
   }
 ]

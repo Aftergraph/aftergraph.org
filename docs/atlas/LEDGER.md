@@ -281,6 +281,12 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   V2 PASS, worker rebuilt, leak-scan 0/49, DOM PASS (16 checks, 3 viewports).
   verify-site fails are pre-existing (stale 21-totals); verify-studio needs
   STUDIO_SHA (CI-only). Committed on feat/atlas.
+- E59 Cut #12 (2026-09-12T10:12:48Z): governance advanced d3e5119→1689e32
+  (#151 relay enrolled, #152 deps reconcile, #154 harness guides, #159 org-state).
+  Org grew 27→28 repos (relay + skillport both canonical in topology 2.0).
+  Projection 169/453/260/0, 12th snapshot indexed. Gates: 16/16 projection,
+  40/40 vitest, verify-atlas PASS, V2 PASS, vite build green, worker rebuilt,
+  leak-scan 0/358. verify-site/studio fails pre-existing.
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).
@@ -300,36 +306,38 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 - RISK: worker.js is 2.5MB (1.7MB atlas bundle inlined) — Cloudflare script-size limits
   unverified; code-split or Static Assets if deploy rejects.
 
-## Exact heads (cut 2026-09-10T04:25:37Z; full SHAs in `workspace/.tmp-atlas-ledger-7/obs_*.json`)
+## Exact heads (cut 2026-09-12T10:12:48Z; full SHAs in `workspace/.tmp-atlas-ledger-12/obs_*.json`)
 
 | repo | head | branch | open PRs |
 |---|---|---|---|
-| .github | 2da1f76 | main | 0 |
+| .github | 7695d28 | main | 0 |
 | afm | private-withheld | main | withheld |
-| after-graph-governance | 53e618d | main | 4 |
-| aftergraph-cron-fabric | 598fa98 | main | 0 |
-| aftergraph.org | d3041e0 | main | 3 |
-| aie | 4db918d | main | 1 |
+| after-graph-governance | 1689e32 | main | 4 |
+| aftergraph-cron-fabric | 7c4bee3 | main | 1 |
+| aftergraph.org | bf70706 | main | 5 |
+| aie | 53dcfc1 | main | 2 |
 | autonomous-venture-company | private-withheld | main | withheld |
-| brand | e74a6e3 | main | 1 |
+| brand | 6abc51b | main | 1 |
 | context-continuity | private-withheld | main | withheld |
 | continuum | private-withheld | main | withheld |
-| docs | 5df797a | main | 5 |
-| intelligence-systems-research | fd9392b | main | 0 |
+| docs | a3ca229 | main | 8 |
+| intelligence-systems-research | 06d906b | main | 5 |
 | llm-research-development | private-withheld | main | withheld |
 | model-registry | private-withheld | main | withheld |
+| relay | private-withheld | main | withheld |
 | runtime | private-withheld | main | withheld |
 | sentinel-firetest | private-withheld | main | withheld |
 | sentinel-firetest2 | e59ce25 | main | 0 |
-| sentinel | 7affb92 | main | 2 |
-| skill-abi | f2ca6fe | main | 0 |
+| sentinel | bd8c809 | main | 2 |
+| skill-abi | 14dc965 | main | 4 |
+| skillport | private-withheld | main | withheld |
 | skills-vault | private-withheld | main | withheld |
-| studio | c6b305d | main | 1 |
-| trust-gateway | f9dbaa6 | main | 2 |
+| studio | 390ef65 | main | 3 |
+| trust-gateway | f69e485 | main | 4 |
 | veranza | private-withheld | main | withheld |
-| wi-backend | private-withheld | main | withheld |
+| wi-backend | cf7f269 | main | 3 |
 | wi-frontend | private-withheld | main | withheld |
-| works-execution | private-withheld | main | withheld |
+| works-execution | a444ce0 | main | 6 |
 
 Base pins: aftergraph.org main `ec549794ec80b0f96c9764af04d15c88fd330c09` (local == origin).
 Governance remote advanced past local checkouts — generator re-pins at runtime.
