@@ -119,6 +119,27 @@ try {
     await page.waitForTimeout(2000);
     const pulse = await page.locator('.panel').innerText();
     if (!pulse.includes('Pulse')) fail('pulse view missing');
+    // E61 pulse history windows: 24h/7d/30d columns render numbers from the
+    // snapshot index; withheld (private) rows stay '…' — boundary holds in UI.
+    // Wait for the async snapshot-index fetch to populate a 30d number first
+    // (deterministic), then assert the header columns exist.
+    try {
+      await page.waitForFunction(() => {
+        const c = document.querySelector('.panel[aria-label="Development pulse"] tbody tr td:nth-child(7)');
+        return c && /^\d+$/.test(c.innerText.trim());
+      }, null, { timeout: 8000 });
+    } catch {
+      fail('pulse 30d window never rendered a number (snapshot-index fetch broken?)');
+    }
+    const ths = await page.locator('.panel[aria-label="Development pulse"] thead th').allInnerTexts();
+    for (const col of ['24h', '7d', '30d']) {
+      if (!ths.includes(col)) fail(`pulse table missing ${col} column`);
+    }
+    const withheldRow = page.locator('.panel[aria-label="Development pulse"] tbody tr', { hasText: 'withheld' }).first();
+    if (await withheldRow.count()) {
+      const w24 = (await withheldRow.locator('td:nth-child(5)').innerText()).trim();
+      if (w24 !== '…') fail(`withheld repo got pulse history numbers: ${w24}`);
+    }
     // Pulse row navigates into the topology inspector
     await page.locator('.panel tbody tr').first().locator('button').click();
     await page.waitForTimeout(1500);

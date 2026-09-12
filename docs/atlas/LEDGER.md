@@ -287,12 +287,13 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   Projection 169/453/260/0, 12th snapshot indexed. Gates: 16/16 projection,
   40/40 vitest, verify-atlas PASS, V2 PASS, vite build green, worker rebuilt,
   leak-scan 0/358. verify-site/studio fails pre-existing.
-- E61 Pulse 24h/7d/30d windows live (commits 4744e68 + 8a3f2d1): generator emits
+- E61 Pulse 24h/7d/30d windows live (source 4744e68; real rebuild 780d3df after
+  c02665c shipped a stale bundle — vite never ran there): generator emits
   per-entry pulse summary in snapshot index; backfill recomputed 12 entries /
   42 events from immutable snapshots; PulseView fetches index.json and renders
   change counts per repo per window. Private repos structurally absent.
   49/49 vitest, 16/16 projection, verify-atlas PASS, V2 PASS, DOM PASS,
-  vite+worker rebuilt (index-D41Gn8xY).
+  vite+worker rebuilt (bundle index-BJ2JBmHk, pulse strings proven in minified JS).
 - E1 Live org list (25): `gh repo list Aftergraph` 2026-09-08 (see OBSERVED cut files).
 - E2 Rename proof: `gh api repos/Aftergraph/work-intelligence-v2` returns `name: wi-backend` (redirect).
 - E3 Canonical 21: `platform-topology/1.0.json` cut 2026-09-07 (workspace clone).

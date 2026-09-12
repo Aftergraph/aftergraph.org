@@ -29,6 +29,11 @@ const shots = [
     url: `${base}?view=capabilities`,
     viewport: { width: 1440, height: 900 },
   },
+  {
+    name: 'atlas-pulse-1440.png',
+    url: `${base}?view=pulse`,
+    viewport: { width: 1440, height: 900 },
+  },
 ];
 
 const browser = await chromium.launch();
