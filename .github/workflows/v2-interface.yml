@@ -30,8 +30,12 @@ jobs:
         run: node --test site/atlas-projection.test.mjs
       - name: Build Atlas frontend
         run: npm --prefix atlas run build
+      - name: Generate public Experience projection
+        run: node atlas/scripts/generate-experience.mjs
       - name: Verify Atlas projection
         run: node site/verify-atlas.cjs
+      - name: Sync canonical Brand OS inputs
+        run: node scripts/sync-brand.mjs
       - name: Compile worker
         run: node site/build-worker.cjs
       - name: Install Playwright chromium
@@ -47,6 +51,6 @@ jobs:
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is current
-        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/
+        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json
       - name: Diff check
         run: git diff --check

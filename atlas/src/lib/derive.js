@@ -344,12 +344,17 @@ export function moveSelection(sortedIds, currentId, dir) {
   return sortedIds[n];
 }
 
-// URL state: ?node=<id>&overlay=CANONICAL,OBSERVED&view=topology
-export function serializeState({ node, overlay, view }) {
+// URL state: ?node=<id>&overlay=CANONICAL,OBSERVED&view=topology&lens=SOURCE
+// Experience context is additive: legacy Atlas links continue to round-trip, while
+// story/docs handoffs can preserve lens, related entity and historical snapshot.
+export function serializeState({ node, overlay, view, lens, related, snapshot }) {
   const p = new URLSearchParams();
   if (node) p.set('node', node);
   if (overlay && overlay.length) p.set('overlay', [...overlay].sort().join(','));
   if (view) p.set('view', view);
+  if (lens) p.set('lens', lens);
+  if (related) p.set('related', related);
+  if (snapshot) p.set('snapshot', snapshot);
   return `?${p.toString()}`;
 }
 
@@ -359,10 +364,15 @@ export function parseState(search) {
     .split(',')
     .map((s) => s.trim().toUpperCase())
     .filter((s) => PLANES.includes(s));
+  const rawLens = (p.get('lens') || 'SYSTEM').toUpperCase();
+  const lenses = new Set(['SYSTEM', 'AUTHORITY', 'EVIDENCE', 'COST', 'SOURCE']);
   return {
     node: p.get('node') || null,
     overlay: overlay.length ? overlay : [...PLANES],
     view: p.get('view') || 'topology',
+    lens: lenses.has(rawLens) ? rawLens : 'SYSTEM',
+    related: p.get('related') || null,
+    snapshot: p.get('snapshot') || null,
   };
 }
 

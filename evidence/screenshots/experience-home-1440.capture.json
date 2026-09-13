@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "repo": "Aftergraph/aftergraph.org",
+  "commit": "4851ed12e86d39156c731054bb8d6eb96173a43c",
+  "captured_at": "2026-09-10T05:52:58.222Z",
+  "route": "/",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "theme": "dark",
+  "environment": "local-built",
+  "product_version": "experience-atlas-v1",
+  "classification": "local-nonproduction-evidence"
+}

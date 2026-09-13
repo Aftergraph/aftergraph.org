@@ -1,0 +1,4288 @@
+{
+  "schema": "aftergraph-experience/0.1",
+  "cut": "2026-09-13T01:41:50Z",
+  "gov_sha": "1689e32ef124e595d3e71e960932093e0412194e",
+  "entities": [
+    {
+      "id": "contract:AuthorityLease",
+      "kind": "contract",
+      "label": "contract:AuthorityLease",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:BudgetLedger",
+      "kind": "contract",
+      "label": "contract:BudgetLedger",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:DelegationRecord",
+      "kind": "contract",
+      "label": "contract:DelegationRecord",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:EvidenceRecord",
+      "kind": "contract",
+      "label": "contract:EvidenceRecord",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:MISSION-Bench",
+      "kind": "contract",
+      "label": "contract:MISSION-Bench",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:MissionContract",
+      "kind": "contract",
+      "label": "contract:MissionContract",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:PolicyDecisionRecord",
+      "kind": "contract",
+      "label": "contract:PolicyDecisionRecord",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:Principal",
+      "kind": "contract",
+      "label": "contract:Principal",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:RevocationRecord",
+      "kind": "contract",
+      "label": "contract:RevocationRecord",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:Role",
+      "kind": "contract",
+      "label": "contract:Role",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:SPEC-001",
+      "kind": "contract",
+      "label": "contract:SPEC-001",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:SettlementRecord",
+      "kind": "contract",
+      "label": "contract:SettlementRecord",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:TopologyMutation",
+      "kind": "contract",
+      "label": "contract:TopologyMutation",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:afm-datasets",
+      "kind": "contract",
+      "label": "contract:afm-datasets",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:afm-evals",
+      "kind": "contract",
+      "label": "contract:afm-evals",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:afm-experiments",
+      "kind": "contract",
+      "label": "contract:afm-experiments",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:afm-training",
+      "kind": "contract",
+      "label": "contract:afm-training",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:agent-lifecycle",
+      "kind": "contract",
+      "label": "contract:agent-lifecycle",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:aliases",
+      "kind": "contract",
+      "label": "contract:aliases",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:api-reference",
+      "kind": "contract",
+      "label": "contract:api-reference",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:approvals",
+      "kind": "contract",
+      "label": "contract:approvals",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:approvals-ui",
+      "kind": "contract",
+      "label": "contract:approvals-ui",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:artifact-locations",
+      "kind": "contract",
+      "label": "contract:artifact-locations",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:artifact-manifests",
+      "kind": "contract",
+      "label": "contract:artifact-manifests",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:artifacts",
+      "kind": "contract",
+      "label": "contract:artifacts",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:assurance",
+      "kind": "contract",
+      "label": "contract:assurance",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:bounded-effects",
+      "kind": "contract",
+      "label": "contract:bounded-effects",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:budgets",
+      "kind": "contract",
+      "label": "contract:budgets",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:chat-surface",
+      "kind": "contract",
+      "label": "contract:chat-surface",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:checkpoints",
+      "kind": "contract",
+      "label": "contract:checkpoints",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:claim-rendering",
+      "kind": "contract",
+      "label": "contract:claim-rendering",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:community-health",
+      "kind": "contract",
+      "label": "contract:community-health",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:company-brain",
+      "kind": "contract",
+      "label": "contract:company-brain",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:computer-sessions",
+      "kind": "contract",
+      "label": "contract:computer-sessions",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:conformance",
+      "kind": "contract",
+      "label": "contract:conformance",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:containment-campaigns",
+      "kind": "contract",
+      "label": "contract:containment-campaigns",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:context-handshake",
+      "kind": "contract",
+      "label": "contract:context-handshake",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:context-packs",
+      "kind": "contract",
+      "label": "contract:context-packs",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:continuity-campaigns",
+      "kind": "contract",
+      "label": "contract:continuity-campaigns",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:continuity-capsule",
+      "kind": "contract",
+      "label": "contract:continuity-capsule",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:continuity-capsules",
+      "kind": "contract",
+      "label": "contract:continuity-capsules",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:contract-explorer",
+      "kind": "contract",
+      "label": "contract:contract-explorer",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:contribution-defaults",
+      "kind": "contract",
+      "label": "contract:contribution-defaults",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:dataset-provenance-rules",
+      "kind": "contract",
+      "label": "contract:dataset-provenance-rules",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:dedupe",
+      "kind": "contract",
+      "label": "contract:dedupe",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:degradation-contract",
+      "kind": "contract",
+      "label": "contract:degradation-contract",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:design-tokens",
+      "kind": "contract",
+      "label": "contract:design-tokens",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:deterministic-delta",
+      "kind": "contract",
+      "label": "contract:deterministic-delta",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:discovery",
+      "kind": "contract",
+      "label": "contract:discovery",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:dispatch",
+      "kind": "contract",
+      "label": "contract:dispatch",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:docs-mcp",
+      "kind": "contract",
+      "label": "contract:docs-mcp",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:durable-work",
+      "kind": "contract",
+      "label": "contract:durable-work",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:empirical-studies",
+      "kind": "contract",
+      "label": "contract:empirical-studies",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:escalation",
+      "kind": "contract",
+      "label": "contract:escalation",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:evaluation-contracts",
+      "kind": "contract",
+      "label": "contract:evaluation-contracts",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:evidence-backed-verdicts",
+      "kind": "contract",
+      "label": "contract:evidence-backed-verdicts",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:evidence-bundles",
+      "kind": "contract",
+      "label": "contract:evidence-bundles",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:evidence-envelopes",
+      "kind": "contract",
+      "label": "contract:evidence-envelopes",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:evidence-gating",
+      "kind": "contract",
+      "label": "contract:evidence-gating",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:evidence-ui",
+      "kind": "contract",
+      "label": "contract:evidence-ui",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:evidence-verdicts",
+      "kind": "contract",
+      "label": "contract:evidence-verdicts",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:experiment-contracts",
+      "kind": "contract",
+      "label": "contract:experiment-contracts",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:fault-injection",
+      "kind": "contract",
+      "label": "contract:fault-injection",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:fleet-mesh",
+      "kind": "contract",
+      "label": "contract:fleet-mesh",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:governed-profile-distribution",
+      "kind": "contract",
+      "label": "contract:governed-profile-distribution",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:hash-chain-audit",
+      "kind": "contract",
+      "label": "contract:hash-chain-audit",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:hermes-migration-source",
+      "kind": "contract",
+      "label": "contract:hermes-migration-source",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:human-attention",
+      "kind": "contract",
+      "label": "contract:human-attention",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:human-docs",
+      "kind": "contract",
+      "label": "contract:human-docs",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:iconography",
+      "kind": "contract",
+      "label": "contract:iconography",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:immutable-versions",
+      "kind": "contract",
+      "label": "contract:immutable-versions",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:incubation-concept",
+      "kind": "contract",
+      "label": "contract:incubation-concept",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:launcher",
+      "kind": "contract",
+      "label": "contract:launcher",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:leases",
+      "kind": "contract",
+      "label": "contract:leases",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:least-privilege-bff",
+      "kind": "contract",
+      "label": "contract:least-privilege-bff",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:legacy-venture-os",
+      "kind": "contract",
+      "label": "contract:legacy-venture-os",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:lifecycle-state",
+      "kind": "contract",
+      "label": "contract:lifecycle-state",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:live-fire-fixture",
+      "kind": "contract",
+      "label": "contract:live-fire-fixture",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:marketing-front-door",
+      "kind": "contract",
+      "label": "contract:marketing-front-door",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:master-assets",
+      "kind": "contract",
+      "label": "contract:master-assets",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:merge",
+      "kind": "contract",
+      "label": "contract:merge",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:metering",
+      "kind": "contract",
+      "label": "contract:metering",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:mission-bench-harness",
+      "kind": "contract",
+      "label": "contract:mission-bench-harness",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:mission-dag",
+      "kind": "contract",
+      "label": "contract:mission-dag",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:mission-state/1.0",
+      "kind": "contract",
+      "label": "1.0",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:model-cards",
+      "kind": "contract",
+      "label": "contract:model-cards",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:model-development-methodology",
+      "kind": "contract",
+      "label": "contract:model-development-methodology",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:model-identities",
+      "kind": "contract",
+      "label": "contract:model-identities",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:needs-you",
+      "kind": "contract",
+      "label": "contract:needs-you",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:observability",
+      "kind": "contract",
+      "label": "contract:observability",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:observations",
+      "kind": "contract",
+      "label": "contract:observations",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:operator-surface",
+      "kind": "contract",
+      "label": "contract:operator-surface",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:orchestration",
+      "kind": "contract",
+      "label": "contract:orchestration",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:org-state/1.0",
+      "kind": "contract",
+      "label": "1.0",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:organization-profile",
+      "kind": "contract",
+      "label": "contract:organization-profile",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:organization-routing",
+      "kind": "contract",
+      "label": "contract:organization-routing",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:platform-topology/2.0",
+      "kind": "contract",
+      "label": "2.0",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:plugin-runtime",
+      "kind": "contract",
+      "label": "contract:plugin-runtime",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:policy-enforcement",
+      "kind": "contract",
+      "label": "contract:policy-enforcement",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:policy.token/1.0",
+      "kind": "contract",
+      "label": "1.0",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:portability-benchmarks",
+      "kind": "contract",
+      "label": "contract:portability-benchmarks",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:product-cells-migration-source",
+      "kind": "contract",
+      "label": "contract:product-cells-migration-source",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:promotion-rules",
+      "kind": "contract",
+      "label": "contract:promotion-rules",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:provenance-freshness",
+      "kind": "contract",
+      "label": "contract:provenance-freshness",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:provenance-lock",
+      "kind": "contract",
+      "label": "contract:provenance-lock",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:providers",
+      "kind": "contract",
+      "label": "contract:providers",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:pty-broker",
+      "kind": "contract",
+      "label": "contract:pty-broker",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:public-communication-rules",
+      "kind": "contract",
+      "label": "contract:public-communication-rules",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:public-system-map",
+      "kind": "contract",
+      "label": "contract:public-system-map",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:publication",
+      "kind": "contract",
+      "label": "contract:publication",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:publication-evidence",
+      "kind": "contract",
+      "label": "contract:publication-evidence",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:quittance",
+      "kind": "contract",
+      "label": "contract:quittance",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:rbac",
+      "kind": "contract",
+      "label": "contract:rbac",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:reconciliation-matrix",
+      "kind": "contract",
+      "label": "contract:reconciliation-matrix",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:recovery",
+      "kind": "contract",
+      "label": "contract:recovery",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:reference-consumer",
+      "kind": "contract",
+      "label": "contract:reference-consumer",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:release-metadata",
+      "kind": "contract",
+      "label": "contract:release-metadata",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:replay-ui",
+      "kind": "contract",
+      "label": "contract:replay-ui",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:review",
+      "kind": "contract",
+      "label": "contract:review",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:role-projection",
+      "kind": "contract",
+      "label": "contract:role-projection",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:routing",
+      "kind": "contract",
+      "label": "contract:routing",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:runtime-admission",
+      "kind": "contract",
+      "label": "contract:runtime-admission",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:sandbox",
+      "kind": "contract",
+      "label": "contract:sandbox",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:scheduled-observation",
+      "kind": "contract",
+      "label": "contract:scheduled-observation",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:scheduler",
+      "kind": "contract",
+      "label": "contract:scheduler",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:security-routing",
+      "kind": "contract",
+      "label": "contract:security-routing",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:skill-compatibility-contract",
+      "kind": "contract",
+      "label": "contract:skill-compatibility-contract",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:skill-registry",
+      "kind": "contract",
+      "label": "contract:skill-registry",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:space-surface",
+      "kind": "contract",
+      "label": "contract:space-surface",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:specialist-web-experience",
+      "kind": "contract",
+      "label": "contract:specialist-web-experience",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:stale-base-invalidation",
+      "kind": "contract",
+      "label": "contract:stale-base-invalidation",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:support-routing",
+      "kind": "contract",
+      "label": "contract:support-routing",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:trust-lifecycle",
+      "kind": "contract",
+      "label": "contract:trust-lifecycle",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:verified-code-review-verdicts",
+      "kind": "contract",
+      "label": "contract:verified-code-review-verdicts",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:work-candidates",
+      "kind": "contract",
+      "label": "contract:work-candidates",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:work-items",
+      "kind": "contract",
+      "label": "contract:work-items",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:work-surface",
+      "kind": "contract",
+      "label": "contract:work-surface",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:workers",
+      "kind": "contract",
+      "label": "contract:workers",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:workgraph",
+      "kind": "contract",
+      "label": "contract:workgraph",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:works-promotion",
+      "kind": "contract",
+      "label": "contract:works-promotion",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "contract:workspace-connectors",
+      "kind": "contract",
+      "label": "contract:workspace-connectors",
+      "visibility": "unknown",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [],
+      "sources": []
+    },
+    {
+      "id": "repo:Aftergraph/.github",
+      "kind": "repository",
+      "label": ".github",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-0e99c79404ce",
+        "as-2a387574829c",
+        "as-391a3890cfe7",
+        "as-40c8d6c92513",
+        "as-6ab5e1f0bf99",
+        "as-7dbccaa39e8b",
+        "as-8a2a46563346",
+        "as-91b561ea2df4",
+        "as-c29bffec3087",
+        "as-d1d3ea39b7b1",
+        "as-d6a298f57d8d",
+        "as-e01e67bfc291",
+        "as-e168da4d79b7",
+        "as-ea9d5120671a",
+        "as-f3e1cbb8480d"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/.github",
+          "source": "github-api repos/Aftergraph/.github",
+          "ref": "7695d28a3fdeb347e2900b5a0dfe34c8d55739c7",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/after-graph-governance",
+      "kind": "repository",
+      "label": "after-graph-governance",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-02a69010a84c",
+        "as-09fc7189b43e",
+        "as-17a375d5bbfe",
+        "as-29d14a9c6f63",
+        "as-31c64e17a114",
+        "as-608f192a9b41",
+        "as-6c34afec9e43",
+        "as-742eadade5fb",
+        "as-825c41825c33",
+        "as-83a36d572406",
+        "as-8ca1b1ba6ff5",
+        "as-ab51132e4662",
+        "as-c2aac651f0bb",
+        "as-cea50d03075b",
+        "as-dc84fed3c605",
+        "as-de31ae6a394c",
+        "as-dec49768ec91",
+        "as-ef0bb24e0e08",
+        "as-fadef1600ca5"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "github-api repos/Aftergraph/after-graph-governance",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "github-api repos/Aftergraph/after-graph-governance",
+          "ref": "1abb17a67cdc9611eaa13ab9361616019c011c96",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "github-api repos/Aftergraph/after-graph-governance",
+          "ref": "23149acc57d2e949cb22de4da9351826c743c88f",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "github-api repos/Aftergraph/after-graph-governance",
+          "ref": "6a5d99d797b8f4b1a6208ee5e52a6513f3f5557b",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "github-api repos/Aftergraph/after-graph-governance",
+          "ref": "0e3fa713373ba116765799097549af593f410dca",
+          "evidence_level": "proposed"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/aftergraph-cron-fabric",
+      "kind": "repository",
+      "label": "aftergraph-cron-fabric",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-05e0d6862c42",
+        "as-0bb159d37e40",
+        "as-3774a0a3ba76",
+        "as-6f4d5a4e1f00",
+        "as-71dfb0c40bed",
+        "as-731688a478d7",
+        "as-768c6cfba15a",
+        "as-8367e7fd9819",
+        "as-8d12b631534d",
+        "as-9618bc00a836",
+        "as-a2802e9168cf",
+        "as-b518886ea46e",
+        "as-c668c2791ed2",
+        "as-caeb262d73d0",
+        "as-ec8fffa849f2",
+        "as-f5e0319da57b"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/aftergraph-cron-fabric",
+          "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
+          "ref": "7c4bee3236fca24ab008574b68a6a44cc92b55d3",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        },
+        {
+          "repository": "Aftergraph/aftergraph-cron-fabric",
+          "source": "github-api repos/Aftergraph/aftergraph-cron-fabric",
+          "ref": "753000946f1fc0b4ae63eb94bfb6cf1880e9c267",
+          "evidence_level": "proposed"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/aftergraph.org",
+      "kind": "repository",
+      "label": "aftergraph.org",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-09e78c4e4a02",
+        "as-0e879cc10263",
+        "as-367f1e0d2339",
+        "as-3cfeef2fb2f8",
+        "as-496d2c32eaad",
+        "as-511260cb4689",
+        "as-52b9659efa10",
+        "as-6b171e44deed",
+        "as-6eea5511517a",
+        "as-7bdae3bc45ed",
+        "as-9652f6fea8b8",
+        "as-96d329ea5150",
+        "as-975b699f4f8a",
+        "as-9b87522ff8b0",
+        "as-9c499b574991",
+        "as-a52fe0178c98",
+        "as-ad0f247e8cf2",
+        "as-c8f39ed4b755",
+        "as-c9f04278ff85",
+        "as-f3fefac69317"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/aftergraph.org",
+          "source": "github-api repos/Aftergraph/aftergraph.org",
+          "ref": "bf70706f968681e7bbf4134d10e3222eaac34863",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/aftergraph.org",
+          "source": "github-api repos/Aftergraph/aftergraph.org",
+          "ref": "97f3f79707ee8792beb7972a6e68aaf60dfcf339",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/aftergraph.org",
+          "source": "github-api repos/Aftergraph/aftergraph.org",
+          "ref": "25e26056ee16fb9d408f61a07d789b028082a36d",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/aftergraph.org",
+          "source": "github-api repos/Aftergraph/aftergraph.org",
+          "ref": "003f9717a99149aad6b953554a387027f0c2eb9a",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/aftergraph.org",
+          "source": "github-api repos/Aftergraph/aftergraph.org",
+          "ref": "36948b2f15f46693e37c6a7ec58f171c65e2955b",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        },
+        {
+          "repository": "Aftergraph/aftergraph.org",
+          "source": "github-api repos/Aftergraph/aftergraph.org",
+          "ref": "428b315e36490b66c0165a6b8bb4c7c7098785c8",
+          "evidence_level": "proposed"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/aie",
+      "kind": "repository",
+      "label": "aie",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-00dff59aa247",
+        "as-121f09d7b492",
+        "as-199b60c5cb56",
+        "as-2b632d3ce21b",
+        "as-2c9a2270886a",
+        "as-31d63e759e32",
+        "as-45da1474ce13",
+        "as-541b5ca49fb9",
+        "as-593e256abed9",
+        "as-98b1062a02f6",
+        "as-9c596cc99a57",
+        "as-b82532275e60",
+        "as-bc48500ba99a",
+        "as-d848ed27fd4e",
+        "as-ec53fcb86d5b",
+        "as-fdf8a00e3c84",
+        "as-ff39bfd23b68",
+        "as-ff7bbdb84ea3"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/aie",
+          "source": "github-api repos/Aftergraph/aie",
+          "ref": "53dcfc12ab00315cf9a8befb6db9c2051f3e0ae0",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/aie",
+          "source": "github-api repos/Aftergraph/aie",
+          "ref": "0a0bef7a1ac774f4e46d1cfbd68edaeb28924e55",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/aie",
+          "source": "github-api repos/Aftergraph/aie",
+          "ref": "79cd620fa898fc5f03165209368efa23bcc4e8cc",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/brand",
+      "kind": "repository",
+      "label": "brand",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-0564cecd6189",
+        "as-09136a0f3ad2",
+        "as-0f3d37e9a339",
+        "as-293ca51d9586",
+        "as-3f820bb8e318",
+        "as-41dca930957b",
+        "as-425ad3985cc6",
+        "as-7775ec0ab15b",
+        "as-88a0a9c48cd6",
+        "as-8a8650a03069",
+        "as-9af7488c456e",
+        "as-b03ca9a2aeeb",
+        "as-b057b8a1a566",
+        "as-c2d0de9779b0",
+        "as-e139b32ac7cd",
+        "as-fb60fa453c03"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/brand",
+          "source": "github-api repos/Aftergraph/brand",
+          "ref": "6abc51be903ffd1041a716d2adeec364de3d68c0",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/brand",
+          "source": "github-api repos/Aftergraph/brand",
+          "ref": "1985aefc02cc3a6022cf66c6aab8848b5be6834a",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/docs",
+      "kind": "repository",
+      "label": "docs",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-12cacfec6416",
+        "as-153b67a03747",
+        "as-3b1ff79540b1",
+        "as-4fa5e40c8112",
+        "as-5296cf62a0fa",
+        "as-5e03ad519dc8",
+        "as-6583a71a07cd",
+        "as-65db5dd6fa9e",
+        "as-6c2611d401af",
+        "as-733d723464ce",
+        "as-83ed47a4cbac",
+        "as-9350bb760e20",
+        "as-9c8c74d651b1",
+        "as-a1ddf89b4423",
+        "as-aeff72857ced",
+        "as-c096d9b3b01a",
+        "as-c82eff37dbee",
+        "as-cbb065c9ee8c",
+        "as-cd9b427ba04b",
+        "as-dd7339ddd17e",
+        "as-e2e758e3da09",
+        "as-e909beca543e",
+        "as-f5a8062acf63"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/docs",
+          "source": "github-api repos/Aftergraph/docs",
+          "ref": "a3ca2292a6926b055d54d3fc2df325a7e59814cd",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/docs",
+          "source": "github-api repos/Aftergraph/docs",
+          "ref": "780971fefb0d523fb16e54acdbc58e4c35cb7076",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/docs",
+          "source": "github-api repos/Aftergraph/docs",
+          "ref": "44115dc578101818d727054139b67c6fcd3fa1ec",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/docs",
+          "source": "github-api repos/Aftergraph/docs",
+          "ref": "2d9fdb0a7e23c23772899f4066b478269c687e5d",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        },
+        {
+          "repository": "Aftergraph/docs",
+          "source": "github-api repos/Aftergraph/docs",
+          "ref": "1bd03b58c57deed8f297e20e66b6dbd3aec8617d",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/docs",
+          "source": "github-api repos/Aftergraph/docs",
+          "ref": "df81866dee0e30190b753256abbab602d14c5fba",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/docs",
+          "source": "github-api repos/Aftergraph/docs",
+          "ref": "f7d2f02f40c2a94758ffb2ee08471f10a3a2e598",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/docs",
+          "source": "github-api repos/Aftergraph/docs",
+          "ref": "1ab7dc11470a80879bbd45c5b57408339cc3376e",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/docs",
+          "source": "github-api repos/Aftergraph/docs",
+          "ref": "92c3fbb7386773833d306591858a7b9a99173f49",
+          "evidence_level": "proposed"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/intelligence-systems-research",
+      "kind": "repository",
+      "label": "intelligence-systems-research",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-01661663c54f",
+        "as-0ba3484acf14",
+        "as-27c2a5f098b8",
+        "as-534b250537c6",
+        "as-6d493dc78d7b",
+        "as-7178ea6d69ae",
+        "as-75536e0ab6e9",
+        "as-83ba8b397839",
+        "as-83d6d9b20160",
+        "as-8fca024e3be5",
+        "as-959fea513ddb",
+        "as-af68a2928394",
+        "as-b4f384516f4f",
+        "as-c36f53f9810d",
+        "as-df4d6ca08310",
+        "as-dfbf4d7b81c8",
+        "as-e583b111595e",
+        "as-ee6d00d95e05",
+        "as-f60195c7ae50",
+        "as-fad3416b8496"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/intelligence-systems-research",
+          "source": "github-api repos/Aftergraph/intelligence-systems-research",
+          "ref": "573f65b743935ecd08fa2a76e83d0bb2364c85fe",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/intelligence-systems-research",
+          "source": "github-api repos/Aftergraph/intelligence-systems-research",
+          "ref": "06d906bcab0159527e76fc866bb7c74ac294f32f",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/intelligence-systems-research",
+          "source": "github-api repos/Aftergraph/intelligence-systems-research",
+          "ref": "90f0fa1cda0daa93c6f5fb6cc4c40831ebb95d73",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        },
+        {
+          "repository": "Aftergraph/intelligence-systems-research",
+          "source": "github-api repos/Aftergraph/intelligence-systems-research",
+          "ref": "ee55536faebffb7f89e6d7d3d0678321fcd6d925",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/intelligence-systems-research",
+          "source": "github-api repos/Aftergraph/intelligence-systems-research",
+          "ref": "a9d371d97362180f08a3b95b25adc1a0a12748f0",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/intelligence-systems-research",
+          "source": "github-api repos/Aftergraph/intelligence-systems-research",
+          "ref": "1e580092b9bdea6e9c26d02f44f274b976178827",
+          "evidence_level": "proposed"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/sentinel",
+      "kind": "repository",
+      "label": "sentinel",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-02d0db8a1d35",
+        "as-0c75445fa24f",
+        "as-1e18cd9acb36",
+        "as-31b50ed3be53",
+        "as-4217f9b94405",
+        "as-43577d51d91a",
+        "as-486ddd4088fd",
+        "as-49012cd5daea",
+        "as-4fdb13e3203d",
+        "as-7d8eeff761cb",
+        "as-7e44e6e78ff0",
+        "as-7e98e5e5c353",
+        "as-8d81e22d150c",
+        "as-a0d9677dbc2b",
+        "as-ae0cbdfebc78",
+        "as-ce19b99769ee",
+        "as-d8223e4d0878",
+        "as-dc21f205fe4d"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/sentinel",
+          "source": "github-api repos/Aftergraph/sentinel",
+          "ref": "bd8c809be641e3bc4936b0f73e4c5c21a816c32b",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/sentinel",
+          "source": "github-api repos/Aftergraph/sentinel",
+          "ref": "7b8d3954852e34a04878a931c7ec87232206117c",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/sentinel",
+          "source": "github-api repos/Aftergraph/sentinel",
+          "ref": "af066dc7397f58090f980cbdf52b5cfc840822b0",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/sentinel-firetest2",
+      "kind": "repository",
+      "label": "sentinel-firetest2",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-0406c7f3ecb3",
+        "as-25ff542cc3db",
+        "as-301e0f2295f7",
+        "as-3ba7b35e19b8",
+        "as-4561c0cd74d2",
+        "as-53626cd44d2e",
+        "as-57e5008c8af8",
+        "as-7775b337b089",
+        "as-89e3d491e96c",
+        "as-8c4aa37717cb",
+        "as-a3349a84a757",
+        "as-b7eea550d481",
+        "as-b94683a24e84",
+        "as-c01125725f4d",
+        "as-cc2e70bc0358",
+        "as-ef15cc43e22b"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/sentinel-firetest2",
+          "source": "github-api repos/Aftergraph/sentinel-firetest2",
+          "ref": "e59ce259306303f08fcdfed328f957e6434a1299",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/skill-abi",
+      "kind": "repository",
+      "label": "skill-abi",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-06f03e9b79cb",
+        "as-1d3fa180e7cd",
+        "as-21e8dcd473c2",
+        "as-244c0ce3a6df",
+        "as-26c6b3e003f7",
+        "as-40ad9b19d301",
+        "as-4e4b3b391581",
+        "as-4efec53daeec",
+        "as-84b6ca80ea3b",
+        "as-969624dc4ec8",
+        "as-a113b12fd8bb",
+        "as-a7a2d46c87cd",
+        "as-abbd534a78d6",
+        "as-b1500a793e92",
+        "as-cdab0ce9dc53",
+        "as-f23347bad95e",
+        "as-f448cfe64d9f",
+        "as-f9303974b316",
+        "as-f98012046881"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/skill-abi",
+          "source": "github-api repos/Aftergraph/skill-abi",
+          "ref": "14dc965f05efef4fc917b775e1dcc9ef29ba4474",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/skill-abi",
+          "source": "github-api repos/Aftergraph/skill-abi",
+          "ref": "e1bf3bc4e8e9aab4b8ebb565284c5466cf5f3de0",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/skill-abi",
+          "source": "github-api repos/Aftergraph/skill-abi",
+          "ref": "d7c06c39e66dbfa60224ec79021cda00270c71e7",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        },
+        {
+          "repository": "Aftergraph/skill-abi",
+          "source": "github-api repos/Aftergraph/skill-abi",
+          "ref": "ea2cf2301c001135f41501219473a752b600f59e",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/skill-abi",
+          "source": "github-api repos/Aftergraph/skill-abi",
+          "ref": "4b8bc76a4bb4adfb3b50298d0b7630fe48a81720",
+          "evidence_level": "proposed"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/studio",
+      "kind": "repository",
+      "label": "studio",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-0b0e4ee10367",
+        "as-0c093ed24c7c",
+        "as-18d313b8aa14",
+        "as-1efed7c98e4a",
+        "as-319d73684d7e",
+        "as-41dfe0117dc1",
+        "as-4c934eb6f963",
+        "as-51a078c2f9f2",
+        "as-55c8ddd39207",
+        "as-6549e0dd47dd",
+        "as-6db0a23e74aa",
+        "as-8aeafa711153",
+        "as-9da7c05e23a4",
+        "as-aaeb277ec28d",
+        "as-aedffcc9372b",
+        "as-b97ca7d2a999",
+        "as-c00bf7b0d637",
+        "as-f200b529c611",
+        "as-f23f895341a2",
+        "as-fe35cdb655f0"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/studio",
+          "source": "github-api repos/Aftergraph/studio",
+          "ref": "11eeb75e9ffd3db330ca8b4e609cd71e3f1d8c4a",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/studio",
+          "source": "github-api repos/Aftergraph/studio",
+          "ref": "390ef650ca9a807c8f03dafbe0757a82fbccc763",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/studio",
+          "source": "github-api repos/Aftergraph/studio",
+          "ref": "4b07f11d372d02a5ff7a7e09823f1cbaed2ab64b",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/studio",
+          "source": "github-api repos/Aftergraph/studio",
+          "ref": "e2601a796398247ba1281b644faee82f0f3674cd",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/studio",
+          "source": "github-api repos/Aftergraph/studio",
+          "ref": "c0f7115f009ecea4f6311a4962f1335ec98db0b2",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/trust-gateway",
+      "kind": "repository",
+      "label": "trust-gateway",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-0d2361842c83",
+        "as-16e6809cb597",
+        "as-17b22ff6c298",
+        "as-259154844c48",
+        "as-2f8ce4a4d8a7",
+        "as-42525475e988",
+        "as-4b07844b24ef",
+        "as-56edaa556df1",
+        "as-5ae47663c316",
+        "as-71333037412f",
+        "as-71c965e1abd0",
+        "as-762ebf3c8f4c",
+        "as-82f624ef059c",
+        "as-886ff9bb4917",
+        "as-91b5f698978f",
+        "as-b00d0507278d",
+        "as-b13add340405",
+        "as-cc9d7d98af18",
+        "as-d4ae63b20e0d",
+        "as-db0dcd3943e6"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/trust-gateway",
+          "source": "github-api repos/Aftergraph/trust-gateway",
+          "ref": "f69e48527ab571672f2f009e0c992ad2a703f198",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/trust-gateway",
+          "source": "github-api repos/Aftergraph/trust-gateway",
+          "ref": "0dd68cf4ff8a55a4dcc154edba16d07d2348480f",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/trust-gateway",
+          "source": "github-api repos/Aftergraph/trust-gateway",
+          "ref": "4c8a16f073d2a4c1bb38f26ba3b74080220b2136",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/trust-gateway",
+          "source": "github-api repos/Aftergraph/trust-gateway",
+          "ref": "a304525c7027eab43b6e990e9209285f8a7d007b",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        },
+        {
+          "repository": "Aftergraph/trust-gateway",
+          "source": "github-api repos/Aftergraph/trust-gateway",
+          "ref": "621652b98a2bf17fc9ae5cbbf84f0b5b9bbb8ff5",
+          "evidence_level": "proposed"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/wi-backend",
+      "kind": "repository",
+      "label": "wi-backend",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-0d9c94bf0784",
+        "as-1e689663a06a",
+        "as-261896e75316",
+        "as-336b5d9af6de",
+        "as-42f24d445d5e",
+        "as-73069c251ad8",
+        "as-91ca2e1de0db",
+        "as-923a5cc3d026",
+        "as-a9367613a5b2",
+        "as-b56563bb58a2",
+        "as-d2bb6d88b88d",
+        "as-d36bd7a67684",
+        "as-d4b503d364b3",
+        "as-d70c686eb0d3",
+        "as-d7aacb405168",
+        "as-de9429ee6525",
+        "as-e03a5e5b7b50",
+        "as-e61fcd195766",
+        "as-eb9e945a20b7"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/wi-backend",
+          "source": "github-api repos/Aftergraph/wi-backend",
+          "ref": "cf7f26993450640951165aa6e6e0cd1481515938",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/wi-backend",
+          "source": "github-api repos/Aftergraph/wi-backend",
+          "ref": "306620a6d1a3bba84b017c3d7af6a06f19581a56",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/wi-backend",
+          "source": "github-api repos/Aftergraph/wi-backend",
+          "ref": "db9f7f295389fe73f446b031c409425faf8695eb",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        },
+        {
+          "repository": "Aftergraph/wi-backend",
+          "source": "github-api repos/Aftergraph/wi-backend",
+          "ref": "d5da452d5b792d0c51e6cf38d8aa30741e5fc61d",
+          "evidence_level": "proposed"
+        }
+      ]
+    },
+    {
+      "id": "repo:Aftergraph/works-execution",
+      "kind": "repository",
+      "label": "works-execution",
+      "visibility": "public",
+      "lenses": [
+        "SYSTEM",
+        "EVIDENCE",
+        "SOURCE"
+      ],
+      "assertion_ids": [
+        "as-09f304ab4bd2",
+        "as-0d53dbf01495",
+        "as-1eb4d0eb8c49",
+        "as-2785c71dfb4f",
+        "as-28afbead3045",
+        "as-2cfd4d53f283",
+        "as-373aa369216f",
+        "as-3be51f8d1650",
+        "as-40597d01c666",
+        "as-4335ba15e11b",
+        "as-44dd4ce0b860",
+        "as-4d589acce337",
+        "as-7505ef83d66f",
+        "as-814ce0dd1b7f",
+        "as-83d12d1e4f9f",
+        "as-9ab77791db5f",
+        "as-a01c2141f739",
+        "as-bdfc6db7dff0",
+        "as-cfb48de00025",
+        "as-e864f11bbea2",
+        "as-f2087d09c1b7",
+        "as-f64011071d89"
+      ],
+      "sources": [
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/works-execution",
+          "source": "github-api repos/Aftergraph/works-execution",
+          "ref": "a444ce065465ea3ce59dc2efa69b5484f3b7aae2",
+          "evidence_level": "observed"
+        },
+        {
+          "repository": "Aftergraph/works-execution",
+          "source": "github-api repos/Aftergraph/works-execution",
+          "ref": "11718422e0c19741f264a41f14807db135338f35",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/works-execution",
+          "source": "github-api repos/Aftergraph/works-execution",
+          "ref": "9fd4efdece9fa797e7689bab3c86517e7b63b88d",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/works-execution",
+          "source": "github-api repos/Aftergraph/works-execution",
+          "ref": "a8d655d0f8a6df99bb88133f1459239a966f5398",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/works-execution",
+          "source": "github-api repos/Aftergraph/works-execution",
+          "ref": "32bfba0635093f1db34abb0e6369d6d78dca5a1b",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/after-graph-governance",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T01:41:50Z)",
+          "ref": "1689e32ef124e595d3e71e960932093e0412194e",
+          "evidence_level": "derived"
+        },
+        {
+          "repository": "Aftergraph/works-execution",
+          "source": "github-api repos/Aftergraph/works-execution",
+          "ref": "5320e2019df82f977cd3b4a1c8eeeb76610c77d7",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/works-execution",
+          "source": "github-api repos/Aftergraph/works-execution",
+          "ref": "241fc131430335474909f508f558295eca8cbec7",
+          "evidence_level": "proposed"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "rel-0057e7f86763",
+      "source": "repo:Aftergraph/wi-backend",
+      "target": "contract:work-items",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-00b2a00b767b",
+      "source": "repo:Aftergraph/brand",
+      "target": "contract:iconography",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-029fb57a7699",
+      "source": "repo:Aftergraph/studio",
+      "target": "contract:work-surface",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-02a8b3937ddd",
+      "source": "repo:Aftergraph/sentinel",
+      "target": "contract:evidence-backed-verdicts",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-06f46e905f8a",
+      "source": "repo:Aftergraph/aie",
+      "target": "repo:Aftergraph/aie",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-083978a5a003",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "repo:Aftergraph/intelligence-systems-research",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-08c4c1c0590b",
+      "source": "repo:Aftergraph/.github",
+      "target": "contract:security-routing",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-0cac83ddbd11",
+      "source": "repo:Aftergraph/brand",
+      "target": "repo:Aftergraph/brand",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-0d4a28ec42c6",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "contract:public-system-map",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-0e63be82df20",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/docs",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-0f9c5c33ee95",
+      "source": "repo:Aftergraph/sentinel",
+      "target": "contract:stale-base-invalidation",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-15f0ad4e2aaa",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "repo:Aftergraph/aftergraph.org",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-15f4252e342c",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "contract:empirical-studies",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-1674dc457fc3",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:mission-state/1.0",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-1702131506f6",
+      "source": "repo:Aftergraph/skill-abi",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-18de901b0052",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:SettlementRecord",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-19e35b4126a9",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "repo:Aftergraph/trust-gateway",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-1a00ef461a0a",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "repo:Aftergraph/works-execution",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-1a50a847603c",
+      "source": "repo:Aftergraph/.github",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-1ad4af4ffe72",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:approvals",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-1cf821033e74",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "repo:Aftergraph/works-execution",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-1e64ed644695",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "repo:Aftergraph/brand",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-221d6e9c0a88",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "repo:Aftergraph/trust-gateway",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-238089df69a8",
+      "source": "repo:Aftergraph/docs",
+      "target": "contract:context-packs",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-27b8e3d55533",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "repo:Aftergraph/docs",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-28d6a62b574d",
+      "source": "repo:Aftergraph/wi-backend",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-29cc0fa0457f",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "repo:Aftergraph/works-execution",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-2a95d4a066c0",
+      "source": "repo:Aftergraph/after-graph-governance",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-2d403818534b",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/docs",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-2df60b1a4577",
+      "source": "repo:Aftergraph/docs",
+      "target": "contract:api-reference",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-2e9d7dd48eb4",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:budgets",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-2eb02a379874",
+      "source": "repo:Aftergraph/docs",
+      "target": "contract:contract-explorer",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-334ac91b32a6",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:sandbox",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-335730e4c23b",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:company-brain",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-35029cd09846",
+      "source": "repo:Aftergraph/skill-abi",
+      "target": "repo:Aftergraph/skill-abi",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-37b8f5b70051",
+      "source": "repo:Aftergraph/after-graph-governance",
+      "target": "contract:org-state/1.0",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-386768ffaff4",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:evidence-bundles",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-39819b88f622",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:PolicyDecisionRecord",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-3993315d3b2c",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "repo:Aftergraph/aie",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-39c1d6c3a4a8",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-3aa1884bb775",
+      "source": "repo:Aftergraph/studio",
+      "target": "contract:approvals-ui",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-3b50ec2e88f4",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:Role",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-3b68476ec79c",
+      "source": "repo:Aftergraph/docs",
+      "target": "contract:docs-mcp",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-3c0c54af417d",
+      "source": "repo:Aftergraph/skill-abi",
+      "target": "contract:skill-compatibility-contract",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-3d273b802450",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "contract:marketing-front-door",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-4085f5a68c3f",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:policy.token/1.0",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-43129c1e1dee",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/works-execution",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-43d802d97dc1",
+      "source": "repo:Aftergraph/sentinel-firetest2",
+      "target": "contract:live-fire-fixture",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-4508349c4d8e",
+      "source": "repo:Aftergraph/brand",
+      "target": "contract:public-communication-rules",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-45331d52171e",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "repo:Aftergraph/aftergraph.org",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-475c147e6f63",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:evidence-verdicts",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-4c168001e68d",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:runtime-admission",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-5025e4da5401",
+      "source": "repo:Aftergraph/wi-backend",
+      "target": "repo:Aftergraph/wi-backend",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-50eabf3402ff",
+      "source": "repo:Aftergraph/studio",
+      "target": "repo:Aftergraph/aie",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-51a305cc1897",
+      "source": "repo:Aftergraph/brand",
+      "target": "contract:design-tokens",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-532e33b49006",
+      "source": "repo:Aftergraph/after-graph-governance",
+      "target": "contract:policy.token/1.0",
+      "relation": "owns",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-5347600d3f10",
+      "source": "repo:Aftergraph/wi-backend",
+      "target": "contract:publication",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-5520cef4939a",
+      "source": "repo:Aftergraph/skill-abi",
+      "target": "repo:Aftergraph/skill-abi",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-568db5417c49",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/docs",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-56e756430034",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "repo:Aftergraph/intelligence-systems-research",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-57222982bb58",
+      "source": "repo:Aftergraph/aftergraph-cron-fabric",
+      "target": "contract:evidence-gating",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-580a24b2e635",
+      "source": "repo:Aftergraph/wi-backend",
+      "target": "repo:Aftergraph/wi-backend",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-5883a058e865",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "contract:organization-routing",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-593753ef32d5",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "repo:Aftergraph/aftergraph.org",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-5978cf8c4ba3",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "repo:Aftergraph/works-execution",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-59ae3cc07c5e",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "repo:Aftergraph/aie",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-5bbd69b61b69",
+      "source": "repo:Aftergraph/aie",
+      "target": "repo:Aftergraph/aie",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-5fb30cc8d63e",
+      "source": "repo:Aftergraph/after-graph-governance",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-6014432c0536",
+      "source": "repo:Aftergraph/aftergraph-cron-fabric",
+      "target": "contract:dedupe",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-6252170462ae",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:DelegationRecord",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-64d57cfeb97f",
+      "source": "repo:Aftergraph/wi-backend",
+      "target": "contract:observations",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-6bb033dba36a",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:providers",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-6f5974219f0d",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/wi-backend",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-709d9759321f",
+      "source": "repo:Aftergraph/docs",
+      "target": "contract:claim-rendering",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-754f6939e963",
+      "source": "repo:Aftergraph/sentinel",
+      "target": "repo:Aftergraph/sentinel",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-77573cf49cb5",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:computer-sessions",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-793e650d2fa9",
+      "source": "repo:Aftergraph/studio",
+      "target": "repo:Aftergraph/wi-backend",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-799b702d5b02",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/docs",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-7b638b785f99",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:workgraph",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-7cf6f5990721",
+      "source": "repo:Aftergraph/wi-backend",
+      "target": "contract:review",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-805dcaa14a7c",
+      "source": "repo:Aftergraph/sentinel",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-80b45184d949",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:BudgetLedger",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-8242b5ec8c71",
+      "source": "repo:Aftergraph/sentinel",
+      "target": "contract:verified-code-review-verdicts",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-8481d8ec0e21",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "contract:conformance",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-8527fb211e27",
+      "source": "repo:Aftergraph/.github",
+      "target": "contract:community-health",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-8542073de4df",
+      "source": "repo:Aftergraph/skill-abi",
+      "target": "contract:degradation-contract",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-854ed0d134bf",
+      "source": "repo:Aftergraph/studio",
+      "target": "repo:Aftergraph/works-execution",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-8553cfe4395c",
+      "source": "repo:Aftergraph/aftergraph-cron-fabric",
+      "target": "contract:escalation",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-85d9b571a0ea",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:policy-enforcement",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-86ba7d61f8d3",
+      "source": "repo:Aftergraph/studio",
+      "target": "contract:evidence-ui",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-86eee0625346",
+      "source": "repo:Aftergraph/after-graph-governance",
+      "target": "contract:policy.token/1.0",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-88f228a7854b",
+      "source": "repo:Aftergraph/sentinel-firetest2",
+      "target": "repo:Aftergraph/sentinel",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-8970c0bf1353",
+      "source": "repo:Aftergraph/studio",
+      "target": "repo:Aftergraph/studio",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-8a158aa96ada",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/docs",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-93f5d619496a",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "repo:Aftergraph/intelligence-systems-research",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-94bc910474b5",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:evidence-verdicts",
+      "relation": "owns",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-94f32f20c9c8",
+      "source": "repo:Aftergraph/after-graph-governance",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-96cec32c8f34",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "repo:Aftergraph/works-execution",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-97aec219cbc2",
+      "source": "repo:Aftergraph/studio",
+      "target": "contract:replay-ui",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-982a507c2a9a",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-9910cf66ae07",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "repo:Aftergraph/trust-gateway",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-9b6d9849d219",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/docs",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-9bdbe49bb489",
+      "source": "repo:Aftergraph/wi-backend",
+      "target": "repo:Aftergraph/wi-backend",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-9c5646cd4c50",
+      "source": "repo:Aftergraph/docs",
+      "target": "contract:provenance-freshness",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-9c5935d078a5",
+      "source": "repo:Aftergraph/.github",
+      "target": "contract:support-routing",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-a0dfe9d9516b",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "repo:Aftergraph/intelligence-systems-research",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-a10150053ab3",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:RevocationRecord",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-a20a4053a173",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:mission-state/1.0",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-a280be09e0f6",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "contract:SPEC-001",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-a51efc314da9",
+      "source": "repo:Aftergraph/wi-backend",
+      "target": "contract:work-candidates",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-a6379bf89aa2",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "contract:launcher",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-a81aa9a1acf5",
+      "source": "repo:Aftergraph/aftergraph-cron-fabric",
+      "target": "repo:Aftergraph/aftergraph-cron-fabric",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-a90158dd85b5",
+      "source": "repo:Aftergraph/studio",
+      "target": "contract:space-surface",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-a922d0827ec6",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "contract:assurance",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-aaf3f2b0f439",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:recovery",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-ac980094fa02",
+      "source": "repo:Aftergraph/wi-backend",
+      "target": "contract:works-promotion",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-accee35285ab",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/intelligence-systems-research",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-af6a6492137f",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/docs",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-afe5b810dbdb",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:Principal",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-b0616fba306b",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/brand",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-b44ff756ff77",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/docs",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-b64f7af2975a",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:leases",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-b66915566623",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "contract:publication-evidence",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-b8eda4b993d6",
+      "source": "repo:Aftergraph/after-graph-governance",
+      "target": "contract:platform-topology/2.0",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-bafa0e93f04a",
+      "source": "repo:Aftergraph/after-graph-governance",
+      "target": "contract:mission-state/1.0",
+      "relation": "owns",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-bb3811c8bea7",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:MissionContract",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-bd0282a2b592",
+      "source": "repo:Aftergraph/brand",
+      "target": "contract:master-assets",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-bd8e4afaef9d",
+      "source": "repo:Aftergraph/after-graph-governance",
+      "target": "contract:reconciliation-matrix",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-c1a0081a8e7e",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-c4d2795f35fd",
+      "source": "repo:Aftergraph/studio",
+      "target": "repo:Aftergraph/studio",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-c4ea232cf2bd",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:workers",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-c555a08a8d33",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:artifacts",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-d15d7396942e",
+      "source": "repo:Aftergraph/sentinel",
+      "target": "repo:Aftergraph/sentinel",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-d1caba5e542c",
+      "source": "repo:Aftergraph/studio",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-d2e94120af65",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "repo:Aftergraph/trust-gateway",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-d3244b316da2",
+      "source": "repo:Aftergraph/after-graph-governance",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-d39c1088e9fe",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:rbac",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-d3a7be81d572",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "contract:MISSION-Bench",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-d840d2ef424d",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "repo:Aftergraph/works-execution",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-db6c218d4ad2",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:scheduler",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-db8097e8da67",
+      "source": "repo:Aftergraph/studio",
+      "target": "repo:Aftergraph/studio",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-de3c21f807cd",
+      "source": "repo:Aftergraph/aftergraph-cron-fabric",
+      "target": "contract:scheduled-observation",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-e00e2f6113bf",
+      "source": "repo:Aftergraph/.github",
+      "target": "contract:organization-profile",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-e1444cb90295",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:TopologyMutation",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-e1aed37be13d",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "repo:Aftergraph/aftergraph.org",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-e2f56fa8458a",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:hash-chain-audit",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-e3b8898c15c4",
+      "source": "repo:Aftergraph/aftergraph.org",
+      "target": "repo:Aftergraph/aftergraph.org",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-e53646482990",
+      "source": "repo:Aftergraph/.github",
+      "target": "repo:Aftergraph/brand",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-e64527e85c41",
+      "source": "repo:Aftergraph/studio",
+      "target": "repo:Aftergraph/studio",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-e86f43d0d563",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:plugin-runtime",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-e87c14c5d546",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "repo:Aftergraph/intelligence-systems-research",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-ea471ab2449d",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:quittance",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-ebd19c372e83",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:AuthorityLease",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-ebffb770df03",
+      "source": "repo:Aftergraph/skill-abi",
+      "target": "contract:bounded-effects",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-ec1b04ae6b29",
+      "source": "repo:Aftergraph/studio",
+      "target": "contract:needs-you",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-ee6d44a3544d",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "contract:mission-state/1.0",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-efcc530d3bfb",
+      "source": "repo:Aftergraph/.github",
+      "target": "contract:contribution-defaults",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f0a81257c85f",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "repo:Aftergraph/works-execution",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f1d52efd3a96",
+      "source": "repo:Aftergraph/wi-backend",
+      "target": "contract:evidence-envelopes",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f31633c7a733",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/aie",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f36714473ea9",
+      "source": "repo:Aftergraph/skill-abi",
+      "target": "repo:Aftergraph/skill-abi",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f577d2bbab7b",
+      "source": "repo:Aftergraph/docs",
+      "target": "repo:Aftergraph/trust-gateway",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f5b6a93f961c",
+      "source": "repo:Aftergraph/works-execution",
+      "target": "contract:durable-work",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f5e3508b2133",
+      "source": "repo:Aftergraph/studio",
+      "target": "repo:Aftergraph/trust-gateway",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f61d11fcacbf",
+      "source": "repo:Aftergraph/studio",
+      "target": "contract:chat-surface",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f6d7bda3506d",
+      "source": "repo:Aftergraph/docs",
+      "target": "contract:human-docs",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f703695c9767",
+      "source": "repo:Aftergraph/aie",
+      "target": "contract:EvidenceRecord",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f93522664d72",
+      "source": "repo:Aftergraph/trust-gateway",
+      "target": "repo:Aftergraph/trust-gateway",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-f96c483f1c5b",
+      "source": "repo:Aftergraph/intelligence-systems-research",
+      "target": "repo:Aftergraph/aie",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-fa7183354fae",
+      "source": "repo:Aftergraph/aftergraph-cron-fabric",
+      "target": "repo:Aftergraph/after-graph-governance",
+      "relation": "consumes",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-feb8b198c5ce",
+      "source": "repo:Aftergraph/skill-abi",
+      "target": "repo:Aftergraph/skill-abi",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-ff1d8735f105",
+      "source": "repo:Aftergraph/after-graph-governance",
+      "target": "contract:mission-state/1.0",
+      "relation": "provides",
+      "truth_plane": "CANONICAL",
+      "conflict_id": null
+    }
+  ]
+}

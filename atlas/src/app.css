@@ -114,3 +114,12 @@ button:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 2
 /* Attribution kept visible on purpose (App.jsx sets hideAttribution: false). */
 .react-flow__attribution { background: transparent !important; color: var(--ag-muted) !important; opacity: 0.6; }
 .react-flow__handle { background: var(--ag-border-strong) !important; border: none !important; width: 6px !important; height: 6px !important; }
+
+/* Shared Aftergraph Experience context. Lens state is navigational context;
+   unsupported data is stated explicitly in the inspector, never inferred. */
+.experience-lenses { display: flex; gap: var(--ag-space-1); flex-wrap: wrap; }
+.experience-lenses button { background: transparent; border: 1px solid var(--ag-border); color: var(--ag-muted); border-radius: 999px; padding: var(--ag-space-1) var(--ag-space-2); cursor: pointer; font-size: 9px; font-weight: 650; letter-spacing: .05em; }
+.experience-lenses button[aria-pressed='true'] { color: var(--ag-text); border-color: var(--ag-evidence); background: rgba(36,196,173,.1); }
+.lens-context { margin-bottom: var(--ag-space-3); padding: var(--ag-space-2) var(--ag-space-3); border: 1px solid var(--ag-border); border-radius: 8px; color: var(--ag-muted); font: 11px/1.5 var(--ag-mono); }
+.lens-context strong { color: var(--ag-text); }
+@media (max-width: 900px) { .experience-lenses { order: 3; width: 100%; } }
