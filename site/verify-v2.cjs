@@ -18,9 +18,15 @@ function has(haystack, needle, label = needle) {
   assert.ok(haystack.includes(needle), `missing ${label}`);
 }
 
-// ponytail: hero contract follows the approved V2 landing (systems hero,
-// lifecycle field, control layers) ported over the #14 baseline;
-has(landing, 'Infrastructure for verifiable intelligent systems', 'V2 hero headline');
+has(landing, 'Build autonomous systems that can prove they worked', 'V3 hero headline');
+has(landing, 'What do you want to do?', 'V3 intent router');
+has(landing, 'Studio by Aftergraph', 'Studio product block');
+has(landing, 'Wie by Aftergraph', 'Wie product block');
+has(landing, 'Sentinel by Aftergraph', 'Sentinel product block');
+has(landing, 'Complete is not verified', 'V3 trust section');
+has(landing, 'Agent says done', 'V3 trust statement');
+has(landing, 'href="/studio/"', 'Studio demo destination');
+has(landing, 'href="#products"', 'product-first primary CTA');
 has(landing, 'Mission', 'mission trace');
 has(landing, 'Authority', 'authority trace');
 has(landing, 'Evidence', 'evidence trace');
@@ -30,13 +36,16 @@ has(landing, 'href="https://docs.aftergraph.org', 'docs cross-link');
 has(landing, 'href="/status"', 'landing operational status route');
 has(landing, 'prefers-reduced-motion', 'reduced-motion support');
 has(landing, ':focus-visible', 'visible focus');
-has(landing, 'data-mission-rail', 'golden mission scroll rail');
-has(landing, 'requestAnimationFrame', 'rail scroll progression');
+has(landing, 'platform-chain', 'V3 platform lifecycle chain');
+has(landing, 'trust-flow', 'V3 trust verification flow');
+has(landing, 'product-mini', 'V3 product miniatures');
+has(landing, '21 canonical repositories', 'canonical topology on landing');
 
-has(launcher, 'Build', 'launcher Build group');
-has(launcher, 'Platform', 'launcher Platform group');
-has(launcher, 'Verify', 'launcher Verify group');
-has(launcher, 'Research', 'launcher Research group');
+has(launcher, '"Use"', 'launcher Use group');
+has(launcher, 'Build & Operate', 'launcher Build & Operate group');
+has(launcher, '"Verify"', 'launcher Verify group');
+has(launcher, '"Extend"', 'launcher Extend group');
+has(launcher, '"Understand"', 'launcher Understand group');
 has(launcher, 'Knowledge Plane (docs)', 'launcher Knowledge Plane destination');
 has(launcher, 'https://docs.aftergraph.org/', 'launcher Knowledge Plane route');
 has(launcher, 'ArrowDown', 'launcher keyboard navigation');

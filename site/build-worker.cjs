@@ -107,7 +107,7 @@ assert(!llms.includes('13 canonical cross-repo contracts'), 'volatile contract c
 assert(!llms.includes('- `context-continuity`') && !llms.includes('- `skills-vault`'), 'private repositories must not appear in the public-repository list');
 assert(!landing.includes('https://github.com/Aftergraph/context-continuity'), 'public landing must not link directly to private Continuity source');
 assert(!landing.includes('https://github.com/Aftergraph/runtime'), 'public landing must not link directly to private Runtime source');
-assert(statusPage.includes('wie.aftergraph.org/api/healthz'), 'status must use canonical Wie production health endpoint');
+assert(statusPage.includes('Not publicly routed'), 'status must label the Wie web surface honestly (no public route yet)');
 assert(!statusPage.includes('work-intelligence-v2'), 'status must not use legacy Work Intelligence repository slug');
 assert(statusPage.includes('__AG_SHA__') && statusPage.includes('__AG_DEPLOYED__'), 'status must carry build-provenance placeholders');
 
