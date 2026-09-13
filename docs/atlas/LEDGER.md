@@ -377,16 +377,17 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   Worker +1,220 bytes vs HEAD (new snapshot inlined) — expected, not bloat.
   Aesthetic gate stays owner-open (vision provider 400 since E25).
 
-- E66 Experience Atlas V1 landed (commits 0858d47 + 4a2c91e + 7b3f102):
+- E66 Experience Atlas V1 landed (commits c724446 + cc16910 + 3e8a1f2):
   deriveExperienceView publication adapter (private repos + exact refs withheld),
   living hero on / (4 canonical system buttons, no heavy vendors), lens/related/
   snapshot URL state, sync-brand.mjs v1.1.0 fail-closed (Windows tar fix),
   verify-atlas experience boundary checks, verify-site totals reconciled (21/12/9).
-  Cut #14 (2026-09-13T11:22:40Z): studio PR #57 drift (open PRs 4→5), projection
-  169/455/262/0, 14th snapshot. Gates: 16/16 projection, 59/59 vitest,
-  verify-atlas PASS, V2 PASS (14), verify-site PASS (38), vite green
-  (index-DJfozXhp), worker PASS (8,126,148 bytes), DOM PASS (18 checks, 3 viewports),
-  7 screenshots 0 JS errors, leak-scan 0/40. Gov 1689e32 unchanged.
+  Cut #14 (2026-09-13T11:21:44Z): trust-gateway PRs 4→20, works-execution 6→9,
+  studio PRs 4→5. Projection 169/476/283/0, 14th snapshot.
+  Gates: 16/16 projection, 59/59 vitest, verify-atlas PASS (169/476/283/0),
+  V2 PASS, verify-site PASS, vite green (index-Bv4mibMW), worker PASS
+  (9,419,702 bytes), DOM PASS (18 checks, 3 viewports), 7 screenshots 0 JS errors,
+  leak-scan 0/27 (13 private heads). Gov 1689e32 unchanged.
   Open: vision aesthetic review (provider 400 since E25); Jonas merge auth.
 
 ## Exact heads (cut 2026-09-13T01:41:50Z; full SHAs in `workspace/.tmp-atlas-ledger-13/obs_*.json`)
