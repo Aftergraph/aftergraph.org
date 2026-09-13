@@ -362,7 +362,22 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   applied (E11) — stale V8/BASELINE claims corrected. Vision still down (provider 400,
   same 'not a valid model ID' error) — aesthetic gate stays owner-open.
 
-## Exact heads (cut 2026-09-12T10:12:48Z; full SHAs in `workspace/.tmp-atlas-ledger-12/obs_*.json`)
+- E65 Cut #13 (2026-09-13T01:41:50Z): studio PR #56 opened 38min after cut #12
+  (heads all static; drift was PR-count only — heads-only re-verify V10 missed it,
+  lesson: PR counts are drift too). Full re-cut 28/28, projection 169/454/261/0
+  (+1 assertion +1 relation, diff-proven additive-only), 13th snapshot indexed.
+  Gates: 16/16 projection, 49/49 vitest, verify-atlas PASS (16 checks), V2 PASS,
+  vite build green (bundle index-BJ2JBmHk unchanged), worker rebuilt PASS
+  (8,046,766 bytes, 14 snapshots), DOM PASS (16 checks, 3 viewports),
+  6 screenshots 0 JS errors, leak-scan 0/41 shipped files. Vision still down
+  (same provider 400). Gov 1689e32 unchanged.
+- V11 Cut #13 gate matrix (2026-09-13T03:55Z): all gates green per E65.
+  Bundle-current: vite emitted identical chunk set (index-BJ2JBmHk) — projection
+  change only touched repo_pins/PR counts, no App.jsx change, zero-diff rebuild.
+  Worker +1,220 bytes vs HEAD (new snapshot inlined) — expected, not bloat.
+  Aesthetic gate stays owner-open (vision provider 400 since E25).
+
+## Exact heads (cut 2026-09-13T01:41:50Z; full SHAs in `workspace/.tmp-atlas-ledger-13/obs_*.json`)
 
 | repo | head | branch | open PRs |
 |---|---|---|---|
@@ -388,7 +403,7 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 | skill-abi | 14dc965 | main | 4 |
 | skillport | private-withheld | main | withheld |
 | skills-vault | private-withheld | main | withheld |
-| studio | 390ef65 | main | 3 |
+| studio | 390ef65 | main | 4 |
 | trust-gateway | f69e485 | main | 4 |
 | veranza | private-withheld | main | withheld |
 | wi-backend | cf7f269 | main | 3 |
