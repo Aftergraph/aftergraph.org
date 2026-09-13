@@ -389,14 +389,25 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   (9,419,702 bytes), DOM PASS (18 checks, 3 viewports), 7 screenshots 0 JS errors,
   leak-scan 0/27 (13 private heads). Gov 1689e32 unchanged.
   Open: vision aesthetic review (provider 400 since E25); Jonas merge auth.
+- E67 Cut #15 (2026-09-13T12:33:52Z): trust-gateway open PRs 20→11 since cut #14
+  (9 PRs closed; sole drift — all 28 heads static, gov 1689e32 unchanged, org size 28).
+  Projection 169/467/274/0 (−9 assertions / −9 relations, exactly matches closed PRs),
+  15th snapshot indexed. Gates: 16/16 projection, 59/59 vitest, verify-atlas PASS
+  (169/467/274/0), V2 PASS, verify-site PASS, vite green (bundle index-D_7IuLvl),
+  worker PASS (15 snapshots inlined), DOM PASS, 6 screenshots clean, leak-scan
+  0 hits (44 shipped files × 139 private head/OID strings). Also committed the 6
+  stray cut-#14 post-repair screenshots (567cbab) before re-cutting.
+- V12 Cut #15 gate matrix (2026-09-13T12:55Z): truth refresh only — no code changes,
+  all gates green per E67. E65 lesson re-applied: heads-only check would have missed
+  this cut too (only PR counts moved).
 
-## Exact heads (cut 2026-09-13T01:41:50Z; full SHAs in `workspace/.tmp-atlas-ledger-13/obs_*.json`)
+## Exact heads (cut 2026-09-13T12:33:52Z; full SHAs in `workspace/.tmp-atlas-ledger-15/obs_*.json`)
 
 | repo | head | branch | open PRs |
 |---|---|---|---|
 | .github | 7695d28 | main | 0 |
 | afm | private-withheld | main | withheld |
-| after-graph-governance | 1689e32 | main | 4 |
+| after-graph-governance | 1689e32 | main | 5 |
 | aftergraph-cron-fabric | 7c4bee3 | main | 1 |
 | aftergraph.org | bf70706 | main | 5 |
 | aie | 53dcfc1 | main | 2 |
@@ -405,7 +416,7 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 | context-continuity | private-withheld | main | withheld |
 | continuum | private-withheld | main | withheld |
 | docs | a3ca229 | main | 8 |
-| intelligence-systems-research | 06d906b | main | 5 |
+| intelligence-systems-research | 06d906b | main | 6 |
 | llm-research-development | private-withheld | main | withheld |
 | model-registry | private-withheld | main | withheld |
 | relay | private-withheld | main | withheld |
@@ -416,8 +427,8 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
 | skill-abi | 14dc965 | main | 4 |
 | skillport | private-withheld | main | withheld |
 | skills-vault | private-withheld | main | withheld |
-| studio | 390ef65 | main | 4 |
-| trust-gateway | f69e485 | main | 4 |
+| studio | 390ef65 | main | 5 |
+| trust-gateway | f69e485 | main | 11 |
 | veranza | private-withheld | main | withheld |
 | wi-backend | cf7f269 | main | 3 |
 | wi-frontend | private-withheld | main | withheld |

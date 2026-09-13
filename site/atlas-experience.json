@@ -1,6 +1,6 @@
 {
   "schema": "aftergraph-experience/0.1",
-  "cut": "2026-09-13T11:21:44Z",
+  "cut": "2026-09-13T12:33:52Z",
   "gov_sha": "1689e32ef124e595d3e71e960932093e0412194e",
   "entities": [
     {
@@ -1872,7 +1872,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         },
@@ -1955,7 +1955,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         },
@@ -2010,7 +2010,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         },
@@ -2093,7 +2093,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         },
@@ -2162,7 +2162,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         }
@@ -2217,7 +2217,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         }
@@ -2291,7 +2291,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         },
@@ -2393,7 +2393,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         },
@@ -2474,7 +2474,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         }
@@ -2523,7 +2523,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         }
@@ -2587,7 +2587,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         },
@@ -2618,6 +2618,7 @@
       "assertion_ids": [
         "as-0b0e4ee10367",
         "as-0c093ed24c7c",
+        "as-215067febb24",
         "as-319d73684d7e",
         "as-41dfe0117dc1",
         "as-4c934eb6f963",
@@ -2627,11 +2628,10 @@
         "as-6db0a23e74aa",
         "as-8aeafa711153",
         "as-8e12303740a5",
+        "as-903de4f75cf8",
         "as-9da7c05e23a4",
-        "as-a7f33bcd379a",
         "as-aaeb277ec28d",
         "as-aedffcc9372b",
-        "as-b37be3bdfd9a",
         "as-b97ca7d2a999",
         "as-c00bf7b0d637",
         "as-f200b529c611",
@@ -2644,6 +2644,12 @@
           "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "canonical"
+        },
+        {
+          "repository": "Aftergraph/studio",
+          "source": "github-api repos/Aftergraph/studio",
+          "ref": "fae2ec1fd07e1ee9815d39d09d923d71a59e445a",
+          "evidence_level": "proposed"
         },
         {
           "repository": "Aftergraph/studio",
@@ -2676,14 +2682,8 @@
           "evidence_level": "proposed"
         },
         {
-          "repository": "Aftergraph/studio",
-          "source": "github-api repos/Aftergraph/studio",
-          "ref": "48b571db2ce6516c6b08c9f8f1927171db787903",
-          "evidence_level": "proposed"
-        },
-        {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         }
@@ -2700,50 +2700,35 @@
         "SOURCE"
       ],
       "assertion_ids": [
-        "as-04e7996e939d",
         "as-0d2361842c83",
-        "as-0d5277ce297a",
-        "as-0fda38d3f2ec",
         "as-16e6809cb597",
         "as-17b22ff6c298",
         "as-259154844c48",
         "as-2872c5fa2f52",
+        "as-2aa80321ff1d",
         "as-2f8ce4a4d8a7",
         "as-337604e085d1",
         "as-3ad41e4265bc",
         "as-3b5ea9a1357f",
         "as-3d82d83dfcdb",
         "as-42525475e988",
-        "as-44d1e335920f",
         "as-4b07844b24ef",
         "as-56edaa556df1",
         "as-598c6be69a07",
         "as-5ae47663c316",
-        "as-5c1d02ac618a",
-        "as-63b3fd1af9c2",
-        "as-6d19774ac3a0",
         "as-71333037412f",
         "as-71c965e1abd0",
         "as-75f2ddc8ed6a",
         "as-762ebf3c8f4c",
+        "as-81774ba722d6",
         "as-886ff9bb4917",
-        "as-91e727677a4a",
-        "as-95d8da172f43",
-        "as-98489acc80c1",
         "as-b00d0507278d",
         "as-b13add340405",
         "as-cc9d7d98af18",
         "as-d4ae63b20e0d",
-        "as-db0dcd3943e6",
-        "as-e3f826e3b66a"
+        "as-db0dcd3943e6"
       ],
       "sources": [
-        {
-          "repository": "Aftergraph/trust-gateway",
-          "source": "github-api repos/Aftergraph/trust-gateway",
-          "ref": "21925e5819ef85d8dfe3f6854c75aedb82f49a4e",
-          "evidence_level": "proposed"
-        },
         {
           "repository": "Aftergraph/after-graph-governance",
           "source": "Aftergraph/after-graph-governance docs/platform-topology/2.0.json@1689e32",
@@ -2753,19 +2738,13 @@
         {
           "repository": "Aftergraph/trust-gateway",
           "source": "github-api repos/Aftergraph/trust-gateway",
-          "ref": "0b8b17cb78809804901a24aa0c2eace720973f60",
-          "evidence_level": "proposed"
-        },
-        {
-          "repository": "Aftergraph/trust-gateway",
-          "source": "github-api repos/Aftergraph/trust-gateway",
-          "ref": "60633aeb2c42c090c787c182cbb954f9452dcf10",
-          "evidence_level": "proposed"
-        },
-        {
-          "repository": "Aftergraph/trust-gateway",
-          "source": "github-api repos/Aftergraph/trust-gateway",
           "ref": "a304525c7027eab43b6e990e9209285f8a7d007b",
+          "evidence_level": "proposed"
+        },
+        {
+          "repository": "Aftergraph/trust-gateway",
+          "source": "github-api repos/Aftergraph/trust-gateway",
+          "ref": "5a4c4e80f11e60cd8deea27ef9ca22d4b788e826",
           "evidence_level": "proposed"
         },
         {
@@ -2813,24 +2792,6 @@
         {
           "repository": "Aftergraph/trust-gateway",
           "source": "github-api repos/Aftergraph/trust-gateway",
-          "ref": "c3bcde259fe4df1e9bd23eaae042107fd18d1e3e",
-          "evidence_level": "proposed"
-        },
-        {
-          "repository": "Aftergraph/trust-gateway",
-          "source": "github-api repos/Aftergraph/trust-gateway",
-          "ref": "43534fff5053cfbf5ebdc1f09720afc0a41e076f",
-          "evidence_level": "proposed"
-        },
-        {
-          "repository": "Aftergraph/trust-gateway",
-          "source": "github-api repos/Aftergraph/trust-gateway",
-          "ref": "5c8a3e6f82dfa766282a789e57ec710e19861312",
-          "evidence_level": "proposed"
-        },
-        {
-          "repository": "Aftergraph/trust-gateway",
-          "source": "github-api repos/Aftergraph/trust-gateway",
           "ref": "5b2c4a186fa7e155b19f1ccc23e772bad5945110",
           "evidence_level": "proposed"
         },
@@ -2841,26 +2802,8 @@
           "evidence_level": "proposed"
         },
         {
-          "repository": "Aftergraph/trust-gateway",
-          "source": "github-api repos/Aftergraph/trust-gateway",
-          "ref": "fea6f476b53f306f4256fa81724f09cd134c2045",
-          "evidence_level": "proposed"
-        },
-        {
-          "repository": "Aftergraph/trust-gateway",
-          "source": "github-api repos/Aftergraph/trust-gateway",
-          "ref": "5b0268331a4c11335531392eb6533ba238b7ae2a",
-          "evidence_level": "proposed"
-        },
-        {
-          "repository": "Aftergraph/trust-gateway",
-          "source": "github-api repos/Aftergraph/trust-gateway",
-          "ref": "62bcfdc601cc3a3b96565cc631d299bd9a428237",
-          "evidence_level": "proposed"
-        },
-        {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         },
@@ -2868,12 +2811,6 @@
           "repository": "Aftergraph/trust-gateway",
           "source": "github-api repos/Aftergraph/trust-gateway",
           "ref": "621652b98a2bf17fc9ae5cbbf84f0b5b9bbb8ff5",
-          "evidence_level": "proposed"
-        },
-        {
-          "repository": "Aftergraph/trust-gateway",
-          "source": "github-api repos/Aftergraph/trust-gateway",
-          "ref": "e19619d81c59fd2053f0e96c276daf361ca72a3f",
           "evidence_level": "proposed"
         }
       ]
@@ -2936,7 +2873,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         },
@@ -3012,7 +2949,7 @@
         },
         {
           "repository": "Aftergraph/after-graph-governance",
-          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T11:21:44Z)",
+          "source": "atlas-generator derivation (topology@1689e32 + cut 2026-09-13T12:33:52Z)",
           "ref": "1689e32ef124e595d3e71e960932093e0412194e",
           "evidence_level": "derived"
         },
@@ -3076,14 +3013,6 @@
       "target": "contract:iconography",
       "relation": "provides",
       "truth_plane": "CANONICAL",
-      "conflict_id": null
-    },
-    {
-      "id": "rel-0156fd1ea4ed",
-      "source": "repo:Aftergraph/trust-gateway",
-      "target": "repo:Aftergraph/trust-gateway",
-      "relation": "proposes",
-      "truth_plane": "PROPOSED",
       "conflict_id": null
     },
     {
@@ -3263,14 +3192,6 @@
       "conflict_id": null
     },
     {
-      "id": "rel-21d1262b3357",
-      "source": "repo:Aftergraph/trust-gateway",
-      "target": "repo:Aftergraph/trust-gateway",
-      "relation": "proposes",
-      "truth_plane": "PROPOSED",
-      "conflict_id": null
-    },
-    {
       "id": "rel-221d6e9c0a88",
       "source": "repo:Aftergraph/trust-gateway",
       "target": "repo:Aftergraph/trust-gateway",
@@ -3356,14 +3277,6 @@
       "target": "contract:contract-explorer",
       "relation": "provides",
       "truth_plane": "CANONICAL",
-      "conflict_id": null
-    },
-    {
-      "id": "rel-30891d468cfc",
-      "source": "repo:Aftergraph/trust-gateway",
-      "target": "repo:Aftergraph/trust-gateway",
-      "relation": "proposes",
-      "truth_plane": "PROPOSED",
       "conflict_id": null
     },
     {
@@ -3663,14 +3576,6 @@
       "conflict_id": null
     },
     {
-      "id": "rel-5ee7a82b3aa6",
-      "source": "repo:Aftergraph/studio",
-      "target": "repo:Aftergraph/studio",
-      "relation": "proposes",
-      "truth_plane": "PROPOSED",
-      "conflict_id": null
-    },
-    {
       "id": "rel-5fb30cc8d63e",
       "source": "repo:Aftergraph/after-graph-governance",
       "target": "repo:Aftergraph/after-graph-governance",
@@ -3695,7 +3600,7 @@
       "conflict_id": null
     },
     {
-      "id": "rel-640d85dfb634",
+      "id": "rel-64679f37b132",
       "source": "repo:Aftergraph/trust-gateway",
       "target": "repo:Aftergraph/trust-gateway",
       "relation": "proposes",
@@ -3743,14 +3648,6 @@
       "conflict_id": null
     },
     {
-      "id": "rel-76da9c071855",
-      "source": "repo:Aftergraph/trust-gateway",
-      "target": "repo:Aftergraph/trust-gateway",
-      "relation": "proposes",
-      "truth_plane": "PROPOSED",
-      "conflict_id": null
-    },
-    {
       "id": "rel-77573cf49cb5",
       "source": "repo:Aftergraph/trust-gateway",
       "target": "contract:computer-sessions",
@@ -3762,14 +3659,6 @@
       "id": "rel-77740a8c48fd",
       "source": "repo:Aftergraph/after-graph-governance",
       "target": "repo:Aftergraph/after-graph-governance",
-      "relation": "proposes",
-      "truth_plane": "PROPOSED",
-      "conflict_id": null
-    },
-    {
-      "id": "rel-782f97030ac3",
-      "source": "repo:Aftergraph/trust-gateway",
-      "target": "repo:Aftergraph/trust-gateway",
       "relation": "proposes",
       "truth_plane": "PROPOSED",
       "conflict_id": null
@@ -3967,14 +3856,6 @@
       "conflict_id": null
     },
     {
-      "id": "rel-98e32a8d0679",
-      "source": "repo:Aftergraph/trust-gateway",
-      "target": "repo:Aftergraph/trust-gateway",
-      "relation": "proposes",
-      "truth_plane": "PROPOSED",
-      "conflict_id": null
-    },
-    {
       "id": "rel-9910cf66ae07",
       "source": "repo:Aftergraph/trust-gateway",
       "target": "repo:Aftergraph/trust-gateway",
@@ -4031,14 +3912,6 @@
       "conflict_id": null
     },
     {
-      "id": "rel-a1d509a3bc52",
-      "source": "repo:Aftergraph/trust-gateway",
-      "target": "repo:Aftergraph/trust-gateway",
-      "relation": "proposes",
-      "truth_plane": "PROPOSED",
-      "conflict_id": null
-    },
-    {
       "id": "rel-a20a4053a173",
       "source": "repo:Aftergraph/works-execution",
       "target": "contract:mission-state/1.0",
@@ -4052,6 +3925,14 @@
       "target": "contract:SPEC-001",
       "relation": "provides",
       "truth_plane": "CANONICAL",
+      "conflict_id": null
+    },
+    {
+      "id": "rel-a47903e5a990",
+      "source": "repo:Aftergraph/studio",
+      "target": "repo:Aftergraph/studio",
+      "relation": "proposes",
+      "truth_plane": "PROPOSED",
       "conflict_id": null
     },
     {
@@ -4151,14 +4032,6 @@
       "conflict_id": null
     },
     {
-      "id": "rel-afef9a7db429",
-      "source": "repo:Aftergraph/trust-gateway",
-      "target": "repo:Aftergraph/trust-gateway",
-      "relation": "proposes",
-      "truth_plane": "PROPOSED",
-      "conflict_id": null
-    },
-    {
       "id": "rel-b0616fba306b",
       "source": "repo:Aftergraph/docs",
       "target": "repo:Aftergraph/brand",
@@ -4204,14 +4077,6 @@
       "target": "contract:platform-topology/2.0",
       "relation": "provides",
       "truth_plane": "CANONICAL",
-      "conflict_id": null
-    },
-    {
-      "id": "rel-b90318b3742a",
-      "source": "repo:Aftergraph/trust-gateway",
-      "target": "repo:Aftergraph/trust-gateway",
-      "relation": "proposes",
-      "truth_plane": "PROPOSED",
       "conflict_id": null
     },
     {
