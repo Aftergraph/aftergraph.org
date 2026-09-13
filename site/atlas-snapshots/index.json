@@ -653,5 +653,34 @@
       ],
       "activity": []
     }
+  },
+  {
+    "file": "projection-2026-09-13T11-21-44Z.json",
+    "evidence_cut": "2026-09-13T11:21:44Z",
+    "gov_sha": "1689e32ef124e595d3e71e960932093e0412194e",
+    "entities": 169,
+    "assertions": 476,
+    "relations": 283,
+    "conflicts": [],
+    "pulse": {
+      "repos": [
+        "repo:Aftergraph/.github",
+        "repo:Aftergraph/after-graph-governance",
+        "repo:Aftergraph/aftergraph-cron-fabric",
+        "repo:Aftergraph/aftergraph.org",
+        "repo:Aftergraph/aie",
+        "repo:Aftergraph/brand",
+        "repo:Aftergraph/docs",
+        "repo:Aftergraph/intelligence-systems-research",
+        "repo:Aftergraph/sentinel",
+        "repo:Aftergraph/sentinel-firetest2",
+        "repo:Aftergraph/skill-abi",
+        "repo:Aftergraph/studio",
+        "repo:Aftergraph/trust-gateway",
+        "repo:Aftergraph/wi-backend",
+        "repo:Aftergraph/works-execution"
+      ],
+      "activity": []
+    }
   }
 ]
