@@ -326,8 +326,9 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   strings in shipped assets). Slice C acceptance fully closed: impact BFS wired into
   inspector (depth-capped 2, plane badges), Ask V0 + validateAnswer, snapshot diff,
   ?view= URL state. qa/BASELINE.md integrated (command list = V7/V8 procedure).
-  Remaining beyond-Slice-C: BASELINE's CI proposal (3 run-lines in v2-interface.yml,
-  deliberately not applied — touches shared CI, needs owner OK).
+ CORRECTION (V10): the CI proposal was in fact already applied — E11 wired the same
+ steps (install/test/projection/build/verify-atlas/worker/DOM-smoke/V2/bundle-current)
+ into v2-interface.yml. The proposal is subsumed; nothing left to apply.
 - E62 Worker-size audit (2026-09-13T01:10Z): ledger RISK entry was stale (claimed 2.5MB;
   actual 8,045,546 bytes raw / 950,559 gzip). Root cause: 12 accumulated snapshots
   (4.66MB raw / 295KB gzip) inlined via build-worker.cjs ATLAS_FILES drove growth from
@@ -343,6 +344,23 @@ Spike: `C:/Users/empir/aftergraph-site/` (14-repo static dashboard, NOT a git re
   'qwen-3.8-max-thinking is not a valid model ID') — human visual review of
   qa-shots-after/ remains the only open aesthetic gate; DOM overlap + AA contrast
   gates cover the structural-visual floor.
+- E64 Build-order trap sprung (self-inflicted, recovered): this run executed build-worker
+  BEFORE vite build; vite's emptyOutDir wiped gitignored site/atlas/snapshots/ (materialized
+  only by build-worker from site/atlas-snapshots/) → DOM gate correctly FAILED (pulse 30d
+  rendered no number + snapshots had no diff buttons — both fetch the snapshot index).
+  Re-running build-worker after vite restored the tree; DOM PASS, git clean. Lesson
+  re-proven: vite → build-worker, always (E51/E26). The DOM gate catching this is the
+  detection working as designed.
+- V10 Loop re-verify (2026-09-13T02:20Z): gov 1689e32 + all 15 public heads + org size 28
+  all static since cut #12 (live gh checks) — no re-cut needed. Fresh gate matrix from
+  58ea646: projection node --test all green (fail 0), 49/49 vitest, verify-atlas PASS
+  (169/453/260/0), V2 PASS, vite build green (bundle index-BJ2JBmHk, zero-diff rebuild),
+  worker rebuilt byte-identical (8,045,546 bytes == HEAD), DOM PASS (after E64 recovery),
+  private-head leak scan 0 hits (39 shipped files × 13 private heads). Leak-scan scope
+  note: a naive 40-hex scan is NOT a leak signal — assertion ids embed value hashes by
+  design; the gate is private-head strings only. BASELINE CI proposal verified already
+  applied (E11) — stale V8/BASELINE claims corrected. Vision still down (provider 400,
+  same 'not a valid model ID' error) — aesthetic gate stays owner-open.
 
 ## Exact heads (cut 2026-09-12T10:12:48Z; full SHAs in `workspace/.tmp-atlas-ledger-12/obs_*.json`)
 

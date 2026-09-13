@@ -27,7 +27,11 @@ Atlas addition: `ATLAS_HTML` (`/atlas`, `/atlas/`), `ATLAS_PROJECTION`
 immutable 1y cache). Fail-closed gates: build absent, bad JSON, non-v0.2 schema,
 dangling asset refs, runtime CDN URLs. Sitemap gains `/atlas` (daily, 0.7).
 
-## CI proposal (not yet applied)
+## CI proposal (APPLIED — superseded by E11; kept as history)
+
+Status 2026-09-13: `v2-interface.yml` already runs exactly these steps (atlas ci/test,
+projection tests, vite build, verify-atlas, worker compile, DOM smoke, V2 contract,
+bundle-current, diff-check). Nothing left to apply.
 
 `v2-interface.yml` already runs `node site/build-worker.cjs` on `site/**` changes —
 Atlas rides that job automatically (worker build fails closed without the vite output,
