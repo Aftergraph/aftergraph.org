@@ -39,6 +39,7 @@ has(landing, ':focus-visible', 'visible focus');
 has(landing, 'platform-chain', 'V3 platform lifecycle chain');
 has(landing, 'trust-flow', 'V3 trust verification flow');
 has(landing, 'product-mini', 'V3 product miniatures');
+has(landing, 'funnel', 'Wie condensation funnel');
 has(landing, '21 canonical repositories', 'canonical topology on landing');
 
 has(launcher, '"Use"', 'launcher Use group');
@@ -56,7 +57,10 @@ has(launcher, 'role="option"', 'launcher option semantics');
 has(launcher, 'aria-selected', 'launcher selected-state semantics');
 has(launcher, 'aria-activedescendant', 'launcher active-descendant semantics');
 has(launcher, 'launcher-option-', 'stable launcher option ids');
+has(launcher, 'banner-art', 'launcher banner artwork');
+has(launcher, 'five intent lanes', 'launcher banner motif');
 has(launcher, 'data-i=', 'launcher item affordance');
+has(launcher, 'data-g=', 'launcher group identity');
 for (const privateUrl of [
   'https://github.com/Aftergraph/afm',
   'https://github.com/Aftergraph/context-continuity',
@@ -115,7 +119,8 @@ has(statusPage, '21 canonical', 'status page canonical repository count');
 has(statusPage, '12 public', 'status page public repository count');
 has(statusPage, '9 private', 'status page private repository count');
 has(statusPage, 'wi-backend', 'status page canonical Wie backend slug');
-has(statusPage, 'wie.aftergraph.org/api/healthz', 'Wie production health endpoint');
+has(statusPage, 'wie.aftergraph.org', 'status mentions Wie domain for provenance reference');
+assert.ok(!statusPage.includes('wie.aftergraph.org/api/healthz'), 'status must not reference dead Wie health endpoint');
 assert.ok(!statusPage.includes('work-intelligence-v2'), 'legacy Work Intelligence slug leaked into status page');
 assert.ok(!statusPage.includes('github.com/Aftergraph/runtime'), 'private Runtime repository link leaked into status page');
 has(statusPage, 'docs.aftergraph.org', 'Knowledge Plane evidence link');
