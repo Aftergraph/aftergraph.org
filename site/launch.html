@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Aftergraph Mission Control - Search and launch into the verifiable intelligent systems ecosystem">
+<meta name="description" content="Aftergraph system launcher — search public destinations by intent: build, operate, verify, research.">
 <meta name="theme-color" content="#080c14">
 <link rel="canonical" href="https://aftergraph.org/launch">
-<title>Mission Control - Aftergraph</title>
+<title>Launcher — Aftergraph</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23080c14'/><path d='M16 5l9 5v12l-9 5-9-5V10z' fill='none' stroke='%2342c7e8' stroke-width='2'/></svg>">
 <style>
 :root{color-scheme:dark}
@@ -17,43 +17,23 @@ body{background:#080c14;color:#f5f7fa;font:15px/1.6 Inter,-apple-system,BlinkMac
 a{color:#8ab4f8;text-decoration:none}
 .brand{font-weight:700;letter-spacing:.02em;font-size:13px;color:#42c7e8;text-transform:uppercase;margin-bottom:32px}
 .brand a{color:#42c7e8}
-
-/* Enhanced Layout */
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
-
-/* Enhanced Palette/Command Center */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
 .palette{background:rgba(14,22,48,.8);border:1px solid rgba(137,147,164,.25);border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5)}
-
-/* Enhanced Search */
-.search-header{padding:24px 24px 0}
-.search-header h1{margin:0 0 8px;font-size:28px;font-weight:600;color:#f5f7fa}
-.search-header p{margin:0;color:#8993a4;font-size:14px}
 .search input{width:100%;background:transparent;border:none;outline:none;color:#f5f7fa;font-size:22px;padding:22px 24px;font-family:inherit;border-bottom:1px solid rgba(137,147,164,.2)}
+.visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .search input::placeholder{color:#7b8494}
-
-/* Enhanced Hint Bar */
 .hint{display:flex;gap:16px;padding:10px 24px;border-bottom:1px solid rgba(137,147,164,.12);font-size:12px;color:#7b8494;align-items:center;flex-wrap:wrap}
 .hint .spacer{flex:1}
-.hint kbd{background:rgba(66,199,232,.1);border:1px solid rgba(66,199,232,.3);border-radius:4px;padding:2px 6px;font-family:ui-monospace,monospace;font-size:11px;color:#42c7e8}
-
-/* Enhanced Results */
 .results{max-height:520px;overflow-y:auto}
-
-/* Enhanced Group Headers */
-.group{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8993a4;padding:14px 24px 6px;display:flex;align-items:center;gap:8px}
-.group::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--control);opacity:.5}
-
-/* Enhanced Items */
-.item{display:flex;align-items:center;gap:12px;padding:11px 24px;min-height:48px;cursor:pointer;border-left:3px solid transparent;transition:all 150ms ease}
+.group{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8993a4;padding:14px 24px 6px}
+.item{display:flex;align-items:center;gap:12px;padding:11px 24px;min-height:48px;cursor:pointer;border-left:3px solid transparent}
 .item .name{font-weight:600;font-size:15px}
 .item .desc{color:#8993a4;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:420px}
-.item .right{margin-left:auto;flex-shrink:0;display:flex;align-items:center;gap:8px}
-.item .arrow{color:#42c7e8;font-size:16px;opacity:0;transition:opacity 150ms ease}
+.item .right{margin-left:auto;flex-shrink:0}
+.item .arrow{color:#42c7e8;font-size:16px;opacity:0}
 .item.active{background:rgba(66,199,232,.12);border-left-color:#42c7e8}
 .item.active .arrow{opacity:1}
-.item:hover{background:rgba(66,199,232,.06)}
-
-/* Enhanced Badges */
+@media(pointer:fine){.item:hover{background:rgba(66,199,232,.06)}}
 .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .badge-prototype{background:rgba(240,166,74,.16);color:#f0a64a;border:1px solid rgba(240,166,74,.35)}
 .badge-research{background:rgba(147,158,180,.15);color:#8993a4;border:1px solid rgba(147,158,180,.4)}
@@ -62,333 +42,126 @@ a{color:#8ab4f8;text-decoration:none}
 .badge-internal{background:rgba(147,158,180,.15);color:#8993a4;border:1px solid rgba(147,158,180,.4)}
 .badge-public{background:rgba(36,196,173,.15);color:#24c4ad;border:1px solid rgba(36,196,173,.4)}
 .badge-demo{background:rgba(240,166,74,.16);color:#f0a64a;border:1px solid rgba(240,166,74,.35)}
-.badge-site{background:rgba(119,89,232,.15);color:#a38ff4;border:1px solid rgba(119,89,232,.4)}
-
-/* Empty State */
 .empty{padding:32px 24px;color:#7b8494;font-size:14px;text-align:center}
-
-/* Enhanced Preview Panel */
-.preview{background:rgba(14,22,48,.8);border:1px solid rgba(137,147,164,.25);border-radius:16px;padding:24px;font-size:13px;transition:all 200ms ease}
-.preview h2{margin:0 0 8px;font-size:19px;font-weight:600}
-.preview p{margin:0 0 16px;color:#8993a4;line-height:1.5}
-.preview .url{font-family:ui-monospace,monospace;font-size:12px;color:#42c7e8;word-break:break-all;display:block;margin-bottom:12px}
-.preview .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid rgba(137,147,164,.12)}
-.preview .meta span{font-size:11px;color:#7b8494}
-
-/* Quick Access Section */
-.quick-access{margin-top:24px;padding:24px;border:1px solid rgba(137,147,164,.25);border-radius:16px;background:rgba(14,22,48,.6)}
-.quick-access h3{margin:0 0 16px;font-size:14px;color:#8993a4;text-transform:uppercase;letter-spacing:.08em}
-.quick-access-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.quick-access-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(137,147,164,.15);border-radius:8px;cursor:pointer;transition:all 150ms ease}
-.quick-access-item:hover{background:rgba(66,199,232,.08);border-color:rgba(66,199,232,.3)}
-.quick-access-item .icon{font-size:18px;color:#42c7e8}
-.quick-access-item .label{font-size:13px;font-weight:500}
-.quick-access-item .desc{font-size:11px;color:#7b8494}
-
-/* Back Link */
+.preview{background:rgba(14,22,48,.8);border:1px solid rgba(137,147,164,.25);border-radius:16px;padding:20px;font-size:13px}
+.preview h2{margin:0 0 6px;font-size:17px}
+.preview p{margin:0 0 12px;color:#8993a4}
+.preview .url{font-family:ui-monospace,monospace;font-size:12px;color:#42c7e8;word-break:break-all}
+.preview .keys{margin-top:12px;color:#7b8494;font-size:12px}
 .back{margin-top:24px;text-align:center;font-size:13px;color:#7b8494}
 .back a{color:#8993a4}
-
-/* Filter Tags */
-.filter-tags{display:flex;flex-wrap:wrap;gap:8px;padding:0 24px 16px;border-bottom:1px solid rgba(137,147,164,.12)}
-.filter-tag{padding:4px 10px;background:rgba(66,199,232,.1);border:1px solid rgba(66,199,232,.2);border-radius:6px;font-size:11px;color:#42c7e8;cursor:pointer;transition:all 150ms ease}
-.filter-tag:hover{background:rgba(66,199,232,.15);border-color:rgba(66,199,232,.4)}
-.filter-tag.active{background:rgba(66,199,232,.2);color:#fff}
-
 :focus-visible{outline:2px solid #42c7e8;outline-offset:2px}
-
-@media(max-width:900px){.layout{grid-template-columns:1fr}.preview{display:none}.quick-access-grid{grid-template-columns:1fr}}
-@media(max-width:640px){.item .desc{display:none}.wrap{padding:32px 12px}.filter-tags{padding:0 12px 16px}}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.preview{display:none}}
+@media(max-width:600px){.item .desc{display:none}.wrap{padding:32px 12px}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="brand"><a href="/">2190 AFTERGRAPH</a></div>
-
+<div class="brand"><a href="/">← AFTERGRAPH</a></div>
 <div class="layout">
 <div class="palette" id="palette">
-<div class="search-header">
-<h1>Mission Control</h1>
-<p>Search the ecosystem by intent. Find what you can build, operate, verify and research.</p>
-</div>
-
-<div class="search">
-<label class="visually-hidden" for="q">Search destinations</label>
-<input id="q" type="text" placeholder="Type to search2026  e.g. trust, research, launch, works" autofocus autocomplete="off" role="combobox" aria-expanded="true" aria-controls="results" aria-activedescendant="launcher-option-0" aria-label="Search destinations">
-</div>
-
-<div class="hint">
-<span><kbd>2191</kbd><kbd>2193</kbd> navigate</span>
-<span><kbd>enter</kbd> open</span>
-<span><kbd>esc</kbd> close</span>
-<span><kbd>></kbd> commands</span>
-<span class="spacer"></span>
-<span id="count" aria-live="polite"></span>
-</div>
-
-<!-- Filter Tags -->
-<div class="filter-tags" id="filter-tags">
-<button class="filter-tag active" data-filter="all">All</button>
-<button class="filter-tag" data-filter="platform">Platform</button>
-<button class="filter-tag" data-filter="research">Research</button>
-<button class="filter-tag" data-filter="build">Build</button>
-<button class="filter-tag" data-filter="site">Site</button>
-</div>
-
+<div class="search"><label class="visually-hidden" for="q">Search destinations</label><input id="q" type="text" placeholder="Type to search…  e.g. trust, research, launch" autofocus autocomplete="off" role="combobox" aria-expanded="true" aria-controls="results" aria-activedescendant="launcher-option-0" aria-label="Search destinations"></div>
+<div class="hint"><span>↑↓ navigate</span><span>↵ open</span><span>esc close</span><span>&gt; commands</span><span class="spacer"></span><span id="count" aria-live="polite"></span></div>
 <div class="results" id="results" role="listbox" aria-label="Destinations"></div>
-
-<!-- Quick Access -->
-<div class="quick-access">
-<h3>Quick Start</h3>
-<div class="quick-access-grid">
-<div class="quick-access-item" data-intent="platform">
-<span class="icon">2603</span>
-<span class="label">Platform</span>
-<span class="desc">Core systems</span>
 </div>
-<div class="quick-access-item" data-intent="research">
-<span class="icon">250D</span>
-<span class="label">Research</span>
-<span class="desc">Claims & experiments</span>
-</div>
-<div class="quick-access-item" data-intent="build">
-<span class="icon">2795</span>
-<span class="label">Build</span>
-<span class="desc">Standards & docs</span>
-</div>
-<div class="quick-access-item" data-intent="verify">
-<span class="icon">2713</span>
-<span class="label">Verify</span>
-<span class="desc">Sentinel & gates</span>
-</div>
-</div>
-</div>
-</div>
-
 <aside class="preview" id="preview" role="region" aria-label="Destination preview" aria-hidden="true"></aside>
 </div>
-
-<div class="back"><a href="/">2190 Back to aftergraph.org</a></div>
+<div class="back"><a href="/">← Back to aftergraph.org</a></div>
 </div>
-
 <script>
-// Enhanced Items with categories and tags
 const ITEMS = [
-// Platform - Core Systems
-{g:"Platform",n:"Trust Gateway",d:"Fail-closed control plane 2013 approvals, policy, budgets, audit",u:"https://github.com/Aftergraph/trust-gateway",b:"prototype",tags:["control","policy","authority"]},
-{g:"Platform",n:"WORKS Execution",d:"Durable execution 2013 missions, WorkGraph, leases, recovery",u:"https://github.com/Aftergraph/works-execution",b:"prototype",tags:["execution","missions","durable"]},
-{g:"Platform",n:"Wie",d:"Work Intelligence Engine 2013 observations become WorkItems",u:"https://github.com/Aftergraph/wi-backend",b:"prototype",tags:["intelligence","workitems","observation"]},
-{g:"Platform",n:"AIE",d:"Agentic Institution Engineering 2013 authority & delegation",u:"https://github.com/Aftergraph/aie",b:"prototype",tags:["agents","institution","authority"]},
-{g:"Platform",n:"Studio",d:"Operator UX 2013 mission status, evidence, approvals",u:"https://github.com/Aftergraph/studio",b:"prototype",tags:["ui","operator","missions"]},
-{g:"Platform",n:"Governance",d:"Cross-repo contracts, terminology, evidence boundaries",u:"https://github.com/Aftergraph/after-graph-governance",b:"prototype",tags:["contracts","governance","standards"]},
-
-// Platform - Live Systems
-{g:"Platform",n:"Studio 2013 Live Demo",d:"Tier-0 demo with interactive fixture data, no backend required",u:"/studio/",b:"demo",tags:["demo","interactive","fixtures"]},
-
-// Research
-{g:"Research",n:"Intelligence Systems Research",d:"SPEC-001, MISSION-Bench, assurance, replication studies",u:"https://github.com/Aftergraph/intelligence-systems-research",b:"research",tags:["research","benchmarks","claims"]},
-{g:"Research",n:"Sentinel",d:"Verified code-review: PRs into merge-ready verdicts, exact-HEAD",u:"https://github.com/Aftergraph/sentinel",b:"research",tags:["code-review","verification","merge"]},
-{g:"Research",n:"Context Continuity",d:"Portable state-transfer capsules (Draft 0.1)",u:"https://github.com/Aftergraph/after-graph-governance/blob/main/docs/ACC-BOUNDARY-PROPOSAL-v0.1.md",b:"internal",tags:["state","transfer","portable"]},
-
-// Build & Docs
-{g:"Build",n:"Trust & Verification",d:"9 mechanical gates, evidence discipline, what the plane won't do",u:"https://docs.aftergraph.org/company/trust/",b:"public",tags:["trust","gates","verification"]},
-{g:"Build",n:"Context Packs (ACC-shaped)",d:"Portable context bundles per page for agents",u:"https://docs.aftergraph.org/context/index.json",b:"public",tags:["context","acc","agents"]},
-
-// Site & Organization
-{g:"Site",n:"Home",d:"aftergraph.org landing page 2013 platform overview",u:"/",b:"site",tags:["landing","overview","platform"]},
-{g:"Site",n:"Status",d:"Operational snapshot 2013 repos, releases, platform health",u:"/status",b:"site",tags:["status","health","operations"]},
-{g:"Site",n:"Health Check",d:"Deployment status + timestamp verification",u:"/healthz",b:"site",tags:["health","status","timestamp"]},
-{g:"Site",n:"Atlas",d:"Interactive system topology and relationship explorer",u:"/atlas/",b:"site",tags:["atlas","topology","explorer"]},
-
-// Organization
-{g:"Organization",n:"GitHub Organization",d:"All Aftergraph repositories and community files",u:"https://github.com/Aftergraph",b:"org",tags:["github","organization","repos"]},
-{g:"Organization",n:"Brand OS",d:"Identity, tokens, assets, communication contracts",u:"https://github.com/Aftergraph/brand",b:"production",tags:["brand","identity","assets"]},
-
-// Documentation
-{g:"Build",n:"Knowledge Plane (docs)",d:"Live developer & research portal 2013 compiler over canonical sources",u:"https://docs.aftergraph.org",b:"public",tags:["docs","knowledge","portal"]},
-{g:"Build",n:"Model Registry",d:"Canonical model families, versions, lifecycle, provenance",u:"https://docs.aftergraph.org/standards/contracts/",b:"internal",tags:["models","registry","versions"]},
+{g:"Use",n:"Studio",d:"General-purpose operating environment for governed agent work — Chat, Work, Space",u:"/studio/",b:"demo"},
+{g:"Use",n:"Wie",d:"Work Intelligence Engine — source-neutral observations become structured WorkItems",u:"https://github.com/Aftergraph/wi-backend",b:"prototype"},
+{g:"Verify",n:"Sentinel",d:"Verified code-review: PRs into merge-ready verdicts on the exact commit",u:"/sentinel",b:"prototype"},
+{g:"Build & Operate",n:"WORKS Execution",d:"Durable execution plane — missions, WorkGraph scheduling, leases, budgets, recovery",u:"https://github.com/Aftergraph/works-execution",b:"prototype"},
+{g:"Build & Operate",n:"Trust Gateway",d:"Fail-closed runtime control — admission, policy, approvals, audit",u:"https://github.com/Aftergraph/trust-gateway",b:"prototype"},
+{g:"Build & Operate",n:"AIE",d:"Agentic Institution Engineering — authority, delegation and lifecycle semantics",u:"https://github.com/Aftergraph/aie",b:"prototype"},
+{g:"Build & Operate",n:"Aftergraph Runtime",d:"Agent lifecycle, orchestration, dispatch and runtime telemetry",u:"https://docs.aftergraph.org/platform/",b:"internal"},
+{g:"Extend",n:"Skills Vault",d:"Governed capability supply chain for agent skills",u:"https://docs.aftergraph.org/",b:"internal"},
+{g:"Extend",n:"Model Registry",d:"Canonical model families, versions, artifacts and evaluation provenance",u:"https://docs.aftergraph.org/standards/contracts/",b:"internal"},
+{g:"Extend",n:"Context Continuity",d:"Portable state-transfer capsules for heterogeneous agent handoff",u:"https://docs.aftergraph.org/",b:"internal"},
+{g:"Understand",n:"Knowledge Plane (docs)",d:"Live developer and research portal — compiler over canonical sources",u:"https://docs.aftergraph.org",b:"production"},
+{g:"Understand",n:"Intelligence Systems Research",d:"SPEC-001, MISSION-Bench, assurance and replication evidence",u:"https://github.com/Aftergraph/intelligence-systems-research",b:"research"},
+{g:"Understand",n:"Governance",d:"Cross-repo contracts, terminology, topology and evidence boundaries",u:"https://github.com/Aftergraph/after-graph-governance",b:"production"},
+{g:"Understand",n:"Atlas",d:"Evidence-aware development observatory — read-only projection",u:"/atlas",b:"production"},
+{g:"Understand",n:"Brand OS",d:"Identity, tokens, assets and communication contracts",u:"https://github.com/Aftergraph/brand",b:"production"},
+{g:"Understand",n:"GitHub Organization",d:"All Aftergraph repositories and community files",u:"https://github.com/Aftergraph",b:"org"},
+{g:"Site",n:"Home",d:"aftergraph.org landing",u:"/",b:"org"},
+{g:"Site",n:"Status",d:"Operational snapshot — repos, releases, platform",u:"/status",b:"org"},
+{g:"Site",n:"Health check",d:"Deployment status and timestamp",u:"/healthz",b:"org"}
 ];
-
 const COMMANDS = [
-{n:"Open status",d:"Go to system status page",u:"/status",b:"site"},
-{n:"Copy link",d:"Copy active destination URL to clipboard",u:"#copy",b:"org"},
-{n:"Clear recent",d:"Forget recent destinations from history",u:"#clear-recent",b:"org"},
-{n:"Toggle theme",d:"Switch between dark and light themes",u:"#theme",b:"org"},
+{n:"Open status",d:"Go to /status",u:"/status"},
+{n:"Copy link",d:"Copy active destination URL",u:"#copy"},
+{n:"Clear recent",d:"Forget recent destinations",u:"#clear-recent"}
 ];
-
-const INTENT_MAP = {
-'platform': ['Platform'],
-'research': ['Research'],
-'build': ['Build'],
-'verify': ['Research','Build'],
-'launch': ['Platform'],
-'studio': ['Platform'],
-'works': ['Platform'],
-'trust': ['Platform'],
-'gate': ['Build'],
-'sentinel': ['Research'],
-'demo': ['Platform'],
-'status': ['Site'],
-'docs': ['Build'],
-'model': ['Build'],
-'organization': ['Organization'],
-'github': ['Organization'],
-};
-
 const q = document.getElementById('q');
 const results = document.getElementById('results');
 const preview = document.getElementById('preview');
 const count = document.getElementById('count');
-const filterTags = document.getElementById('filter-tags');
-const quickAccessItems = document.querySelectorAll('.quick-access-item');
-
 let filtered = [], active = 0, recent = [];
-let currentFilter = 'all';
-
 try{recent = JSON.parse(localStorage.getItem('af-recent')||'[]');}catch(e){recent=[];}
-
-// Enhanced fuzzy search
 function fuzzy(hay,needle){
   hay=hay.toLowerCase();needle=needle.toLowerCase();
   let j=0;for(let i=0;i<hay.length&&j<needle.length;i++){if(hay[i]===needle[j])j++;}
   return j===needle.length;
 }
-
-function badge(it){
-  const b=it.b||it.maturity||'internal';
-  return '<span class="badge badge-'+b+'">'+b+'</span>';
-}
-
-function tags(it){
-  if(!it.tags||!it.tags.length)return '';
-  return it.tags.map(t=>'<span class="badge badge-internal">'+t+'</span>').join('');
-}
-
-function matchSet(t,filter='all'){
+function badge(it){const b=it.b||it.maturity||'internal';return '<span class="badge badge-'+b+'">'+b+'</span>';}
+function matchSet(t){
   if(t.startsWith('>')){
     const n=t.slice(1).trim();
-    return COMMANDS.filter(c=>!n||fuzzy(c.n+' '+c.d,n)).map(c=>({g:'Commands',n:c.n,d:c.d,u:c.u,b:'org',tags:c.tags}));
+    return COMMANDS.filter(c=>!n||fuzzy(c.n+' '+c.d,n)).map(c=>({g:'Commands',n:c.n,d:c.d,u:c.u,b:'org'}));
   }
-  
-  const filterGroups = filter==='all' ? Object.keys(INTENT_MAP).map(k=>INTENT_MAP[k]).flat() : INTENT_MAP[filter] || [];
   const recents = (!t?recent.map(u=>ITEMS.find(i=>i.u===u)).filter(Boolean):[]);
-  const rest = ITEMS.filter(i=>!t||fuzzy(i.n+' '+i.d+' '+i.g+(i.tags?.join(' ')||""),t))
-    .filter(i=>filter==='all'||filterGroups.includes(i.g));
-  
+  const rest = ITEMS.filter(i=>!t||fuzzy(i.n+' '+i.d+' '+i.g,t));
   return [...recents.map(i=>({...i,g:'Recent'})),...rest];
 }
-
 function render(){
   const t = q.value.trim();
-  filtered = matchSet(t,currentFilter);
+  filtered = matchSet(t);
   active = 0;
-  
-  if(!filtered.length){
-    results.innerHTML='<div class="empty">No destinations match 2014 try "research", "studio", or "platform".</div>';
-    count.textContent='0 hits';
-    preview.setAttribute('aria-hidden','true');
-    preview.innerHTML='';
-    return;
-  }
-  
+  if(!filtered.length){results.innerHTML='<div class="empty">No destinations match — try "research" or "studio".</div>';count.textContent='0 hits';preview.setAttribute('aria-hidden','true');preview.innerHTML='';return;}
   count.textContent = filtered.length+' hit'+(filtered.length===1?'':'s');
   let html='',last='';
-  
-  filtered.forEach((it,idx)=>
-  {
-    if(it.g!==last){
-      html+='<div class="group" role="presentation">'+it.g+'</div>';
-      last=it.g;
-    }
+  filtered.forEach((it,idx)=>{
+    if(it.g!==last){html+='<div class="group" role="presentation">'+it.g+'</div>';last=it.g;}
     html+='<div class="item'+(idx===0?' active':'')+'" role="option" id="launcher-option-'+idx+'" aria-selected="'+(idx===0)+'" aria-label="'+it.n+', '+it.d+'" data-i="'+idx+'">'
       +'<span class="name">'+it.n+'</span>'
       +'<span class="desc">'+it.d+'</span>'
-      +'<span class="right">'+badge(it)+tags(it)+'<span class="arrow">2192</span></span>'
+      +'<span class="right">'+badge(it)+'<span class="arrow">→</span></span>'
       +'</div>';
   });
-  
   results.innerHTML = html;
   syncActive();
 }
-
 function syncActive(){
-  document.querySelectorAll('.item').forEach((x,i)=>
-  {x.classList.toggle('active',i===active);x.setAttribute('aria-selected',i===active);});
+  document.querySelectorAll('.item').forEach((x,i)=>{x.classList.toggle('active',i===active);x.setAttribute('aria-selected',i===active);});
   q.setAttribute('aria-activedescendant','launcher-option-'+active);
-  
   const it = filtered[active];
   if(it&&window.innerWidth>900){
     preview.setAttribute('aria-hidden','false');
-    preview.innerHTML='<h2>'+it.n+'</h2><p>'+it.d+'</p><div class="url">'+it.u+'</div><div class="meta">'+badge(it)+tags(it)+'</div>';
+    preview.innerHTML='<h2>'+it.n+'</h2><p>'+it.d+'</p><div>'+badge(it)+'</div><div class="url">'+it.u+'</div><div class="keys">↵ open · ↑↓ move · esc clear</div>';
   }else{preview.setAttribute('aria-hidden','true');}
 }
-
 function remember(u){
   if(u.startsWith('#'))return;
   recent=[u,...recent.filter(x=>x!==u)].slice(0,5);
   try{localStorage.setItem('af-recent',JSON.stringify(recent));}catch(e){}
 }
-
 function open(i){
   const it=filtered[i];if(!it)return;
-  if(it.u==='#copy'){
-    const a=filtered[active];
-    if(a&&navigator.clipboard)navigator.clipboard.writeText(a.u);
-    return;
-  }
-  if(it.u==='#clear-recent'){
-    recent=[];
-    try{localStorage.removeItem('af-recent');}catch(e){}
-    render();
-    return;
-  }
-  if(it.u==='#theme'){
-    // Theme toggle logic could go here
-    return;
-  }
-  remember(it.u);
-  location.href=it.u;
+  if(it.u==='#copy'){const a=filtered[active];if(a&&navigator.clipboard)navigator.clipboard.writeText(a.u);return;}
+  if(it.u==='#clear-recent'){recent=[];try{localStorage.removeItem('af-recent');}catch(e){}render();return;}
+  remember(it.u);location.href=it.u;
 }
-
-// Filter functionality
-function applyFilter(filter){
-  currentFilter = filter;
-  const tags = filterTags.querySelectorAll('.filter-tag');
-  tags.forEach(tag=>tag.classList.toggle('active',tag.dataset.filter===filter));
-  render();
-}
-
-// Quick access functionality
-quickAccessItems.forEach(item=>{
-  item.addEventListener('click',()=>{
-    const intent = item.dataset.intent;
-    q.value = intent;
-    applyFilter('all');
-    render();
-    q.focus();
-  });
-});
-
-// Initialize filter tags
-filterTags.querySelectorAll('.filter-tag').forEach(tag=>{
-  tag.addEventListener('click',()=>applyFilter(tag.dataset.filter));
-});
-
-results.addEventListener('click',e=>{
-  const el=e.target.closest('.item');
-  if(el)open(+el.dataset.i);
-});
-
+results.addEventListener('click',e=>{const el=e.target.closest('.item');if(el)open(+el.dataset.i);});
 if(window.matchMedia('(pointer:fine)').matches){
   results.addEventListener('mousemove',e=>{
-    const el=e.target.closest('.item');
-    if(!el)return;
-    active=+el.dataset.i;
-    syncActive();
+    const el=e.target.closest('.item');if(!el)return;
+    active=+el.dataset.i;syncActive();
   });
 }
-
 q.addEventListener('input',render);
 q.addEventListener('keydown',e=>{
   if(e.key==='ArrowDown'){e.preventDefault();active=Math.min(active+1,filtered.length-1);}
@@ -397,17 +170,11 @@ q.addEventListener('keydown',e=>{
   else if(e.key==='End'){e.preventDefault();active=filtered.length-1;}
   else if(e.key==='Enter'){open(active);return;}
   else if(e.key==='Escape'){q.value='';render();return;}
-  else if(e.key==='>'){q.value='>';render();return;}
   else return;
   syncActive();
   document.querySelectorAll('.item')[active]?.scrollIntoView({block:'nearest'});
 });
-
-// Initial render
 render();
-
-// Focus search on load
-q.focus();
 </script>
 </body>
 </html>

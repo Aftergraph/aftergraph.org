@@ -14,6 +14,7 @@
 - [Knowledge Plane Sentinel](https://docs.aftergraph.org/sentinel/): Sentinel documentation
 - [Health](https://aftergraph.org/healthz): Deployment status
 - [Sentinel](https://aftergraph.org/sentinel): Verified code-review product page
+- [Atlas](https://aftergraph.org/atlas): Evidence-aware development observatory (read-only projection)
 
 ## Deep index (from the Knowledge Plane)
 
