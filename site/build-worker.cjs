@@ -22,6 +22,14 @@ assertBrand('favicon.svg');
 assertBrand('og-image.svg');
 const favicon = read('.brand/favicon.svg');
 const ogImage = read('.brand/og-image.svg');
+const MANIFEST = read('manifest.webmanifest');
+const SWJS = read('sw.js');
+const ICON_FILES = {};
+for (const f of ['icon-180.png', 'icon-192.png', 'icon-512.png']) {
+  const p = path.join(SITE, 'icons', f);
+  assert(fs.existsSync(p), 'pwa icon missing: site/icons/' + f);
+  ICON_FILES[`/icons/${f}`] = fs.readFileSync(p).toString('base64');
+}
 const llms = read('llms.txt');
 const security = read('security.txt');
 const experienceHero = read('experience-hero.js');
@@ -210,6 +218,9 @@ const ATLAS_HTML = ${JSON.stringify(atlasHtml)};
 const ATLAS_PROJECTION = ${JSON.stringify(ATLAS_PROJECTION_RAW)};
 const ATLAS_EXPERIENCE = ${JSON.stringify(ATLAS_EXPERIENCE_RAW)};
 const ATLAS_FILES = ${JSON.stringify(ATLAS_FILES)};
+const MANIFEST = ${JSON.stringify(MANIFEST)};
+const SWJS = ${JSON.stringify(SWJS)};
+const ICON_FILES = ${JSON.stringify(ICON_FILES)};
 const HEALTH = ${JSON.stringify(health)};
 const ROBOTS = ${JSON.stringify(robots)};
 const SITEMAP = ${JSON.stringify(sitemap)};
@@ -227,6 +238,9 @@ addEventListener('fetch', event => {
   else if (p === '/.well-known/security.txt') { body = SECURITY; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
   else if (p === '/favicon.ico') { body = FAVICON; contentType = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
   else if (p === '/og-image.svg') { body = OGIMAGE; contentType = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
+  else if (p === '/manifest.webmanifest') { body = MANIFEST; contentType = 'application/manifest+json'; cache = 'public, max-age=3600'; }
+  else if (p === '/sw.js') { body = SWJS; contentType = 'text/javascript;charset=utf-8'; cache = 'no-store'; }
+  else if (ICON_FILES[p]) { body = Uint8Array.from(atob(ICON_FILES[p]), c => c.charCodeAt(0)); contentType = 'image/png'; cache = 'public, max-age=86400'; }
   else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
   else if (p === '/status' || p === '/status/') { body = STATUS; }
   else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }
