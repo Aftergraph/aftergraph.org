@@ -39,6 +39,7 @@ has(landing, ':focus-visible', 'visible focus');
 has(landing, 'platform-chain', 'V3 platform lifecycle chain');
 has(landing, 'trust-flow', 'V3 trust verification flow');
 has(landing, 'product-mini', 'V3 product miniatures');
+has(landing, 'funnel', 'Wie condensation funnel');
 has(landing, '21 canonical repositories', 'canonical topology on landing');
 
 has(launcher, '"Use"', 'launcher Use group');
@@ -56,6 +57,8 @@ has(launcher, 'role="option"', 'launcher option semantics');
 has(launcher, 'aria-selected', 'launcher selected-state semantics');
 has(launcher, 'aria-activedescendant', 'launcher active-descendant semantics');
 has(launcher, 'launcher-option-', 'stable launcher option ids');
+has(launcher, 'banner-art', 'launcher banner artwork');
+has(launcher, 'five intent lanes', 'launcher banner motif');
 has(launcher, 'data-i=', 'launcher item affordance');
 for (const privateUrl of [
   'https://github.com/Aftergraph/afm',

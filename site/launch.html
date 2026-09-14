@@ -50,6 +50,10 @@ a{color:#8ab4f8;text-decoration:none}
 .preview .keys{margin-top:12px;color:#7b8494;font-size:12px}
 .back{margin-top:24px;text-align:center;font-size:13px;color:#7b8494}
 .back a{color:#8993a4}
+.banner-art{display:block;width:100%;height:auto;border:1px solid rgba(137,147,164,.25);border-radius:16px;background:#0a1120;margin-bottom:16px}
+.banner-art .bflow{stroke-dasharray:7 9;animation:bdash 3s linear infinite}
+@keyframes bdash{to{stroke-dashoffset:-32}}
+@media (prefers-reduced-motion: reduce){.banner-art .bflow{animation:none}}
 :focus-visible{outline:2px solid #42c7e8;outline-offset:2px}
 .hint-touch{display:none}
 @media(pointer:coarse){.hint>span:not(.spacer):not(#count):not(.hint-touch){display:none}.hint-touch{display:block}}
@@ -70,6 +74,7 @@ a{color:#8ab4f8;text-decoration:none}
 <body>
 <div class="wrap">
 <div class="brand"><a href="/">← AFTERGRAPH</a></div>
+<svg class="banner-art" viewBox="0 0 1060 140" role="img" aria-label="Launcher artwork: five intent lanes converging into one verified launch point"><defs><linearGradient id="lbg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7759e8" stop-opacity=".25"/><stop offset=".55" stop-color="#42c7e8" stop-opacity=".8"/><stop offset="1" stop-color="#24c4ad"/></linearGradient></defs><rect width="1060" height="140" fill="#0a1120"/><g class="bflow" stroke="url(#lbg)" stroke-width="2" fill="none"><path d="M20 20 C 420 20, 620 55, 826 62"/><path d="M20 45 C 420 45, 620 58, 826 64"/><path d="M20 70 H 826"/><path d="M20 95 C 420 95, 620 82, 826 76"/><path d="M20 120 C 420 120, 620 85, 826 78"/></g><rect x="826" y="48" width="184" height="44" rx="10" fill="rgba(36,196,173,.1)" stroke="#24c4ad" stroke-width="2"/><path d="M842 70 l8 8 16 -16" fill="none" stroke="#24c4ad" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="892" cy="70" r="5" fill="#42c7e8"><animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/></circle><circle cx="912" cy="70" r="5" fill="#42c7e8" opacity=".6"/><circle cx="932" cy="70" r="5" fill="#7759e8" opacity=".8"/><path d="M1010 70 H 1040" stroke="#24c4ad" stroke-width="2" class="bflow" fill="none"/></svg>
 <div class="layout">
 <div class="palette" id="palette">
 <div class="search"><label class="visually-hidden" for="q">Search destinations</label><input id="q" type="text" placeholder="Type to search…  e.g. trust, research, launch" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="results" aria-activedescendant="launcher-option-0" aria-label="Search destinations"></div>
