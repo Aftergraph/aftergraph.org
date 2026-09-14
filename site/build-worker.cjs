@@ -235,6 +235,25 @@ addEventListener('fetch', event => {
   else if (p === '/atlas/experience.json') { body = ATLAS_EXPERIENCE; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
   else if (ATLAS_FILES[p]) { body = ATLAS_FILES[p].body; contentType = ATLAS_FILES[p].ct; cache = 'public, max-age=31536000, immutable'; }
   else if (p === '/404') { body = NOTFOUND; }
+  else if (p === '/track' && event.request.method === 'POST') {
+    event.waitUntil((async () => {
+      try {
+        const b = await event.request.json();
+        const g = String((b && b.goal) || '');
+        if (!/^[a-z-]{1,20}$/.test(g)) return;
+        if ({pageview:1,launch:1,explore:1,docs:1,product:1,verify:1,sentinel:1,studio:1,atlas:1,status:1}[g] !== 1) return;
+        const day = new Date().toISOString().slice(0, 10);
+        const keys = ['t:' + day, 't:total'];
+        for (const k of keys) {
+          let cur = {};
+          try { cur = JSON.parse(await AG_STATS.get(k)) || {}; } catch (e) {}
+          cur[g] = (cur[g] || 0) + 1;
+          await AG_STATS.put(k, JSON.stringify(cur));
+        }
+      } catch (e) {}
+    })());
+    body = ''; contentType = 'text/plain;charset=utf-8'; cache = 'no-store';
+  }
   else if (p === '/') { body = LANDING; }
   else { body = NOTFOUND; responseStatus = 404; cache = 'no-store'; }
   event.respondWith(new Response(body, {
@@ -250,6 +269,10 @@ fs.writeFileSync(path.join(SITE, 'worker.js'), worker);
 fs.writeFileSync(path.join(SITE, 'wrangler.toml'), `name = "aftergraph-site"
 main = "worker.js"
 compatibility_date = "2024-11-01"
+
+[[kv_namespaces]]
+binding = "AG_STATS"
+id = "7b0696a1cd1b4656b9325589a3b6199c"
 
 [build]
 command = "node build-worker.cjs"
