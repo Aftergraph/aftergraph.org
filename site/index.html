@@ -19,17 +19,29 @@ a{color:var(--control);text-decoration:none}a:hover{color:#a9e8f5}
 .navtoggle{position:absolute;opacity:0;pointer-events:none}
 .burger{display:none;flex-direction:column;gap:5px;padding:10px;cursor:pointer}.burger span{display:block;width:22px;height:2px;background:var(--text);border-radius:1px}
 .hero{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;min-height:calc(100vh - 64px);padding:80px 0 64px}
+.hero::before{content:"";position:absolute;top:-140px;right:-100px;width:520px;height:520px;background:radial-gradient(circle,rgba(66,199,232,.13),transparent 65%);pointer-events:none}
+.hero-visual{position:relative;overflow:hidden;display:flex;flex-direction:column;padding:24px;border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(180deg,rgba(20,31,64,.9),rgba(8,12,20,.75))}
+.flow-status{align-self:flex-start;margin:0 0 16px;padding:6px 12px;border:1px solid var(--border-strong);border-radius:999px;font-size:12px;font-weight:600;color:var(--control);background:var(--control-soft)}
+.pipeline{position:relative;display:flex;flex-direction:column}
+.pulse{position:absolute;left:7px;top:12px;bottom:12px;width:2px}
+.pulse::after{content:"";position:absolute;left:-3px;top:0;width:8px;height:8px;border-radius:50%;background:#c4f1fc;box-shadow:0 0 12px var(--control),0 0 28px rgba(66,199,232,.5);animation:travel 4.5s linear infinite}
+@keyframes travel{0%{top:-4px}100%{top:calc(100% - 4px)}}
+.pnode{position:relative;display:flex;align-items:center;gap:12px;padding:9px 0 9px 30px;font-size:13px}
+.pnode::before{content:"";position:absolute;left:7px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,rgba(66,199,232,.5),rgba(36,196,173,.5));opacity:.4}
+.pnode:first-child::before{top:50%}.pnode:last-child::before{bottom:50%}
+.pdot{position:absolute;left:1px;top:50%;width:14px;height:14px;transform:translateY(-50%);border-radius:50%;border:2px solid var(--control);background:var(--canvas)}
+.pnode.done .pdot{background:var(--control);box-shadow:0 0 10px rgba(66,199,232,.8)}
+.pnode.final .pdot{border-color:var(--evidence);background:var(--evidence);box-shadow:0 0 14px var(--evidence)}
+.pnode.final{font-weight:600}
+.plabel{font-weight:600;min-width:78px}
+.pdesc{color:var(--muted);font-size:12px}
 .hero-copy h1{margin:0;font-size:clamp(40px,5.5vw,72px);line-height:1.02;letter-spacing:-.04em;font-weight:600;max-width:640px}
 .hero-lede{max-width:540px;margin:24px 0 32px;color:#aeb7c5;font-size:17px;line-height:1.65}
 .actions{display:flex;flex-wrap:wrap;gap:10px}
 .button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-weight:600;transition:transform 180ms var(--ease),border-color 180ms var(--ease),background 180ms var(--ease)}
 .button:hover{transform:translateY(-1px);border-color:var(--border-strong)}
 .button.primary{border-color:var(--control);background:var(--control);color:var(--canvas)}.button.primary:hover{background:#8fe0f5}
-.hero-visual{display:flex;flex-direction:column;gap:12px;padding:24px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
-.mini-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:rgba(8,12,20,.6);font-size:13px}
-.mini-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.mini-label{font-weight:600;min-width:80px}
-.mini-desc{color:var(--muted);font-size:12px}
+
 .section{padding:80px 0;border-top:1px solid var(--border)}
 .section-kicker{margin:0 0 12px;color:var(--control);font:500 11px/1.4 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase}
 .section h2{margin:0 0 12px;font-size:clamp(28px,3.5vw,42px);line-height:1.1;letter-spacing:-.03em;font-weight:600}
@@ -82,7 +94,7 @@ a{color:var(--control);text-decoration:none}a:hover{color:#a9e8f5}
 .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 @media(max-width:900px){.hero{grid-template-columns:1fr;gap:32px;padding:48px 0}.intent-grid{grid-template-columns:1fr 1fr}.product-grid{grid-template-columns:1fr}.trust-split{grid-template-columns:1fr}.evidence-grid{grid-template-columns:1fr 1fr}.principles{grid-template-columns:1fr 1fr}.footer{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.shell{width:min(100% - 32px,1180px)}.nav{min-height:56px}.burger{display:flex}.nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:rgba(8,12,20,.97);border-bottom:1px solid var(--border);padding:8px 24px 16px}.nav-links a{padding:10px 0;border-top:1px solid var(--border)}.navtoggle:checked~.nav-links{display:flex}.intent-grid,.evidence-grid,.principles{grid-template-columns:1fr}.footer{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}.button:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}.button:hover{transform:none}.pulse::after{animation:none}}
 </style>
 </head>
 <body>
@@ -98,18 +110,17 @@ a{color:var(--control);text-decoration:none}a:hover{color:#a9e8f5}
 <div class="actions">
 <a class="button primary" href="#products">Explore products</a>
 <a class="button" href="/launch">Launch Aftergraph</a>
-<a class="button" href="https://docs.aftergraph.org" target="_blank" rel="noopener">Build with Aftergraph</a>
 </div>
 </div>
-<div class="hero-visual" aria-label="Illustrative system lifecycle"><p style="margin:0 0 8px;color:var(--subtle);font:600 10px/1.4 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase">Illustrative lifecycle — example states, no production telemetry</p>
-<div class="mini-row"><span class="mini-dot" style="background:var(--decision)"></span><span class="mini-label">Intent</span><span class="mini-desc">Human or system declares purpose</span></div>
-<div class="mini-row"><span class="mini-dot" style="background:var(--system)"></span><span class="mini-label">Mission</span><span class="mini-desc">Bounded objective with constraints</span></div>
-<div class="mini-row"><span class="mini-dot" style="background:var(--authority)"></span><span class="mini-label">Authority</span><span class="mini-desc">Scoped permission before action</span></div>
-<div class="mini-row"><span class="mini-dot" style="background:var(--control)"></span><span class="mini-label">Execute</span><span class="mini-desc">Durable work under policy + budget</span></div>
-<div class="mini-row"><span class="mini-dot" style="background:var(--evidence)"></span><span class="mini-label">Evidence</span><span class="mini-desc">Inspectable provenance emitted</span></div>
-<div class="mini-row"><span class="mini-dot" style="background:var(--evidence)"></span><span class="mini-label">Verify</span><span class="mini-desc">Independent gate checks criteria</span></div>
-<div class="mini-row" style="border-color:var(--evidence)"><span class="mini-dot" style="background:var(--evidence)"></span><span class="mini-label" style="color:var(--evidence)">Verified</span><span class="mini-desc">Outcome proven, not just claimed</span></div>
-</div>
+<div class="hero-visual"><p class="flow-status">Illustrative lifecycle — example states</p><div class="pipeline" aria-label="Illustrative system lifecycle"><span class="pulse" aria-hidden="true"></span>
+<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Intent</span><span class="pdesc">Human or system declares purpose</span></div>
+<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Mission</span><span class="pdesc">Bounded objective with constraints</span></div>
+<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Authority</span><span class="pdesc">Scoped permission before action</span></div>
+<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Execute</span><span class="pdesc">Durable work under policy + budget</span></div>
+<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Evidence</span><span class="pdesc">Inspectable provenance emitted</span></div>
+<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Verify</span><span class="pdesc">Independent gate checks criteria</span></div>
+<div class="pnode final"><span class="pdot" aria-hidden="true"></span><span class="plabel">Verified</span><span class="pdesc">Outcome proven, not just claimed</span></div>
+</div></div>
 </header>
 
 <section class="section shell" id="intent">
