@@ -99,7 +99,29 @@ a{color:var(--control);text-decoration:none}a:hover{color:#a9e8f5}
 .footer a{display:block;padding:8px 0;color:var(--muted);font-size:13px}.footer a:hover{color:var(--text)}
 .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 @media(max-width:900px){.hero{grid-template-columns:1fr;gap:32px;padding:48px 0}.intent-grid{grid-template-columns:1fr 1fr}.product-grid{grid-template-columns:1fr}.trust-split{grid-template-columns:1fr}.evidence-grid{grid-template-columns:1fr 1fr}.principles{grid-template-columns:1fr 1fr}.footer{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.shell{width:min(100% - 32px,1180px)}.nav{min-height:56px}.burger{display:flex}.nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;background:#080c14;border-bottom:1px solid var(--border);padding:8px 24px 16px}.nav-links a{padding:10px 0;border-top:1px solid var(--border);text-align:left}.navtoggle:checked~.nav-links{display:flex}.intent-grid,.evidence-grid,.principles{grid-template-columns:1fr}.footer{grid-template-columns:1fr}}
+.tabbar{display:none}
+@media(max-width:600px){
+.shell{width:min(100% - 32px,1180px)}
+body{padding-bottom:calc(68px + env(safe-area-inset-bottom))}
+.nav{min-height:56px}.burger{display:flex}
+.nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;background:#080c14;border-bottom:1px solid var(--border);padding:8px 24px 16px}
+.nav-links a{padding:10px 0;border-top:1px solid var(--border);text-align:left}
+.navtoggle:checked~.nav-links{display:flex}
+.intent-grid,.evidence-grid,.principles{grid-template-columns:1fr}.footer{grid-template-columns:1fr}
+.tabbar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:30;background:rgba(8,12,20,.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom)}
+.tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0 9px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.tabbar a svg{width:21px;height:21px}
+.tabbar a:active{color:var(--control)}
+.hero-copy h1{font-size:clamp(34px,9vw,44px)}
+.hero-lede{font-size:16px;margin:18px 0 24px}
+.hero{padding:40px 0;min-height:auto}
+.hero-visual{padding:18px}
+.section{padding:56px 0}
+.section h2{font-size:clamp(25px,7vw,32px)}
+.proof-num{font-size:23px}
+.final-cta{padding:64px 0}
+.flow-detail{min-height:0}
+}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}.button:hover{transform:none}.pulse::after{animation:none}}
 </style>
 </head>
@@ -340,6 +362,12 @@ details.code-tab pre{margin:0;padding:16px;overflow-x:auto;font:12.5px/1.7 "JetB
 @media(max-width:900px){.code-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.status-strip{flex-direction:column;gap:6px}}
 </style>
+<nav class="tabbar" aria-label="Mobile sections">
+<a href="#products"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Products</a>
+<a href="#verify-live"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Verify</a>
+<a href="#history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>History</a>
+<a href="/launch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>Launch</a>
+</nav>
 <script>
 var navtoggle=document.getElementById('navtoggle');
 if(navtoggle){navtoggle.addEventListener('change',function(){this.setAttribute('aria-expanded',this.checked?'true':'false');});}

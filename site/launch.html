@@ -51,8 +51,19 @@ a{color:#8ab4f8;text-decoration:none}
 .back{margin-top:24px;text-align:center;font-size:13px;color:#7b8494}
 .back a{color:#8993a4}
 :focus-visible{outline:2px solid #42c7e8;outline-offset:2px}
+.hint-touch{display:none}
+@media(pointer:coarse){.hint>span:not(.spacer):not(#count):not(.hint-touch){display:none}.hint-touch{display:block}}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.preview{display:none}}
-@media(max-width:600px){.item .desc{display:none}.wrap{padding:32px 12px}}
+@media(max-width:600px){
+.item .desc{display:none}
+.wrap{padding:20px 12px calc(32px + env(safe-area-inset-bottom))}
+.brand{margin-bottom:20px}
+.search{position:sticky;top:0;z-index:5;background:#101a3a;border-radius:16px 16px 0 0}
+.search input{font-size:19px;padding:18px}
+.item{min-height:56px;padding:13px 18px;gap:14px}
+.item .name{font-size:16px}
+.results{max-height:60vh}
+}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -61,8 +72,8 @@ a{color:#8ab4f8;text-decoration:none}
 <div class="brand"><a href="/">← AFTERGRAPH</a></div>
 <div class="layout">
 <div class="palette" id="palette">
-<div class="search"><label class="visually-hidden" for="q">Search destinations</label><input id="q" type="text" placeholder="Type to search…  e.g. trust, research, launch" autofocus autocomplete="off" role="combobox" aria-expanded="true" aria-controls="results" aria-activedescendant="launcher-option-0" aria-label="Search destinations"></div>
-<div class="hint"><span>↑↓ navigate</span><span>↵ open</span><span>esc close</span><span>&gt; commands</span><span class="spacer"></span><span id="count" aria-live="polite"></span></div>
+<div class="search"><label class="visually-hidden" for="q">Search destinations</label><input id="q" type="text" placeholder="Type to search…  e.g. trust, research, launch" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="results" aria-activedescendant="launcher-option-0" aria-label="Search destinations"></div>
+<div class="hint"><span>↑↓ navigate</span><span>↵ open</span><span>esc close</span><span>&gt; commands</span><span class="hint-touch">Tap a destination to open it</span><span class="spacer"></span><span id="count" aria-live="polite"></span></div>
 <div class="results" id="results" role="listbox" aria-label="Destinations"></div>
 </div>
 <aside class="preview" id="preview" role="region" aria-label="Destination preview" aria-hidden="true"></aside>
@@ -175,6 +186,7 @@ q.addEventListener('keydown',e=>{
   document.querySelectorAll('.item')[active]?.scrollIntoView({block:'nearest'});
 });
 render();
+if(window.matchMedia('(pointer:fine)').matches){q.focus();}
 </script>
 </body>
 </html>
