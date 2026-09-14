@@ -48,6 +48,14 @@ jobs:
           STATUS=$?
           kill $SRV
           exit $STATUS
+      - name: Launcher browser smoke
+        run: |
+          node site/serve-local.cjs 8472 site &
+          SRV=$!
+          node atlas/scripts/verify-launcher.mjs "http://localhost:8472/launch.html"
+          STATUS=$?
+          kill $SRV
+          exit $STATUS
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is current
