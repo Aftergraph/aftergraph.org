@@ -112,16 +112,23 @@ a{color:var(--control);text-decoration:none}a:hover{color:#a9e8f5}
 <a class="button" href="/launch">Launch Aftergraph</a>
 </div>
 </div>
-<div class="hero-visual"><p class="flow-status">Illustrative lifecycle — example states</p><div class="pipeline" aria-label="Illustrative system lifecycle"><span class="pulse" aria-hidden="true"></span>
-<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Intent</span><span class="pdesc">Human or system declares purpose</span></div>
-<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Mission</span><span class="pdesc">Bounded objective with constraints</span></div>
-<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Authority</span><span class="pdesc">Scoped permission before action</span></div>
-<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Execute</span><span class="pdesc">Durable work under policy + budget</span></div>
-<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Evidence</span><span class="pdesc">Inspectable provenance emitted</span></div>
-<div class="pnode done"><span class="pdot" aria-hidden="true"></span><span class="plabel">Verify</span><span class="pdesc">Independent gate checks criteria</span></div>
-<div class="pnode final"><span class="pdot" aria-hidden="true"></span><span class="plabel">Verified</span><span class="pdesc">Outcome proven, not just claimed</span></div>
-</div></div>
+<div class="hero-visual"><p class="flow-status">Illustrative lifecycle — click a stage</p><div class="pipeline" aria-label="Illustrative system lifecycle"><span class="pulse" aria-hidden="true"></span>
+<button class="pnode done" aria-current="true" data-h="Intent" data-d="A human or system declares purpose. Nothing runs without a declared why."><span class="pdot" aria-hidden="true"></span><span class="plabel">Intent</span><span class="pdesc">Declare purpose</span></button>
+<button class="pnode done" aria-current="false" data-h="Mission" data-d="Intent becomes a bounded objective with constraints: scope, budget, leases. See an example in the launcher."><span class="pdot" aria-hidden="true"></span><span class="plabel">Mission</span><span class="pdesc">Bounded objective</span></button>
+<button class="pnode done" aria-current="false" data-h="Authority" data-d="Scoped permission is granted before any action. Authority attenuates through delegation — never ambient."><span class="pdot" aria-hidden="true"></span><span class="plabel">Authority</span><span class="pdesc">Scoped permission</span></button>
+<button class="pnode done" aria-current="false" data-h="Execute" data-d="Durable work runs under policy and budget, with worker state and recovery. WORKS is the most mature runtime surface."><span class="pdot" aria-hidden="true"></span><span class="plabel">Execute</span><span class="pdesc">Durable work</span></button>
+<button class="pnode done" aria-current="false" data-h="Evidence" data-d="Every action emits inspectable provenance. Self-report is separated from proof at every layer."><span class="pdot" aria-hidden="true"></span><span class="plabel">Evidence</span><span class="pdesc">Inspectable trail</span></button>
+<button class="pnode done" aria-current="false" data-h="Verify" data-d="An independent gate checks criteria against exact subjects — Sentinel binds verdicts to exact HEAD."><span class="pdot" aria-hidden="true"></span><span class="plabel">Verify</span><span class="pdesc">Independent check</span></button>
+<button class="pnode final" aria-current="false" data-h="Verified" data-d="Outcome proven, not just claimed. Only independent evidence justifies a stronger operational claim."><span class="pdot" aria-hidden="true"></span><span class="plabel">Verified</span><span class="pdesc">Proven outcome</span></button>
+</div><div class="flow-detail" aria-live="polite"><b>Intent</b> — A human or system declares purpose. Nothing runs without a declared why.</div></div>
 </header>
+<section class="proof shell" aria-label="System proof points"><div class="proof-row">
+<div class="proof-stat"><span class="proof-num">21</span><span class="proof-label">canonical repositories</span></div>
+<div class="proof-stat"><span class="proof-num">12</span><span class="proof-label">public · 9 private</span></div>
+<div class="proof-stat"><span class="proof-num">3</span><span class="proof-label">products · honest maturity</span></div>
+<div class="proof-stat"><span class="proof-num">7</span><span class="proof-label">stages, intent to verified outcome</span></div>
+<span class="live-pill" id="livepill"><span class="live-dot" aria-hidden="true"></span><span id="livetext">checking system…</span></span>
+</div></section>
 
 <section class="section shell" id="intent">
 <p class="section-kicker">What do you want to do?</p>
@@ -260,11 +267,38 @@ a{color:var(--control);text-decoration:none}a:hover{color:#a9e8f5}
 .status-strip{display:flex;flex-wrap:wrap;gap:16px;padding:14px 0;border-top:1px solid var(--border);font-size:12px;color:var(--subtle);margin-top:0}
 .status-strip b{color:var(--muted);font-weight:600}
 :focus-visible{outline:2px solid var(--control);outline-offset:2px}
+button.pnode{cursor:pointer;background:none;border:0;color:inherit;font:inherit;text-align:left;width:100%}
+button.pnode:hover .plabel{color:var(--control)}
+button.pnode[aria-current="true"] .plabel{color:var(--control)}
+button.pnode[aria-current="true"] .pdot{background:var(--control);box-shadow:0 0 10px rgba(66,199,232,.8)}
+button.pnode.final[aria-current="true"] .pdot{background:var(--evidence);box-shadow:0 0 14px var(--evidence)}
+.flow-detail{margin-top:16px;padding:14px 16px;border:1px solid var(--border);border-radius:8px;background:rgba(8,12,20,.6);font-size:13px;color:var(--muted);min-height:68px}
+.flow-detail b{color:var(--text)}
+.proof{padding:32px 0;border-top:1px solid var(--border)}
+.proof-row{display:flex;flex-wrap:wrap;gap:16px 40px;align-items:center}
+.proof-stat{display:flex;flex-direction:column;gap:2px}
+.proof-num{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.proof-label{font-size:12px;color:var(--subtle)}
+.live-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--muted)}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--subtle)}
+.live-pill.ok{color:var(--evidence);border-color:rgba(36,196,173,.4)}
+.live-pill.ok .live-dot{background:var(--evidence);box-shadow:0 0 8px var(--evidence)}
 @media(max-width:600px){.status-strip{flex-direction:column;gap:6px}}
 </style>
 <script>
 var navtoggle=document.getElementById('navtoggle');
 if(navtoggle){navtoggle.addEventListener('change',function(){this.setAttribute('aria-expanded',this.checked?'true':'false');});}
+var detail=document.querySelector('.flow-detail');
+var stages=document.querySelectorAll('button.pnode');
+stages.forEach(function(btn){btn.addEventListener('click',function(){
+stages.forEach(function(b){b.setAttribute('aria-current','false');});
+btn.setAttribute('aria-current','true');
+if(detail){detail.innerHTML='<b></b> — ';detail.querySelector('b').textContent=btn.dataset.h;detail.appendChild(document.createTextNode(btn.dataset.d));}
+});});
+fetch('/healthz',{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
+var pill=document.getElementById('livepill'),txt=document.getElementById('livetext');
+if(j&&j.status==='ok'&&pill&&txt){pill.classList.add('ok');txt.textContent='live · verified '+String(j.sha||'').slice(0,7);}
+}).catch(function(){var t=document.getElementById('livetext');if(t){t.textContent='status: see /status';}});
 </script>
 </body>
 </html>
