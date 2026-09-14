@@ -64,6 +64,15 @@ a{color:var(--control);text-decoration:none}a:hover{color:#a9e8f5}
 .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .product-card{padding:28px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);display:flex;flex-direction:column;gap:12px}
 .product-card.featured{border-color:var(--border-strong)}
+.product-art{display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:8px;background:#0a1120}
+.product-art .flow{stroke-dasharray:6 8;animation:dashflow 2.8s linear infinite}
+@keyframes dashflow{to{stroke-dashoffset:-28}}
+@media(prefers-reduced-motion:reduce){.product-art .flow{animation:none}}
+.intent-card{border-top:2px solid var(--border)}
+.intent-card.acc-control{border-top-color:var(--control)}
+.intent-card.acc-evidence{border-top-color:var(--evidence)}
+.intent-card.acc-authority{border-top-color:var(--authority)}
+.intent-card.acc-decision{border-top-color:var(--decision)}
 .product-card h3{margin:0;font-size:20px;font-weight:600}
 .product-card .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--decision-soft);color:var(--decision);border:1px solid rgba(240,166,74,.3)}
 .product-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.55}
@@ -177,22 +186,22 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <h2>Four ways into Aftergraph.</h2>
 <p class="section-intro">Every entry point routes to the right product, surface or documentation. No guessing.</p>
 <div class="intent-grid">
-<div class="intent-card">
+<div class="intent-card acc-control">
 <h3>Use intelligent systems</h3>
 <p>Operate governed agents through structured workspaces.</p>
 <ul><li><a href="#studio">Studio</a></li><li><a href="#wie">Wie</a></li></ul>
 </div>
-<div class="intent-card">
+<div class="intent-card acc-evidence">
 <h3>Verify outcomes</h3>
 <p>Independent code review bound to exact commits.</p>
 <ul><li><a href="/sentinel">Sentinel</a></li></ul>
 </div>
-<div class="intent-card">
+<div class="intent-card acc-authority">
 <h3>Build and operate</h3>
 <p>Runtime infrastructure for durable autonomous work.</p>
 <ul><li><a href="https://github.com/Aftergraph/works-execution">WORKS</a></li><li><a href="https://github.com/Aftergraph/trust-gateway">Trust Gateway</a></li><li><a href="https://github.com/Aftergraph/aie">AIE</a></li></ul>
 </div>
-<div class="intent-card">
+<div class="intent-card acc-decision">
 <h3>Research and extend</h3>
 <p>Evidence, standards, skills and canonical knowledge.</p>
 <ul><li><a href="https://docs.aftergraph.org">Docs</a></li><li><a href="https://github.com/Aftergraph/intelligence-systems-research">Research</a></li><li><a href="https://github.com/Aftergraph/after-graph-governance">Governance</a></li></ul>
@@ -208,6 +217,7 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <article class="product-card featured" id="studio">
 <h3>Studio by Aftergraph</h3>
 <span class="tag">prototype</span>
+<svg class="product-art" viewBox="0 0 320 130" role="img" aria-label="Studio artwork: scattered mission threads converging into one governed lane"><defs><linearGradient id="stg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#42c7e8" stop-opacity=".15"/><stop offset="1" stop-color="#42c7e8"/></linearGradient></defs><rect width="320" height="130" fill="#0a1120"/><g stroke="url(#stg)" stroke-width="2" fill="none"><path d="M10 25 C 120 25, 150 60, 230 60"/><path d="M10 65 C 120 65, 150 65, 230 65"/><path d="M10 105 C 120 105, 150 70, 230 70"/></g><g class="flow" stroke="#42c7e8" stroke-width="2" fill="none"><path d="M10 25 C 120 25, 150 60, 230 60"/><path d="M10 65 C 120 65, 150 65, 230 65"/><path d="M10 105 C 120 105, 150 70, 230 70"/></g><rect x="230" y="48" width="80" height="36" rx="8" fill="rgba(66,199,232,.12)" stroke="#42c7e8"/><circle cx="252" cy="66" r="5" fill="#42c7e8"><animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/></circle><circle cx="272" cy="66" r="5" fill="#42c7e8" opacity=".6"/><circle cx="292" cy="66" r="5" fill="#24c4ad"/></svg>
 <p>General-purpose operating environment for governed agent work. Chat, manage missions, approve actions, inspect evidence.</p>
 <div class="product-mini"><b>Chat</b> | <b>Work</b> | <b>Space</b><br>Mission &rarr; Active work &rarr; Needs You &rarr; Evidence</div>
 <a class="button" href="/studio/" style="margin-top:auto;align-self:flex-start">Open Studio demo</a>
@@ -215,6 +225,7 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <article class="product-card" id="wie">
 <h3>Wie by Aftergraph</h3>
 <span class="tag">prototype</span>
+<svg class="product-art" viewBox="0 0 320 130" role="img" aria-label="Wie artwork: scattered signals condensing into structured work items"><defs><linearGradient id="wig" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7759e8" stop-opacity=".2"/><stop offset="1" stop-color="#42c7e8"/></linearGradient></defs><rect width="320" height="130" fill="#0a1120"/><g fill="#7759e8" opacity=".5"><circle cx="30" cy="30" r="3"/><circle cx="55" cy="55" r="2.5"/><circle cx="40" cy="85" r="3"/><circle cx="70" cy="100" r="2"/><circle cx="90" cy="40" r="2.5"/><circle cx="110" cy="75" r="2"/></g><g class="flow" stroke="url(#wig)" stroke-width="2" fill="none"><path d="M100 65 H 210"/><path d="M120 40 H 210"/><path d="M120 90 H 210"/></g><g><rect x="210" y="30" width="90" height="20" rx="5" fill="rgba(66,199,232,.14)" stroke="#42c7e8"/><rect x="210" y="55" width="90" height="20" rx="5" fill="rgba(66,199,232,.14)" stroke="#42c7e8"/><rect x="210" y="80" width="90" height="20" rx="5" fill="rgba(36,196,173,.16)" stroke="#24c4ad"/></g></svg>
 <p>Work Intelligence Engine. Source-neutral observations become structured, attributable WorkItems ready for review.</p>
 <div class="product-mini">Signal &rarr; <b>Observation</b> &rarr; <b>WorkItem</b> &rarr; Review &rarr; Publish</div>
 <a class="button" href="https://github.com/Aftergraph/wi-backend" style="margin-top:auto;align-self:flex-start">View source</a>
@@ -222,6 +233,7 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <article class="product-card" id="sentinel">
 <h3>Sentinel by Aftergraph</h3>
 <span class="tag">prototype</span>
+<svg class="product-art" viewBox="0 0 320 130" role="img" aria-label="Sentinel artwork: code streams passing a verification gate"><defs><linearGradient id="seg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#42c7e8" stop-opacity=".25"/><stop offset="1" stop-color="#24c4ad"/></linearGradient></defs><rect width="320" height="130" fill="#0a1120"/><g class="flow" stroke="url(#seg)" stroke-width="2" fill="none"><path d="M10 45 H 130"/><path d="M10 65 H 130"/><path d="M10 85 H 130"/></g><circle cx="175" cy="65" r="34" fill="none" stroke="#24c4ad" stroke-width="3"/><circle cx="175" cy="65" r="34" fill="none" stroke="#24c4ad" stroke-width="3" opacity=".25"><animate attributeName="r" values="34;42" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".25;0" dur="2.4s" repeatCount="indefinite"/></circle><path d="M162 65 l9 9 20 -20" fill="none" stroke="#24c4ad" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M209 65 H 310" stroke="#24c4ad" stroke-width="2" fill="none" class="flow"/></svg>
 <p>Verified code review. PRs evaluated against exact HEAD with evidence-backed SHIP / DO NOT SHIP verdicts.</p>
 <div class="product-mini">Exact HEAD &rarr; Checks &rarr; Evidence &rarr; <b>Verdict</b></div>
 <a class="button" href="/sentinel" style="margin-top:auto;align-self:flex-start">Sentinel details</a>
