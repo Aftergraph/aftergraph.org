@@ -25,7 +25,9 @@ a{color:#8ab4f8;text-decoration:none}
 .hint{display:flex;gap:16px;padding:10px 24px;border-bottom:1px solid rgba(137,147,164,.12);font-size:12px;color:#7b8494;align-items:center;flex-wrap:wrap}
 .hint .spacer{flex:1}
 .results{max-height:520px;overflow-y:auto}
-.group{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8993a4;padding:14px 24px 6px}
+.group{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8993a4;padding:14px 24px 6px;display:flex;align-items:center;gap:8px}
+.group::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--gc,#8993a4);flex-shrink:0}
+.group[data-g="Use"]{--gc:#42c7e8}.group[data-g="Verify"]{--gc:#24c4ad}.group[data-g="Build & Operate"]{--gc:#7759e8}.group[data-g="Extend"]{--gc:#f0a64a}.group[data-g="Understand"]{--gc:#8ab4f8}
 .item{display:flex;align-items:center;gap:12px;padding:11px 24px;min-height:48px;cursor:pointer;border-left:3px solid transparent}
 .item .name{font-weight:600;font-size:15px}
 .item .desc{color:#8993a4;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:420px}
@@ -141,7 +143,7 @@ function render(){
   count.textContent = filtered.length+' hit'+(filtered.length===1?'':'s');
   let html='',last='';
   filtered.forEach((it,idx)=>{
-    if(it.g!==last){html+='<div class="group" role="presentation">'+it.g+'</div>';last=it.g;}
+    if(it.g!==last){html+='<div class="group" role="presentation" data-g="'+it.g+'">'+it.g+'</div>';last=it.g;}
     html+='<div class="item'+(idx===0?' active':'')+'" role="option" id="launcher-option-'+idx+'" aria-selected="'+(idx===0)+'" aria-label="'+it.n+', '+it.d+'" data-i="'+idx+'">'
       +'<span class="name">'+it.n+'</span>'
       +'<span class="desc">'+it.d+'</span>'

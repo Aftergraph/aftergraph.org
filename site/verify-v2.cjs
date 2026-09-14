@@ -60,6 +60,7 @@ has(launcher, 'launcher-option-', 'stable launcher option ids');
 has(launcher, 'banner-art', 'launcher banner artwork');
 has(launcher, 'five intent lanes', 'launcher banner motif');
 has(launcher, 'data-i=', 'launcher item affordance');
+has(launcher, 'data-g=', 'launcher group identity');
 for (const privateUrl of [
   'https://github.com/Aftergraph/afm',
   'https://github.com/Aftergraph/context-continuity',
