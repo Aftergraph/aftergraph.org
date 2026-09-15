@@ -1,4 +1,5 @@
-/* Home landing view. Uses --ag-* tokens from app.css. No new custom props. */
+/* Home landing view — redesigned for Atlas V3 shell aesthetic.
+   Uses canonical --ag-* tokens from tokens.css. */
 .ag-home-wrap {
   grid-column: 1 / -1;
   overflow: auto;
@@ -9,47 +10,48 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--ag-space-5) var(--ag-space-4);
+  padding: var(--ag-space-5xl) var(--ag-space-base);
   max-width: 960px;
   margin: 0 auto;
-  gap: var(--ag-space-5);
+  gap: var(--ag-space-4xl);
 }
 
-/* Masthead */
-.ag-home-masthead {
+/* ── Hero ── */
+.ag-home-hero {
   text-align: center;
-  max-width: 640px;
+  max-width: 680px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--ag-space-3);
+  gap: var(--ag-space-lg);
 }
 .ag-home-eyebrow {
-  font-family: var(--ag-mono);
-  font-size: 11px;
+  font-family: var(--ag-font-code);
+  font-size: var(--ag-type-caption);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ag-muted);
+  letter-spacing: 0.1em;
+  color: var(--ag-control);
   margin: 0;
 }
 .ag-home-title {
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-size: var(--ag-type-display);
+  font-weight: var(--ag-weight-bold);
+  letter-spacing: -0.025em;
+  line-height: var(--ag-leading-tight);
   margin: 0;
   color: var(--ag-text);
 }
 .ag-home-sub {
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--ag-muted);
+  font-size: var(--ag-type-body-lg);
+  line-height: var(--ag-leading-relaxed);
+  color: var(--ag-text-muted);
   margin: 0;
+  max-width: 560px;
 }
 .ag-home-cta {
   display: flex;
-  gap: var(--ag-space-3);
-  margin-top: var(--ag-space-2);
+  gap: var(--ag-space-md);
+  margin-top: var(--ag-space-sm);
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -57,36 +59,46 @@
   background: var(--ag-surface);
   border: 1px solid var(--ag-border-strong);
   color: var(--ag-text);
-  border-radius: var(--ag-radius);
-  padding: var(--ag-space-2) var(--ag-space-4);
+  border-radius: var(--ag-radius-button);
+  padding: var(--ag-space-sm) var(--ag-space-xl);
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  font-size: var(--ag-type-body);
+  font-weight: var(--ag-weight-medium);
+  font-family: var(--ag-font-interface);
+  transition:
+    background var(--ag-motion-state) var(--ag-ease-state),
+    border-color var(--ag-motion-state) var(--ag-ease-state),
+    box-shadow var(--ag-motion-state) var(--ag-ease-state);
 }
 .ag-home-btn:hover {
-  background: var(--ag-surface-hover);
+  background: var(--ag-surface-strong);
   border-color: var(--ag-control);
+  box-shadow: var(--ag-shadow-raised);
+}
+.ag-home-btn:focus-visible {
+  outline: 2px solid var(--ag-control);
+  outline-offset: 2px;
 }
 .ag-home-btn-primary {
-  background: rgba(66, 199, 232, 0.12);
+  background: var(--ag-control-soft);
   border-color: var(--ag-control);
   color: var(--ag-control);
 }
 .ag-home-btn-primary:hover {
-  background: rgba(66, 199, 232, 0.22);
+  background: var(--ag-control);
+  color: var(--ag-canvas);
 }
 
-/* Living map teaser SVG */
+/* ── Living map teaser SVG ── */
 .ag-home-map {
   width: 100%;
   max-width: 640px;
   margin: 0;
-  padding: var(--ag-space-4);
-  background: var(--ag-raised);
+  padding: var(--ag-space-xl);
+  background: var(--ag-canvas-raised);
   border: 1px solid var(--ag-border);
-  border-radius: var(--ag-radius);
-  box-shadow: var(--ag-shadow-md);
+  border-radius: var(--ag-radius-card);
+  box-shadow: var(--ag-shadow-raised);
 }
 .ag-home-map svg {
   width: 100%;
@@ -112,74 +124,142 @@
   fill: var(--ag-control);
 }
 .ag-home-labels text {
-  fill: var(--ag-muted);
-  font-family: var(--ag-mono);
-  font-size: 11px;
+  fill: var(--ag-text-muted);
+  font-family: var(--ag-font-code);
+  font-size: var(--ag-type-caption);
   text-anchor: middle;
 }
 .ag-home-caption {
-  font-family: var(--ag-mono);
-  font-size: 11px;
-  color: var(--ag-muted);
+  font-family: var(--ag-font-code);
+  font-size: var(--ag-type-caption);
+  color: var(--ag-text-subtle);
   text-align: center;
-  margin-top: var(--ag-space-3);
+  margin-top: var(--ag-space-md);
 }
 
-/* Entry points */
-.ag-home-entries {
+/* ── Feature cards ── */
+.ag-home-features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--ag-space-3);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--ag-space-lg);
   width: 100%;
 }
-.ag-home-entry {
+.ag-home-feature-card {
   display: flex;
   flex-direction: column;
-  gap: var(--ag-space-2);
+  gap: var(--ag-space-sm);
   text-align: left;
-  background: var(--ag-raised);
+  background: var(--ag-canvas-raised);
   border: 1px solid var(--ag-border);
-  border-radius: var(--ag-radius);
-  padding: var(--ag-space-4);
+  border-radius: var(--ag-radius-card);
+  padding: var(--ag-space-xl);
   cursor: pointer;
   color: var(--ag-text);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: var(--ag-font-interface);
+  transition:
+    border-color var(--ag-motion-state) var(--ag-ease-state),
+    box-shadow var(--ag-motion-state) var(--ag-ease-state),
+    transform var(--ag-motion-state) var(--ag-ease-state);
 }
-.ag-home-entry:hover {
+.ag-home-feature-card:hover {
   border-color: var(--ag-control);
-  box-shadow: var(--ag-shadow-sm);
+  box-shadow: var(--ag-shadow-focus);
+  transform: translateY(-2px);
 }
-.ag-home-entry-kicker {
-  font-size: 13px;
-  font-weight: 600;
+.ag-home-feature-card:focus-visible {
+  outline: 2px solid var(--ag-control);
+  outline-offset: 2px;
+}
+.ag-home-feature-icon {
+  font-size: 24px;
+  line-height: 1;
+  color: var(--ag-control);
+  margin-bottom: var(--ag-space-xs);
+}
+.ag-home-feature-kicker {
+  font-size: var(--ag-type-body);
+  font-weight: var(--ag-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--ag-control);
 }
-.ag-home-entry-body {
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--ag-muted);
+.ag-home-feature-body {
+  font-size: var(--ag-type-body-sm);
+  line-height: var(--ag-leading-normal);
+  color: var(--ag-text-muted);
 }
-.ag-home-entry-action {
-  font-family: var(--ag-mono);
-  font-size: 11px;
+.ag-home-feature-action {
+  font-family: var(--ag-font-code);
+  font-size: var(--ag-type-caption);
   color: var(--ag-evidence);
   margin-top: auto;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ag-home-trace { animation: none; }
+/* ── Quick links ── */
+.ag-home-quicklinks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ag-space-md);
+  width: 100%;
+}
+.ag-home-quicklinks-label {
+  font-family: var(--ag-font-code);
+  font-size: var(--ag-type-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ag-text-subtle);
+}
+.ag-home-quicklinks-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ag-space-sm);
+  justify-content: center;
+}
+.ag-home-quicklink {
+  background: transparent;
+  border: 1px solid var(--ag-border);
+  color: var(--ag-text-muted);
+  border-radius: var(--ag-radius-pill);
+  padding: var(--ag-space-xs) var(--ag-space-lg);
+  cursor: pointer;
+  font-size: var(--ag-type-ui);
+  font-family: var(--ag-font-interface);
+  font-weight: var(--ag-weight-medium);
+  transition:
+    color var(--ag-motion-state) var(--ag-ease-state),
+    border-color var(--ag-motion-state) var(--ag-ease-state),
+    background var(--ag-motion-state) var(--ag-ease-state);
+}
+.ag-home-quicklink:hover {
+  color: var(--ag-text);
+  border-color: var(--ag-control);
+  background: var(--ag-control-soft);
+}
+.ag-home-quicklink:focus-visible {
+  outline: 2px solid var(--ag-control);
+  outline-offset: 2px;
 }
 
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .ag-home-trace { animation: none; }
+  .ag-home-feature-card:hover { transform: none; }
+}
+
+/* ── Mobile ── */
 @media (max-width: 760px) {
   .ag-home {
-    padding: var(--ag-space-4) var(--ag-space-3);
+    padding: var(--ag-space-4xl) var(--ag-space-md);
+    gap: var(--ag-space-3xl);
   }
   .ag-home-title {
-    font-size: 22px;
+    font-size: var(--ag-type-headline);
   }
-  .ag-home-entries {
+  .ag-home-sub {
+    font-size: var(--ag-type-body);
+  }
+  .ag-home-features {
     grid-template-columns: 1fr;
   }
 }

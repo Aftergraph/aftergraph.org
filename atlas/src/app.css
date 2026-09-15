@@ -1,36 +1,29 @@
-/* Atlas styles. Tokens derived from Aftergraph/brand v1.0.0 (dark-first). */
+/* Atlas styles — Canonical tokens from @aftergraph/brand v1.1.0 */
+@import '../../src/styles/tokens.css';
+
+/* Legacy aliases for backward compat (atlas app.css references) */
 :root {
-  --ag-canvas: #080c14;
-  --ag-raised: #0e1630;
-  --ag-surface: rgba(14, 22, 48, 0.78);
-  --ag-surface-hover: rgba(20, 30, 60, 0.9);
-  --ag-text: #f5f7fa;
-  --ag-muted: #8993a4;
-  --ag-border: rgba(137, 147, 164, 0.2);
-  --ag-border-strong: rgba(137, 147, 164, 0.35);
-  --ag-control: #42c7e8;
-  --ag-evidence: #24c4ad;
-  --ag-authority: #7759e8;
-  --ag-decision: #f0a64a;
-  --ag-danger: #ff6b7a;
-  --ag-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --ag-sans: Inter, -apple-system, 'Segoe UI', sans-serif;
-  --ag-shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
-  --ag-shadow-md: 0 4px 12px rgba(0,0,0,0.5);
-  --ag-radius: 8px;
-  --ag-space-1: 4px;
-  --ag-space-2: 8px;
-  --ag-space-3: 12px;
-  --ag-space-4: 16px;
-  --ag-space-5: 24px;
+  --ag-raised: var(--ag-canvas-raised);
+  --ag-muted: var(--ag-text-muted);
+  --ag-surface-hover: var(--ag-surface-strong);
+  --ag-shadow-sm: var(--ag-shadow-raised);
+  --ag-shadow-md: var(--ag-shadow-overlay);
+  --ag-radius: var(--ag-radius-control);
+  --ag-mono: var(--ag-font-code);
+  --ag-sans: var(--ag-font-interface);
+  --ag-space-1: var(--ag-space-xs);
+  --ag-space-2: var(--ag-space-sm);
+  --ag-space-3: var(--ag-space-md);
+  --ag-space-4: var(--ag-space-base);
+  --ag-space-5: var(--ag-space-xl);
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--ag-canvas); color: var(--ag-text); font-family: var(--ag-sans); font-size: 14px; line-height: 1.5; }
+body { margin: 0; background: var(--ag-canvas); color: var(--ag-text); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; }
 .atlas { display: grid; grid-template-columns: 260px 1fr 340px; grid-template-rows: auto auto 1fr; height: 100vh; }
 .atlas-head { grid-column: 1 / -1; display: flex; gap: var(--ag-space-3); align-items: center; padding: var(--ag-space-3) var(--ag-space-4); border-bottom: 1px solid var(--ag-border); background: var(--ag-raised); flex-wrap: wrap; box-shadow: var(--ag-shadow-sm); z-index: 10; }
 .atlas-head h1 { font-size: 16px; margin: 0; font-weight: 600; letter-spacing: -0.01em; }
 .atlas-head .cut { color: var(--ag-muted); font-size: 11px; font-family: var(--ag-mono); }
-.atlas-launcher-link { margin-left: auto; color: var(--ag-accent); border: 1px solid var(--ag-border); border-radius: var(--ag-radius-sm); padding: 7px 10px; text-decoration: none; font-size: 12px; font-family: var(--ag-mono); }
+.atlas-launcher-link { margin-left: auto; color: var(--ag-accent); border: 1px solid var(--ag-border); border-radius: 12px; padding: 7px 10px; text-decoration: none; font-size: 12px; font-family: var(--ag-mono); }
 .atlas-launcher-link:hover { border-color: var(--ag-accent); background: var(--ag-raised); }
 .overlays { display: flex; gap: var(--ag-space-2); margin-left: auto; flex-wrap: wrap; }
 .overlays button { background: transparent; border: 1px solid var(--ag-border); color: var(--ag-muted); border-radius: 999px; padding: var(--ag-space-1) var(--ag-space-3); cursor: pointer; font-size: 11px; font-weight: 500; transition: all 0.15s ease; }
@@ -64,7 +57,7 @@ body { margin: 0; background: var(--ag-canvas); color: var(--ag-text); font-fami
 .drift-list h3 { margin-top: 0; color: var(--ag-danger); font-size: 13px; font-weight: 600; }
 .banner { grid-column: 1 / -1; background: rgba(240, 166, 74, 0.15); color: var(--ag-decision); padding: var(--ag-space-2) var(--ag-space-4); font-size: 12px; border-bottom: 1px solid rgba(240, 166, 74, 0.3); }
 .empty { padding: 48px; max-width: 640px; }
-.empty code { display: block; background: var(--ag-raised); padding: var(--ag-space-3); margin-top: var(--ag-space-3); font-family: var(--ag-mono); font-size: 12px; white-space: pre-wrap; border-radius: var(--ag-radius); border: 1px solid var(--ag-border); }
+.empty code { display: block; background: var(--ag-raised); padding: var(--ag-space-3); margin-top: var(--ag-space-3); font-family: var(--ag-mono); font-size: 12px; white-space: pre-wrap; border-radius: 12px; border: 1px solid var(--ag-border); }
 @media (max-width: 760px) {
   .atlas { grid-template-columns: 1fr; grid-template-rows: auto auto auto 46vh auto; }
   .tree { border-right: none; border-bottom: 1px solid var(--ag-border); max-height: 22vh; }
@@ -73,7 +66,7 @@ body { margin: 0; background: var(--ag-canvas); color: var(--ag-text); font-fami
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
-.rf-node { position: relative; background: var(--ag-raised); border: 1px solid var(--ag-border-strong); border-radius: var(--ag-radius); padding: 6px 10px; font-size: 12px; width: 190px; height: 54px; box-sizing: border-box; overflow: hidden; box-shadow: var(--ag-shadow-sm); transition: box-shadow 0.15s ease, border-color 0.15s ease; display: flex; flex-direction: column; justify-content: center; }
+.rf-node { position: relative; background: var(--ag-raised); border: 1px solid var(--ag-border-strong); border-radius: 12px; padding: 6px 10px; font-size: 12px; width: 190px; height: 54px; box-sizing: border-box; overflow: hidden; box-shadow: var(--ag-shadow-sm); transition: box-shadow 0.15s ease, border-color 0.15s ease; display: flex; flex-direction: column; justify-content: center; }
 .rf-node > .rf-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; font-size: 12px; color: var(--ag-text); line-height: 1.3; }
 .rf-node > .rf-planes { display: flex; gap: 3px; margin-top: 4px; flex-wrap: nowrap; overflow: hidden; }
 .rf-node > .rf-planes .plane-chip { font-size: 8px; padding: 0 4px; border-radius: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; line-height: 14px; }
@@ -108,7 +101,7 @@ button:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 2
 .react-flow__edge-path { stroke-width: 1.5px; }
 .react-flow__edge-text { fill: var(--ag-muted) !important; font-size: 9px !important; font-family: var(--ag-mono) !important; }
 .react-flow__edge-textbg { fill: var(--ag-canvas) !important; }
-.react-flow__controls { background: var(--ag-raised) !important; border: 1px solid var(--ag-border) !important; border-radius: var(--ag-radius) !important; box-shadow: var(--ag-shadow-md) !important; overflow: hidden; }
+.react-flow__controls { background: var(--ag-raised) !important; border: 1px solid var(--ag-border) !important; border-radius: 12px !important; box-shadow: var(--ag-shadow-md) !important; overflow: hidden; }
 .react-flow__controls-button { background: var(--ag-raised) !important; border-bottom: 1px solid var(--ag-border) !important; fill: var(--ag-muted) !important; width: 28px !important; height: 28px !important; }
 .react-flow__controls-button:hover { background: var(--ag-surface) !important; fill: var(--ag-text) !important; }
 .react-flow__controls-button svg { fill: inherit !important; }
@@ -125,3 +118,56 @@ button:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 2
 .lens-context { margin-bottom: var(--ag-space-3); padding: var(--ag-space-2) var(--ag-space-3); border: 1px solid var(--ag-border); border-radius: 8px; color: var(--ag-muted); font: 11px/1.5 var(--ag-mono); }
 .lens-context strong { color: var(--ag-text); }
 @media (max-width: 900px) { .experience-lenses { order: 3; width: 100%; } }
+
+/* === CSS-only mobile nav (checkbox pattern) === */
+.navtoggle {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: var(--ag-radius-control);
+  transition: background var(--ag-motion-state) var(--ag-ease-state);
+}
+.burger:hover {
+  background: var(--ag-surface);
+}
+.burger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--ag-text);
+  border-radius: 1px;
+  transition: transform var(--ag-motion-state) var(--ag-ease-state), opacity var(--ag-motion-state) var(--ag-ease-state);
+}
+.navtoggle:checked ~ .burger span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.navtoggle:checked ~ .burger span:nth-child(2) {
+  opacity: 0;
+}
+.navtoggle:checked ~ .burger span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+.mobile-nav-panel {
+  max-height: 0;
+  transition: max-height var(--ag-motion-surface) var(--ag-ease-surface);
+}
+.navtoggle:checked ~ header .mobile-nav-panel,
+header:has(.navtoggle:checked) .mobile-nav-panel {
+  max-height: 60vh;
+}
+@media (prefers-reduced-motion: reduce) {
+  .burger span { transition: none; }
+  .mobile-nav-panel { transition: none; }
+}

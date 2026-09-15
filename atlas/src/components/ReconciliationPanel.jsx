@@ -11,14 +11,54 @@ async function fetchConflicts() {
   return res.json();
 }
 
+const MOTION_SURFACE = { duration: 0.34, ease: [0.16, 1, 0.3, 1] };
+const MOTION_STATE = { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] };
+const MOTION_MICRO = { duration: 0.12, ease: [0.2, 0.8, 0.2, 1] };
+
+function SkeletonRow() {
+  return (
+    <div
+      className="rounded-xl border p-4 space-y-3"
+      style={{
+        background: 'var(--ag-surface)',
+        borderColor: 'var(--ag-border)',
+      }}
+    >
+      <div className="flex items-center gap-2">
+        <div
+          className="h-4 rounded animate-pulse"
+          style={{ width: '60%', background: 'var(--ag-border-strong)', animationDuration: 'var(--ag-motion-surface)' }}
+        />
+        <div
+          className="h-5 w-16 rounded-full animate-pulse"
+          style={{ background: 'var(--ag-border-strong)', animationDuration: 'var(--ag-motion-surface)' }}
+        />
+      </div>
+      <div
+        className="h-3 rounded animate-pulse"
+        style={{ width: '40%', background: 'var(--ag-border)', animationDuration: 'var(--ag-motion-surface)' }}
+      />
+    </div>
+  );
+}
+
 function ConflictBadge({ status }) {
   const colors = {
-    open: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
-    resolved: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-    acknowledged: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    open: { bg: 'var(--ag-danger-soft)', text: 'var(--ag-danger)', border: 'rgba(255,107,122,0.3)' },
+    resolved: { bg: 'var(--ag-evidence-soft)', text: 'var(--ag-evidence)', border: 'rgba(36,196,173,0.3)' },
+    acknowledged: { bg: 'var(--ag-decision-soft)', text: 'var(--ag-decision)', border: 'rgba(240,166,74,0.3)' },
   };
+  const c = colors[status] || colors.open;
   return (
-    <span className={`px-2 py-0.5 text-xs font-medium rounded-full border ${colors[status] || colors.open}`}>
+    <span
+      className="px-2 py-0.5 rounded-full border font-medium"
+      style={{
+        fontSize: 'var(--ag-type-ui)',
+        background: c.bg,
+        color: c.text,
+        borderColor: c.border,
+      }}
+    >
       {status}
     </span>
   );
@@ -26,14 +66,24 @@ function ConflictBadge({ status }) {
 
 function PlaneTag({ plane }) {
   const planeColors = {
-    CANONICAL: 'text-blue-300',
-    OBSERVED: 'text-cyan-300',
-    INFERRED: 'text-purple-300',
-    PROPOSED: 'text-amber-300',
-    VERIFIED: 'text-emerald-300',
-    EXECUTED: 'text-rose-300',
+    CANONICAL: 'var(--ag-authority)',
+    OBSERVED: 'var(--ag-control)',
+    INFERRED: 'var(--ag-authority)',
+    PROPOSED: 'var(--ag-decision)',
+    VERIFIED: 'var(--ag-evidence)',
+    EXECUTED: 'var(--ag-danger)',
   };
-  return <span className={`text-xs font-mono ${planeColors[plane] || 'text-gray-400'}`}>{plane}</span>;
+  return (
+    <span
+      className="font-mono"
+      style={{
+        fontSize: 'var(--ag-type-ui)',
+        color: planeColors[plane] || 'var(--ag-text-muted)',
+      }}
+    >
+      {plane}
+    </span>
+  );
 }
 
 function ConflictDetailDialog({ conflict, open, onOpenChange }) {
@@ -42,29 +92,97 @@ function ConflictDetailDialog({ conflict, open, onOpenChange }) {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-2xl max-h-[80vh] overflow-y-auto bg-gray-900/95 border border-white/10 rounded-xl shadow-2xl p-6 z-50">
-          <Dialog.Title className="text-lg font-semibold text-white mb-1">{conflict.claim_key}</Dialog.Title>
-          <Dialog.Description className="text-sm text-gray-400 mb-4">First seen: {new Date(conflict.first_seen).toLocaleString()}</Dialog.Description>
+        <Dialog.Overlay
+          className="fixed inset-0 z-50 backdrop-blur-sm"
+          style={{ background: 'rgba(8,12,20,0.6)' }}
+        />
+        <Dialog.Content
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-2xl max-h-[80vh] overflow-y-auto z-50 p-6"
+          style={{
+            background: 'var(--ag-surface-strong)',
+            border: '1px solid var(--ag-border)',
+            borderRadius: 'var(--ag-radius-card)',
+            boxShadow: 'var(--ag-shadow-overlay)',
+          }}
+        >
+          <Dialog.Title
+            className="mb-1"
+            style={{ fontSize: 'var(--ag-type-title)', fontWeight: 'var(--ag-weight-semibold)', color: 'var(--ag-text)' }}
+          >
+            {conflict.claim_key}
+          </Dialog.Title>
+          <Dialog.Description
+            className="mb-4"
+            style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text-muted)' }}
+          >
+            First seen: {new Date(conflict.first_seen).toLocaleString()}
+          </Dialog.Description>
           <div className="space-y-4">
             <div>
-              <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-2">Conflicting Planes</h4>
+              <h4
+                className="uppercase tracking-wider mb-2"
+                style={{ fontSize: 'var(--ag-type-caption)', color: 'var(--ag-text-subtle)' }}
+              >
+                Conflicting Planes
+              </h4>
               <div className="flex flex-wrap gap-2">
                 {(planes || []).map((p, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }}
-                    className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ ...MOTION_MICRO, delay: i * 0.05 }}
+                    className="px-3 py-1.5 rounded-lg border"
+                    style={{
+                      background: 'var(--ag-surface)',
+                      borderColor: 'var(--ag-border)',
+                    }}
+                  >
                     <PlaneTag plane={p} />
                   </motion.div>
                 ))}
               </div>
             </div>
-            <div className="p-4 rounded-lg bg-rose-500/5 border border-rose-500/20">
-              <h4 className="text-xs uppercase tracking-wider text-rose-400 mb-1">Resolution Required</h4>
-              <p className="text-sm text-gray-300">This claim has conflicting evidence across truth planes. Manual reconciliation or adapter re-run needed.</p>
+            <div
+              className="p-4 rounded-lg border"
+              style={{
+                background: 'var(--ag-danger-soft)',
+                borderColor: 'rgba(255,107,122,0.2)',
+              }}
+            >
+              <h4
+                className="uppercase tracking-wider mb-1"
+                style={{ fontSize: 'var(--ag-type-caption)', color: 'var(--ag-danger)' }}
+              >
+                Resolution Required
+              </h4>
+              <p style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text)' }}>
+                This claim has conflicting evidence across truth planes. Manual reconciliation or adapter re-run needed.
+              </p>
             </div>
           </div>
           <div className="mt-6 flex justify-end">
-            <Dialog.Close className="px-4 py-2 text-sm font-medium text-white bg-white/10 hover:bg-white/20 rounded-lg transition-colors">Close</Dialog.Close>
+            <Dialog.Close
+              className="px-4 py-2 rounded-lg cursor-pointer"
+              style={{
+                fontSize: 'var(--ag-type-body-sm)',
+                fontWeight: 'var(--ag-weight-medium)',
+                color: 'var(--ag-text)',
+                background: 'var(--ag-surface)',
+                border: '1px solid var(--ag-border)',
+                transition: `background var(--ag-motion-state) var(--ag-ease-state), border-color var(--ag-motion-state) var(--ag-ease-state)`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--ag-surface-strong)';
+                e.currentTarget.style.borderColor = 'var(--ag-control)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'var(--ag-surface)';
+                e.currentTarget.style.borderColor = 'var(--ag-border)';
+              }}
+            >
+              Close
+            </Dialog.Close>
           </div>
         </Dialog.Content>
       </Dialog.Portal>
@@ -86,26 +204,91 @@ export default function ReconciliationPanel() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-white">Reconciliation</h2>
-            <p className="text-sm text-gray-400">{filtered.length} active conflicts across truth planes</p>
+            <h2
+              style={{
+                fontSize: 'var(--ag-type-title)',
+                fontWeight: 'var(--ag-weight-bold)',
+                color: 'var(--ag-text)',
+                margin: 0,
+              }}
+            >
+              Reconciliation
+            </h2>
+            <p
+              style={{
+                fontSize: 'var(--ag-type-body-sm)',
+                color: 'var(--ag-text-muted)',
+                margin: 0,
+              }}
+            >
+              {filtered.length} active conflicts across truth planes
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <DropdownMenu.Root>
-              <DropdownMenu.Trigger className="px-3 py-1.5 text-xs font-medium text-gray-300 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-colors">
+              <DropdownMenu.Trigger
+                className="px-3 py-1.5 rounded-lg cursor-pointer"
+                style={{
+                  fontSize: 'var(--ag-type-ui)',
+                  fontWeight: 'var(--ag-weight-medium)',
+                  color: 'var(--ag-text)',
+                  background: 'var(--ag-surface)',
+                  border: '1px solid var(--ag-border)',
+                  transition: `background var(--ag-motion-state) var(--ag-ease-state)`,
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--ag-surface-strong)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--ag-surface)'; }}
+              >
                 Filter: {filter}
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
-                <DropdownMenu.Content className="min-w-[120px] bg-gray-900 border border-white/10 rounded-lg shadow-xl p-1 z-50" sideOffset={4}>
+                <DropdownMenu.Content
+                  className="min-w-[120px] p-1 z-50"
+                  sideOffset={4}
+                  style={{
+                    background: 'var(--ag-canvas-raised)',
+                    border: '1px solid var(--ag-border)',
+                    borderRadius: 'var(--ag-radius-control)',
+                    boxShadow: 'var(--ag-shadow-overlay)',
+                  }}
+                >
                   {['all', 'open', 'resolved', 'acknowledged'].map(f => (
-                    <DropdownMenu.Item key={f} onClick={() => setFilter(f)}
-                      className="px-3 py-1.5 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded cursor-pointer outline-none capitalize">
+                    <DropdownMenu.Item
+                      key={f}
+                      onClick={() => setFilter(f)}
+                      className="px-3 py-1.5 rounded cursor-pointer outline-none capitalize"
+                      style={{
+                        fontSize: 'var(--ag-type-body-sm)',
+                        color: 'var(--ag-text)',
+                        transition: `background var(--ag-motion-micro) var(--ag-ease-micro), color var(--ag-motion-micro) var(--ag-ease-micro)`,
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'var(--ag-surface)';
+                        e.currentTarget.style.color = 'var(--ag-text)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent';
+                      }}
+                    >
                       {f}
                     </DropdownMenu.Item>
                   ))}
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
-            <button onClick={() => refetch()} className="p-1.5 text-gray-400 hover:text-white transition-colors" title="Refresh">
+            <button
+              onClick={() => refetch()}
+              className="p-1.5 rounded-lg cursor-pointer"
+              title="Refresh"
+              style={{
+                color: 'var(--ag-text-muted)',
+                background: 'transparent',
+                border: 'none',
+                transition: `color var(--ag-motion-state) var(--ag-ease-state)`,
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--ag-text)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--ag-text-muted)'; }}
+            >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 8a6 6 0 0 1 10.5-4M14 8a6 6 0 0 1-10.5 4" /><path d="M12.5 1v3h-3M3.5 15v-3h3" /></svg>
             </button>
           </div>
@@ -114,19 +297,30 @@ export default function ReconciliationPanel() {
         {/* Loading / Error / Empty */}
         {isLoading && (
           <div className="space-y-2">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="h-16 rounded-xl bg-white/5 animate-pulse" />
-            ))}
+            {[1, 2, 3].map(i => <SkeletonRow key={i} />)}
           </div>
         )}
         {error && (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm">
+          <div
+            className="p-4 rounded-xl border"
+            style={{
+              background: 'var(--ag-danger-soft)',
+              borderColor: 'rgba(255,107,122,0.2)',
+              color: 'var(--ag-danger)',
+              fontSize: 'var(--ag-type-body-sm)',
+            }}
+          >
             Failed to load conflicts: {error.message}
           </div>
         )}
         {!isLoading && !error && filtered.length === 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="py-12 text-center text-gray-500 text-sm">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={MOTION_SURFACE}
+            className="py-12 text-center"
+            style={{ color: 'var(--ag-text-subtle)', fontSize: 'var(--ag-type-body-sm)' }}
+          >
             No conflicts found. All truth planes aligned. ✨
           </motion.div>
         )}
@@ -134,25 +328,58 @@ export default function ReconciliationPanel() {
         {/* Conflict List */}
         <AnimatePresence mode="popLayout">
           {filtered.map((conflict, i) => (
-            <motion.div key={conflict.id} layout
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-              transition={{ delay: i * 0.03 }}
+            <motion.div
+              key={conflict.id}
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ ...MOTION_STATE, delay: i * 0.03 }}
               onClick={() => setSelectedConflict(conflict)}
-              className="group p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/10 cursor-pointer transition-all">
+              className="group p-4 rounded-xl cursor-pointer border"
+              style={{
+                background: 'var(--ag-surface)',
+                borderColor: 'var(--ag-border)',
+                transition: `background var(--ag-motion-state) var(--ag-ease-state), border-color var(--ag-motion-state) var(--ag-ease-state)`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--ag-surface-strong)';
+                e.currentTarget.style.borderColor = 'var(--ag-border-strong)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'var(--ag-surface)';
+                e.currentTarget.style.borderColor = 'var(--ag-border)';
+              }}
+            >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm font-medium text-white truncate">{conflict.claim_key}</span>
+                    <span
+                      className="truncate"
+                      style={{
+                        fontSize: 'var(--ag-type-body)',
+                        fontWeight: 'var(--ag-weight-medium)',
+                        color: 'var(--ag-text)',
+                      }}
+                    >
+                      {conflict.claim_key}
+                    </span>
                     <ConflictBadge status={conflict.status} />
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <div
+                    className="flex items-center gap-2"
+                    style={{ fontSize: 'var(--ag-type-ui)', color: 'var(--ag-text-subtle)' }}
+                  >
                     <span>ID: {conflict.id.slice(0, 8)}</span>
                     <span>·</span>
                     <span>{new Date(conflict.first_seen).toLocaleDateString()}</span>
                   </div>
                 </div>
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-gray-400"><path d="M6 4l4 4-4 4" /></svg>
+                <div
+                  className="opacity-0 group-hover:opacity-100"
+                  style={{ transition: `opacity var(--ag-motion-state) var(--ag-ease-state)` }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: 'var(--ag-text-muted)' }}><path d="M6 4l4 4-4 4" /></svg>
                 </div>
               </div>
             </motion.div>

@@ -23,9 +23,13 @@
     "reactflow": "11.11.4"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.5.1",
     "@vitejs/plugin-react": "4.3.4",
+    "autoprefixer": "^10.6.1",
     "playwright": "1.63.0",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "6.4.3",
     "vitest": "4.1.11"

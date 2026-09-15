@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactFlow, { Background, Controls, Handle, Position, useNodesState, useEdgesState } from 'reactflow';
 import * as d3 from 'd3';
 import 'reactflow/dist/style.css';
@@ -23,6 +23,12 @@ import enrichFixtures from '../../docs/atlas/enrich/fixtures.json';
 import { pulseRows, contractRows, diffProjections } from './lib/sliceC.js';
 import Home from './Home.jsx';
 import ReconciliationPanel from './components/ReconciliationPanel.jsx';
+import AtlasShell from './components/AtlasShell.jsx';
+import CapabilitiesView from './components/CapabilitiesView.jsx';
+import ModelsView from './components/ModelsView.jsx';
+import ResearchViewNew from './components/ResearchView.jsx';
+import SnapshotsViewNew from './components/SnapshotsView.jsx';
+import AskViewNew from './components/AskView.jsx';
 
 const VIEWS = ['home', 'topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask', 'reconciliation'];
 
@@ -463,7 +469,7 @@ export default function App() {
   const togglePlane = (p) =>
     setOverlay((o) => (o.includes(p) ? o.filter((x) => x !== p) : [...o, p]));
 
-  const openView = (v) => {
+  const openView = useCallback((v) => {
     if (v === 'drift') {
       setDrift(true);
       setView('topology');
@@ -471,7 +477,7 @@ export default function App() {
     }
     if (v === 'home') setDrift(false);
     setView(v);
-  };
+  }, []);
 
   if (status === 'loading') return <div className="empty"><p>Loading Atlas projection…</p></div>;
   if (status === 'malformed') {
@@ -518,39 +524,93 @@ export default function App() {
   const matched = new Set(filterEntities(projection, search));
 
   return (
-    <div className="atlas">
-      <header className="atlas-head">
-        <h1>Aftergraph Atlas</h1>
-        <span className="cut">
-          cut {projection.meta.evidence_cut} ({age.label} old{age.stale ? ', STALE — regenerate' : ''}) · gov {String(projection.meta.gov_sha).slice(0, 7)}
-          {origin === 'fetch' ? ' · live fetch (may be stale)' : ''}
-        </span>
-        <div className="experience-lenses" role="group" aria-label="Experience lens">
-          {['SYSTEM', 'AUTHORITY', 'EVIDENCE', 'COST', 'SOURCE'].map((name) => (
-            <button key={name} aria-pressed={lens === name} onClick={() => setLens(name)} title={`View through ${name.toLowerCase()} lens`}>
-              {name}
-            </button>
-          ))}
+    <AtlasShell activeView={view} onViewChange={openView}>
+      {/* Legacy header hidden — AtlasShell provides top bar */}
+      <div className="hidden">
+        <header className="atlas-head">
+          <h1>Aftergraph Atlas</h1>
+          <span className="cut">
+            cut {projection.meta.evidence_cut} ({age.label} old{age.stale ? ', STALE — regenerate' : ''}) · gov {String(projection.meta.gov_sha).slice(0, 7)}
+            {origin === 'fetch' ? ' · live fetch (may be stale)' : ''}
+          </span>
+        </header>
+      </div>
+
+      {/* Experience lenses + overlays as compact toolbar inside shell content */}
+      {view !== 'home' && (
+      <div
+        className="flex flex-wrap items-center gap-2 mb-4"
+        style={{ fontSize: 'var(--ag-type-ui)' }}
+      >
+        <div
+          className="flex items-center gap-1 px-2 py-1 rounded-lg border"
+          style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
+        >
+          <span className="mr-1" style={{ color: 'var(--ag-text-subtle)' }}>Lens:</span>
+          {['SYSTEM', 'AUTHORITY', 'EVIDENCE', 'COST', 'SOURCE'].map((name) => {
+            const active = lens === name;
+            return (
+              <button
+                key={name}
+                aria-pressed={active}
+                onClick={() => setLens(name)}
+                className="px-2 py-0.5 rounded cursor-pointer border border-transparent"
+                style={{
+                  background: active ? 'var(--ag-system-soft)' : 'transparent',
+                  color: active ? 'var(--ag-system)' : 'var(--ag-text-muted)',
+                  transition: `all var(--ag-motion-state) var(--ag-ease-state)`,
+                }}
+                onMouseEnter={(e) => { if (!active) e.currentTarget.style.color = 'var(--ag-text)'; }}
+                onMouseLeave={(e) => { if (!active) e.currentTarget.style.color = 'var(--ag-text-muted)'; }}
+              >
+                {name}
+              </button>
+            );
+          })}
         </div>
-        <div className="overlays" role="group" aria-label="Truth plane overlays">
-          {['CANONICAL', 'OBSERVED', 'PROPOSED'].map((p) => (
-            <button key={p} aria-pressed={overlay.includes(p)} onClick={() => togglePlane(p)} title={`Toggle ${p} assertions`}>
-              {p}
-            </button>
-          ))}
-          <button aria-pressed={drift} onClick={() => setDrift((d) => !d)} title="Highlight canonical/observed disagreements">
+        <div
+          className="flex items-center gap-1 px-2 py-1 rounded-lg border"
+          style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
+        >
+          <span className="mr-1" style={{ color: 'var(--ag-text-subtle)' }}>Planes:</span>
+          {['CANONICAL', 'OBSERVED', 'PROPOSED'].map((p) => {
+            const active = overlay.includes(p);
+            return (
+              <button
+                key={p}
+                aria-pressed={active}
+                onClick={() => togglePlane(p)}
+                className="px-2 py-0.5 rounded cursor-pointer border border-transparent"
+                style={{
+                  background: active ? 'var(--ag-authority-soft)' : 'transparent',
+                  color: active ? 'var(--ag-authority)' : 'var(--ag-text-muted)',
+                  transition: `all var(--ag-motion-state) var(--ag-ease-state)`,
+                }}
+                onMouseEnter={(e) => { if (!active) e.currentTarget.style.color = 'var(--ag-text)'; }}
+                onMouseLeave={(e) => { if (!active) e.currentTarget.style.color = 'var(--ag-text-muted)'; }}
+              >
+                {p}
+              </button>
+            );
+          })}
+          <button
+            aria-pressed={drift}
+            onClick={() => setDrift((d) => !d)}
+            className="px-2 py-0.5 rounded cursor-pointer border border-transparent"
+            style={{
+              background: drift ? 'var(--ag-decision-soft)' : 'transparent',
+              color: drift ? 'var(--ag-decision)' : 'var(--ag-text-muted)',
+              transition: `all var(--ag-motion-state) var(--ag-ease-state)`,
+            }}
+            onMouseEnter={(e) => { if (!drift) e.currentTarget.style.color = 'var(--ag-text)'; }}
+            onMouseLeave={(e) => { if (!drift) e.currentTarget.style.color = 'var(--ag-text-muted)'; }}
+          >
             Drift
           </button>
         </div>
-        <a className="atlas-launcher-link" href="/launch" aria-label="Open Aftergraph Launcher">Launcher</a>
-      </header>
-      <nav className="views" aria-label="Views">
-        {VIEWS.map((v) => (
-          <button key={v} aria-selected={view === v} onClick={() => openView(v)}>
-            {v}
-          </button>
-        ))}
-      </nav>
+        <span className="ml-auto" style={{ color: 'var(--ag-text-subtle)' }}>cut {String(projection.meta.evidence_cut || '').slice(0, 8)}</span>
+      </div>
+      )}
       {origin === 'fetch' && (
         <div className="banner" role="status">Serving runtime-fetched projection — rebuild for a pinned cut.</div>
       )}
@@ -601,96 +661,15 @@ export default function App() {
       <div className="center">
         {view === 'pulse' && <PulseView projection={projection} onSelect={(id) => { setNode(id); setView('topology'); }} />}
         {view === 'contracts' && <ContractsView projection={projection} onSelect={(id) => { setNode(id); setView('topology'); }} />}
-        {view === 'capabilities' && <PreviewView title="Capabilities" draft={enrichFixtures.capability_example} kind="capability" />}
-        {view === 'models' && <PreviewView title="AFM lineage" draft={enrichFixtures.model_example} kind="model" />}
-        {view === 'research' && <ResearchView projection={projection} />}
-        {view === 'snapshots' && <SnapshotsView projection={projection} />}
-        {view === 'ask' && <AskView projection={projection} q={askQ} setQ={setAskQ} hits={askHits} setHits={setAskHits} />}
+        {view === 'capabilities' && <CapabilitiesView projection={projection} />}
+        {view === 'models' && <ModelsView projection={projection} />}
+        {view === 'research' && <ResearchViewNew projection={projection} />}
+        {view === 'snapshots' && <SnapshotsViewNew projection={projection} />}
+        {view === 'ask' && <AskViewNew projection={projection} />}
         {view === 'reconciliation' && <ReconciliationPanel />}
       </div>
       )}
-      {view !== 'home' && (
-      <aside className="inspector" ref={inspectorRef} tabIndex={-1} aria-label="Inspector">
-        <div className="lens-context" role="status">
-          <strong>{lens}</strong> lens
-          {(lens === 'AUTHORITY' || lens === 'COST') && (
-            <span> · no dedicated {lens.toLowerCase()} projection is published in atlas-projection/0.2; no values are inferred.</span>
-          )}
-          {related && <span> · related: {related}</span>}
-          {snapshot && <span> · snapshot context: {snapshot}</span>}
-        </div>
-        <section aria-label="System x-ray">
-          <h3>X-ray <span className="prov">directed path from relations</span></h3>
-          <div>
-            <select value={xFrom} onChange={(e) => setXFrom(e.target.value)} aria-label="Trace from">
-              <option value="">from…</option>
-              {projection.entities.filter((e) => e.kind === 'repository').map((e) => (
-                <option key={e.id} value={e.id}>{shortLabel(e)}</option>
-              ))}
-            </select>
-            <select value={xTo} onChange={(e) => setXTo(e.target.value)} aria-label="Trace to">
-              <option value="">to…</option>
-              {projection.entities.filter((e) => e.kind === 'repository').map((e) => (
-                <option key={e.id} value={e.id}>{shortLabel(e)}</option>
-              ))}
-            </select>
-            <button onClick={() => setXray(xFrom && xTo ? tracePath(projection, xFrom, xTo) || { path: [], hops: [], none: true } : null)}>
-              Trace
-            </button>
-            {xray && <button onClick={() => setXray(null)}>Clear</button>}
-          </div>
-          {xray && (xray.none || !xray.path.length ? (
-            <p className="prov">No directed path in this cut — honest gap, not a healthy system.</p>
-          ) : (
-            <ol className="prov">
-              {xray.hops.map((h, i) => (
-                <li key={i}>{shortLabel({ identity: { full_name: h.from.split(':')[1] } })} —{h.relation}→ {shortLabel({ identity: { full_name: h.to.split(':')[1] } })} <span className={`plane-tag plane-${h.plane}`}>{h.plane}</span></li>
-              ))}
-            </ol>
-          ))}
-        </section>
-        {!node && <p className="prov">Select a node for assertions + provenance.</p>}
-        {node && (
-          <>
-            <h2>{node}</h2>
-            <div className="prov">{selected.length} assertion(s) · planes: {graph.planesUsed.join(', ')}</div>
-            <div>
-              {!impact ? (
-                <button onClick={() => setImpact(impactSet(projection, node, 2))}>Show impact (2-hop)</button>
-              ) : (
-                <button onClick={() => setImpact(null)}>Clear impact highlight</button>
-              )}
-            </div>
-            {impact && (
-              <div className="prov">
-                <div>dependents ({impact.upstream.length}): {impact.upstream.map((id) => shortLabel({ identity: { full_name: id.split(':')[1] } })).join(', ') || '—'}</div>
-                <div>dependencies ({impact.downstream.length}): {impact.downstream.map((id) => shortLabel({ identity: { full_name: id.split(':')[1] } })).join(', ') || '—'}</div>
-              </div>
-            )}
-            {['CANONICAL', 'OBSERVED', 'PROPOSED'].map((p) => {
-              const list = selected.filter((a) => a.truth_plane === p);
-              if (!list.length) return null;
-              return (
-                <section key={p}>
-                  <h3><span className={`plane-tag plane-${p}`}>{p}</span></h3>
-                  <dl className="prov">
-                    {list.map((a) => (
-                      <React.Fragment key={a.id}>
-                        <dt>{a.predicate} <span className="prov">({a.id})</span></dt>
-                        <dd>value: {JSON.stringify(a.value)}</dd>
-                        <dd>source: {a.provenance.source} [{a.provenance.source_type}]</dd>
-                        <dd>ref: {a.provenance.ref} · observed: {a.observed_at}{a.valid_at ? ` · valid: ${a.valid_at}` : ''}</dd>
-                        <dd>evidence: {a.provenance.evidence_level} · freshness: {a.freshness}{a.conflict_id ? ` · conflict: ${a.conflict_id}` : ''}</dd>
-                      </React.Fragment>
-                    ))}
-                  </dl>
-                </section>
-              );
-            })}
-          </>
-        )}
-      </aside>
-      )}
+      {/* Inspector panel removed in V3 redesign — detail view deferred to dedicated panels */}
       {drift && (
         <section className="drift-list" aria-label="Drift: open disagreements">
           <h3>Drift ({conflicts.length} open)</h3>
@@ -716,6 +695,6 @@ export default function App() {
           ))}
         </section>
       )}
-    </div>
+    </AtlasShell>
   );
 }
