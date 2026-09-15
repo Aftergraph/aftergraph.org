@@ -164,7 +164,7 @@ fs.writeFileSync(path.join(DIST, '_headers'), [
   '  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload',
   '  X-Content-Type-Options: nosniff',
   '  Referrer-Policy: strict-origin-when-cross-origin',
-  '  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort()',
+  '  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()',
   '/sw.js',
   '  Cache-Control: no-cache',
   '/version.json',
