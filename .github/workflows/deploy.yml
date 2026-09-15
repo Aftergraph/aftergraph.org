@@ -43,14 +43,20 @@ jobs:
         run: node atlas/scripts/generate-experience.mjs
       - name: Verify Atlas projection
         run: node site/verify-atlas.cjs
+      - name: Generate governed launcher registry
+        run: node scripts/generate-launcher-registry.mjs
+      - name: Launcher registry and telemetry contracts
+        run: node --test site/launcher-registry.test.mjs site/launcher-telemetry.test.mjs
       - name: Sync canonical Brand OS inputs
         run: node scripts/sync-brand.mjs
       - name: Compile canonical worker
         run: node site/build-worker.cjs
+      - name: Launcher Worker telemetry runtime contract
+        run: node --test site/launcher-worker.test.mjs
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is current
-        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json
+        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
       - name: Diff check
         run: git diff --check
 
@@ -83,8 +89,11 @@ jobs:
           npm --prefix atlas run build
           node atlas/scripts/generate-experience.mjs
           node site/verify-atlas.cjs
+          node scripts/generate-launcher-registry.mjs
+          node --test site/launcher-registry.test.mjs site/launcher-telemetry.test.mjs
           node scripts/sync-brand.mjs
           node site/build-worker.cjs
+          node --test site/launcher-worker.test.mjs
           node site/verify-v2.cjs
       - name: Deploy exact HEAD to Cloudflare Workers
         uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd
@@ -102,7 +111,7 @@ jobs:
           health="$(curl --fail --silent --show-error --retry 5 --retry-delay 2 "$base/healthz?verify=$GITHUB_SHA")"
           printf '%s\n' "$health" | jq -e --arg sha "$GITHUB_SHA" '.status == "ok" and .sha == $sha' >/dev/null
 
-          paths=(/ /launch /status /sentinel /robots.txt /sitemap.xml)
+          paths=(/ /launch /launcher-app.js /launcher-registry.json /status /sentinel /robots.txt /sitemap.xml)
           if grep -q "p === '/community'" site/worker.js; then
             paths+=(/community)
           fi
@@ -111,5 +120,8 @@ jobs:
             code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' --retry 5 --retry-delay 2 "$base$path?verify=$GITHUB_SHA")"
             test "$code" = '200' || { echo "smoke failed: $path -> $code" >&2; exit 1; }
           done
+
+          telemetry_code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$base/api/launcher/telemetry")"
+          test "$telemetry_code" = '405' || { echo "launcher telemetry contract failed -> $telemetry_code" >&2; exit 1; }
 
           echo "production verified at exact HEAD $GITHUB_SHA"

@@ -30,6 +30,8 @@ body { margin: 0; background: var(--ag-canvas); color: var(--ag-text); font-fami
 .atlas-head { grid-column: 1 / -1; display: flex; gap: var(--ag-space-3); align-items: center; padding: var(--ag-space-3) var(--ag-space-4); border-bottom: 1px solid var(--ag-border); background: var(--ag-raised); flex-wrap: wrap; box-shadow: var(--ag-shadow-sm); z-index: 10; }
 .atlas-head h1 { font-size: 16px; margin: 0; font-weight: 600; letter-spacing: -0.01em; }
 .atlas-head .cut { color: var(--ag-muted); font-size: 11px; font-family: var(--ag-mono); }
+.atlas-launcher-link { margin-left: auto; color: var(--ag-accent); border: 1px solid var(--ag-border); border-radius: var(--ag-radius-sm); padding: 7px 10px; text-decoration: none; font-size: 12px; font-family: var(--ag-mono); }
+.atlas-launcher-link:hover { border-color: var(--ag-accent); background: var(--ag-raised); }
 .overlays { display: flex; gap: var(--ag-space-2); margin-left: auto; flex-wrap: wrap; }
 .overlays button { background: transparent; border: 1px solid var(--ag-border); color: var(--ag-muted); border-radius: 999px; padding: var(--ag-space-1) var(--ag-space-3); cursor: pointer; font-size: 11px; font-weight: 500; transition: all 0.15s ease; }
 .overlays button:hover { border-color: var(--ag-border-strong); color: var(--ag-text); }
