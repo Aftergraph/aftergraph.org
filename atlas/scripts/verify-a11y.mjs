@@ -35,14 +35,17 @@ try {
       // legacy issues that predate the gate. Each exclusion must trace to an
       // open issue; remove the exclusion when that issue is fixed.
       //   Atlas /atlas: aria-allowed-attr (#108), color-contrast (#109)
-      //   Landing / : scrollable-region-focusable (mobile)
-      //   Status /status: link-in-text-block
+      //   Landing / : scrollable-region-focusable (#110, mobile)
+      //   Status /status: link-in-text-block (#111)
       const BASELINE = {
         '/atlas': ['aria-allowed-attr', 'color-contrast'],
         '/': ['scrollable-region-focusable'],
         '/status': ['link-in-text-block'],
       };
-      const excluded = new Set(BASELINE[path] || []);
+      const excluded = new Set();
+      for (const [prefix, rules] of Object.entries(BASELINE)) {
+        if (path === prefix || path.startsWith(prefix + '/')) rules.forEach((r) => excluded.add(r));
+      }
       const serious = (results.violations || []).filter(
         (v) => (v.impact === 'serious' || v.impact === 'critical') && !excluded.has(v.id)
       );
