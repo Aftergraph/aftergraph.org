@@ -344,7 +344,7 @@
       "kind": "entity",
       "group": "Products / Systems",
       "name": "GitHub Organization",
-      "description": "Public Aftergraph repositories and community surfaces",
+      "description": "Public Aftergraph repositories and source surfaces",
       "url": "https://github.com/Aftergraph",
       "maturity": "org",
       "aliases": [
@@ -431,6 +431,24 @@
         "evidence"
       ],
       "icon": "status",
+      "group": "Actions"
+    },
+    {
+      "id": "open-community",
+      "kind": "navigate",
+      "name": "Open community",
+      "description": "Enter public Discussions, roadmap and RFC intake",
+      "url": "/community",
+      "aliases": [
+        "community",
+        "discussions",
+        "discussion",
+        "rfc",
+        "roadmap",
+        "contribute",
+        "contribution"
+      ],
+      "icon": "github",
       "group": "Actions"
     }
   ]

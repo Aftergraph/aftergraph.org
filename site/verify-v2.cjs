@@ -11,6 +11,7 @@ const launcherRegistryText = read('launcher-registry.json');
 const launcherRegistry = JSON.parse(launcherRegistryText);
 const launcherSurface = `${launcher}\n${launcherApp}\n${launcherRegistryText}`;
 const sentinelPage = read('sentinel.html');
+const communityPage = fs.existsSync(path.join(root, 'community.html')) ? read('community.html') : '';
 const buildWorker = read('build-worker.cjs');
 const statusPage = read('status.html');
 const statusDataText = read('status-data.json');
@@ -39,6 +40,7 @@ has(landing, 'Verified', 'verified outcome trace');
 has(landing, 'runtime authority', 'research-integrity principle');
 has(landing, 'href="https://docs.aftergraph.org', 'docs cross-link');
 has(landing, 'href="/status"', 'landing operational status route');
+has(landing, 'href="/community"', 'landing community route');
 has(landing, 'prefers-reduced-motion', 'reduced-motion support');
 has(landing, ':focus-visible', 'visible focus');
 has(landing, 'platform-chain', 'V3 platform lifecycle chain');
@@ -80,6 +82,7 @@ assert.equal(launcherRegistry.schema, 'aftergraph-launcher-registry/1.0');
 assert.ok(launcherRegistry.entities.length >= 10, 'launcher registry must expose the governed public surface');
 assert.ok(launcherRegistry.entities.some((item) => item.id === 'runtime' && item.source_visibility === 'private'), 'Runtime must remain private-source/public-surface');
 assert.ok(!launcherRegistry.entities.some((item) => item.source_visibility === 'private' && /^https:\/\/github\.com\/Aftergraph\//.test(item.url)), 'private source URL leaked through launcher registry');
+assert.ok(launcherRegistry.actions.some((item) => item.id === 'open-community' && item.url === '/community'), 'launcher registry must expose community navigation');
 has(launcher, 'src="/launcher-app.js"', 'launcher external app module');
 has(buildWorker, "p === '/launcher-registry.json'", 'launcher registry worker route');
 has(buildWorker, "p === '/api/launcher/telemetry'", 'launcher telemetry route');
@@ -90,6 +93,7 @@ assert.ok(!atlasIndex.includes('vendor-elk'), 'Atlas HTML must not eagerly prelo
 
 has(llms, '## Deep index (from the Knowledge Plane)', 'federated Knowledge Plane deep index');
 has(llms, 'https://docs.aftergraph.org/llms.txt', 'Knowledge Plane llms federation');
+has(llms, 'https://aftergraph.org/community', 'community llms entry');
 has(llms, '## Platform topology (from Aftergraph/after-graph-governance)', 'public repository allowlist');
 has(llms, '## Context packs (ACC-shaped, machine-usable)', 'ACC-shaped context-pack index');
 for (const contextPack of [
@@ -122,6 +126,17 @@ has(buildWorker, "read('status.html')", 'status source included in worker build'
 has(buildWorker, 'https://aftergraph.org/status', 'status sitemap entry');
 has(buildWorker, '<loc>https://aftergraph.org/studio/</loc>', 'Studio sitemap entry');
 has(buildWorker, "p === '/status' || p === '/status/'", 'status worker route');
+has(communityPage, 'Discussion is not authority.', 'community authority boundary');
+has(communityPage, 'prefers-reduced-motion', 'community reduced-motion support');
+has(communityPage, ':focus-visible', 'community visible focus');
+has(communityPage, 'https://github.com/Aftergraph/.github/blob/main/SECURITY.md', 'community security policy link');
+has(communityPage, 'Security issues do not belong in public Discussions.', 'community security boundary');
+has(communityPage, 'https://github.com/orgs/Aftergraph/discussions/17', 'community RFC intake thread');
+has(buildWorker, "read('community.html')", 'community source included in worker build');
+has(buildWorker, 'https://aftergraph.org/community', 'community sitemap entry');
+has(buildWorker, "p === '/community' || p === '/community/'", 'community worker route');
+has(worker, 'const COMMUNITY =', 'compiled community surface');
+has(worker, "p === '/community' || p === '/community/'", 'compiled community route');
 has(worker, "'Content-Security-Policy'", 'CSP');
 has(worker, "'Strict-Transport-Security'", 'HSTS');
 has(worker, 'aftergraph-site v', 'versioned health route');
@@ -148,7 +163,7 @@ const workerForSurface = worker
   .split('\n')
   .filter((line) => !/^const ATLAS_[A-Z_]+ = /.test(line))
   .join('\n');
-const publicSurface = `${landing}\n${launcherSurface}\n${statusPage}\n${statusDataText}\n${llms}\n${workerForSurface}`.toLowerCase();
+const publicSurface = `${landing}\n${launcherSurface}\n${statusPage}\n${communityPage}\n${statusDataText}\n${llms}\n${workerForSurface}`.toLowerCase();
 for (const privateRepo of ['context-continuity', 'skills-vault']) {
   assert.ok(!publicSurface.includes(privateRepo), `private repository leaked into public surface: ${privateRepo}`);
 }

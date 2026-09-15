@@ -15,12 +15,13 @@
     {"id":"brand-os","repo":"brand","name":"Brand OS","url":"https://github.com/Aftergraph/brand","maturity":"production","aliases":["brand","design","tokens","assets","identity"],"icon":"brand"},
     {"id":"research","repo":"intelligence-systems-research","name":"Intelligence Systems Research","url":"https://github.com/Aftergraph/intelligence-systems-research","maturity":"research","aliases":["research","spec-001","mission-bench","assurance"],"icon":"research"},
     {"id":"governance","repo":"after-graph-governance","name":"Governance","url":"https://github.com/Aftergraph/after-graph-governance","maturity":"production","aliases":["governance","contracts","schemas","topology"],"icon":"governance"},
-    {"id":"github","name":"GitHub Organization","url":"https://github.com/Aftergraph","maturity":"org","aliases":["github","repos","repositories","source"],"icon":"github","description":"Public Aftergraph repositories and community surfaces"}
+    {"id":"github","name":"GitHub Organization","url":"https://github.com/Aftergraph","maturity":"org","aliases":["github","repos","repositories","source"],"icon":"github","description":"Public Aftergraph repositories and source surfaces"}
   ],
   "actions": [
     {"id":"explore-system","kind":"navigate","name":"Explore system","description":"Open Atlas and inspect the evidence-aware system graph","url":"/atlas","aliases":["atlas","graph","map","dependencies","explore"],"icon":"atlas","remember_id":"atlas"},
     {"id":"verify-sentinel","kind":"navigate","name":"Verify with Sentinel","description":"Open the exact-HEAD verification and code-review surface","url":"/sentinel","aliases":["verify","verification","sentinel","ship","review"],"icon":"verify","remember_id":"sentinel"},
     {"id":"open-docs","kind":"navigate","name":"Open documentation","description":"Enter the Aftergraph Knowledge Plane","url":"https://docs.aftergraph.org/","aliases":["docs","documentation","knowledge","research"],"icon":"docs","remember_id":"knowledge-plane"},
-    {"id":"open-status","kind":"evidence","name":"Open public status evidence","description":"Inspect the public operational snapshot","url":"/status","aliases":["status","health","operations","uptime","evidence"],"icon":"status"}
+    {"id":"open-status","kind":"evidence","name":"Open public status evidence","description":"Inspect the public operational snapshot","url":"/status","aliases":["status","health","operations","uptime","evidence"],"icon":"status"},
+    {"id":"open-community","kind":"navigate","name":"Open community","description":"Enter public Discussions, roadmap and RFC intake","url":"/community","aliases":["community","discussions","discussion","rfc","roadmap","contribute","contribution"],"icon":"github"}
   ]
 }

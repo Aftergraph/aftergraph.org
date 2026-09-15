@@ -23,6 +23,7 @@ const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
   let rel = decodeURIComponent(url.pathname);
   if (rel === '/atlas' || rel === '/atlas/') rel = '/atlas/index.html';
+  if (rel === '/community' || rel === '/community/') rel = '/community.html';
   // Never escape the site dir.
   const file = path.normalize(path.join(SITE, rel));
   if (!file.startsWith(SITE + path.sep) && file !== SITE) {
