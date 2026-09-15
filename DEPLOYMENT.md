@@ -21,6 +21,13 @@ machine surfaces into `site/worker.js`.
 
 ## Deploy
 
+Production deploys are gated on exact `main` and currently execute on the
+repository-scoped `lenovo-aftergraph-site-deploy` self-hosted runner. The
+Cloudflare OAuth credential remains local to that runner; it is not exported to
+GitHub Actions. This is a bounded continuity path while issue #86 tracks the
+preferred steady state: a dedicated least-privilege Cloudflare API token in the
+`production` environment. Pull requests never receive the production runner.
+
 For a real production build, inject the deployment timestamp and exact source
 commit before compiling. Example for a POSIX shell:
 
