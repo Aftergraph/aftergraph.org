@@ -171,3 +171,47 @@ header:has(.navtoggle:checked) .mobile-nav-panel {
   .burger span { transition: none; }
   .mobile-nav-panel { transition: none; }
 }
+
+/* === ATLAS V3 POLISH === */
+/* View tab hover/active states */
+button[class*="rounded-full"]:hover {
+  background: var(--ag-surface) !important;
+  border-color: var(--ag-control) !important;
+  transition: all 0.2s ease;
+}
+button[class*="rounded-full"][style*="background: var(--ag-control)"] {
+  box-shadow: 0 0 12px rgba(66, 199, 232, 0.3);
+}
+
+/* Card hover lift */
+.rounded-xl.border:hover {
+  border-color: var(--ag-border-strong) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+
+/* Skeleton shimmer animation */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-pulse {
+  background: linear-gradient(90deg, var(--ag-border) 25%, var(--ag-border-strong) 50%, var(--ag-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Better empty state styling */
+.text-center.p-8 {
+  background: linear-gradient(135deg, var(--ag-surface) 0%, var(--ag-canvas-raised) 100%);
+}
+
+/* Smooth view transitions without AnimatePresence */
+.center > div {
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
