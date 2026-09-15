@@ -56,7 +56,7 @@ has(launcherSurface, 'VERIFY', 'launcher verify phase');
 has(launcherSurface, 'Products / Systems', 'launcher product/system group');
 has(launcherSurface, 'Actions', 'launcher actions group');
 has(launcherSurface, 'Explore system', 'launcher Atlas action');
-has(launcherSurface, 'Verify with Sentinel', 'launcher Sentinel action');
+has(launcherSurface, '"name": "Verify"', 'launcher V4 Verify action');
 has(launcherSurface, 'Find a product, system, repo, research, or action', 'launcher intent placeholder');
 has(launcherSurface, 'Knowledge Plane (docs)', 'launcher Knowledge Plane destination');
 has(launcherSurface, 'https://docs.aftergraph.org/', 'launcher Knowledge Plane route');

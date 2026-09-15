@@ -15,9 +15,11 @@
     "runtime"
   ],
   "featured_actions": [
-    "explore-system",
-    "verify-sentinel",
-    "open-docs"
+    "intent-build",
+    "intent-govern",
+    "intent-execute",
+    "intent-verify",
+    "intent-research"
   ],
   "entities": [
     {
@@ -385,23 +387,6 @@
       "group": "Actions"
     },
     {
-      "id": "verify-sentinel",
-      "kind": "navigate",
-      "name": "Verify with Sentinel",
-      "description": "Open the exact-HEAD verification and code-review surface",
-      "url": "/sentinel",
-      "aliases": [
-        "verify",
-        "verification",
-        "sentinel",
-        "ship",
-        "review"
-      ],
-      "icon": "verify",
-      "remember_id": "sentinel",
-      "group": "Actions"
-    },
-    {
       "id": "open-docs",
       "kind": "navigate",
       "name": "Open documentation",
@@ -449,6 +434,91 @@
         "contribution"
       ],
       "icon": "github",
+      "group": "Actions"
+    },
+    {
+      "id": "intent-build",
+      "kind": "navigate",
+      "name": "Build",
+      "description": "Open Studio to compose governed intelligent work",
+      "url": "/studio/",
+      "aliases": [
+        "build",
+        "create",
+        "studio",
+        "compose"
+      ],
+      "icon": "studio",
+      "remember_id": "studio",
+      "group": "Actions"
+    },
+    {
+      "id": "intent-govern",
+      "kind": "navigate",
+      "name": "Govern",
+      "description": "Inspect canonical authority and platform governance",
+      "url": "https://github.com/Aftergraph/after-graph-governance",
+      "aliases": [
+        "govern",
+        "governance",
+        "authority",
+        "policy",
+        "aie",
+        "trust"
+      ],
+      "icon": "governance",
+      "remember_id": "governance",
+      "group": "Actions"
+    },
+    {
+      "id": "intent-execute",
+      "kind": "navigate",
+      "name": "Execute",
+      "description": "Inspect durable execution through WORKS",
+      "url": "https://github.com/Aftergraph/works-execution",
+      "aliases": [
+        "execute",
+        "execution",
+        "works",
+        "runtime",
+        "durable"
+      ],
+      "icon": "works",
+      "remember_id": "works-execution",
+      "group": "Actions"
+    },
+    {
+      "id": "intent-verify",
+      "kind": "navigate",
+      "name": "Verify",
+      "description": "Open Sentinel for independent exact-subject verification",
+      "url": "/sentinel",
+      "aliases": [
+        "verify",
+        "verification",
+        "sentinel",
+        "evidence",
+        "verdict"
+      ],
+      "icon": "verify",
+      "remember_id": "sentinel",
+      "group": "Actions"
+    },
+    {
+      "id": "intent-research",
+      "kind": "navigate",
+      "name": "Research",
+      "description": "Open reproducible Aftergraph intelligence-systems research",
+      "url": "https://github.com/Aftergraph/intelligence-systems-research",
+      "aliases": [
+        "research",
+        "bench",
+        "spec",
+        "experiment",
+        "evaluation"
+      ],
+      "icon": "research",
+      "remember_id": "intelligence-systems-research",
       "group": "Actions"
     }
   ]

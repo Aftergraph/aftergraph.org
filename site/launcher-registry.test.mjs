@@ -40,6 +40,22 @@ test('launcher actions are navigational or evidence-only', () => {
   const registry = read(registryPath);
   const allowed = new Set(['navigate', 'evidence']);
   assert.ok(registry.actions.every((item) => allowed.has(item.kind)));
-  assert.ok(registry.actions.some((item) => item.id === 'verify-sentinel' && item.kind === 'navigate'));
+  assert.ok(registry.actions.some((item) => item.id === 'intent-verify' && item.kind === 'navigate'));
   assert.ok(registry.actions.some((item) => item.id === 'open-status' && item.kind === 'evidence'));
+});
+
+
+test('registry exposes the five V4 public semantic intents without privileged actions', () => {
+  const registry = read(registryPath);
+  const expected = new Map([
+    ['intent-build', 'Build'], ['intent-govern', 'Govern'], ['intent-execute', 'Execute'],
+    ['intent-verify', 'Verify'], ['intent-research', 'Research'],
+  ]);
+  for (const [id, name] of expected) {
+    const action = registry.actions.find((item) => item.id === id);
+    assert.ok(action, `missing ${id} action`);
+    assert.equal(action.name, name);
+    assert.ok(['navigate', 'evidence'].includes(action.kind));
+  }
+  assert.equal([...expected.keys()].filter((id) => registry.actions.some((item) => item.id === id)).length, 5);
 });

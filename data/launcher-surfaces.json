@@ -1,27 +1,355 @@
 {
   "schema": "aftergraph-launcher-surfaces/1.0",
-  "featured_entities": ["studio", "work-intelligence", "sentinel", "works-execution", "trust-gateway", "aie", "runtime"],
-  "featured_actions": ["explore-system", "verify-sentinel", "open-docs"],
+  "featured_entities": [
+    "studio",
+    "work-intelligence",
+    "sentinel",
+    "works-execution",
+    "trust-gateway",
+    "aie",
+    "runtime"
+  ],
+  "featured_actions": [
+    "intent-build",
+    "intent-govern",
+    "intent-execute",
+    "intent-verify",
+    "intent-research"
+  ],
   "entities": [
-    {"id":"studio","repo":"studio","name":"Studio","url":"/studio/","maturity":"demo","aliases":["chat","work","space","use","operate"],"icon":"studio"},
-    {"id":"work-intelligence","repo":"wi-backend","name":"Work Intelligence","url":"https://github.com/Aftergraph/wi-backend","maturity":"prototype","aliases":["wie","wi-backend","work intelligence engine","workitems"],"icon":"wie"},
-    {"id":"sentinel","repo":"sentinel","name":"Sentinel","url":"/sentinel","maturity":"prototype","aliases":["verify","verification","code review","ship","evidence"],"icon":"sentinel"},
-    {"id":"works-execution","repo":"works-execution","name":"WORKS Execution","url":"https://github.com/Aftergraph/works-execution","maturity":"prototype","aliases":["works","execution","mission","workgraph","scheduler"],"icon":"works"},
-    {"id":"trust-gateway","repo":"trust-gateway","name":"Trust Gateway","url":"https://github.com/Aftergraph/trust-gateway","maturity":"prototype","aliases":["trust","policy","approval","authority","audit"],"icon":"trust"},
-    {"id":"aie","repo":"aie","name":"AIE","url":"https://github.com/Aftergraph/aie","maturity":"prototype","aliases":["agentic institution engineering","authority","delegation","agents"],"icon":"aie"},
-    {"id":"runtime","repo":"runtime","name":"Aftergraph Runtime","url":"https://docs.aftergraph.org/platform/","maturity":"internal","aliases":["runtime","orchestration","dispatch","telemetry"],"icon":"runtime"},
-    {"id":"atlas","name":"Atlas","url":"/atlas","maturity":"production","aliases":["graph","system map","observatory","evidence","dependencies"],"icon":"atlas","description":"Evidence-aware development observatory and system graph"},
-    {"id":"knowledge-plane","repo":"docs","name":"Knowledge Plane (docs)","url":"https://docs.aftergraph.org/","maturity":"production","aliases":["docs","documentation","knowledge","research","standards"],"icon":"docs"},
-    {"id":"brand-os","repo":"brand","name":"Brand OS","url":"https://github.com/Aftergraph/brand","maturity":"production","aliases":["brand","design","tokens","assets","identity"],"icon":"brand"},
-    {"id":"research","repo":"intelligence-systems-research","name":"Intelligence Systems Research","url":"https://github.com/Aftergraph/intelligence-systems-research","maturity":"research","aliases":["research","spec-001","mission-bench","assurance"],"icon":"research"},
-    {"id":"governance","repo":"after-graph-governance","name":"Governance","url":"https://github.com/Aftergraph/after-graph-governance","maturity":"production","aliases":["governance","contracts","schemas","topology"],"icon":"governance"},
-    {"id":"github","name":"GitHub Organization","url":"https://github.com/Aftergraph","maturity":"org","aliases":["github","repos","repositories","source"],"icon":"github","description":"Public Aftergraph repositories and source surfaces"}
+    {
+      "id": "studio",
+      "repo": "studio",
+      "name": "Studio",
+      "url": "/studio/",
+      "maturity": "demo",
+      "aliases": [
+        "chat",
+        "work",
+        "space",
+        "use",
+        "operate"
+      ],
+      "icon": "studio"
+    },
+    {
+      "id": "work-intelligence",
+      "repo": "wi-backend",
+      "name": "Work Intelligence",
+      "url": "https://github.com/Aftergraph/wi-backend",
+      "maturity": "prototype",
+      "aliases": [
+        "wie",
+        "wi-backend",
+        "work intelligence engine",
+        "workitems"
+      ],
+      "icon": "wie"
+    },
+    {
+      "id": "sentinel",
+      "repo": "sentinel",
+      "name": "Sentinel",
+      "url": "/sentinel",
+      "maturity": "prototype",
+      "aliases": [
+        "verify",
+        "verification",
+        "code review",
+        "ship",
+        "evidence"
+      ],
+      "icon": "sentinel"
+    },
+    {
+      "id": "works-execution",
+      "repo": "works-execution",
+      "name": "WORKS Execution",
+      "url": "https://github.com/Aftergraph/works-execution",
+      "maturity": "prototype",
+      "aliases": [
+        "works",
+        "execution",
+        "mission",
+        "workgraph",
+        "scheduler"
+      ],
+      "icon": "works"
+    },
+    {
+      "id": "trust-gateway",
+      "repo": "trust-gateway",
+      "name": "Trust Gateway",
+      "url": "https://github.com/Aftergraph/trust-gateway",
+      "maturity": "prototype",
+      "aliases": [
+        "trust",
+        "policy",
+        "approval",
+        "authority",
+        "audit"
+      ],
+      "icon": "trust"
+    },
+    {
+      "id": "aie",
+      "repo": "aie",
+      "name": "AIE",
+      "url": "https://github.com/Aftergraph/aie",
+      "maturity": "prototype",
+      "aliases": [
+        "agentic institution engineering",
+        "authority",
+        "delegation",
+        "agents"
+      ],
+      "icon": "aie"
+    },
+    {
+      "id": "runtime",
+      "repo": "runtime",
+      "name": "Aftergraph Runtime",
+      "url": "https://docs.aftergraph.org/platform/",
+      "maturity": "internal",
+      "aliases": [
+        "runtime",
+        "orchestration",
+        "dispatch",
+        "telemetry"
+      ],
+      "icon": "runtime"
+    },
+    {
+      "id": "atlas",
+      "name": "Atlas",
+      "url": "/atlas",
+      "maturity": "production",
+      "aliases": [
+        "graph",
+        "system map",
+        "observatory",
+        "evidence",
+        "dependencies"
+      ],
+      "icon": "atlas",
+      "description": "Evidence-aware development observatory and system graph"
+    },
+    {
+      "id": "knowledge-plane",
+      "repo": "docs",
+      "name": "Knowledge Plane (docs)",
+      "url": "https://docs.aftergraph.org/",
+      "maturity": "production",
+      "aliases": [
+        "docs",
+        "documentation",
+        "knowledge",
+        "research",
+        "standards"
+      ],
+      "icon": "docs"
+    },
+    {
+      "id": "brand-os",
+      "repo": "brand",
+      "name": "Brand OS",
+      "url": "https://github.com/Aftergraph/brand",
+      "maturity": "production",
+      "aliases": [
+        "brand",
+        "design",
+        "tokens",
+        "assets",
+        "identity"
+      ],
+      "icon": "brand"
+    },
+    {
+      "id": "research",
+      "repo": "intelligence-systems-research",
+      "name": "Intelligence Systems Research",
+      "url": "https://github.com/Aftergraph/intelligence-systems-research",
+      "maturity": "research",
+      "aliases": [
+        "research",
+        "spec-001",
+        "mission-bench",
+        "assurance"
+      ],
+      "icon": "research"
+    },
+    {
+      "id": "governance",
+      "repo": "after-graph-governance",
+      "name": "Governance",
+      "url": "https://github.com/Aftergraph/after-graph-governance",
+      "maturity": "production",
+      "aliases": [
+        "governance",
+        "contracts",
+        "schemas",
+        "topology"
+      ],
+      "icon": "governance"
+    },
+    {
+      "id": "github",
+      "name": "GitHub Organization",
+      "url": "https://github.com/Aftergraph",
+      "maturity": "org",
+      "aliases": [
+        "github",
+        "repos",
+        "repositories",
+        "source"
+      ],
+      "icon": "github",
+      "description": "Public Aftergraph repositories and source surfaces"
+    }
   ],
   "actions": [
-    {"id":"explore-system","kind":"navigate","name":"Explore system","description":"Open Atlas and inspect the evidence-aware system graph","url":"/atlas","aliases":["atlas","graph","map","dependencies","explore"],"icon":"atlas","remember_id":"atlas"},
-    {"id":"verify-sentinel","kind":"navigate","name":"Verify with Sentinel","description":"Open the exact-HEAD verification and code-review surface","url":"/sentinel","aliases":["verify","verification","sentinel","ship","review"],"icon":"verify","remember_id":"sentinel"},
-    {"id":"open-docs","kind":"navigate","name":"Open documentation","description":"Enter the Aftergraph Knowledge Plane","url":"https://docs.aftergraph.org/","aliases":["docs","documentation","knowledge","research"],"icon":"docs","remember_id":"knowledge-plane"},
-    {"id":"open-status","kind":"evidence","name":"Open public status evidence","description":"Inspect the public operational snapshot","url":"/status","aliases":["status","health","operations","uptime","evidence"],"icon":"status"},
-    {"id":"open-community","kind":"navigate","name":"Open community","description":"Enter public Discussions, roadmap and RFC intake","url":"/community","aliases":["community","discussions","discussion","rfc","roadmap","contribute","contribution"],"icon":"github"}
+    {
+      "id": "explore-system",
+      "kind": "navigate",
+      "name": "Explore system",
+      "description": "Open Atlas and inspect the evidence-aware system graph",
+      "url": "/atlas",
+      "aliases": [
+        "atlas",
+        "graph",
+        "map",
+        "dependencies",
+        "explore"
+      ],
+      "icon": "atlas",
+      "remember_id": "atlas"
+    },
+    {
+      "id": "open-docs",
+      "kind": "navigate",
+      "name": "Open documentation",
+      "description": "Enter the Aftergraph Knowledge Plane",
+      "url": "https://docs.aftergraph.org/",
+      "aliases": [
+        "docs",
+        "documentation",
+        "knowledge",
+        "research"
+      ],
+      "icon": "docs",
+      "remember_id": "knowledge-plane"
+    },
+    {
+      "id": "open-status",
+      "kind": "evidence",
+      "name": "Open public status evidence",
+      "description": "Inspect the public operational snapshot",
+      "url": "/status",
+      "aliases": [
+        "status",
+        "health",
+        "operations",
+        "uptime",
+        "evidence"
+      ],
+      "icon": "status"
+    },
+    {
+      "id": "open-community",
+      "kind": "navigate",
+      "name": "Open community",
+      "description": "Enter public Discussions, roadmap and RFC intake",
+      "url": "/community",
+      "aliases": [
+        "community",
+        "discussions",
+        "discussion",
+        "rfc",
+        "roadmap",
+        "contribute",
+        "contribution"
+      ],
+      "icon": "github"
+    },
+    {
+      "id": "intent-build",
+      "kind": "navigate",
+      "name": "Build",
+      "description": "Open Studio to compose governed intelligent work",
+      "url": "/studio/",
+      "aliases": [
+        "build",
+        "create",
+        "studio",
+        "compose"
+      ],
+      "icon": "studio",
+      "remember_id": "studio"
+    },
+    {
+      "id": "intent-govern",
+      "kind": "navigate",
+      "name": "Govern",
+      "description": "Inspect canonical authority and platform governance",
+      "url": "https://github.com/Aftergraph/after-graph-governance",
+      "aliases": [
+        "govern",
+        "governance",
+        "authority",
+        "policy",
+        "aie",
+        "trust"
+      ],
+      "icon": "governance",
+      "remember_id": "governance"
+    },
+    {
+      "id": "intent-execute",
+      "kind": "navigate",
+      "name": "Execute",
+      "description": "Inspect durable execution through WORKS",
+      "url": "https://github.com/Aftergraph/works-execution",
+      "aliases": [
+        "execute",
+        "execution",
+        "works",
+        "runtime",
+        "durable"
+      ],
+      "icon": "works",
+      "remember_id": "works-execution"
+    },
+    {
+      "id": "intent-verify",
+      "kind": "navigate",
+      "name": "Verify",
+      "description": "Open Sentinel for independent exact-subject verification",
+      "url": "/sentinel",
+      "aliases": [
+        "verify",
+        "verification",
+        "sentinel",
+        "evidence",
+        "verdict"
+      ],
+      "icon": "verify",
+      "remember_id": "sentinel"
+    },
+    {
+      "id": "intent-research",
+      "kind": "navigate",
+      "name": "Research",
+      "description": "Open reproducible Aftergraph intelligence-systems research",
+      "url": "https://github.com/Aftergraph/intelligence-systems-research",
+      "aliases": [
+        "research",
+        "bench",
+        "spec",
+        "experiment",
+        "evaluation"
+      ],
+      "icon": "research",
+      "remember_id": "intelligence-systems-research"
+    }
   ]
 }

@@ -52,7 +52,7 @@ a{color:var(--control);text-decoration:none}a:hover{color:#a9e8f5}
 .section-kicker{margin:0 0 12px;color:var(--control);font:500 11px/1.4 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase}
 .section h2{margin:0 0 12px;font-size:clamp(28px,3.5vw,42px);line-height:1.1;letter-spacing:-.03em;font-weight:600}
 .section-intro{margin:0 0 40px;color:var(--muted);font-size:16px;max-width:640px;line-height:1.6}
-.intent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.intent-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
 .intent-card{padding:24px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);transition:border-color 200ms var(--ease)}
 .intent-card:hover{border-color:var(--border-strong)}
 .intent-card h3{margin:0 0 8px;font-size:16px;font-weight:600}
@@ -73,6 +73,9 @@ a{color:var(--control);text-decoration:none}a:hover{color:#a9e8f5}
 .intent-card.acc-evidence{border-top-color:var(--evidence)}
 .intent-card.acc-authority{border-top-color:var(--authority)}
 .intent-card.acc-decision{border-top-color:var(--decision)}
+.intent-card.acc-system{border-top-color:var(--system)}
+.source-link{display:inline-flex;align-items:center;min-height:44px;margin-top:14px;font-size:12px;font-weight:600;color:var(--control)}
+.atlas-handoff{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}.atlas-handoff button{min-height:44px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--muted);font:600 12px/1.2 inherit;cursor:pointer}.atlas-handoff button:hover,.atlas-handoff button.active{border-color:var(--border-strong);color:var(--control)}.atlas-handoff .source-link{margin-top:0}
 .product-card h3{margin:0;font-size:20px;font-weight:600}
 .product-card .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--decision-soft);color:var(--decision);border:1px solid rgba(240,166,74,.3)}
 .product-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.55}
@@ -183,28 +186,33 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 
 <section class="section shell" id="intent">
 <p class="section-kicker">What do you want to do?</p>
-<h2>Four ways into Aftergraph.</h2>
-<p class="section-intro">Every entry point routes to the right product, surface or documentation. No guessing.</p>
+<h2>Five ways into Aftergraph.</h2>
+<p class="section-intro">Choose by intent. Each entry path routes to an existing product, governed boundary, or evidence source.</p>
 <div class="intent-grid">
 <div class="intent-card acc-control">
-<h3>Use intelligent systems</h3>
-<p>Operate governed agents through structured workspaces.</p>
-<ul><li><a href="#studio">Studio</a></li><li><a href="#wie">Wie</a></li></ul>
-</div>
-<div class="intent-card acc-evidence">
-<h3>Verify outcomes</h3>
-<p>Independent code review bound to exact commits.</p>
-<ul><li><a href="/sentinel">Sentinel</a></li></ul>
+<h3>Build</h3>
+<p>Compose governed intelligent work through the primary experience and developer surfaces.</p>
+<ul><li><a href="#studio">Studio</a></li><li><a href="https://docs.aftergraph.org">Docs</a></li></ul>
 </div>
 <div class="intent-card acc-authority">
-<h3>Build and operate</h3>
-<p>Runtime infrastructure for durable autonomous work.</p>
-<ul><li><a href="https://github.com/Aftergraph/works-execution">WORKS</a></li><li><a href="https://github.com/Aftergraph/trust-gateway">Trust Gateway</a></li><li><a href="https://github.com/Aftergraph/aie">AIE</a></li></ul>
+<h3>Govern</h3>
+<p>Inspect authority, admission, policy, and canonical platform boundaries.</p>
+<ul><li><a href="https://github.com/Aftergraph/aie">AIE</a></li><li><a href="https://github.com/Aftergraph/trust-gateway">Trust Gateway</a></li></ul>
+</div>
+<div class="intent-card acc-system">
+<h3>Execute</h3>
+<p>Follow durable work and runtime orchestration without collapsing their ownership boundaries.</p>
+<ul><li><a href="https://github.com/Aftergraph/works-execution">WORKS</a></li><li><a href="https://docs.aftergraph.org/platform/">Runtime docs</a></li></ul>
+</div>
+<div class="intent-card acc-evidence">
+<h3>Verify</h3>
+<p>Inspect evidence and independent verdicts bound to exact subjects.</p>
+<ul><li><a href="/sentinel">Sentinel</a></li><li><a href="/atlas">Atlas</a></li></ul>
 </div>
 <div class="intent-card acc-decision">
-<h3>Research and extend</h3>
-<p>Evidence, standards, skills and canonical knowledge.</p>
-<ul><li><a href="https://docs.aftergraph.org">Docs</a></li><li><a href="https://github.com/Aftergraph/intelligence-systems-research">Research</a></li><li><a href="https://github.com/Aftergraph/after-graph-governance">Governance</a></li></ul>
+<h3>Research</h3>
+<p>Read reproducible research and canonical architecture without promoting either into runtime authority.</p>
+<ul><li><a href="https://github.com/Aftergraph/intelligence-systems-research">Research</a></li><li><a href="https://github.com/Aftergraph/after-graph-governance">Governance</a></li></ul>
 </div>
 </div>
 </section>
@@ -219,7 +227,7 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <span class="tag">prototype</span>
 <svg class="product-art" viewBox="0 0 320 130" role="img" aria-label="Studio artwork: scattered mission threads converging into one governed lane"><defs><linearGradient id="stg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#42c7e8" stop-opacity=".15"/><stop offset="1" stop-color="#42c7e8"/></linearGradient></defs><rect width="320" height="130" fill="#0a1120"/><g stroke="url(#stg)" stroke-width="2" fill="none"><path d="M10 25 C 120 25, 150 60, 230 60"/><path d="M10 65 C 120 65, 150 65, 230 65"/><path d="M10 105 C 120 105, 150 70, 230 70"/></g><g class="flow" stroke="#42c7e8" stroke-width="2" fill="none"><path d="M10 25 C 120 25, 150 60, 230 60"/><path d="M10 65 C 120 65, 150 65, 230 65"/><path d="M10 105 C 120 105, 150 70, 230 70"/></g><rect x="230" y="48" width="80" height="36" rx="8" fill="rgba(66,199,232,.12)" stroke="#42c7e8"/><circle cx="252" cy="66" r="5" fill="#42c7e8"><animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/></circle><circle cx="272" cy="66" r="5" fill="#42c7e8" opacity=".6"/><circle cx="292" cy="66" r="5" fill="#24c4ad"/></svg>
 <p>General-purpose operating environment for governed agent work. Chat, manage missions, approve actions, inspect evidence.</p>
-<div class="product-mini"><b>Chat</b> | <b>Work</b> | <b>Space</b><br>Mission &rarr; Active work &rarr; Needs You &rarr; Evidence</div>
+<div class="product-mini"><b>Goal</b> &rarr; Progress &rarr; Needs You &rarr; <b>Verified Outcome</b></div>
 <a class="button" href="/studio/" style="margin-top:auto;align-self:flex-start">Open Studio demo</a>
 </article>
 <article class="product-card" id="wie">
@@ -259,18 +267,28 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 </div>
 </section>
 
-<section class="section shell" id="platform">
-<p class="section-kicker">Platform</p>
-<h2>One system. Seven stages.</h2>
-<p class="section-intro">The platform lifecycle maps how intent becomes verified outcome. Each stage has a canonical owner.</p>
-<div class="platform-chain">
+<section class="section shell" id="platform" data-experience-hero>
+<p class="section-kicker">Platform · Illustrative system walkthrough</p>
+<h2>Seven permanent planes. One verifiable lifecycle.</h2>
+<p class="section-intro">V4 keeps semantic ownership explicit. Evidence and Verified Outcome are lifecycle results — not extra planes.</p>
+<div class="platform-chain" aria-label="Seven permanent Aftergraph planes">
+<span class="chain-node">Experience<span class="chain-owner">Studio</span></span><span class="chain-arrow">&rarr;</span>
 <span class="chain-node">Intelligence<span class="chain-owner">Wie</span></span><span class="chain-arrow">&rarr;</span>
 <span class="chain-node">Authority<span class="chain-owner">AIE</span></span><span class="chain-arrow">&rarr;</span>
 <span class="chain-node">Trust<span class="chain-owner">Trust Gateway</span></span><span class="chain-arrow">&rarr;</span>
 <span class="chain-node">Runtime<span class="chain-owner">Runtime</span></span><span class="chain-arrow">&rarr;</span>
 <span class="chain-node">Execution<span class="chain-owner">WORKS</span></span><span class="chain-arrow">&rarr;</span>
-<span class="chain-node">Evidence</span><span class="chain-arrow">&rarr;</span>
 <span class="chain-node" style="border-color:var(--evidence);color:var(--evidence)">Verification<span class="chain-owner">Sentinel</span></span>
+</div>
+<p class="evidence-rule"><b>Lifecycle:</b> Intent / Experience &rarr; Intelligence &rarr; Authority &rarr; Trust &rarr; Runtime &rarr; Execution &rarr; Evidence &rarr; Verification &rarr; Verified Outcome.</p>
+<a class="source-link" href="https://github.com/Aftergraph/after-graph-governance/blob/main/docs/PLATFORM-ARCHITECTURE-V4.md">Architecture source</a>
+<div class="atlas-handoff" aria-label="Inspect canonical systems in Atlas">
+<button type="button" data-atlas-entity="repo:Aftergraph/aie" data-atlas-label="AIE" aria-pressed="false">AIE</button>
+<button type="button" data-atlas-entity="repo:Aftergraph/trust-gateway" data-atlas-label="Trust Gateway" aria-pressed="false">Trust Gateway</button>
+<button type="button" data-atlas-entity="repo:Aftergraph/works-execution" data-atlas-label="WORKS" aria-pressed="false">WORKS</button>
+<button type="button" data-atlas-entity="repo:Aftergraph/intelligence-systems-research" data-atlas-label="Research" aria-pressed="false">Research</button>
+<a class="source-link" data-atlas-inspect href="/atlas">Inspect in Atlas</a>
+<span class="visually-hidden" data-atlas-selection aria-live="polite"></span>
 </div>
 </section>
 
@@ -285,6 +303,7 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <div class="evidence-cell"><h3>Verified production</h3><p>Only independent evidence can justify a stronger operational claim.</p></div>
 </div>
 <p class="evidence-rule">Research evidence can justify a promotion decision; it is never runtime authority by itself.</p>
+<a class="source-link" href="/atlas">Inspect evidence</a>
 </section>
 
 <section class="section shell" id="principles">

@@ -83,7 +83,7 @@ function matchSet(text){
   if(intent.type==='action')return ranked(COMMANDS,needle);
   if(intent.type==='evidence')return evidenceResults(needle);
   if(intent.type==='verify'){
-    const target=ranked(PRODUCTS,needle)[0];const action=ACTIONS.find(item=>item.id==='verify-sentinel');
+    const target=ranked(PRODUCTS,needle)[0];const action=ACTIONS.find(item=>item.id==='intent-verify');
     return action?[{...action,name:target?'Verify — '+target.name:action.name,description:target?'Open Sentinel to verify evidence for '+target.name:action.description}]:[];
   }
   if(!needle)return [...recentItems(),...PRODUCTS.filter(item=>FEATURED_PRODUCTS.has(item.id)),...ACTIONS.filter(item=>FEATURED_ACTIONS.has(item.id))];
