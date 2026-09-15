@@ -21,7 +21,8 @@
 body { margin: 0; background: var(--ag-canvas); color: var(--ag-text); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.5; }
 .atlas { display: grid; grid-template-columns: 260px 1fr 340px; grid-template-rows: auto auto 1fr; height: 100vh; }
 .atlas-head { grid-column: 1 / -1; display: flex; gap: var(--ag-space-3); align-items: center; padding: var(--ag-space-3) var(--ag-space-4); border-bottom: 1px solid var(--ag-border); background: var(--ag-raised); flex-wrap: wrap; box-shadow: var(--ag-shadow-sm); z-index: 10; }
-.atlas-head h1 { font-size: 16px; margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+/* h1 sizing is now component-level (Home.css .ag-display = 70px) */
+.atlas-head h1 { margin: 0; font-weight: 600; }
 .atlas-head .cut { color: var(--ag-muted); font-size: 11px; font-family: var(--ag-mono); }
 .atlas-launcher-link { margin-left: auto; color: var(--ag-accent); border: 1px solid var(--ag-border); border-radius: 12px; padding: 7px 10px; text-decoration: none; font-size: 12px; font-family: var(--ag-mono); }
 .atlas-launcher-link:hover { border-color: var(--ag-accent); background: var(--ag-raised); }
