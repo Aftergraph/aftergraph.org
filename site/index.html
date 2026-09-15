@@ -75,6 +75,7 @@ a{color:var(--control);text-decoration:none}a:hover{color:#a9e8f5}
 .intent-card.acc-decision{border-top-color:var(--decision)}
 .intent-card.acc-system{border-top-color:var(--system)}
 .source-link{display:inline-flex;align-items:center;min-height:44px;margin-top:14px;font-size:12px;font-weight:600;color:var(--control)}
+.atlas-handoff{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}.atlas-handoff button{min-height:44px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--muted);font:600 12px/1.2 inherit;cursor:pointer}.atlas-handoff button:hover,.atlas-handoff button.active{border-color:var(--border-strong);color:var(--control)}.atlas-handoff .source-link{margin-top:0}
 .product-card h3{margin:0;font-size:20px;font-weight:600}
 .product-card .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--decision-soft);color:var(--decision);border:1px solid rgba(240,166,74,.3)}
 .product-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.55}
@@ -266,8 +267,8 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 </div>
 </section>
 
-<section class="section shell" id="platform">
-<p class="section-kicker">Platform</p>
+<section class="section shell" id="platform" data-experience-hero>
+<p class="section-kicker">Platform · Illustrative system walkthrough</p>
 <h2>Seven permanent planes. One verifiable lifecycle.</h2>
 <p class="section-intro">V4 keeps semantic ownership explicit. Evidence and Verified Outcome are lifecycle results — not extra planes.</p>
 <div class="platform-chain" aria-label="Seven permanent Aftergraph planes">
@@ -281,6 +282,14 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 </div>
 <p class="evidence-rule"><b>Lifecycle:</b> Intent / Experience &rarr; Intelligence &rarr; Authority &rarr; Trust &rarr; Runtime &rarr; Execution &rarr; Evidence &rarr; Verification &rarr; Verified Outcome.</p>
 <a class="source-link" href="https://github.com/Aftergraph/after-graph-governance/blob/main/docs/PLATFORM-ARCHITECTURE-V4.md">Architecture source</a>
+<div class="atlas-handoff" aria-label="Inspect canonical systems in Atlas">
+<button type="button" data-atlas-entity="repo:Aftergraph/aie" data-atlas-label="AIE" aria-pressed="false">AIE</button>
+<button type="button" data-atlas-entity="repo:Aftergraph/trust-gateway" data-atlas-label="Trust Gateway" aria-pressed="false">Trust Gateway</button>
+<button type="button" data-atlas-entity="repo:Aftergraph/works-execution" data-atlas-label="WORKS" aria-pressed="false">WORKS</button>
+<button type="button" data-atlas-entity="repo:Aftergraph/intelligence-systems-research" data-atlas-label="Research" aria-pressed="false">Research</button>
+<a class="source-link" data-atlas-inspect href="/atlas">Inspect in Atlas</a>
+<span class="visually-hidden" data-atlas-selection aria-live="polite"></span>
+</div>
 </section>
 
 <section class="section shell" id="research">
