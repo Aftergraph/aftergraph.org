@@ -24,6 +24,8 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Install Atlas dependencies (lockfile)
         run: npm --prefix atlas ci
+      - name: Audit Atlas dependencies
+        run: npm --prefix atlas audit --audit-level=moderate
       - name: Atlas unit tests
         run: npm --prefix atlas test
       - name: Atlas projection tests
@@ -45,6 +47,14 @@ jobs:
           node site/serve-local.cjs 8471 site &
           SRV=$!
           node atlas/scripts/verify-dom.mjs "http://localhost:8471/atlas/"
+          STATUS=$?
+          kill $SRV
+          exit $STATUS
+      - name: Launcher browser smoke
+        run: |
+          node site/serve-local.cjs 8472 site &
+          SRV=$!
+          node atlas/scripts/verify-launcher.mjs "http://localhost:8472/launch.html"
           STATUS=$?
           kill $SRV
           exit $STATUS
