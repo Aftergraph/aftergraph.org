@@ -40,7 +40,7 @@ test('launcher actions are navigational or evidence-only', () => {
   const registry = read(registryPath);
   const allowed = new Set(['navigate', 'evidence']);
   assert.ok(registry.actions.every((item) => allowed.has(item.kind)));
-  assert.ok(registry.actions.some((item) => item.id === 'verify-sentinel' && item.kind === 'navigate'));
+  assert.ok(registry.actions.some((item) => item.id === 'intent-verify' && item.kind === 'navigate'));
   assert.ok(registry.actions.some((item) => item.id === 'open-status' && item.kind === 'evidence'));
 });
 

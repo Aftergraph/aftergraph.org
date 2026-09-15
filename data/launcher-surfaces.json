@@ -225,22 +225,6 @@
       "remember_id": "atlas"
     },
     {
-      "id": "verify-sentinel",
-      "kind": "navigate",
-      "name": "Verify with Sentinel",
-      "description": "Open the exact-HEAD verification and code-review surface",
-      "url": "/sentinel",
-      "aliases": [
-        "verify",
-        "verification",
-        "sentinel",
-        "ship",
-        "review"
-      ],
-      "icon": "verify",
-      "remember_id": "sentinel"
-    },
-    {
       "id": "open-docs",
       "kind": "navigate",
       "name": "Open documentation",
