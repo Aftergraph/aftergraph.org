@@ -24,6 +24,8 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Install Atlas dependencies (lockfile)
         run: npm --prefix atlas ci
+      - name: Audit Atlas dependencies
+        run: npm --prefix atlas audit --audit-level=moderate
       - name: Atlas unit tests
         run: npm --prefix atlas test
       - name: Atlas projection tests
