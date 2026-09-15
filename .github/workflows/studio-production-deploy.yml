@@ -1,0 +1,91 @@
+name: Studio Production Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      studio_sha:
+        description: Exact 40-character Aftergraph/studio commit SHA to deploy
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aftergraph-studio-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 30
+    environment: production
+    steps:
+      - name: Checkout exact site source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Checkout exact Studio source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: Aftergraph/studio
+          ref: ${{ inputs.studio_sha }}
+          path: studio-source
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+
+      - name: Verify production runner and exact Studio SHA
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') {
+            throw "unexpected production runner: $env:RUNNER_NAME"
+          }
+          $expected = '${{ inputs.studio_sha }}'
+          if ($expected -notmatch '^[0-9a-f]{40}$') { throw 'studio_sha must be a full lowercase 40-character SHA' }
+          $actual = (git -C studio-source rev-parse HEAD).Trim()
+          if ($actual -ne $expected) { throw "Studio provenance mismatch: expected $expected got $actual" }
+          "STUDIO_SHA=$expected" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "STUDIO_DIR=$((Resolve-Path 'studio-source').Path)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Build and verify exact Studio artifact
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          node site/studio-build.cjs
+          node site/verify-studio.cjs build
+          $version = Get-Content site/studio-dist/version.json | ConvertFrom-Json
+          if ($version.studio_sha -ne $env:STUDIO_SHA) { throw 'built Studio SHA mismatch' }
+
+      - name: Verify deploy runner Cloudflare session
+        shell: pwsh
+        run: npx --yes wrangler@4.131.2 whoami
+
+      - name: Deploy exact Studio artifact to Cloudflare Workers
+        shell: pwsh
+        working-directory: site
+        run: npx --yes wrangler@4.131.2 deploy --config studio-wrangler.toml --name aftergraph-studio
+
+      - name: Verify public Studio and backend provenance
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $base = 'https://aftergraph.org'
+          $nonce = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+          $version = Invoke-RestMethod -Uri "$base/studio/version.json?verify=$nonce" -Method Get
+          if ($version.studio_sha -ne $env:STUDIO_SHA) {
+            throw "public Studio SHA mismatch: expected $env:STUDIO_SHA got $($version.studio_sha)"
+          }
+          $health = Invoke-RestMethod -Uri "$base/studio/healthz?verify=$nonce" -Method Get
+          if ($health.status -ne 'ok' -or $health.releaseSha -ne $env:STUDIO_SHA) {
+            throw "backend provenance mismatch: expected $env:STUDIO_SHA got $($health.releaseSha)"
+          }
+          foreach ($path in @('/studio/', '/studio/chat', '/studio/work', '/studio/space', '/studio/manifest.webmanifest', '/studio/sw.js')) {
+            $response = Invoke-WebRequest -Uri "$base$path?verify=$nonce" -Method Get -UseBasicParsing
+            if ($response.StatusCode -ne 200) { throw "Studio smoke failed: $path -> $($response.StatusCode)" }
+          }
+          node site/verify-studio.cjs live $base
+          Write-Host "Studio production verified at exact SHA $env:STUDIO_SHA"
