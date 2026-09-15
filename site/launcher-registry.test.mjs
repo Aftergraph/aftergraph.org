@@ -46,7 +46,7 @@ test('launcher actions are navigational or evidence-only', () => {
 
 
 test('registry exposes the five V4 public semantic intents without privileged actions', () => {
-  const registry = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
+  const registry = read(registryPath);
   const expected = new Map([
     ['build', 'Build'], ['govern', 'Govern'], ['execute', 'Execute'],
     ['verify', 'Verify'], ['research', 'Research'],
