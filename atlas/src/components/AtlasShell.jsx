@@ -313,19 +313,26 @@ export default function AtlasShell({ activeView, onViewChange, children }) {
                   data-view-id={item.id}
                   onClick={() => onViewChange(item.id)}
                   onKeyDown={handleTabKeyDown}
-                  className="px-3 py-2 cursor-pointer border-none bg-transparent whitespace-nowrap"
+                  className="px-4 py-3 cursor-pointer border-none bg-transparent whitespace-nowrap"
                   style={{
-                    fontSize: '14px',
+                    fontSize: '16px',
                     fontWeight: isActive ? 600 : 500,
                     color: isActive ? 'var(--ag-control)' : 'var(--ag-text-muted)',
-                    borderBottom: isActive ? '2px solid var(--ag-control)' : '2px solid transparent',
-                    transition: `all var(--ag-motion-state) var(--ag-ease-state)`,
+                    borderRadius: '12px',
+                    background: isActive ? 'var(--ag-control-soft)' : 'transparent',
+                    transition: `color var(--ag-motion-state) var(--ag-ease-state), background var(--ag-motion-state) var(--ag-ease-state)`,
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) e.currentTarget.style.color = 'var(--ag-text)';
+                    if (!isActive) {
+                      e.currentTarget.style.color = 'var(--ag-text)';
+                      e.currentTarget.style.background = 'color-mix(in srgb, var(--ag-text-muted) 8%, transparent)';
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    if (!isActive) e.currentTarget.style.color = 'var(--ag-text-muted)';
+                    if (!isActive) {
+                      e.currentTarget.style.color = 'var(--ag-text-muted)';
+                      e.currentTarget.style.background = 'transparent';
+                    }
                   }}
                 >
                   {item.label}

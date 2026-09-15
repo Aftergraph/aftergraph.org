@@ -6,8 +6,8 @@ import SkeletonCard from './shared/SkeletonCard.jsx';
 import EmptyState from './shared/EmptyState.jsx';
 
 const MOTION_SURFACE = { duration: 0.34, ease: [0.16, 1, 0.3, 1] };
-const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } };
-const MOTION_ITEM = { hidden: { opacity: 0, y: 6 }, show: { opacity: 1, y: 0, transition: { ...MOTION_SURFACE } } };
+const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
+const MOTION_ITEM = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0, transition: { ...MOTION_SURFACE } } };
 
 async function fetchAsk() {
   const res = await fetch('/api/v3/ask');
@@ -30,8 +30,8 @@ function HighlightMatch({ text, query }) {
             style={{
               background: 'var(--ag-control-soft)',
               color: 'var(--ag-control)',
-              borderRadius: 2,
-              padding: '0 1px',
+              borderRadius: 3,
+              padding: '0 2px',
             }}
           >
             {part}
@@ -53,8 +53,8 @@ function PlaneChip({ plane }) {
   const c = colors[plane] || colors.OBSERVED;
   return (
     <span
-      className="px-1.5 py-0.5 rounded font-mono uppercase tracking-wider shrink-0"
-      style={{ fontSize: 9, color: c.text, background: c.bg, border: `1px solid ${c.border}` }}
+      className="px-2 py-1 rounded-md font-mono uppercase tracking-wider shrink-0"
+      style={{ fontSize: 11, fontWeight: 600, color: c.text, background: c.bg, border: `1px solid ${c.border}` }}
     >
       {plane?.slice(0, 3)}
     </span>
@@ -68,19 +68,20 @@ function HitCard({ hit, assertion, query }) {
     <motion.div
       variants={MOTION_ITEM}
       layout
-      className="rounded-xl border p-4 flex flex-col gap-2"
+      className="rounded-2xl border p-8 flex flex-col gap-4"
       style={{
-        background: 'var(--ag-surface)',
+        background: 'var(--ag-canvas-raised)',
         borderColor: 'var(--ag-border)',
-        transition: `border-color var(--ag-motion-state) var(--ag-ease-state)`,
+        boxShadow: 'var(--ag-shadow-raised)',
+        transition: `border-color var(--ag-motion-state) var(--ag-ease-state), box-shadow var(--ag-motion-state) var(--ag-ease-state), transform var(--ag-motion-state) var(--ag-ease-state)`,
       }}
-      whileHover={{ borderColor: 'var(--ag-control)' }}
+      whileHover={{ borderColor: 'var(--ag-control)', boxShadow: 'var(--ag-shadow-focus)', y: -2 }}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <h3
-            className="font-medium truncate"
-            style={{ fontSize: 'var(--ag-type-body)', color: 'var(--ag-text)', margin: 0 }}
+            className="font-semibold truncate"
+            style={{ fontSize: '17px', color: 'var(--ag-text)', margin: 0, letterSpacing: '-0.01em', lineHeight: 1.3 }}
           >
             <HighlightMatch text={assertion.subject} query={query} />
           </h3>
@@ -88,17 +89,17 @@ function HitCard({ hit, assertion, query }) {
         </div>
         <span
           className="shrink-0 font-mono"
-          style={{ fontSize: 'var(--ag-type-caption)', color: 'var(--ag-text-subtle)' }}
+          style={{ fontSize: 13, color: 'var(--ag-text-subtle)' }}
         >
           score: {hit.score}
         </span>
       </div>
-      <p style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text-muted)', margin: 0 }}>
+      <p style={{ fontSize: '17px', color: 'var(--ag-text-muted)', margin: 0, lineHeight: 1.6 }}>
         <HighlightMatch text={`${assertion.predicate}: ${valueStr}`} query={query} />
       </p>
       <div
-        className="flex items-center gap-3 pt-2 mt-1 border-t"
-        style={{ borderColor: 'var(--ag-border)', fontSize: 'var(--ag-type-caption)', color: 'var(--ag-text-subtle)', fontFamily: 'var(--ag-font-code)' }}
+        className="flex items-center gap-4 pt-4 mt-auto border-t"
+        style={{ borderColor: 'var(--ag-border)', fontSize: 13, color: 'var(--ag-text-subtle)', fontFamily: 'var(--ag-font-code)' }}
       >
         <span title={assertion.provenance?.source || ''}>
           <HighlightMatch text={assertion.provenance?.source || '—'} query={query} />
@@ -109,8 +110,6 @@ function HitCard({ hit, assertion, query }) {
     </motion.div>
   );
 }
-
-
 
 export default function AskView({ projection }) {
   const [query, setQuery] = useState('');
@@ -123,7 +122,6 @@ export default function AskView({ projection }) {
     retry: 1,
   });
 
-  // Use API data or fall back to projection for assertion lookup
   const effectiveProjection = useMemo(() => {
     if (apiData?.projection) return apiData.projection;
     return projection;
@@ -146,13 +144,13 @@ export default function AskView({ projection }) {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 p-6">
-        <div className="space-y-2">
-          <div className="h-7 rounded animate-pulse" style={{ width: 180, background: 'var(--ag-border-strong)' }} />
-          <div className="h-4 rounded animate-pulse" style={{ width: 300, background: 'var(--ag-border)' }} />
-        </div>
-        <div className="h-10 rounded-lg animate-pulse" style={{ background: 'var(--ag-border)' }} />
+      <div className="space-y-8 p-8">
         <div className="space-y-3">
+          <div className="h-10 rounded animate-pulse" style={{ width: 220, background: 'var(--ag-border-strong)' }} />
+          <div className="h-5 rounded animate-pulse" style={{ width: 360, background: 'var(--ag-border)' }} />
+        </div>
+        <div className="h-14 rounded-xl animate-pulse" style={{ background: 'var(--ag-border)' }} />
+        <div className="space-y-4">
           {[...Array(3)].map((_, i) => <SkeletonCard key={i} />)}
         </div>
       </div>
@@ -160,13 +158,13 @@ export default function AskView({ projection }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <motion.h2
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={MOTION_SURFACE}
-          style={{ fontSize: 'var(--ag-type-title)', fontWeight: 'var(--ag-weight-bold)', color: 'var(--ag-text)', margin: 0 }}
+          style={{ fontSize: '42px', fontWeight: 'var(--ag-weight-bold)', color: 'var(--ag-text)', margin: 0, letterSpacing: '-0.025em', lineHeight: 1.15 }}
         >
           Ask Atlas
         </motion.h2>
@@ -174,7 +172,7 @@ export default function AskView({ projection }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ ...MOTION_SURFACE, delay: 0.08 }}
-          style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text-muted)', margin: '4px 0 0' }}
+          style={{ fontSize: '17px', color: 'var(--ag-text-muted)', margin: '12px 0 0', lineHeight: 1.6 }}
         >
           Kun citerede assertions — ingen gæt
         </motion.p>
@@ -185,7 +183,7 @@ export default function AskView({ projection }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ ...MOTION_SURFACE, delay: 0.12 }}
         onSubmit={run}
-        className="flex gap-3"
+        className="flex gap-4"
       >
         <input
           type="text"
@@ -193,28 +191,30 @@ export default function AskView({ projection }) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="e.g. wi-backend head role, auth service owner…"
           aria-label="Ask Atlas"
-          className="flex-1 rounded-lg px-4 py-2.5"
+          className="flex-1 rounded-xl px-6 py-4"
           style={{
             background: 'var(--ag-canvas-raised)',
             border: '1px solid var(--ag-border)',
             color: 'var(--ag-text)',
-            fontSize: 'var(--ag-type-body)',
+            fontSize: '17px',
             outline: 'none',
-            transition: `border-color var(--ag-motion-state) var(--ag-ease-state)`,
+            boxShadow: 'var(--ag-shadow-raised)',
+            transition: `border-color var(--ag-motion-state) var(--ag-ease-state), box-shadow var(--ag-motion-state) var(--ag-ease-state)`,
           }}
-          onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--ag-control)'; }}
-          onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--ag-border)'; }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--ag-control)'; e.currentTarget.style.boxShadow = 'var(--ag-shadow-focus)'; }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--ag-border)'; e.currentTarget.style.boxShadow = 'var(--ag-shadow-raised)'; }}
         />
         <button
           type="submit"
           disabled={!query.trim()}
-          className="px-5 py-2.5 rounded-lg cursor-pointer"
+          className="px-8 py-4 rounded-xl cursor-pointer"
           style={{
-            fontSize: 'var(--ag-type-body-sm)',
+            fontSize: '17px',
             fontWeight: 'var(--ag-weight-semibold)',
             color: 'var(--ag-canvas)',
             background: query.trim() ? 'var(--ag-control)' : 'var(--ag-border)',
             border: 'none',
+            boxShadow: query.trim() ? 'var(--ag-shadow-raised)' : 'none',
             transition: `all var(--ag-motion-state) var(--ag-ease-state)`,
             opacity: query.trim() ? 1 : 0.5,
           }}
@@ -238,8 +238,8 @@ export default function AskView({ projection }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="p-8 rounded-xl border text-center"
-            style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)', color: 'var(--ag-text-muted)', fontSize: 'var(--ag-type-body-sm)' }}
+            className="p-10 rounded-2xl border text-center"
+            style={{ background: 'var(--ag-canvas-raised)', borderColor: 'var(--ag-border)', boxShadow: 'var(--ag-shadow-raised)', color: 'var(--ag-text-muted)', fontSize: '17px' }}
           >
             Ingen matching assertions fundet. Prøv et andet søgeord.
           </motion.div>
@@ -252,12 +252,12 @@ export default function AskView({ projection }) {
             initial="hidden"
             animate="show"
             exit={{ opacity: 0 }}
-            className="space-y-3"
+            className="space-y-4"
           >
-            <div className="flex items-center gap-2" style={{ fontSize: 'var(--ag-type-caption)', color: 'var(--ag-text-subtle)' }}>
+            <div className="flex items-center gap-3" style={{ fontSize: 13, color: 'var(--ag-text-subtle)' }}>
               <span>{result.hits.length} evidence hits</span>
               {!result.valid && (
-                <span className="px-2 py-0.5 rounded-full border" style={{ color: 'var(--ag-danger)', borderColor: 'color-mix(in srgb, var(--ag-danger) 30%, transparent)', background: 'var(--ag-danger-soft)' }}>
+                <span className="px-3 py-1 rounded-md border" style={{ color: 'var(--ag-danger)', borderColor: 'color-mix(in srgb, var(--ag-danger) 30%, transparent)', background: 'var(--ag-danger-soft)', fontWeight: 600 }}>
                   validation warning
                 </span>
               )}

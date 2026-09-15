@@ -6,7 +6,7 @@ import SkeletonCard from './shared/SkeletonCard.jsx';
 import EmptyState from './shared/EmptyState.jsx';
 
 const MOTION_SURFACE = { duration: 0.34, ease: [0.16, 1, 0.3, 1] };
-const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } };
+const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
 const MOTION_ITEM = { hidden: { opacity: 0, x: -8 }, show: { opacity: 1, x: 0, transition: { ...MOTION_SURFACE } } };
 
 async function fetchSnapshots() {
@@ -25,8 +25,8 @@ function DiffBadge({ label, count, type }) {
   const c = colors[type] || colors.changed;
   return (
     <span
-      className="px-2 py-0.5 rounded-full border font-mono"
-      style={{ fontSize: 'var(--ag-type-caption)', background: c.bg, color: c.text, borderColor: c.border }}
+      className="px-3 py-1 rounded-md border font-mono"
+      style={{ fontSize: 12, fontWeight: 600, background: c.bg, color: c.text, borderColor: c.border }}
     >
       {label} {count > 0 ? `+${count}` : count}
     </span>
@@ -40,33 +40,34 @@ function SnapshotRow({ snapshot, onSelect, selected, loading }) {
       variants={MOTION_ITEM}
       layout
       onClick={() => !loading && onSelect(snapshot)}
-      className="rounded-xl border p-4 cursor-pointer flex flex-col sm:flex-row sm:items-center gap-3"
+      className="rounded-2xl border p-6 cursor-pointer flex flex-col sm:flex-row sm:items-center gap-4"
       style={{
-        background: isSelected ? 'var(--ag-control-soft)' : 'var(--ag-surface)',
+        background: isSelected ? 'var(--ag-control-soft)' : 'var(--ag-canvas-raised)',
         borderColor: isSelected ? 'var(--ag-control)' : 'var(--ag-border)',
+        boxShadow: isSelected ? 'var(--ag-shadow-focus)' : 'var(--ag-shadow-raised)',
         opacity: loading ? 0.6 : 1,
         transition: `all var(--ag-motion-state) var(--ag-ease-state)`,
       }}
-      whileHover={!loading ? { borderColor: 'var(--ag-control)' } : {}}
+      whileHover={!loading ? { borderColor: 'var(--ag-control)', boxShadow: 'var(--ag-shadow-focus)', y: -2 } : {}}
     >
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
+        <div className="flex items-center gap-3 mb-2">
           <h3
             className="font-mono truncate"
-            style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text)', margin: 0 }}
+            style={{ fontSize: '17px', color: 'var(--ag-text)', margin: 0, fontWeight: 600 }}
           >
             {snapshot.evidence_cut}
           </h3>
           {isSelected && (
             <span
-              className="shrink-0 px-1.5 py-0.5 rounded font-mono uppercase tracking-wider"
-              style={{ fontSize: 9, color: 'var(--ag-control)', background: 'var(--ag-control-soft)' }}
+              className="shrink-0 px-2 py-1 rounded-md font-mono uppercase tracking-wider"
+              style={{ fontSize: 11, fontWeight: 600, color: 'var(--ag-control)', background: 'var(--ag-control-soft)' }}
             >
               active
             </span>
           )}
         </div>
-        <div className="flex items-center gap-3" style={{ fontSize: 'var(--ag-type-caption)', color: 'var(--ag-text-subtle)', fontFamily: 'var(--ag-font-code)' }}>
+        <div className="flex items-center gap-4" style={{ fontSize: 13, color: 'var(--ag-text-subtle)', fontFamily: 'var(--ag-font-code)' }}>
           <span>gov: {String(snapshot.gov_sha || '').slice(0, 7)}</span>
           <span>·</span>
           <span>{snapshot.entities} entities</span>
@@ -79,7 +80,7 @@ function SnapshotRow({ snapshot, onSelect, selected, loading }) {
         </div>
       </div>
       {loading && selected?.file === snapshot.file && (
-        <span className="text-xs animate-pulse" style={{ color: 'var(--ag-text-muted)' }}>Loading…</span>
+        <span className="text-sm animate-pulse" style={{ color: 'var(--ag-text-muted)' }}>Loading…</span>
       )}
     </motion.div>
   );
@@ -92,8 +93,8 @@ function DiffPanel({ diff, snapshotFile }) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="p-4 rounded-xl border"
-        style={{ background: 'var(--ag-danger-soft)', borderColor: 'color-mix(in srgb, var(--ag-danger) 30%, transparent)', color: 'var(--ag-danger)', fontSize: 'var(--ag-type-body-sm)' }}
+        className="p-8 rounded-2xl border"
+        style={{ background: 'var(--ag-danger-soft)', borderColor: 'color-mix(in srgb, var(--ag-danger) 30%, transparent)', color: 'var(--ag-danger)', fontSize: '17px' }}
       >
         {diff.error}
       </motion.div>
@@ -115,18 +116,18 @@ function DiffPanel({ diff, snapshotFile }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={MOTION_SURFACE}
-      className="rounded-xl border p-5 space-y-4"
-      style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
+      className="rounded-2xl border p-8 space-y-6"
+      style={{ background: 'var(--ag-canvas-raised)', borderColor: 'var(--ag-border)', boxShadow: 'var(--ag-shadow-raised)' }}
     >
       <div className="flex items-center justify-between">
-        <h3 style={{ fontSize: 'var(--ag-type-body)', fontWeight: 'var(--ag-weight-semibold)', color: 'var(--ag-text)', margin: 0 }}>
+        <h3 style={{ fontSize: '17px', fontWeight: 'var(--ag-weight-semibold)', color: 'var(--ag-text)', margin: 0 }}>
           Diff: {snapshotFile} → current
         </h3>
-        <span className="font-mono" style={{ fontSize: 'var(--ag-type-caption)', color: 'var(--ag-text-subtle)' }}>
+        <span className="font-mono" style={{ fontSize: 13, color: 'var(--ag-text-subtle)' }}>
           {totalChanges} changes
         </span>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-3">
         <DiffBadge label="entities" count={diff.addedEntities.length} type="added" />
         <DiffBadge label="entities" count={-diff.removedEntities.length} type="removed" />
         <DiffBadge label="assertions" count={diff.addedAssertions.length} type="added" />
@@ -138,15 +139,13 @@ function DiffPanel({ diff, snapshotFile }) {
         <DiffBadge label="conflicts resolved" count={diff.resolvedConflicts.length} type="added" />
       </div>
       {totalChanges === 0 && (
-        <p style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text-muted)', margin: 0 }}>
+        <p style={{ fontSize: '17px', color: 'var(--ag-text-muted)', margin: 0 }}>
           No differences — this snapshot matches the current projection.
         </p>
       )}
     </motion.div>
   );
 }
-
-
 
 export default function SnapshotsView({ projection }) {
   const [selected, setSelected] = useState(null);
@@ -163,7 +162,6 @@ export default function SnapshotsView({ projection }) {
   const index = useMemo(() => {
     if (apiData?.snapshots) return apiData.snapshots;
     if (!projection) return [];
-    // Fallback: derive minimal snapshot list from projection meta if available
     if (projection.meta?.evidence_cut) {
       return [{
         file: 'current',
@@ -194,12 +192,12 @@ export default function SnapshotsView({ projection }) {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 p-6">
-        <div className="space-y-2">
-          <div className="h-7 rounded animate-pulse" style={{ width: 220, background: 'var(--ag-border-strong)' }} />
-          <div className="h-4 rounded animate-pulse" style={{ width: 340, background: 'var(--ag-border)' }} />
-        </div>
+      <div className="space-y-8 p-8">
         <div className="space-y-3">
+          <div className="h-10 rounded animate-pulse" style={{ width: 280, background: 'var(--ag-border-strong)' }} />
+          <div className="h-5 rounded animate-pulse" style={{ width: 420, background: 'var(--ag-border)' }} />
+        </div>
+        <div className="space-y-4">
           {[...Array(4)].map((_, i) => <SkeletonCard key={i} />)}
         </div>
       </div>
@@ -207,13 +205,13 @@ export default function SnapshotsView({ projection }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <motion.h2
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={MOTION_SURFACE}
-          style={{ fontSize: 'var(--ag-type-title)', fontWeight: 'var(--ag-weight-bold)', color: 'var(--ag-text)', margin: 0 }}
+          style={{ fontSize: '42px', fontWeight: 'var(--ag-weight-bold)', color: 'var(--ag-text)', margin: 0, letterSpacing: '-0.025em', lineHeight: 1.15 }}
         >
           Snapshots
         </motion.h2>
@@ -221,20 +219,19 @@ export default function SnapshotsView({ projection }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ ...MOTION_SURFACE, delay: 0.08 }}
-          style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text-muted)', margin: '4px 0 0' }}
+          style={{ fontSize: '17px', color: 'var(--ag-text-muted)', margin: '12px 0 0', lineHeight: 1.6 }}
         >
           Versionerede snapshots — historikken overskrives aldrig
         </motion.p>
       </div>
 
-      {/* Current cut metadata */}
       {projection && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ ...MOTION_SURFACE, delay: 0.12 }}
-          className="flex flex-wrap gap-4 p-4 rounded-xl border"
-          style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)', fontSize: 'var(--ag-type-caption)', fontFamily: 'var(--ag-font-code)', color: 'var(--ag-text-subtle)' }}
+          className="flex flex-wrap gap-6 p-6 rounded-2xl border"
+          style={{ background: 'var(--ag-canvas-raised)', borderColor: 'var(--ag-border)', boxShadow: 'var(--ag-shadow-raised)', fontSize: 13, fontFamily: 'var(--ag-font-code)', color: 'var(--ag-text-subtle)' }}
         >
           <span>current cut: <span style={{ color: 'var(--ag-text)' }}>{projection.meta?.evidence_cut || '—'}</span></span>
           <span>gov SHA: <span style={{ color: 'var(--ag-text)' }}>{String(projection.meta?.gov_sha || '').slice(0, 7)}</span></span>
@@ -248,12 +245,12 @@ export default function SnapshotsView({ projection }) {
           description="Kør generatoren med --snapshot-dir for at oprette dit første snapshot."
         />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <motion.div
             variants={MOTION_STAGGER}
             initial="hidden"
             animate="show"
-            className="space-y-2"
+            className="space-y-4"
           >
             <AnimatePresence>
               {index.map((s) => (
@@ -267,7 +264,7 @@ export default function SnapshotsView({ projection }) {
               ))}
             </AnimatePresence>
           </motion.div>
-          <div className="lg:sticky lg:top-4 self-start">
+          <div className="lg:sticky lg:top-6 self-start">
             <AnimatePresence mode="wait">
               {diff && <DiffPanel key={selected?.file} diff={diff} snapshotFile={selected?.file} />}
             </AnimatePresence>
@@ -275,8 +272,8 @@ export default function SnapshotsView({ projection }) {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="p-6 rounded-xl border text-center"
-                style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)', color: 'var(--ag-text-muted)', fontSize: 'var(--ag-type-body-sm)' }}
+                className="p-8 rounded-2xl border text-center"
+                style={{ background: 'var(--ag-canvas-raised)', borderColor: 'var(--ag-border)', boxShadow: 'var(--ag-shadow-raised)', color: 'var(--ag-text-muted)', fontSize: '17px' }}
               >
                 Vælg et snapshot for at se diff mod nuværende projection.
               </motion.div>
