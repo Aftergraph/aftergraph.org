@@ -6,6 +6,15 @@ const browser = await chromium.launch({ headless: true });
 
 try {
   const desktop = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const telemetry = [];
+  await desktop.route('**/api/launcher/telemetry', async (route) => {
+    const request = route.request();
+    if (request.method() === 'POST') {
+      const raw = request.postData() || '';
+      telemetry.push({ raw, payload: raw ? JSON.parse(raw) : null });
+    }
+    await route.fulfill({ status: 202, body: '' });
+  });
   await desktop.goto(base, { waitUntil: 'networkidle' });
 
   const desktopState = await desktop.evaluate(() => ({
@@ -29,6 +38,13 @@ try {
   await desktop.locator('#q').fill('> verify');
   assert.deepEqual(await desktop.locator('.item-name').allTextContents(), ['Verify with Sentinel']);
 
+  await desktop.locator('#q').fill('evidence studio');
+  assert.deepEqual(await desktop.locator('.item-name').allTextContents(), ['Inspect evidence — Studio']);
+  assert.match(await desktop.locator('.item').first().getAttribute('aria-label'), /Studio/);
+
+  await desktop.locator('#q').fill('verify studio');
+  assert.deepEqual(await desktop.locator('.item-name').allTextContents(), ['Verify — Studio']);
+
   await desktop.locator('#q').fill('');
   await desktop.locator('#q').press('ArrowDown');
   assert.equal(await desktop.locator('.item[aria-selected="true"] .item-name').textContent(), 'Work Intelligence');
@@ -43,6 +59,14 @@ try {
 
   await desktop.locator('#q').fill('no-such-aftergraph-destination-xyz');
   assert.match(await desktop.locator('.empty').textContent(), /No matching destination/);
+  await desktop.waitForTimeout(650);
+  const zeroResult = telemetry.find((event) => event.payload?.event === 'zero_result');
+  assert.ok(zeroResult, 'zero-result telemetry must be emitted');
+  assert.equal(zeroResult.payload.intent, 'find');
+  assert.equal(zeroResult.payload.result_bucket, '0');
+  assert.ok(!('query' in zeroResult.payload), 'raw query must never leave the browser');
+  assert.ok(!('url' in zeroResult.payload), 'raw URL must never leave the browser');
+  assert.ok(telemetry.every((event) => !/no-such-aftergraph-destination-xyz/.test(event.raw)), 'raw search text leaked into telemetry');
   await desktop.locator('#q').press('Escape');
   assert.equal(await desktop.locator('#q').inputValue(), '');
 

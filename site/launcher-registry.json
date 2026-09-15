@@ -1,0 +1,437 @@
+{
+  "schema": "aftergraph-launcher-registry/1.0",
+  "generated_from": {
+    "surface_schema": "aftergraph-launcher-surfaces/1.0",
+    "atlas_schema": "atlas-projection/0.2",
+    "evidence_cut": "2026-09-08T23:23:16Z"
+  },
+  "featured_entities": [
+    "studio",
+    "work-intelligence",
+    "sentinel",
+    "works-execution",
+    "trust-gateway",
+    "aie",
+    "runtime"
+  ],
+  "featured_actions": [
+    "explore-system",
+    "verify-sentinel",
+    "open-docs"
+  ],
+  "entities": [
+    {
+      "id": "studio",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "Studio",
+      "description": "General-purpose human operating environment for Chat, Work, Space, control and evidence surfaces.",
+      "url": "/studio/",
+      "maturity": "demo",
+      "aliases": [
+        "chat",
+        "work",
+        "space",
+        "use",
+        "operate"
+      ],
+      "icon": "studio",
+      "repo": "studio",
+      "canonical_role": "primary-experience",
+      "canonical_plane": "experience",
+      "source_visibility": "public",
+      "evidence_url": "/atlas/?node=repo%3AAftergraph%2Fstudio&overlay=CANONICAL%2COBSERVED%2CPROPOSED&view=home&lens=SYSTEM",
+      "evidence": {
+        "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
+        "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "work-intelligence",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "Work Intelligence",
+      "description": "Source-neutral observation to canonical WorkItem inference, review, publication and promotion boundaries.",
+      "url": "https://github.com/Aftergraph/wi-backend",
+      "maturity": "prototype",
+      "aliases": [
+        "wie",
+        "wi-backend",
+        "work intelligence engine",
+        "workitems"
+      ],
+      "icon": "wie",
+      "repo": "wi-backend",
+      "canonical_role": "work-inference",
+      "canonical_plane": "work-intelligence",
+      "source_visibility": "public",
+      "evidence_url": "/atlas/?node=repo%3AAftergraph%2Fwi-backend&overlay=CANONICAL%2COBSERVED%2CPROPOSED&view=home&lens=SYSTEM",
+      "evidence": {
+        "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
+        "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "sentinel",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "Sentinel",
+      "description": "Exact-HEAD verified code-review verdicts with stale-base invalidation and cited evidence.",
+      "url": "/sentinel",
+      "maturity": "prototype",
+      "aliases": [
+        "verify",
+        "verification",
+        "code review",
+        "ship",
+        "evidence"
+      ],
+      "icon": "sentinel",
+      "repo": "sentinel",
+      "canonical_role": "verified-code-review",
+      "canonical_plane": "assurance",
+      "source_visibility": "public",
+      "evidence_url": "/atlas/?node=repo%3AAftergraph%2Fsentinel&overlay=CANONICAL%2COBSERVED%2CPROPOSED&view=home&lens=SYSTEM",
+      "evidence": {
+        "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
+        "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "works-execution",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "WORKS Execution",
+      "description": "Durable work state, scheduling, workers, leases, recovery, execution evidence and quittance.",
+      "url": "https://github.com/Aftergraph/works-execution",
+      "maturity": "prototype",
+      "aliases": [
+        "works",
+        "execution",
+        "mission",
+        "workgraph",
+        "scheduler"
+      ],
+      "icon": "works",
+      "repo": "works-execution",
+      "canonical_role": "durable-execution",
+      "canonical_plane": "execution",
+      "source_visibility": "public",
+      "evidence_url": "/atlas/?node=repo%3AAftergraph%2Fworks-execution&overlay=CANONICAL%2COBSERVED%2CPROPOSED&view=home&lens=SYSTEM",
+      "evidence": {
+        "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
+        "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "trust-gateway",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "Trust Gateway",
+      "description": "Fail-closed runtime admission, policy enforcement, approvals, secrets and action audit.",
+      "url": "https://github.com/Aftergraph/trust-gateway",
+      "maturity": "prototype",
+      "aliases": [
+        "trust",
+        "policy",
+        "approval",
+        "authority",
+        "audit"
+      ],
+      "icon": "trust",
+      "repo": "trust-gateway",
+      "canonical_role": "runtime-enforcement",
+      "canonical_plane": "enforcement",
+      "source_visibility": "public",
+      "evidence_url": "/atlas/?node=repo%3AAftergraph%2Ftrust-gateway&overlay=CANONICAL%2COBSERVED%2CPROPOSED&view=home&lens=SYSTEM",
+      "evidence": {
+        "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
+        "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "aie",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "AIE",
+      "description": "Portable institution, authority, delegation, lifecycle, budget and revocation semantics.",
+      "url": "https://github.com/Aftergraph/aie",
+      "maturity": "prototype",
+      "aliases": [
+        "agentic institution engineering",
+        "authority",
+        "delegation",
+        "agents"
+      ],
+      "icon": "aie",
+      "repo": "aie",
+      "canonical_role": "normative-authority",
+      "canonical_plane": "institution",
+      "source_visibility": "public",
+      "evidence_url": "/atlas/?node=repo%3AAftergraph%2Faie&overlay=CANONICAL%2COBSERVED%2CPROPOSED&view=home&lens=SYSTEM",
+      "evidence": {
+        "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
+        "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "runtime",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "Aftergraph Runtime",
+      "description": "Agent lifecycle, orchestration, dispatch, checkpoints, metering and observability. Durable execution stays in WORKS; enforcement stays in Trust Gateway.",
+      "url": "https://docs.aftergraph.org/platform/",
+      "maturity": "internal",
+      "aliases": [
+        "runtime",
+        "orchestration",
+        "dispatch",
+        "telemetry"
+      ],
+      "icon": "runtime",
+      "repo": "runtime",
+      "canonical_role": "agent-runtime",
+      "canonical_plane": "runtime",
+      "source_visibility": "private",
+      "evidence_url": "/atlas/?node=repo%3AAftergraph%2Fruntime&overlay=CANONICAL%2COBSERVED%2CPROPOSED&view=home&lens=SYSTEM",
+      "evidence": {
+        "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
+        "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "atlas",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "Atlas",
+      "description": "Evidence-aware development observatory and system graph",
+      "url": "/atlas",
+      "maturity": "production",
+      "aliases": [
+        "graph",
+        "system map",
+        "observatory",
+        "evidence",
+        "dependencies"
+      ],
+      "icon": "atlas",
+      "repo": null,
+      "canonical_role": null,
+      "canonical_plane": null,
+      "source_visibility": "public-surface",
+      "evidence_url": "/atlas",
+      "evidence": {
+        "source": "Aftergraph public surface registry",
+        "ref": null,
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "knowledge-plane",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "Knowledge Plane (docs)",
+      "description": "Provenance-pinned rendering, discovery, developer documentation and agent-readable context surfaces.",
+      "url": "https://docs.aftergraph.org/",
+      "maturity": "production",
+      "aliases": [
+        "docs",
+        "documentation",
+        "knowledge",
+        "research",
+        "standards"
+      ],
+      "icon": "docs",
+      "repo": "docs",
+      "canonical_role": "knowledge-plane",
+      "canonical_plane": "knowledge",
+      "source_visibility": "public",
+      "evidence_url": "/atlas/?node=repo%3AAftergraph%2Fdocs&overlay=CANONICAL%2COBSERVED%2CPROPOSED&view=home&lens=SYSTEM",
+      "evidence": {
+        "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
+        "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "brand-os",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "Brand OS",
+      "description": "Visual identity, semantic design tokens, master assets and public communication design rules.",
+      "url": "https://github.com/Aftergraph/brand",
+      "maturity": "production",
+      "aliases": [
+        "brand",
+        "design",
+        "tokens",
+        "assets",
+        "identity"
+      ],
+      "icon": "brand",
+      "repo": "brand",
+      "canonical_role": "brand-design-system",
+      "canonical_plane": "foundation",
+      "source_visibility": "public",
+      "evidence_url": "/atlas/?node=repo%3AAftergraph%2Fbrand&overlay=CANONICAL%2COBSERVED%2CPROPOSED&view=home&lens=SYSTEM",
+      "evidence": {
+        "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
+        "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "research",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "Intelligence Systems Research",
+      "description": "SPEC-001, MISSION-Bench methodology, scientific claims, experiments, assurance and publication evidence.",
+      "url": "https://github.com/Aftergraph/intelligence-systems-research",
+      "maturity": "research",
+      "aliases": [
+        "research",
+        "spec-001",
+        "mission-bench",
+        "assurance"
+      ],
+      "icon": "research",
+      "repo": "intelligence-systems-research",
+      "canonical_role": "research-assurance",
+      "canonical_plane": "research-assurance",
+      "source_visibility": "public",
+      "evidence_url": "/atlas/?node=repo%3AAftergraph%2Fintelligence-systems-research&overlay=CANONICAL%2COBSERVED%2CPROPOSED&view=home&lens=SYSTEM",
+      "evidence": {
+        "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
+        "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "governance",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "Governance",
+      "description": "Platform topology, cross-repo boundaries, contract registration and generated org-state mechanics.",
+      "url": "https://github.com/Aftergraph/after-graph-governance",
+      "maturity": "production",
+      "aliases": [
+        "governance",
+        "contracts",
+        "schemas",
+        "topology"
+      ],
+      "icon": "governance",
+      "repo": "after-graph-governance",
+      "canonical_role": "canonical-contracts",
+      "canonical_plane": "governance",
+      "source_visibility": "public",
+      "evidence_url": "/atlas/?node=repo%3AAftergraph%2Fafter-graph-governance&overlay=CANONICAL%2COBSERVED%2CPROPOSED&view=home&lens=SYSTEM",
+      "evidence": {
+        "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
+        "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "github",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "GitHub Organization",
+      "description": "Public Aftergraph repositories and community surfaces",
+      "url": "https://github.com/Aftergraph",
+      "maturity": "org",
+      "aliases": [
+        "github",
+        "repos",
+        "repositories",
+        "source"
+      ],
+      "icon": "github",
+      "repo": null,
+      "canonical_role": null,
+      "canonical_plane": null,
+      "source_visibility": "public-surface",
+      "evidence_url": "/atlas",
+      "evidence": {
+        "source": "Aftergraph public surface registry",
+        "ref": null,
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "explore-system",
+      "kind": "navigate",
+      "name": "Explore system",
+      "description": "Open Atlas and inspect the evidence-aware system graph",
+      "url": "/atlas",
+      "aliases": [
+        "atlas",
+        "graph",
+        "map",
+        "dependencies",
+        "explore"
+      ],
+      "icon": "atlas",
+      "remember_id": "atlas",
+      "group": "Actions"
+    },
+    {
+      "id": "verify-sentinel",
+      "kind": "navigate",
+      "name": "Verify with Sentinel",
+      "description": "Open the exact-HEAD verification and code-review surface",
+      "url": "/sentinel",
+      "aliases": [
+        "verify",
+        "verification",
+        "sentinel",
+        "ship",
+        "review"
+      ],
+      "icon": "verify",
+      "remember_id": "sentinel",
+      "group": "Actions"
+    },
+    {
+      "id": "open-docs",
+      "kind": "navigate",
+      "name": "Open documentation",
+      "description": "Enter the Aftergraph Knowledge Plane",
+      "url": "https://docs.aftergraph.org/",
+      "aliases": [
+        "docs",
+        "documentation",
+        "knowledge",
+        "research"
+      ],
+      "icon": "docs",
+      "remember_id": "knowledge-plane",
+      "group": "Actions"
+    },
+    {
+      "id": "open-status",
+      "kind": "evidence",
+      "name": "Open public status evidence",
+      "description": "Inspect the public operational snapshot",
+      "url": "/status",
+      "aliases": [
+        "status",
+        "health",
+        "operations",
+        "uptime",
+        "evidence"
+      ],
+      "icon": "status",
+      "group": "Actions"
+    }
+  ]
+}

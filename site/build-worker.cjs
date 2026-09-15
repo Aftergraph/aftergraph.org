@@ -13,6 +13,11 @@ const assert = (condition, message) => {
 // Source files are canonical. worker.js is generated deployment output.
 let landing = read('index.html');
 let launch = read('launch.html');
+const launcherApp = read('launcher-app.js');
+const launcherRegistryRaw = read('launcher-registry.json');
+let launcherRegistry;
+try { launcherRegistry = JSON.parse(launcherRegistryRaw); } catch { assert(false, 'launcher-registry.json is not valid JSON'); }
+assert(launcherRegistry.schema === 'aftergraph-launcher-registry/1.0', 'launcher registry schema must be aftergraph-launcher-registry/1.0');
 const notFound = read('404.html');
 const statusPage = read('status.html');
 let sentinel = read('sentinel.html');
@@ -161,6 +166,8 @@ sentinel = sentinel.replace('</head>', `${FAVICON}${OG_SENTINEL}\n</head>`);
 
 let statusBuilt = statusPage.replaceAll('__AG_SHA__', process.env.AG_SHA || 'local').replaceAll('__AG_DEPLOYED__', process.env.AG_DEPLOYED || 'build-time');
 
+const launcherTelemetryIds = [...launcherRegistry.entities, ...launcherRegistry.actions].map((item) => item.id);
+
 const health = JSON.stringify({
   status: 'ok',
   // Deterministic per tree: wall-clock output here would make every rebuild
@@ -207,6 +214,9 @@ const secureHeaders = `const SECURE = {
 const worker = `${secureHeaders}
 const LANDING = ${JSON.stringify(landing)};
 const LAUNCH = ${JSON.stringify(launch)};
+const LAUNCH_APP = ${JSON.stringify(launcherApp)};
+const LAUNCHER_REGISTRY = ${JSON.stringify(launcherRegistryRaw)};
+const LAUNCHER_ALLOWED_IDS = new Set(${JSON.stringify(launcherTelemetryIds)});
 const NOTFOUND = ${JSON.stringify(notFound)};
 const FAVICON = ${JSON.stringify(favicon)};
 const OGIMAGE = ${JSON.stringify(ogImage)};
@@ -224,9 +234,47 @@ const ICON_FILES = ${JSON.stringify(ICON_FILES)};
 const HEALTH = ${JSON.stringify(health)};
 const ROBOTS = ${JSON.stringify(robots)};
 const SITEMAP = ${JSON.stringify(sitemap)};
+const TELEMETRY_EVENTS = new Set(['registry_loaded','registry_failure','zero_result','item_open','destination_probe']);
+const TELEMETRY_FIELDS = new Set(['event','item_id','item_kind','intent','status','latency_bucket','result_bucket']);
+const TELEMETRY_KINDS = new Set(['entity','navigate','evidence','utility']);
+const TELEMETRY_INTENTS = new Set(['find','action','evidence','verify']);
+const TELEMETRY_STATUS = new Set(['ok','fail']);
+const TELEMETRY_LATENCY = new Set(['lt100','100-299','300-999','gte1000']);
+const TELEMETRY_RESULTS = new Set(['0','1-5','6-20','gt20']);
+async function handleLauncherTelemetry(request) {
+  if (request.method !== 'POST') return new Response('', { status: 405, headers: { 'cache-control': 'no-store', ...SECURE } });
+  const requestUrl = new URL(request.url);
+  const origin = request.headers.get('origin');
+  if (origin && origin !== requestUrl.origin) return new Response('', { status: 403, headers: { 'cache-control': 'no-store', ...SECURE } });
+  const text = await request.text();
+  if (!text || text.length > 1024) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
+  let payload;
+  try { payload = JSON.parse(text); } catch { return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } }); }
+  if (!payload || Array.isArray(payload) || typeof payload !== 'object') return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (Object.keys(payload).some((key) => !TELEMETRY_FIELDS.has(key))) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (!TELEMETRY_EVENTS.has(payload.event)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (payload.item_id != null && !LAUNCHER_ALLOWED_IDS.has(payload.item_id)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (payload.item_kind != null && !TELEMETRY_KINDS.has(payload.item_kind)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (payload.intent != null && !TELEMETRY_INTENTS.has(payload.intent)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (payload.status != null && !TELEMETRY_STATUS.has(payload.status)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (payload.latency_bucket != null && !TELEMETRY_LATENCY.has(payload.latency_bucket)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (payload.result_bucket != null && !TELEMETRY_RESULTS.has(payload.result_bucket)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (typeof AG_STATS === 'undefined') return new Response('', { status: 503, headers: { 'cache-control': 'no-store', ...SECURE } });
+  const day = new Date().toISOString().slice(0, 10);
+  const dimensions = [payload.event,payload.item_id||'-',payload.item_kind||'-',payload.intent||'-',payload.status||'-',payload.latency_bucket||'-',payload.result_bucket||'-'].join(':');
+  const key = 'launcher:v1:' + day + ':' + dimensions;
+  try {
+    const current = Number(await AG_STATS.get(key) || '0');
+    await AG_STATS.put(key, String(Number.isFinite(current) ? current + 1 : 1), { expirationTtl: 7776000 });
+    return new Response('', { status: 202, headers: { 'cache-control': 'no-store', ...SECURE } });
+  } catch {
+    return new Response('', { status: 503, headers: { 'cache-control': 'no-store', ...SECURE } });
+  }
+}
 addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   const p = url.pathname;
+  if (p === '/api/launcher/telemetry') { event.respondWith(handleLauncherTelemetry(event.request)); return; }
   let body;
   let contentType = 'text/html;charset=utf-8';
   let cache = 'public, max-age=300';
@@ -241,6 +289,8 @@ addEventListener('fetch', event => {
   else if (p === '/manifest.webmanifest') { body = MANIFEST; contentType = 'application/manifest+json'; cache = 'public, max-age=3600'; }
   else if (p === '/sw.js') { body = SWJS; contentType = 'text/javascript;charset=utf-8'; cache = 'no-store'; }
   else if (ICON_FILES[p]) { body = Uint8Array.from(atob(ICON_FILES[p]), c => c.charCodeAt(0)); contentType = 'image/png'; cache = 'public, max-age=86400'; }
+  else if (p === '/launcher-app.js') { body = LAUNCH_APP; contentType = 'text/javascript;charset=utf-8'; cache = 'public, max-age=300'; }
+  else if (p === '/launcher-registry.json') { body = LAUNCHER_REGISTRY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
   else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
   else if (p === '/status' || p === '/status/') { body = STATUS; }
   else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }
@@ -251,7 +301,7 @@ addEventListener('fetch', event => {
   else if (p === '/404') { body = NOTFOUND; }
   else if (p === '/') { body = LANDING; }
   else { body = NOTFOUND; responseStatus = 404; cache = 'no-store'; }
-  event.respondWith(new Response(body, {
+  event.respondWith(new Response(event.request.method === 'HEAD' ? null : body, {
     status: responseStatus,
     headers: { 'content-type': contentType, 'cache-control': cache, ...SECURE }
   }));

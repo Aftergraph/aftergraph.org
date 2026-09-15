@@ -36,10 +36,16 @@ jobs:
         run: node atlas/scripts/generate-experience.mjs
       - name: Verify Atlas projection
         run: node site/verify-atlas.cjs
+      - name: Generate governed launcher registry
+        run: node scripts/generate-launcher-registry.mjs
+      - name: Launcher registry and telemetry contracts
+        run: node --test site/launcher-registry.test.mjs site/launcher-telemetry.test.mjs
       - name: Sync canonical Brand OS inputs
         run: node scripts/sync-brand.mjs
       - name: Compile worker
         run: node site/build-worker.cjs
+      - name: Launcher Worker telemetry runtime contract
+        run: node --test site/launcher-worker.test.mjs
       - name: Install Playwright chromium
         run: npx --prefix atlas playwright install --with-deps chromium
       - name: Atlas browser smoke (DOM)
@@ -61,6 +67,6 @@ jobs:
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is current
-        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json
+        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
       - name: Diff check
         run: git diff --check

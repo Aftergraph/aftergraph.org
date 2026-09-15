@@ -6,6 +6,10 @@ const root = __dirname;
 const read = (name) => fs.readFileSync(path.join(root, name), 'utf8');
 const landing = read('index.html');
 const launcher = read('launch.html');
+const launcherApp = read('launcher-app.js');
+const launcherRegistryText = read('launcher-registry.json');
+const launcherRegistry = JSON.parse(launcherRegistryText);
+const launcherSurface = `${launcher}\n${launcherApp}\n${launcherRegistryText}`;
 const sentinelPage = read('sentinel.html');
 const buildWorker = read('build-worker.cjs');
 const statusPage = read('status.html');
@@ -13,6 +17,7 @@ const statusDataText = read('status-data.json');
 const statusData = JSON.parse(statusDataText);
 const llms = read('llms.txt');
 const worker = fs.existsSync(path.join(root, 'worker.js')) ? read('worker.js') : '';
+const atlasIndex = fs.existsSync(path.join(root, 'atlas', 'index.html')) ? read('atlas/index.html') : '';
 
 function has(haystack, needle, label = needle) {
   assert.ok(haystack.includes(needle), `missing ${label}`);
@@ -41,35 +46,47 @@ has(landing, 'trust-flow', 'V3 trust verification flow');
 has(landing, 'product-mini', 'V3 product miniatures');
 has(landing, '21 canonical repositories', 'canonical topology on landing');
 
-has(launcher, 'Aftergraph Launcher', 'launcher title');
-has(launcher, 'FIND', 'launcher find phase');
-has(launcher, 'UNDERSTAND', 'launcher understand phase');
-has(launcher, 'ACT', 'launcher act phase');
-has(launcher, 'VERIFY', 'launcher verify phase');
-has(launcher, 'Products / Systems', 'launcher product/system group');
-has(launcher, 'Actions', 'launcher actions group');
-has(launcher, 'Explore system', 'launcher Atlas action');
-has(launcher, 'Verify with Sentinel', 'launcher Sentinel action');
-has(launcher, 'Find a product, system, repo, research, or action', 'launcher intent placeholder');
-has(launcher, 'Knowledge Plane (docs)', 'launcher Knowledge Plane destination');
-has(launcher, 'https://docs.aftergraph.org/', 'launcher Knowledge Plane route');
-has(launcher, 'ArrowDown', 'launcher keyboard navigation');
-has(launcher, 'ArrowUp', 'launcher keyboard navigation');
-has(launcher, 'Escape', 'launcher Escape behavior');
-has(launcher, 'role="listbox"', 'launcher listbox role');
-has(launcher, 'role="option"', 'launcher option semantics');
-has(launcher, 'aria-selected', 'launcher selected-state semantics');
-has(launcher, 'aria-activedescendant', 'launcher active-descendant semantics');
-has(launcher, 'launcher-option-', 'stable launcher option ids');
-has(launcher, 'data-i=', 'launcher item affordance');
+has(launcherSurface, 'Aftergraph Launcher', 'launcher title');
+has(launcherSurface, 'FIND', 'launcher find phase');
+has(launcherSurface, 'UNDERSTAND', 'launcher understand phase');
+has(launcherSurface, 'ACT', 'launcher act phase');
+has(launcherSurface, 'VERIFY', 'launcher verify phase');
+has(launcherSurface, 'Products / Systems', 'launcher product/system group');
+has(launcherSurface, 'Actions', 'launcher actions group');
+has(launcherSurface, 'Explore system', 'launcher Atlas action');
+has(launcherSurface, 'Verify with Sentinel', 'launcher Sentinel action');
+has(launcherSurface, 'Find a product, system, repo, research, or action', 'launcher intent placeholder');
+has(launcherSurface, 'Knowledge Plane (docs)', 'launcher Knowledge Plane destination');
+has(launcherSurface, 'https://docs.aftergraph.org/', 'launcher Knowledge Plane route');
+has(launcherSurface, 'ArrowDown', 'launcher keyboard navigation');
+has(launcherSurface, 'ArrowUp', 'launcher keyboard navigation');
+has(launcherSurface, 'Escape', 'launcher Escape behavior');
+has(launcherSurface, 'role="listbox"', 'launcher listbox role');
+has(launcherSurface, 'role="option"', 'launcher option semantics');
+has(launcherSurface, 'aria-selected', 'launcher selected-state semantics');
+has(launcherSurface, 'aria-activedescendant', 'launcher active-descendant semantics');
+has(launcherSurface, 'launcher-option-', 'stable launcher option ids');
+has(launcherSurface, 'data-i=', 'launcher item affordance');
 for (const privateUrl of [
   'https://github.com/Aftergraph/afm',
   'https://github.com/Aftergraph/context-continuity',
   'https://github.com/Aftergraph/skills-vault',
   'https://github.com/Aftergraph/runtime',
 ]) {
-  assert.ok(!launcher.includes(privateUrl), `private repository link leaked into public launcher: ${privateUrl}`);
+  assert.ok(!launcherSurface.includes(privateUrl), `private repository link leaked into public launcher: ${privateUrl}`);
 }
+
+assert.equal(launcherRegistry.schema, 'aftergraph-launcher-registry/1.0');
+assert.ok(launcherRegistry.entities.length >= 10, 'launcher registry must expose the governed public surface');
+assert.ok(launcherRegistry.entities.some((item) => item.id === 'runtime' && item.source_visibility === 'private'), 'Runtime must remain private-source/public-surface');
+assert.ok(!launcherRegistry.entities.some((item) => item.source_visibility === 'private' && /^https:\/\/github\.com\/Aftergraph\//.test(item.url)), 'private source URL leaked through launcher registry');
+has(launcher, 'src="/launcher-app.js"', 'launcher external app module');
+has(buildWorker, "p === '/launcher-registry.json'", 'launcher registry worker route');
+has(buildWorker, "p === '/api/launcher/telemetry'", 'launcher telemetry route');
+has(launcherApp, "fetch(REGISTRY_URL", 'launcher consumes canonical registry');
+has(launcherApp, "type:'evidence'", 'launcher evidence intent');
+has(launcherApp, "type:'verify'", 'launcher verify intent');
+assert.ok(!atlasIndex.includes('vendor-elk'), 'Atlas HTML must not eagerly preload the ELK layout chunk');
 
 has(llms, '## Deep index (from the Knowledge Plane)', 'federated Knowledge Plane deep index');
 has(llms, 'https://docs.aftergraph.org/llms.txt', 'Knowledge Plane llms federation');
@@ -129,7 +146,7 @@ const workerForSurface = worker
   .split('\n')
   .filter((line) => !/^const ATLAS_[A-Z_]+ = /.test(line))
   .join('\n');
-const publicSurface = `${landing}\n${launcher}\n${statusPage}\n${statusDataText}\n${llms}\n${workerForSurface}`.toLowerCase();
+const publicSurface = `${landing}\n${launcherSurface}\n${statusPage}\n${statusDataText}\n${llms}\n${workerForSurface}`.toLowerCase();
 for (const privateRepo of ['context-continuity', 'skills-vault']) {
   assert.ok(!publicSurface.includes(privateRepo), `private repository leaked into public surface: ${privateRepo}`);
 }

@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ReactFlow, { Background, Controls, Handle, Position, useNodesState, useEdgesState } from 'reactflow';
-import ELK from 'elkjs/lib/elk.bundled.js';
 import * as d3 from 'd3';
 import 'reactflow/dist/style.css';
 import {
@@ -78,7 +77,13 @@ function NodeCard({ data }) {
 }
 
 const nodeTypes = { atlasNode: NodeCard };
-const elk = new ELK();
+let elkInstancePromise;
+function getElk() {
+  if (!elkInstancePromise) {
+    elkInstancePromise = import('elkjs/lib/elk.bundled.js').then(({ default: ELK }) => new ELK());
+  }
+  return elkInstancePromise;
+}
 
 async function layouted(graph) {
   const elkGraph = {
@@ -87,6 +92,7 @@ async function layouted(graph) {
     children: graph.nodes.map((n) => ({ id: n.id, width: 190, height: 54 })),
     edges: graph.edges.map((e) => ({ id: e.id, sources: [e.source], targets: [e.target] })),
   };
+  const elk = await getElk();
   const laid = await elk.layout(elkGraph);
   const pos = new Map((laid.children || []).map((c) => [c.id, { x: c.x || 0, y: c.y || 0 }]));
   return { pos };
@@ -519,6 +525,7 @@ export default function App() {
             Drift
           </button>
         </div>
+        <a className="atlas-launcher-link" href="/launch" aria-label="Open Aftergraph Launcher">Launcher</a>
       </header>
       <nav className="views" aria-label="Views">
         {VIEWS.map((v) => (
