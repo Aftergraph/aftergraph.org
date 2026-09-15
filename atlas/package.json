@@ -24,9 +24,12 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^26.5.1",
     "@vitejs/plugin-react": "4.3.4",
     "autoprefixer": "^10.6.1",
+    "jsdom": "^30.0.1",
     "playwright": "1.63.0",
     "postcss": "^8.5.28",
     "tailwindcss": "^4.3.3",
