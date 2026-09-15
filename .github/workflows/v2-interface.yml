@@ -72,6 +72,14 @@ jobs:
           STATUS=$?
           kill $SRV
           exit $STATUS
+      - name: Accessibility gate (axe-core)
+        run: |
+          node site/serve-local.cjs 8474 site &
+          SRV=$!
+          node atlas/scripts/verify-a11y.mjs "http://localhost:8474" / /launch /community /sentinel /status /atlas/
+          STATUS=$?
+          kill $SRV
+          exit $STATUS
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is deterministic (no committed artefact)
