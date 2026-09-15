@@ -1,10 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import { diffProjections } from '../lib/sliceC.js';
 
 const MOTION_SURFACE = { duration: 0.34, ease: [0.16, 1, 0.3, 1] };
 const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } };
 const MOTION_ITEM = { hidden: { opacity: 0, x: -8 }, show: { opacity: 1, x: 0, transition: { ...MOTION_SURFACE } } };
+
+async function fetchSnapshots() {
+  const res = await fetch('/api/v3/snapshots');
+  if (!res.ok) throw new Error('Failed to fetch snapshots');
+  return res.json();
+}
 
 function DiffBadge({ label, count, type }) {
   if (count === 0) return null;
@@ -137,39 +144,92 @@ function DiffPanel({ diff, snapshotFile }) {
   );
 }
 
-function SkeletonTimeline() {
+function SkeletonCard() {
   return (
-    <div className="space-y-3">
-      {[...Array(4)].map((_, i) => (
-        <div key={i} className="rounded-xl border p-4 space-y-2" style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}>
-          <div className="h-4 rounded animate-pulse" style={{ width: '35%', background: 'var(--ag-border-strong)', animationDuration: 'var(--ag-motion-surface)' }} />
-          <div className="h-3 rounded animate-pulse" style={{ width: '55%', background: 'var(--ag-border)', animationDuration: 'var(--ag-motion-surface)' }} />
-        </div>
-      ))}
+    <div
+      className="rounded-xl border p-4 space-y-2"
+      style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
+    >
+      <div className="h-4 rounded animate-pulse" style={{ width: '35%', background: 'var(--ag-border-strong)' }} />
+      <div className="h-3 rounded animate-pulse" style={{ width: '55%', background: 'var(--ag-border)' }} />
     </div>
   );
 }
 
+function EmptyState() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={MOTION_SURFACE}
+      className="flex flex-col items-center justify-center py-16 px-6 text-center rounded-2xl border"
+      style={{
+        background: 'linear-gradient(135deg, var(--ag-surface) 0%, var(--ag-canvas-raised) 100%)',
+        borderColor: 'var(--ag-border)',
+      }}
+    >
+      <div
+        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+        style={{ background: 'var(--ag-control-soft)', color: 'var(--ag-control)' }}
+      >
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 8v4l3 3" />
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+      </div>
+      <h3
+        style={{
+          fontSize: 'var(--ag-type-title-sm)',
+          fontWeight: 'var(--ag-weight-semibold)',
+          color: 'var(--ag-text)',
+          margin: '0 0 8px',
+        }}
+      >
+        No snapshots yet
+      </h3>
+      <p
+        style={{
+          fontSize: 'var(--ag-type-body-sm)',
+          color: 'var(--ag-text-muted)',
+          margin: 0,
+          maxWidth: 360,
+          lineHeight: 1.5,
+        }}
+      >
+        Versioned snapshots are immutable cuts of the evidence graph.
+        Run the generator with --snapshot-dir to create your first snapshot.
+      </p>
+    </motion.div>
+  );
+}
+
 export default function SnapshotsView({ projection }) {
-  const [index, setIndex] = useState(null);
   const [selected, setSelected] = useState(null);
   const [diff, setDiff] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch('snapshots/index.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const idx = await res.json();
-        if (!cancelled) setIndex(Array.isArray(idx) ? idx : []);
-      } catch {
-        if (!cancelled) setIndex([]);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, []);
+  const { data: apiData, isLoading } = useQuery({
+    queryKey: ['atlas-snapshots'],
+    queryFn: fetchSnapshots,
+    staleTime: 30000,
+    retry: 1,
+  });
+
+  const index = useMemo(() => {
+    if (apiData?.snapshots) return apiData.snapshots;
+    if (!projection) return [];
+    // Fallback: derive minimal snapshot list from projection meta if available
+    if (projection.meta?.evidence_cut) {
+      return [{
+        file: 'current',
+        evidence_cut: projection.meta.evidence_cut,
+        gov_sha: projection.meta.gov_sha,
+        entities: projection.entities?.length || 0,
+        conflicts: [],
+      }];
+    }
+    return [];
+  }, [apiData, projection]);
 
   const inspect = async (snapshot) => {
     setSelected(snapshot);
@@ -187,11 +247,16 @@ export default function SnapshotsView({ projection }) {
     }
   };
 
-  if (!projection) {
+  if (isLoading) {
     return (
-      <div className="space-y-4 p-6">
-        <div className="h-6 rounded animate-pulse" style={{ width: 160, background: 'var(--ag-border-strong)' }} />
-        <SkeletonTimeline />
+      <div className="space-y-6 p-6">
+        <div className="space-y-2">
+          <div className="h-7 rounded animate-pulse" style={{ width: 220, background: 'var(--ag-border-strong)' }} />
+          <div className="h-4 rounded animate-pulse" style={{ width: 340, background: 'var(--ag-border)' }} />
+        </div>
+        <div className="space-y-3">
+          {[...Array(4)].map((_, i) => <SkeletonCard key={i} />)}
+        </div>
       </div>
     );
   }
@@ -218,31 +283,22 @@ export default function SnapshotsView({ projection }) {
       </div>
 
       {/* Current cut metadata */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ ...MOTION_SURFACE, delay: 0.12 }}
-        className="flex flex-wrap gap-4 p-4 rounded-xl border"
-        style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)', fontSize: 'var(--ag-type-caption)', fontFamily: 'var(--ag-font-code)', color: 'var(--ag-text-subtle)' }}
-      >
-        <span>current cut: <span style={{ color: 'var(--ag-text)' }}>{projection.meta?.evidence_cut || '—'}</span></span>
-        <span>gov SHA: <span style={{ color: 'var(--ag-text)' }}>{String(projection.meta?.gov_sha || '').slice(0, 7)}</span></span>
-      </motion.div>
-
-      {index === null && <SkeletonTimeline />}
-
-      {index !== null && index.length === 0 && (
+      {projection && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="p-8 rounded-xl border text-center"
-          style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)', color: 'var(--ag-text-muted)', fontSize: 'var(--ag-type-body-sm)' }}
+          transition={{ ...MOTION_SURFACE, delay: 0.12 }}
+          className="flex flex-wrap gap-4 p-4 rounded-xl border"
+          style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)', fontSize: 'var(--ag-type-caption)', fontFamily: 'var(--ag-font-code)', color: 'var(--ag-text-subtle)' }}
         >
-          No versioned snapshots ship with this build yet — run the generator with --snapshot-dir.
+          <span>current cut: <span style={{ color: 'var(--ag-text)' }}>{projection.meta?.evidence_cut || '—'}</span></span>
+          <span>gov SHA: <span style={{ color: 'var(--ag-text)' }}>{String(projection.meta?.gov_sha || '').slice(0, 7)}</span></span>
         </motion.div>
       )}
 
-      {index !== null && index.length > 0 && (
+      {index.length === 0 ? (
+        <EmptyState />
+      ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <motion.div
             variants={MOTION_STAGGER}

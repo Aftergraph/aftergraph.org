@@ -1,10 +1,17 @@
 import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import { answerFromEvidence } from '../lib/derive.js';
 
 const MOTION_SURFACE = { duration: 0.34, ease: [0.16, 1, 0.3, 1] };
 const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } };
 const MOTION_ITEM = { hidden: { opacity: 0, y: 6 }, show: { opacity: 1, y: 0, transition: { ...MOTION_SURFACE } } };
+
+async function fetchAsk() {
+  const res = await fetch('/api/v3/ask');
+  if (!res.ok) throw new Error('Failed to fetch ask data');
+  return res.json();
+}
 
 function HighlightMatch({ text, query }) {
   if (!query.trim()) return <span>{text}</span>;
@@ -101,34 +108,112 @@ function HitCard({ hit, assertion, query }) {
   );
 }
 
+function SkeletonCard() {
+  return (
+    <div
+      className="rounded-xl border p-4 space-y-3"
+      style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
+    >
+      <div className="flex items-center gap-2">
+        <div className="h-4 rounded animate-pulse" style={{ width: '50%', background: 'var(--ag-border-strong)' }} />
+        <div className="h-4 w-10 rounded animate-pulse" style={{ background: 'var(--ag-border-strong)' }} />
+      </div>
+      <div className="h-3 rounded animate-pulse" style={{ width: '80%', background: 'var(--ag-border)' }} />
+      <div className="h-3 rounded animate-pulse" style={{ width: '30%', background: 'var(--ag-border)' }} />
+    </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={MOTION_SURFACE}
+      className="flex flex-col items-center justify-center py-16 px-6 text-center rounded-2xl border"
+      style={{
+        background: 'linear-gradient(135deg, var(--ag-surface) 0%, var(--ag-canvas-raised) 100%)',
+        borderColor: 'var(--ag-border)',
+      }}
+    >
+      <div
+        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+        style={{ background: 'var(--ag-control-soft)', color: 'var(--ag-control)' }}
+      >
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <path d="M12 17h.01" />
+        </svg>
+      </div>
+      <h3
+        style={{
+          fontSize: 'var(--ag-type-title-sm)',
+          fontWeight: 'var(--ag-weight-semibold)',
+          color: 'var(--ag-text)',
+          margin: '0 0 8px',
+        }}
+      >
+        Ask Atlas
+      </h3>
+      <p
+        style={{
+          fontSize: 'var(--ag-type-body-sm)',
+          color: 'var(--ag-text-muted)',
+          margin: 0,
+          maxWidth: 360,
+          lineHeight: 1.5,
+        }}
+      >
+        V0 extractive Q&A over the evidence graph.
+        Type a query above to find cited assertions — no hallucination.
+      </p>
+    </motion.div>
+  );
+}
+
 export default function AskView({ projection }) {
   const [query, setQuery] = useState('');
   const [result, setResult] = useState(null);
 
+  const { data: apiData, isLoading } = useQuery({
+    queryKey: ['atlas-ask'],
+    queryFn: fetchAsk,
+    staleTime: 30000,
+    retry: 1,
+  });
+
+  // Use API data or fall back to projection for assertion lookup
+  const effectiveProjection = useMemo(() => {
+    if (apiData?.projection) return apiData.projection;
+    return projection;
+  }, [apiData, projection]);
+
   const byId = useMemo(() => {
-    if (!projection) return new Map();
-    return new Map(projection.assertions.map((a) => [a.id, a]));
-  }, [projection]);
+    if (!effectiveProjection) return new Map();
+    return new Map(effectiveProjection.assertions.map((a) => [a.id, a]));
+  }, [effectiveProjection]);
 
   const run = useCallback(
     (e) => {
       e.preventDefault();
-      if (!projection || !query.trim()) return;
-      const r = answerFromEvidence(projection, query.trim());
+      if (!effectiveProjection || !query.trim()) return;
+      const r = answerFromEvidence(effectiveProjection, query.trim());
       setResult(r);
     },
-    [projection, query]
+    [effectiveProjection, query]
   );
 
-  if (!projection) {
+  if (isLoading) {
     return (
-      <div className="space-y-4 p-6">
-        <div className="h-6 rounded animate-pulse" style={{ width: 140, background: 'var(--ag-border-strong)' }} />
-        <div className="h-10 rounded-lg animate-pulse" style={{ background: 'var(--ag-border)', animationDuration: 'var(--ag-motion-surface)' }} />
+      <div className="space-y-6 p-6">
+        <div className="space-y-2">
+          <div className="h-7 rounded animate-pulse" style={{ width: 180, background: 'var(--ag-border-strong)' }} />
+          <div className="h-4 rounded animate-pulse" style={{ width: 300, background: 'var(--ag-border)' }} />
+        </div>
+        <div className="h-10 rounded-lg animate-pulse" style={{ background: 'var(--ag-border)' }} />
         <div className="space-y-3">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: 'var(--ag-surface)', border: '1px solid var(--ag-border)', animationDuration: 'var(--ag-motion-surface)' }} />
-          ))}
+          {[...Array(3)].map((_, i) => <SkeletonCard key={i} />)}
         </div>
       </div>
     );
@@ -197,6 +282,8 @@ export default function AskView({ projection }) {
           Ask
         </button>
       </motion.form>
+
+      {!result && <EmptyState />}
 
       <AnimatePresence mode="wait">
         {result && result.hits.length === 0 && (

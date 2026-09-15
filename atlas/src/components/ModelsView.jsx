@@ -1,10 +1,17 @@
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import * as Tooltip from '@radix-ui/react-tooltip';
 
 const MOTION_SURFACE = { duration: 0.34, ease: [0.16, 1, 0.3, 1] };
 const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
 const MOTION_ITEM = { hidden: { opacity: 0, scale: 0.96 }, show: { opacity: 1, scale: 1, transition: { ...MOTION_SURFACE } } };
+
+async function fetchModels() {
+  const res = await fetch('/api/v3/models');
+  if (!res.ok) throw new Error('Failed to fetch models');
+  return res.json();
+}
 
 function ModelCard({ model, onSelect, selected }) {
   return (
@@ -37,7 +44,7 @@ function ModelCard({ model, onSelect, selected }) {
         </p>
       )}
       <div className="flex flex-wrap gap-2 mt-auto">
-        {model.lineage.map((l, i) => (
+        {(model.lineage || []).map((l, i) => (
           <span
             key={i}
             className="font-mono px-2 py-0.5 rounded-full border"
@@ -48,16 +55,15 @@ function ModelCard({ model, onSelect, selected }) {
         ))}
       </div>
       <div className="flex items-center gap-3 pt-2 mt-1 border-t" style={{ borderColor: 'var(--ag-border)', fontSize: 'var(--ag-type-caption)', color: 'var(--ag-text-subtle)' }}>
-        <span>{model.params}</span>
+        <span>{model.params || '—'}</span>
         <span>·</span>
-        <span>{model.assertionCount} assertions</span>
+        <span>{model.assertionCount ?? 0} assertions</span>
       </div>
     </motion.div>
   );
 }
 
 function LineageGraph({ models, selected }) {
-  // Simple SVG lineage visualization: nodes + arrows showing derivation
   const sorted = useMemo(() => [...models].sort((a, b) => a.label.localeCompare(b.label)), [models]);
   const nodeH = 44;
   const gap = 16;
@@ -134,62 +140,155 @@ function LineageGraph({ models, selected }) {
   );
 }
 
-function SkeletonModel() {
+function SkeletonCard() {
   return (
     <div className="rounded-xl border p-5 space-y-3" style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}>
       <div className="flex items-center gap-2">
-        <div className="h-4 rounded animate-pulse" style={{ width: '45%', background: 'var(--ag-border-strong)', animationDuration: 'var(--ag-motion-surface)' }} />
-        <div className="h-5 w-14 rounded animate-pulse ml-auto" style={{ background: 'var(--ag-border-strong)', animationDuration: 'var(--ag-motion-surface)' }} />
+        <div className="h-4 rounded animate-pulse" style={{ width: '45%', background: 'var(--ag-border-strong)' }} />
+        <div className="h-5 w-14 rounded animate-pulse ml-auto" style={{ background: 'var(--ag-border-strong)' }} />
       </div>
-      <div className="h-3 rounded animate-pulse" style={{ width: '65%', background: 'var(--ag-border)', animationDuration: 'var(--ag-motion-surface)' }} />
+      <div className="h-3 rounded animate-pulse" style={{ width: '65%', background: 'var(--ag-border)' }} />
       <div className="flex gap-2">
-        <div className="h-4 w-16 rounded-full animate-pulse" style={{ background: 'var(--ag-border)', animationDuration: 'var(--ag-motion-surface)' }} />
-        <div className="h-4 w-12 rounded-full animate-pulse" style={{ background: 'var(--ag-border)', animationDuration: 'var(--ag-motion-surface)' }} />
+        <div className="h-4 w-16 rounded-full animate-pulse" style={{ background: 'var(--ag-border)' }} />
+        <div className="h-4 w-12 rounded-full animate-pulse" style={{ background: 'var(--ag-border)' }} />
       </div>
     </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={MOTION_SURFACE}
+      className="flex flex-col items-center justify-center py-16 px-6 text-center rounded-2xl border"
+      style={{
+        background: 'linear-gradient(135deg, var(--ag-surface) 0%, var(--ag-canvas-raised) 100%)',
+        borderColor: 'var(--ag-border)',
+      }}
+    >
+      <div
+        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+        style={{ background: 'var(--ag-control-soft)', color: 'var(--ag-control)' }}
+      >
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" />
+          <path d="M2 17l10 5 10-5" />
+          <path d="M2 12l10 5 10-5" />
+        </svg>
+      </div>
+      <h3
+        style={{
+          fontSize: 'var(--ag-type-title-sm)',
+          fontWeight: 'var(--ag-weight-semibold)',
+          color: 'var(--ag-text)',
+          margin: '0 0 8px',
+        }}
+      >
+        No models yet
+      </h3>
+      <p
+        style={{
+          fontSize: 'var(--ag-type-body-sm)',
+          color: 'var(--ag-text-muted)',
+          margin: 0,
+          maxWidth: 360,
+          lineHeight: 1.5,
+        }}
+      >
+        Models are derived from evidence-backed assertions across the topology.
+        Publish your first model via the API to see it here.
+      </p>
+    </motion.div>
   );
 }
 
 export default function ModelsView({ projection }) {
   const [selected, setSelected] = useState(null);
 
+  // Try async fetch first, fall back to projection-derived data
+  const { data: apiModels, isLoading } = useQuery({
+    queryKey: ['atlas-models'],
+    queryFn: fetchModels,
+    staleTime: 30000,
+    retry: 1,
+  });
+
   const models = useMemo(() => {
+    if (apiModels?.models) return apiModels.models;
     if (!projection) return [];
+    // Derive from projection as fallback
     const result = [];
-    for (const e of projection.entities) {
-      if (e.kind !== 'model' && e.kind !== 'afm') continue;
-      const asserts = projection.assertions.filter((a) => a.subject === e.id);
-      const descAssert = asserts.find((a) => a.predicate === 'description' || a.predicate === 'summary');
-      const archAssert = asserts.find((a) => a.predicate === 'architecture' || a.predicate === 'family');
-      const paramsAssert = asserts.find((a) => a.predicate === 'parameters' || a.predicate === 'size');
-      // Lineage: relations where this model is target and relation is 'derives_from' or 'fine_tuned_from'
-      const lineageRels = projection.relations.filter((r) => r.target === e.id && ['derives_from', 'fine_tuned_from', 'extends'].includes(r.relation));
-      const lineageIds = lineageRels.map((r) => r.source);
-      const lineageLabels = lineageIds.map((id) => {
-        const ent = projection.entities.find((x) => x.id === id);
-        return ent?.identity?.full_name || id.split('/').pop();
-      });
-      result.push({
-        id: e.id,
-        label: e.identity?.full_name || e.id.split('/').pop(),
-        architecture: archAssert?.value || 'AFM',
-        description: descAssert?.value || '',
-        params: paramsAssert?.value || '—',
-        lineage: lineageLabels,
-        lineageIds,
-        assertionCount: asserts.length,
-      });
+    const asserts = projection.assertions || [];
+    const entities = projection.entities || [];
+    const relations = projection.relations || [];
+
+    // Prefer entity-based derivation when entities exist
+    if (entities.length > 0) {
+      for (const e of entities) {
+        if (e.kind !== 'model' && e.kind !== 'afm') continue;
+        const entAsserts = asserts.filter((a) => a.subject === e.id);
+        const descAssert = entAsserts.find((a) => a.predicate === 'description' || a.predicate === 'summary');
+        const archAssert = entAsserts.find((a) => a.predicate === 'architecture' || a.predicate === 'family');
+        const paramsAssert = entAsserts.find((a) => a.predicate === 'parameters' || a.predicate === 'size');
+        const lineageRels = relations.filter((r) => r.target === e.id && ['derives_from', 'fine_tuned_from', 'extends'].includes(r.relation));
+        const lineageIds = lineageRels.map((r) => r.source);
+        const lineageLabels = lineageIds.map((id) => {
+          const ent = entities.find((x) => x.id === id);
+          return ent?.identity?.full_name || id.split('/').pop();
+        });
+        result.push({
+          id: e.id,
+          label: e.identity?.full_name || e.id.split('/').pop(),
+          architecture: archAssert?.value || 'AFM',
+          description: descAssert?.value || '',
+          params: paramsAssert?.value || '—',
+          lineage: lineageLabels,
+          lineageIds,
+          assertionCount: entAsserts.length,
+        });
+      }
+    } else {
+      // Fallback: derive from assertions where type==='model' or predicate includes 'model'
+      const bySubject = new Map();
+      for (const a of asserts) {
+        if (a.type === 'model' || a.predicate?.includes('model')) {
+          if (!bySubject.has(a.subject)) bySubject.set(a.subject, []);
+          bySubject.get(a.subject).push(a);
+        }
+      }
+      for (const [subjectId, subjectAsserts] of bySubject) {
+        const labelAssert = subjectAsserts.find((a) => a.predicate === 'label' || a.predicate === 'name');
+        const descAssert = subjectAsserts.find((a) => a.predicate === 'description' || a.predicate === 'summary');
+        const archAssert = subjectAsserts.find((a) => a.predicate === 'architecture' || a.predicate === 'family');
+        const paramsAssert = subjectAsserts.find((a) => a.predicate === 'parameters' || a.predicate === 'size');
+        result.push({
+          id: subjectId,
+          label: labelAssert?.value || subjectId.split('/').pop(),
+          architecture: archAssert?.value || 'AFM',
+          description: descAssert?.value || '',
+          params: paramsAssert?.value || '—',
+          lineage: [],
+          lineageIds: [],
+          assertionCount: subjectAsserts.length,
+        });
+      }
     }
+
     result.sort((a, b) => a.label.localeCompare(b.label));
     return result;
-  }, [projection]);
+  }, [apiModels, projection]);
 
-  if (!projection) {
+  if (isLoading) {
     return (
-      <div className="space-y-4 p-6">
-        <div className="h-6 rounded animate-pulse" style={{ width: 180, background: 'var(--ag-border-strong)' }} />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[...Array(4)].map((_, i) => <SkeletonModel key={i} />)}
+      <div className="space-y-6 p-6">
+        <div className="space-y-2">
+          <div className="h-7 rounded animate-pulse" style={{ width: 220, background: 'var(--ag-border-strong)' }} />
+          <div className="h-4 rounded animate-pulse" style={{ width: 340, background: 'var(--ag-border)' }} />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
         </div>
       </div>
     );
@@ -218,14 +317,7 @@ export default function ModelsView({ projection }) {
         </div>
 
         {models.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="p-8 rounded-xl border text-center"
-            style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)', color: 'var(--ag-text-muted)', fontSize: 'var(--ag-type-body-sm)' }}
-          >
-            No model entities in this projection. Generator v0.3+ required.
-          </motion.div>
+          <EmptyState />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Lineage graph panel */}

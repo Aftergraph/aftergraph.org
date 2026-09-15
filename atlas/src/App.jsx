@@ -476,7 +476,11 @@ export default function App() {
       return;
     }
     if (v === 'home') setDrift(false);
-    setView(v);
+    setView((prev) => {
+      // Functional update avoids stale closure
+      console.log('[Atlas] setView:', prev, '→', v);
+      return v;
+    });
   }, []);
 
   if (status === 'loading') return <div className="empty"><p>Loading Atlas projection…</p></div>;

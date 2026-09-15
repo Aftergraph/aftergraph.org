@@ -1,11 +1,18 @@
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 
 const MOTION_SURFACE = { duration: 0.34, ease: [0.16, 1, 0.3, 1] };
 const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.03 } } };
 const MOTION_ITEM = { hidden: { opacity: 0, y: 6 }, show: { opacity: 1, y: 0, transition: { ...MOTION_SURFACE } } };
 
 const FILTERS = ['all', 'CANONICAL', 'OBSERVED', 'PROPOSED'];
+
+async function fetchResearch() {
+  const res = await fetch('/api/v3/research');
+  if (!res.ok) throw new Error('Failed to fetch research');
+  return res.json();
+}
 
 function ResearchRow({ item }) {
   const planeColors = {
@@ -57,19 +64,65 @@ function ResearchRow({ item }) {
   );
 }
 
-function SkeletonRows() {
+function SkeletonCard() {
   return (
-    <div className="space-y-3">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="rounded-xl border p-4 space-y-2" style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}>
-          <div className="flex items-center gap-2">
-            <div className="h-4 rounded animate-pulse" style={{ width: '40%', background: 'var(--ag-border-strong)', animationDuration: 'var(--ag-motion-surface)' }} />
-            <div className="h-4 w-10 rounded animate-pulse" style={{ background: 'var(--ag-border-strong)', animationDuration: 'var(--ag-motion-surface)' }} />
-          </div>
-          <div className="h-3 rounded animate-pulse" style={{ width: '65%', background: 'var(--ag-border)', animationDuration: 'var(--ag-motion-surface)' }} />
-        </div>
-      ))}
+    <div
+      className="rounded-xl border p-4 space-y-2"
+      style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
+    >
+      <div className="flex items-center gap-2">
+        <div className="h-4 rounded animate-pulse" style={{ width: '40%', background: 'var(--ag-border-strong)' }} />
+        <div className="h-4 w-10 rounded animate-pulse" style={{ background: 'var(--ag-border-strong)' }} />
+      </div>
+      <div className="h-3 rounded animate-pulse" style={{ width: '65%', background: 'var(--ag-border)' }} />
     </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={MOTION_SURFACE}
+      className="flex flex-col items-center justify-center py-16 px-6 text-center rounded-2xl border"
+      style={{
+        background: 'linear-gradient(135deg, var(--ag-surface) 0%, var(--ag-canvas-raised) 100%)',
+        borderColor: 'var(--ag-border)',
+      }}
+    >
+      <div
+        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+        style={{ background: 'var(--ag-control-soft)', color: 'var(--ag-control)' }}
+      >
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+      </div>
+      <h3
+        style={{
+          fontSize: 'var(--ag-type-title-sm)',
+          fontWeight: 'var(--ag-weight-semibold)',
+          color: 'var(--ag-text)',
+          margin: '0 0 8px',
+        }}
+      >
+        No research assertions
+      </h3>
+      <p
+        style={{
+          fontSize: 'var(--ag-type-body-sm)',
+          color: 'var(--ag-text-muted)',
+          margin: 0,
+          maxWidth: 360,
+          lineHeight: 1.5,
+        }}
+      >
+        Research assertions are indexed from the evidence graph.
+        Publish assertions via the API to see them here.
+      </p>
+    </motion.div>
   );
 }
 
@@ -77,7 +130,15 @@ export default function ResearchView({ projection }) {
   const [query, setQuery] = useState('');
   const [planeFilter, setPlaneFilter] = useState('all');
 
+  const { data: apiData, isLoading } = useQuery({
+    queryKey: ['atlas-research'],
+    queryFn: fetchResearch,
+    staleTime: 30000,
+    retry: 1,
+  });
+
   const items = useMemo(() => {
+    if (apiData?.assertions) return apiData.assertions;
     if (!projection) return [];
     return projection.assertions.map((a) => ({
       id: a.id,
@@ -88,7 +149,7 @@ export default function ResearchView({ projection }) {
       source: a.provenance?.source || '',
       ref: a.provenance?.ref || '',
     }));
-  }, [projection]);
+  }, [apiData, projection]);
 
   const filtered = useMemo(() => {
     let result = items;
@@ -108,11 +169,16 @@ export default function ResearchView({ projection }) {
     return result;
   }, [items, planeFilter, query]);
 
-  if (!projection) {
+  if (isLoading) {
     return (
-      <div className="space-y-4 p-6">
-        <div className="h-6 rounded animate-pulse" style={{ width: 160, background: 'var(--ag-border-strong)' }} />
-        <SkeletonRows />
+      <div className="space-y-6 p-6">
+        <div className="space-y-2">
+          <div className="h-7 rounded animate-pulse" style={{ width: 220, background: 'var(--ag-border-strong)' }} />
+          <div className="h-4 rounded animate-pulse" style={{ width: 340, background: 'var(--ag-border)' }} />
+        </div>
+        <div className="space-y-3">
+          {[...Array(5)].map((_, i) => <SkeletonCard key={i} />)}
+        </div>
       </div>
     );
   }
@@ -186,14 +252,7 @@ export default function ResearchView({ projection }) {
 
       {/* Results list */}
       {filtered.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="p-8 rounded-xl border text-center"
-          style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)', color: 'var(--ag-text-muted)', fontSize: 'var(--ag-type-body-sm)' }}
-        >
-          No assertions match your filters.
-        </motion.div>
+        <EmptyState />
       ) : (
         <motion.div
           variants={MOTION_STAGGER}
