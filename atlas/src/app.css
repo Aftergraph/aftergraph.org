@@ -180,14 +180,15 @@ button[class*="rounded-full"]:hover {
   transition: all 0.2s ease;
 }
 button[class*="rounded-full"][style*="background: var(--ag-control)"] {
-  box-shadow: 0 0 12px rgba(66, 199, 232, 0.3);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--ag-control) 30%, transparent);
 }
 
 /* Card hover lift */
-.rounded-xl.border:hover {
+.rounded-xl.border:hover,
+[class*="rounded-xl"].border:hover {
   border-color: var(--ag-border-strong) !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px var(--ag-shadow, color-mix(in srgb, var(--ag-text) 15%, transparent));
   transition: all 0.2s ease;
 }
 

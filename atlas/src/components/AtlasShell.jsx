@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import * as Tooltip from '@radix-ui/react-tooltip';
 
@@ -28,6 +28,40 @@ const ATLAS_VIEWS = [
 
 export default function AtlasShell({ activeView, onViewChange, children }) {
   const shouldReduceMotion = useReducedMotion();
+  const tabListRef = useRef(null);
+
+  const handleTabKeyDown = useCallback((e) => {
+    const tabList = tabListRef.current;
+    if (!tabList) return;
+    const tabs = Array.from(tabList.querySelectorAll('[role="tab"]'));
+    const currentIndex = tabs.indexOf(e.currentTarget);
+    if (currentIndex === -1) return;
+
+    let nextIndex = null;
+    switch (e.key) {
+      case 'ArrowRight':
+        nextIndex = (currentIndex + 1) % tabs.length;
+        break;
+      case 'ArrowLeft':
+        nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+        break;
+      case 'Home':
+        nextIndex = 0;
+        break;
+      case 'End':
+        nextIndex = tabs.length - 1;
+        break;
+      default:
+        return;
+    }
+
+    e.preventDefault();
+    const nextTab = tabs[nextIndex];
+    nextTab.focus();
+    // Activate the tab on focus move (automatic activation)
+    const viewId = nextTab.dataset.viewId;
+    if (viewId) onViewChange(viewId);
+  }, [onViewChange]);
   const [theme, setTheme] = useState(() => {
     if (typeof document !== 'undefined') {
       return document.documentElement.dataset.theme || 'dark';
@@ -165,13 +199,16 @@ export default function AtlasShell({ activeView, onViewChange, children }) {
             </div>
           </div>
 
-          {/* Mobile nav dropdown — JS-driven visibility */}
-          <div className="md:hidden border-t backdrop-blur-xl overflow-hidden"
+          {/* Mobile nav dropdown — slide-in animation */}
+          <div className="mobile-nav-panel md:hidden border-t backdrop-blur-xl overflow-hidden"
+            aria-hidden={!mobileNavOpen}
             style={{
               borderColor: 'var(--ag-border)',
               background: 'color-mix(in srgb, var(--ag-canvas) 95%, transparent)',
               maxHeight: mobileNavOpen ? '60vh' : '0',
-              transition: 'max-height var(--ag-motion-surface) var(--ag-ease-surface)',
+              transition: 'max-height var(--ag-motion-surface) var(--ag-ease-surface), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease',
+              transform: mobileNavOpen ? 'translateY(0)' : 'translateY(-8px)',
+              opacity: mobileNavOpen ? 1 : 0,
             }}
           >
             <nav className="p-2 space-y-1">
@@ -223,13 +260,22 @@ export default function AtlasShell({ activeView, onViewChange, children }) {
             borderColor: 'var(--ag-border)',
           }}
         >
-          <div className="max-w-7xl mx-auto px-4 flex items-center gap-1 overflow-x-auto no-scrollbar">
+          <div
+            ref={tabListRef}
+            role="tablist"
+            className="max-w-7xl mx-auto px-4 flex items-center gap-1 overflow-x-auto no-scrollbar"
+          >
             {ATLAS_VIEWS.map((item) => {
               const isActive = activeView === item.id;
               return (
                 <button
                   key={item.id}
+                  role="tab"
+                  aria-selected={isActive}
+                  tabIndex={isActive ? 0 : -1}
+                  data-view-id={item.id}
                   onClick={() => onViewChange(item.id)}
+                  onKeyDown={handleTabKeyDown}
                   className="px-3 py-2 cursor-pointer border-none bg-transparent whitespace-nowrap"
                   style={{
                     fontSize: '14px',
