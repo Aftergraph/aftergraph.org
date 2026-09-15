@@ -1,10 +1,17 @@
 import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import * as Tooltip from '@radix-ui/react-tooltip';
 
 const MOTION_SURFACE = { duration: 0.34, ease: [0.16, 1, 0.3, 1] };
 const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } };
 const MOTION_ITEM = { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0, transition: { ...MOTION_SURFACE } } };
+
+async function fetchCapabilities() {
+  const res = await fetch('/api/v3/capabilities');
+  if (!res.ok) throw new Error('Failed to fetch capabilities');
+  return res.json();
+}
 
 function ConfidenceBar({ score }) {
   const pct = Math.max(0, Math.min(100, Math.round(score * 100)));
@@ -78,49 +85,103 @@ function SkeletonCard() {
       className="rounded-xl border p-5 space-y-3"
       style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
     >
-      <div className="flex items-center gap-2">
-        <div className="h-4 rounded animate-pulse" style={{ width: '50%', background: 'var(--ag-border-strong)', animationDuration: 'var(--ag-motion-surface)' }} />
-        <div className="h-5 w-12 rounded-full animate-pulse ml-auto" style={{ background: 'var(--ag-border-strong)', animationDuration: 'var(--ag-motion-surface)' }} />
+      <div className="h-4 rounded animate-pulse" style={{ width: '60%', background: 'var(--ag-border-strong)' }} />
+      <div className="h-3 rounded animate-pulse" style={{ width: '90%', background: 'var(--ag-border)' }} />
+      <div className="h-3 rounded animate-pulse" style={{ width: '40%', background: 'var(--ag-border)' }} />
+      <div className="flex gap-2 pt-2">
+        <div className="h-5 w-12 rounded-full animate-pulse" style={{ background: 'var(--ag-border)' }} />
+        <div className="h-5 w-16 rounded-full animate-pulse" style={{ background: 'var(--ag-border)' }} />
       </div>
-      <div className="h-3 rounded animate-pulse" style={{ width: '70%', background: 'var(--ag-border)', animationDuration: 'var(--ag-motion-surface)' }} />
-      <div className="h-3 rounded animate-pulse" style={{ width: '40%', background: 'var(--ag-border)', animationDuration: 'var(--ag-motion-surface)' }} />
     </div>
   );
 }
 
-export default function CapabilitiesView({ projection }) {
-  const capabilities = useMemo(() => {
-    if (!projection) return [];
-    const entityById = new Map(projection.entities.map((e) => [e.id, e]));
-    const caps = [];
-    for (const e of projection.entities) {
-      if (e.kind !== 'capability' && e.kind !== 'module') continue;
-      const asserts = projection.assertions.filter((a) => a.subject === e.id);
-      const confidenceAssert = asserts.find((a) => a.predicate === 'confidence' || a.predicate === 'maturity');
-      const descAssert = asserts.find((a) => a.predicate === 'description' || a.predicate === 'summary');
-      const evidencePlanes = [...new Set(asserts.map((a) => a.truth_plane))];
-      const provRefs = [...new Set(asserts.map((a) => a.provenance?.ref).filter(Boolean))];
-      const confidence = confidenceAssert?.value ?? (asserts.length > 0 ? 0.6 : 0.3);
-      caps.push({
-        id: e.id,
-        label: e.identity?.full_name || e.id.split('/').pop(),
-        kind: e.kind,
-        description: descAssert?.value || '',
-        confidence: typeof confidence === 'number' ? confidence : parseFloat(confidence) || 0.5,
-        planes: evidencePlanes.sort(),
-        sources: asserts.map((a) => a.provenance?.source).filter(Boolean),
-        refs: provRefs.slice(0, 3),
-        assertionCount: asserts.length,
-      });
-    }
-    caps.sort((a, b) => b.confidence - a.confidence || a.label.localeCompare(b.label));
-    return caps;
-  }, [projection]);
+function EmptyState() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={MOTION_SURFACE}
+      className="flex flex-col items-center justify-center py-16 px-6 text-center rounded-2xl border"
+      style={{
+        background: 'linear-gradient(135deg, var(--ag-surface) 0%, var(--ag-canvas-raised) 100%)',
+        borderColor: 'var(--ag-border)',
+      }}
+    >
+      <div
+        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+        style={{ background: 'var(--ag-control-soft)', color: 'var(--ag-control)' }}
+      >
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" />
+          <path d="M2 17l10 5 10-5" />
+          <path d="M2 12l10 5 10-5" />
+        </svg>
+      </div>
+      <h3
+        style={{
+          fontSize: 'var(--ag-type-title-sm)',
+          fontWeight: 'var(--ag-weight-semibold)',
+          color: 'var(--ag-text)',
+          margin: '0 0 8px',
+        }}
+      >
+        No capabilities yet
+      </h3>
+      <p
+        style={{
+          fontSize: 'var(--ag-type-body-sm)',
+          color: 'var(--ag-text-muted)',
+          margin: 0,
+          maxWidth: 360,
+          lineHeight: 1.5,
+        }}
+      >
+        Capabilities are derived from evidence-backed assertions across the topology.
+        Publish your first capability via the API to see it here.
+      </p>
+    </motion.div>
+  );
+}
 
-  if (!projection) {
+export default function CapabilitiesView({ projection }) {
+  // Try async fetch first, fall back to projection-derived data
+  const { data: apiCaps, isLoading } = useQuery({
+    queryKey: ['atlas-capabilities'],
+    queryFn: fetchCapabilities,
+    staleTime: 30000,
+    retry: 1,
+  });
+
+  const caps = useMemo(() => {
+    if (apiCaps?.capabilities) return apiCaps.capabilities;
+    if (!projection) return [];
+    // Derive from projection as fallback
+    const result = [];
+    const asserts = projection.assertions || [];
+    const byId = new Map(asserts.map((a) => [a.id, a]));
+    for (const a of asserts) {
+      if (a.type === 'capability' || a.predicate === 'has_capability') {
+        result.push({
+          id: a.id,
+          label: a.label || a.object || a.id,
+          confidence: a.confidence ?? 0.5,
+          plane: a.plane || 'OBSERVED',
+          source: a.provenance?.source,
+        });
+      }
+    }
+    result.sort((a, b) => b.confidence - a.confidence || a.label.localeCompare(b.label));
+    return result;
+  }, [apiCaps, projection]);
+
+  if (isLoading) {
     return (
-      <div className="space-y-4 p-6">
-        <div className="h-6 rounded animate-pulse" style={{ width: 200, background: 'var(--ag-border-strong)' }} />
+      <div className="space-y-6 p-6">
+        <div className="space-y-2">
+          <div className="h-7 rounded animate-pulse" style={{ width: 220, background: 'var(--ag-border-strong)' }} />
+          <div className="h-4 rounded animate-pulse" style={{ width: 340, background: 'var(--ag-border)' }} />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
         </div>
@@ -146,19 +207,12 @@ export default function CapabilitiesView({ projection }) {
             transition={{ ...MOTION_SURFACE, delay: 0.08 }}
             style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text-muted)', margin: '4px 0 0' }}
           >
-            {capabilities.length} capabilities with evidence-backed confidence scores
+            {caps.length} capabilities with evidence-backed confidence scores
           </motion.p>
         </div>
 
-        {capabilities.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="p-8 rounded-xl border text-center"
-            style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)', color: 'var(--ag-text-muted)', fontSize: 'var(--ag-type-body-sm)' }}
-          >
-            No capability entities in this projection. Generator v0.3+ required.
-          </motion.div>
+        {caps.length === 0 ? (
+          <EmptyState />
         ) : (
           <motion.div
             variants={MOTION_STAGGER}
@@ -166,66 +220,30 @@ export default function CapabilitiesView({ projection }) {
             animate="show"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
-            <AnimatePresence>
-              {capabilities.map((cap) => (
-                <motion.div
-                  key={cap.id}
-                  variants={MOTION_ITEM}
-                  layout
-                  className="rounded-xl border p-5 flex flex-col gap-3"
-                  style={{
-                    background: 'var(--ag-surface)',
-                    borderColor: 'var(--ag-border)',
-                    transition: `border-color var(--ag-motion-state) var(--ag-ease-state), box-shadow var(--ag-motion-state) var(--ag-ease-state)`,
-                  }}
-                  whileHover={{ borderColor: 'var(--ag-control)', boxShadow: 'var(--ag-shadow-raised)' }}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <h3
-                      className="font-medium leading-snug"
-                      style={{ fontSize: 'var(--ag-type-body)', color: 'var(--ag-text)', margin: 0 }}
-                    >
-                      {cap.label}
-                    </h3>
-                    <span
-                      className="shrink-0 px-1.5 py-0.5 rounded font-mono uppercase tracking-wider"
-                      style={{ fontSize: 9, color: 'var(--ag-text-subtle)', background: 'var(--ag-canvas-raised)', border: '1px solid var(--ag-border)' }}
-                    >
-                      {cap.kind}
-                    </span>
-                  </div>
-
-                  {cap.description && (
-                    <p style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text-muted)', margin: 0, lineHeight: 'var(--ag-leading-relaxed)' }}>
-                      {cap.description}
-                    </p>
-                  )}
-
-                  <ConfidenceBar score={cap.confidence} />
-
-                  <div className="flex flex-wrap gap-1.5 mt-auto">
-                    {cap.planes.map((p) => (
-                      <EvidenceBadge key={p} plane={p} source={cap.sources[0]} />
-                    ))}
-                  </div>
-
-                  {cap.refs.length > 0 && (
-                    <div className="pt-2 mt-1 border-t flex flex-wrap gap-x-3 gap-y-1" style={{ borderColor: 'var(--ag-border)' }}>
-                      {cap.refs.map((ref, i) => (
-                        <span
-                          key={i}
-                          className="font-mono truncate max-w-[140px]"
-                          style={{ fontSize: 'var(--ag-type-caption)', color: 'var(--ag-text-subtle)' }}
-                          title={ref}
-                        >
-                          {String(ref).slice(0, 12)}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </AnimatePresence>
+            {caps.map((cap) => (
+              <motion.div
+                key={cap.id}
+                variants={MOTION_ITEM}
+                className="rounded-xl border p-5 space-y-3"
+                style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <h3
+                    style={{
+                      fontSize: 'var(--ag-type-body)',
+                      fontWeight: 'var(--ag-weight-semibold)',
+                      color: 'var(--ag-text)',
+                      margin: 0,
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {cap.label}
+                  </h3>
+                  <EvidenceBadge plane={cap.plane} source={cap.source} />
+                </div>
+                <ConfidenceBar score={cap.confidence} />
+              </motion.div>
+            ))}
           </motion.div>
         )}
       </div>
