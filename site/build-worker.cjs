@@ -21,6 +21,7 @@ assert(launcherRegistry.schema === 'aftergraph-launcher-registry/1.0', 'launcher
 const notFound = read('404.html');
 const statusPage = read('status.html');
 let sentinel = read('sentinel.html');
+let community = read('community.html');
 // Canonical Brand OS bytes (run node scripts/sync-brand.mjs first; .brand/ is gitignored build input).
 const assertBrand = (f) => { assert(fs.existsSync(path.join(SITE, '.brand', f)), `brand sync missing: run node scripts/sync-brand.mjs (.brand/${f})`); };
 assertBrand('favicon.svg');
@@ -151,6 +152,13 @@ const OG_SENTINEL = `
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aftergraph.org/sentinel">`;
 
+const OG_COMMUNITY = `
+<meta property="og:site_name" content="Aftergraph">
+<meta property="og:title" content="Community — Aftergraph">
+<meta property="og:description" content="Public deliberation, research reproduction, roadmap input and RFC intake for Aftergraph.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aftergraph.org/community">`;
+
 const OG_LAUNCH = `
 <meta property="og:site_name" content="Aftergraph">
 <meta property="og:title" content="Launcher — Aftergraph">
@@ -163,6 +171,7 @@ landing = landing.replace('</head>', `${FAVICON}${OG}\n</head>`);
 landing = landing.replace('</body>', `<script>${experienceHero}</script>\n</body>`);
 launch = launch.replace('</head>', `${FAVICON}${OG_LAUNCH}\n</head>`);
 sentinel = sentinel.replace('</head>', `${FAVICON}${OG_SENTINEL}\n</head>`);
+community = community.replace('</head>', `${FAVICON}${OG_COMMUNITY}\n</head>`);
 
 let statusBuilt = statusPage.replaceAll('__AG_SHA__', process.env.AG_SHA || 'local').replaceAll('__AG_DEPLOYED__', process.env.AG_DEPLOYED || 'build-time');
 
@@ -197,6 +206,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
   <url><loc>https://aftergraph.org/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://aftergraph.org/launch</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://aftergraph.org/status</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://aftergraph.org/community</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://aftergraph.org/sentinel</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://aftergraph.org/atlas</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://aftergraph.org/studio/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
@@ -225,6 +235,7 @@ const LLMS = ${JSON.stringify(llms)};
 const SECURITY = ${JSON.stringify(security)};
 const STATUS = ${JSON.stringify(statusBuilt)};
 const SENTINEL = ${JSON.stringify(sentinel)};
+const COMMUNITY = ${JSON.stringify(community)};
 const ATLAS_HTML = ${JSON.stringify(atlasHtml)};
 const ATLAS_PROJECTION = ${JSON.stringify(ATLAS_PROJECTION_RAW)};
 const ATLAS_EXPERIENCE = ${JSON.stringify(ATLAS_EXPERIENCE_RAW)};
@@ -295,6 +306,7 @@ addEventListener('fetch', event => {
   else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
   else if (p === '/status' || p === '/status/') { body = STATUS; }
   else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }
+  else if (p === '/community' || p === '/community/') { body = COMMUNITY; }
   else if (p === '/atlas' || p === '/atlas/') { body = ATLAS_HTML; cache = 'public, max-age=300'; }
   else if (p === '/atlas/projection.json') { body = ATLAS_PROJECTION; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
   else if (p === '/atlas/experience.json') { body = ATLAS_EXPERIENCE; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }

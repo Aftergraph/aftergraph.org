@@ -35,6 +35,11 @@ try {
   await desktop.locator('#q').fill('brand');
   assert.ok((await desktop.locator('.item-name').allTextContents()).includes('Brand OS'), 'search must expose non-featured systems');
 
+  await desktop.locator('#q').fill('community');
+  const communityResults = await desktop.locator('.item-name').allTextContents();
+  assert.equal(communityResults[0], 'Open community', 'community action must rank first');
+  assert.ok(communityResults.includes('Open community'), 'launcher search must expose community navigation');
+
   await desktop.locator('#q').fill('> verify');
   assert.deepEqual(await desktop.locator('.item-name').allTextContents(), ['Verify with Sentinel']);
 

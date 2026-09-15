@@ -64,6 +64,14 @@ jobs:
           STATUS=$?
           kill $SRV
           exit $STATUS
+      - name: Community browser smoke
+        run: |
+          node site/serve-local.cjs 8473 site &
+          SRV=$!
+          node atlas/scripts/verify-community.mjs "http://localhost:8473/community"
+          STATUS=$?
+          kill $SRV
+          exit $STATUS
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is current
