@@ -283,42 +283,83 @@ async function handleLauncherTelemetry(request) {
     return new Response('', { status: 503, headers: { 'cache-control': 'no-store', ...SECURE } });
   }
 }
-addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-  const p = url.pathname;
-  if (p === '/api/launcher/telemetry') { event.respondWith(handleLauncherTelemetry(event.request)); return; }
-  let body;
-  let contentType = 'text/html;charset=utf-8';
-  let cache = 'public, max-age=300';
-  let responseStatus = 200;
-  if (p === '/healthz' || p === '/health') { body = HEALTH; contentType = 'application/json'; cache = 'public, max-age=60'; }
-  else if (p === '/robots.txt') { body = ROBOTS; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
-  else if (p === '/sitemap.xml') { body = SITEMAP; contentType = 'application/xml;charset=utf-8'; cache = 'public, max-age=3600'; }
-  else if (p === '/llms.txt') { body = LLMS; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
-  else if (p === '/.well-known/security.txt') { body = SECURITY; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
-  else if (p === '/favicon.ico') { body = FAVICON; contentType = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
-  else if (p === '/og-image.svg') { body = OGIMAGE; contentType = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
-  else if (p === '/manifest.webmanifest') { body = MANIFEST; contentType = 'application/manifest+json'; cache = 'public, max-age=3600'; }
-  else if (p === '/sw.js') { body = SWJS; contentType = 'text/javascript;charset=utf-8'; cache = 'no-store'; }
-  else if (ICON_FILES[p]) { body = Uint8Array.from(atob(ICON_FILES[p]), c => c.charCodeAt(0)); contentType = 'image/png'; cache = 'public, max-age=86400'; }
-  else if (p === '/launcher-app.js') { body = LAUNCH_APP; contentType = 'text/javascript;charset=utf-8'; cache = 'public, max-age=300'; }
-  else if (p === '/launcher-registry.json') { body = LAUNCHER_REGISTRY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
-  else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
-  else if (p === '/status' || p === '/status/') { body = STATUS; }
-  else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }
-  else if (p === '/community' || p === '/community/') { body = COMMUNITY; }
-  else if (p === '/atlas' || p === '/atlas/') { body = ATLAS_HTML; cache = 'public, max-age=300'; }
-  else if (p === '/atlas/projection.json') { body = ATLAS_PROJECTION; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
-  else if (p === '/atlas/experience.json') { body = ATLAS_EXPERIENCE; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
-  else if (ATLAS_FILES[p]) { body = ATLAS_FILES[p].body; contentType = ATLAS_FILES[p].ct; cache = 'public, max-age=31536000, immutable'; }
-  else if (p === '/404') { body = NOTFOUND; }
-  else if (p === '/') { body = LANDING; }
-  else { body = NOTFOUND; responseStatus = 404; cache = 'no-store'; }
-  event.respondWith(new Response(event.request.method === 'HEAD' ? null : body, {
-    status: responseStatus,
-    headers: { 'content-type': contentType, 'cache-control': cache, ...SECURE }
-  }));
-});`;
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const p = url.pathname;
+    if (p === '/api/launcher/telemetry') { return handleLauncherTelemetry(request); }
+    // --- Atlas V3 API (D1 + R2 backed) ---
+    if (p.startsWith('/api/v3/')) {
+      const db = env.ATLAS_V3_DB || null;
+      const r2 = env.ATLAS_V3_ARTIFACTS || null;
+      const method = request.method;
+      const headers = { 'content-type': 'application/json;charset=utf-8', 'cache-control': 'no-store' };
+      try {
+        if (p === '/api/v3/cuts' && method === 'GET') {
+          if (!db) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 503, headers });
+          const rows = await db.prepare('SELECT id, label, published_at, integrity_hash FROM cuts ORDER BY published_at DESC LIMIT 50').all();
+          return new Response(JSON.stringify({ cuts: rows.results || [] }), { status: 200, headers });
+        }
+        if (p === '/api/v3/envelopes' && method === 'GET') {
+          if (!db) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 503, headers });
+          const cutId = url.searchParams.get('cut_id');
+          if (!cutId) return new Response(JSON.stringify({ error: 'cut_id required' }), { status: 400, headers });
+          const rows = await db.prepare('SELECT id, claim_key, truth_plane, observed_at, freshness FROM envelopes WHERE cut_id = ? ORDER BY observed_at DESC').bind(cutId).all();
+          return new Response(JSON.stringify({ envelopes: rows.results || [] }), { status: 200, headers });
+        }
+        if (p === '/api/v3/conflicts' && method === 'GET') {
+          if (!db) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 503, headers });
+          const rows = await db.prepare("SELECT id, claim_key, planes, first_seen FROM conflicts WHERE status = 'open' ORDER BY first_seen DESC").all();
+          return new Response(JSON.stringify({ conflicts: rows.results || [] }), { status: 200, headers });
+        }
+        if (p === '/api/v3/artifacts' && method === 'POST') {
+          if (!r2) return new Response(JSON.stringify({ error: 'R2 not bound' }), { status: 503, headers });
+          const body = await request.arrayBuffer();
+          const key = 'atlas-v3/' + Date.now() + '-' + crypto.randomUUID();
+          await r2.put(key, body, { httpMetadata: { contentType: request.headers.get('content-type') || 'application/octet-stream' } });
+          return new Response(JSON.stringify({ key, size: body.byteLength }), { status: 201, headers });
+        }
+        if (p === '/api/v3/health' && method === 'GET') {
+          return new Response(JSON.stringify({ d1: !!db, r2: !!r2, ts: new Date().toISOString() }), { status: 200, headers });
+        }
+        return new Response(JSON.stringify({ error: 'not found' }), { status: 404, headers });
+      } catch (e) {
+        return new Response(JSON.stringify({ error: e.message || 'internal error' }), { status: 500, headers });
+      }
+    }
+    let body;
+    let contentType = 'text/html;charset=utf-8';
+    let cache = 'public, max-age=300';
+    let responseStatus = 200;
+    if (p === '/healthz' || p === '/health') { body = HEALTH; contentType = 'application/json'; cache = 'public, max-age=60'; }
+    else if (p === '/robots.txt') { body = ROBOTS; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
+    else if (p === '/sitemap.xml') { body = SITEMAP; contentType = 'application/xml;charset=utf-8'; cache = 'public, max-age=3600'; }
+    else if (p === '/llms.txt') { body = LLMS; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
+    else if (p === '/.well-known/security.txt') { body = SECURITY; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
+    else if (p === '/favicon.ico') { body = FAVICON; contentType = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
+    else if (p === '/og-image.svg') { body = OGIMAGE; contentType = 'image/svg+xml;charset=utf-8'; cache = 'public, max-age=86400'; }
+    else if (p === '/manifest.webmanifest') { body = MANIFEST; contentType = 'application/manifest+json'; cache = 'public, max-age=3600'; }
+    else if (p === '/sw.js') { body = SWJS; contentType = 'text/javascript;charset=utf-8'; cache = 'no-store'; }
+    else if (ICON_FILES[p]) { body = Uint8Array.from(atob(ICON_FILES[p]), c => c.charCodeAt(0)); contentType = 'image/png'; cache = 'public, max-age=86400'; }
+    else if (p === '/launcher-app.js') { body = LAUNCH_APP; contentType = 'text/javascript;charset=utf-8'; cache = 'public, max-age=300'; }
+    else if (p === '/launcher-registry.json') { body = LAUNCHER_REGISTRY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
+    else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
+    else if (p === '/status' || p === '/status/') { body = STATUS; }
+    else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }
+    else if (p === '/community' || p === '/community/') { body = COMMUNITY; }
+    else if (p === '/atlas' || p === '/atlas/') { body = ATLAS_HTML; cache = 'public, max-age=300'; }
+    else if (p === '/atlas/projection.json') { body = ATLAS_PROJECTION; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
+    else if (p === '/atlas/experience.json') { body = ATLAS_EXPERIENCE; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
+    else if (ATLAS_FILES[p]) { body = ATLAS_FILES[p].body; contentType = ATLAS_FILES[p].ct; cache = 'public, max-age=31536000, immutable'; }
+    else if (p === '/404') { body = NOTFOUND; }
+    else if (p === '/') { body = LANDING; }
+    else { body = NOTFOUND; responseStatus = 404; cache = 'no-store'; }
+    return new Response(request.method === 'HEAD' ? null : body, {
+      status: responseStatus,
+      headers: { 'content-type': contentType, 'cache-control': cache, ...SECURE }
+    });
+  }
+};`;
 
 fs.writeFileSync(path.join(SITE, 'worker.js'), worker);
 // Wrangler executes this build command from the site/ directory before every
@@ -327,10 +368,20 @@ fs.writeFileSync(path.join(SITE, 'worker.js'), worker);
 fs.writeFileSync(path.join(SITE, 'wrangler.toml'), `name = "aftergraph-site"
 main = "worker.js"
 compatibility_date = "2024-11-01"
+account_id = "1cd2e6c70a2918567a3edcf8eadd7458"
 
 [[kv_namespaces]]
 binding = "AG_STATS"
 id = "7b0696a1cd1b4656b9325589a3b6199c"
+
+[[d1_databases]]
+binding = "ATLAS_V3_DB"
+database_name = "atlas-v3-db"
+database_id = "cf0fb58e-2501-4d17-9471-6c3b0180dca6"
+
+[[r2_buckets]]
+binding = "ATLAS_V3_ARTIFACTS"
+bucket_name = "atlas-v3-artifacts"
 
 [build]
 command = "node build-worker.cjs"
