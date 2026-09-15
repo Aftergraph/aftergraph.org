@@ -18,6 +18,7 @@ import {
   tracePath,
   validateProjection,
 } from './lib/derive.js';
+import { fetchLatestCut, fetchEnvelope, envelopeToProjection } from './lib/atlas-api.js';
 import enrichFixtures from '../../docs/atlas/enrich/fixtures.json';
 import { pulseRows, contractRows, diffProjections } from './lib/sliceC.js';
 import Home from './Home.jsx';
@@ -39,12 +40,27 @@ function useProjection() {
       return true;
     };
     (async () => {
+      // Priority 1: Live V3 API (D1-backed cuts)
+      try {
+        const cut = await fetchLatestCut();
+        if (cut && cut.id) {
+          const envelope = await fetchEnvelope(cut.id);
+          if (envelope) {
+            const projection = envelopeToProjection(envelope, cut);
+            if (projection && accept(projection, 'v3-api')) return;
+          }
+        }
+      } catch {
+        /* fall through to static sources */
+      }
+      // Priority 2: Build-time embedded projection
       try {
         const mod = await import('../../site/atlas-projection.json');
         if (accept(mod.default, 'build')) return;
       } catch {
         /* fall through to runtime fetch */
       }
+      // Priority 3: Runtime static fetch
       try {
         const res = await fetch('./projection.json', { cache: 'no-store' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
