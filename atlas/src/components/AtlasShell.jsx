@@ -29,6 +29,43 @@ const ATLAS_VIEWS = [
 export default function AtlasShell({ activeView, onViewChange, children }) {
   const shouldReduceMotion = useReducedMotion();
   const tabListRef = useRef(null);
+  const touchStartRef = useRef(null);
+
+  const handleTouchStart = useCallback((e) => {
+    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, []);
+
+  const handleTouchEnd = useCallback((e) => {
+    if (!touchStartRef.current) return;
+    const startX = touchStartRef.current.x;
+    const startY = touchStartRef.current.y;
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    touchStartRef.current = null;
+
+    const dx = endX - startX;
+    const dy = endY - startY;
+
+    // Only trigger if horizontal swipe exceeds threshold and is more horizontal than vertical
+    if (Math.abs(dx) < 50 || Math.abs(dx) <= Math.abs(dy)) return;
+
+    const currentIndex = ATLAS_VIEWS.findIndex((v) => v.id === activeView);
+    if (currentIndex === -1) return;
+
+    let nextIndex;
+    if (dx < 0) {
+      // Swipe left → next view
+      nextIndex = Math.min(currentIndex + 1, ATLAS_VIEWS.length - 1);
+    } else {
+      // Swipe right → previous view
+      nextIndex = Math.max(currentIndex - 1, 0);
+    }
+
+    if (nextIndex !== currentIndex) {
+      e.preventDefault();
+      onViewChange(ATLAS_VIEWS[nextIndex].id);
+    }
+  }, [activeView, onViewChange]);
 
   const handleTabKeyDown = useCallback((e) => {
     const tabList = tabListRef.current;
@@ -299,7 +336,12 @@ export default function AtlasShell({ activeView, onViewChange, children }) {
         </div>
 
         {/* Main content area with page transitions */}
-        <main className="pt-28 min-h-screen">
+        <main
+          className="pt-28 min-h-screen"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          style={{ touchAction: 'pan-y' }}
+        >
           <motion.div
             initial={pageInitial}
             animate={pageAnimate}

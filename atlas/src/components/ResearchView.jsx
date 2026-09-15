@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
+import SkeletonCard from './shared/SkeletonCard.jsx';
+import EmptyState from './shared/EmptyState.jsx';
 
 const MOTION_SURFACE = { duration: 0.34, ease: [0.16, 1, 0.3, 1] };
 const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.03 } } };
@@ -64,66 +66,7 @@ function ResearchRow({ item }) {
   );
 }
 
-function SkeletonCard() {
-  return (
-    <div
-      className="rounded-xl border p-4 space-y-2"
-      style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
-    >
-      <div className="flex items-center gap-2">
-        <div className="h-4 rounded animate-pulse" style={{ width: '40%', background: 'var(--ag-border-strong)' }} />
-        <div className="h-4 w-10 rounded animate-pulse" style={{ background: 'var(--ag-border-strong)' }} />
-      </div>
-      <div className="h-3 rounded animate-pulse" style={{ width: '65%', background: 'var(--ag-border)' }} />
-    </div>
-  );
-}
 
-function EmptyState() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={MOTION_SURFACE}
-      className="flex flex-col items-center justify-center py-16 px-6 text-center rounded-2xl border"
-      style={{
-        background: 'linear-gradient(135deg, var(--ag-surface) 0%, var(--ag-canvas-raised) 100%)',
-        borderColor: 'var(--ag-border)',
-      }}
-    >
-      <div
-        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
-        style={{ background: 'var(--ag-control-soft)', color: 'var(--ag-control)' }}
-      >
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.3-4.3" />
-        </svg>
-      </div>
-      <h3
-        style={{
-          fontSize: 'var(--ag-type-title-sm)',
-          fontWeight: 'var(--ag-weight-semibold)',
-          color: 'var(--ag-text)',
-          margin: '0 0 8px',
-        }}
-      >
-        Ingen assertions endnu
-      </h3>
-      <p
-        style={{
-          fontSize: 'var(--ag-type-body-sm)',
-          color: 'var(--ag-text-muted)',
-          margin: 0,
-          maxWidth: 360,
-          lineHeight: 1.5,
-        }}
-      >
-        Publish assertions via API'et for at se dem her.
-      </p>
-    </motion.div>
-  );
-}
 
 export default function ResearchView({ projection }) {
   const [query, setQuery] = useState('');
@@ -251,7 +194,11 @@ export default function ResearchView({ projection }) {
 
       {/* Results list */}
       {filtered.length === 0 ? (
-        <EmptyState />
+        <EmptyState
+          variant="research"
+          title="Ingen assertions endnu"
+          description="Publish assertions via API'et for at se dem her."
+        />
       ) : (
         <motion.div
           variants={MOTION_STAGGER}

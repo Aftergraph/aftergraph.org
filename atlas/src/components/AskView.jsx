@@ -2,6 +2,8 @@ import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { answerFromEvidence } from '../lib/derive.js';
+import SkeletonCard from './shared/SkeletonCard.jsx';
+import EmptyState from './shared/EmptyState.jsx';
 
 const MOTION_SURFACE = { duration: 0.34, ease: [0.16, 1, 0.3, 1] };
 const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } };
@@ -108,68 +110,7 @@ function HitCard({ hit, assertion, query }) {
   );
 }
 
-function SkeletonCard() {
-  return (
-    <div
-      className="rounded-xl border p-4 space-y-3"
-      style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
-    >
-      <div className="flex items-center gap-2">
-        <div className="h-4 rounded animate-pulse" style={{ width: '50%', background: 'var(--ag-border-strong)' }} />
-        <div className="h-4 w-10 rounded animate-pulse" style={{ background: 'var(--ag-border-strong)' }} />
-      </div>
-      <div className="h-3 rounded animate-pulse" style={{ width: '80%', background: 'var(--ag-border)' }} />
-      <div className="h-3 rounded animate-pulse" style={{ width: '30%', background: 'var(--ag-border)' }} />
-    </div>
-  );
-}
 
-function EmptyState() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={MOTION_SURFACE}
-      className="flex flex-col items-center justify-center py-16 px-6 text-center rounded-2xl border"
-      style={{
-        background: 'linear-gradient(135deg, var(--ag-surface) 0%, var(--ag-canvas-raised) 100%)',
-        borderColor: 'var(--ag-border)',
-      }}
-    >
-      <div
-        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
-        style={{ background: 'var(--ag-control-soft)', color: 'var(--ag-control)' }}
-      >
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-          <path d="M12 17h.01" />
-        </svg>
-      </div>
-      <h3
-        style={{
-          fontSize: 'var(--ag-type-title-sm)',
-          fontWeight: 'var(--ag-weight-semibold)',
-          color: 'var(--ag-text)',
-          margin: '0 0 8px',
-        }}
-      >
-        Spørg Atlas
-      </h3>
-      <p
-        style={{
-          fontSize: 'var(--ag-type-body-sm)',
-          color: 'var(--ag-text-muted)',
-          margin: 0,
-          maxWidth: 360,
-          lineHeight: 1.5,
-        }}
-      >
-        Søg i evidence graph'en. Du får kun svar med kildehenvisning — ingen gæt.
-      </p>
-    </motion.div>
-  );
-}
 
 export default function AskView({ projection }) {
   const [query, setQuery] = useState('');
@@ -282,7 +223,13 @@ export default function AskView({ projection }) {
         </button>
       </motion.form>
 
-      {!result && <EmptyState />}
+      {!result && (
+        <EmptyState
+          variant="ask"
+          title="Spørg Atlas"
+          description="Søg i evidence graph'en. Du får kun svar med kildehenvisning — ingen gæt."
+        />
+      )}
 
       <AnimatePresence mode="wait">
         {result && result.hits.length === 0 && (
