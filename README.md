@@ -29,10 +29,13 @@ every page. No fake stats, customers or testimonials.
 ## Local development
 
 This repository currently ships a static Cloudflare Worker (no build step, no
-npm project). Regenerate the deployed bundle after editing sources:
+npm project). The deployed bundle is **generated** (`site/worker.js` is
+gitignored; see `DECISIONS.md` #5) and built by CI. Regenerate it locally after
+editing sources:
 
 ```sh
 cd site
+node scripts/sync-brand.mjs    # from repo root: fetch canonical brand inputs
 node build-worker.cjs   # reads index.html/launch.html/status.html/llms.txt/... -> worker.js
 npx wrangler@4.129.0 deploy --config wrangler.toml --name aftergraph-site
 ```

@@ -214,13 +214,33 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 `;
 
 const secureHeaders = `const SECURE = {
-  'Content-Security-Policy': "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
   'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
-};`;
+};
+// Per-request nonce CSP. Inline <script>/<style> tags are rewritten at serve
+// time to carry nonce="..."; the policy drops 'unsafe-inline' so only nonced
+// inline blocks (and 'self' external assets) execute.
+const CSP_BASE = "default-src 'none'; script-src 'self' 'nonce-%N%'; style-src 'self' 'nonce-%N%'; img-src 'self' data:; connect-src 'self'; font-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
+const CSP_NONHTML = "default-src 'none'; img-src 'self' data:; connect-src 'self'; font-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none";
+const INJECT_TAG = /<(script|style)(\s|>)/gi;
+function applyNonce(html, nonce) {
+  let out = '';
+  let last = 0;
+  let m;
+  while ((m = INJECT_TAG.exec(html)) !== null) {
+    out += html.slice(last, m.index);
+    // Skip if a nonce= already present (idempotent).
+    const tail = html.slice(m.index, m.index + m[0].length + 16);
+    if (/nonce=/i.test(tail)) { out += m[0]; }
+    else { out += '<' + m[1] + ' nonce="' + nonce + '"' + m[2]; }
+    last = m.index + m[0].length;
+  }
+  out += html.slice(last);
+  return out;
+}`;
 
 const worker = `${secureHeaders}
 const LANDING = ${JSON.stringify(landing)};
@@ -253,34 +273,46 @@ const TELEMETRY_INTENTS = new Set(['find','action','evidence','verify']);
 const TELEMETRY_STATUS = new Set(['ok','fail']);
 const TELEMETRY_LATENCY = new Set(['lt100','100-299','300-999','gte1000']);
 const TELEMETRY_RESULTS = new Set(['0','1-5','6-20','gt20']);
+const TELEMETRY_RL = new Map();
 async function handleLauncherTelemetry(request) {
-  if (request.method !== 'POST') return new Response('', { status: 405, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (request.method !== 'POST') return new Response('', { status: 405, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
   const requestUrl = new URL(request.url);
   const origin = request.headers.get('origin');
-  if (origin && origin !== requestUrl.origin) return new Response('', { status: 403, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (origin && origin !== requestUrl.origin) return new Response('', { status: 403, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
   const text = await request.text();
-  if (!text || text.length > 1024) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (!text || text.length > 1024) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
   let payload;
-  try { payload = JSON.parse(text); } catch { return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } }); }
-  if (!payload || Array.isArray(payload) || typeof payload !== 'object') return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
-  if (Object.keys(payload).some((key) => !TELEMETRY_FIELDS.has(key))) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
-  if (!TELEMETRY_EVENTS.has(payload.event)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
-  if (payload.item_id != null && !LAUNCHER_ALLOWED_IDS.has(payload.item_id)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
-  if (payload.item_kind != null && !TELEMETRY_KINDS.has(payload.item_kind)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
-  if (payload.intent != null && !TELEMETRY_INTENTS.has(payload.intent)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
-  if (payload.status != null && !TELEMETRY_STATUS.has(payload.status)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
-  if (payload.latency_bucket != null && !TELEMETRY_LATENCY.has(payload.latency_bucket)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
-  if (payload.result_bucket != null && !TELEMETRY_RESULTS.has(payload.result_bucket)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
-  if (typeof AG_STATS === 'undefined') return new Response('', { status: 503, headers: { 'cache-control': 'no-store', ...SECURE } });
+  try { payload = JSON.parse(text); } catch { return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } }); }
+  if (!payload || Array.isArray(payload) || typeof payload !== 'object') return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
+  if (Object.keys(payload).some((key) => !TELEMETRY_FIELDS.has(key))) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
+  if (!TELEMETRY_EVENTS.has(payload.event)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
+  if (payload.item_id != null && !LAUNCHER_ALLOWED_IDS.has(payload.item_id)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
+  if (payload.item_kind != null && !TELEMETRY_KINDS.has(payload.item_kind)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
+  if (payload.intent != null && !TELEMETRY_INTENTS.has(payload.intent)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
+  if (payload.status != null && !TELEMETRY_STATUS.has(payload.status)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
+  if (payload.latency_bucket != null && !TELEMETRY_LATENCY.has(payload.latency_bucket)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
+  if (payload.result_bucket != null && !TELEMETRY_RESULTS.has(payload.result_bucket)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
+  // Per-isolate in-memory rate limit (best-effort burst protection; not a
+  // durable quota). Caps a single Worker isolate at 30 telemetry posts/min/IP
+  // to blunt flood attempts; KV remains the durable store below.
+  const ip = request.headers.get('cf-connecting-ip') || '-';
+  const now = Date.now();
+  const bucket = Math.floor(now / 60000);
+  const rlKey = ip + ':' + bucket;
+  if (!TELEMETRY_RL.has(rlKey)) TELEMETRY_RL.clear();
+  const rlCount = (TELEMETRY_RL.get(rlKey) || 0) + 1;
+  TELEMETRY_RL.set(rlKey, rlCount);
+  if (rlCount > 30) return new Response('', { status: 429, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
+  if (typeof AG_STATS === 'undefined') return new Response('', { status: 503, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
   const day = new Date().toISOString().slice(0, 10);
   const dimensions = [payload.event,payload.item_id||'-',payload.item_kind||'-',payload.intent||'-',payload.status||'-',payload.latency_bucket||'-',payload.result_bucket||'-'].join(':');
   const key = 'launcher:v1:' + day + ':' + dimensions;
   try {
     const current = Number(await AG_STATS.get(key) || '0');
     await AG_STATS.put(key, String(Number.isFinite(current) ? current + 1 : 1), { expirationTtl: 7776000 });
-    return new Response('', { status: 202, headers: { 'cache-control': 'no-store', ...SECURE } });
+    return new Response('', { status: 202, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
   } catch {
-    return new Response('', { status: 503, headers: { 'cache-control': 'no-store', ...SECURE } });
+    return new Response('', { status: 503, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
   }
 }
 addEventListener('fetch', event => {
@@ -314,9 +346,19 @@ addEventListener('fetch', event => {
   else if (p === '/404') { body = NOTFOUND; }
   else if (p === '/') { body = LANDING; }
   else { body = NOTFOUND; responseStatus = 404; cache = 'no-store'; }
+  const isHtml = contentType.startsWith('text/html');
+  let headers = { 'content-type': contentType, 'cache-control': cache, ...SECURE };
+  if (isHtml) {
+    // Mint a per-request nonce; rewrite inline <script>/<style> and ship a nonce CSP.
+    const nonce = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)) + Date.now().toString(36);
+    body = applyNonce(event.request.method === 'HEAD' ? '' : body, nonce);
+    headers['Content-Security-Policy'] = CSP_BASE.replaceAll('%N%', nonce);
+  } else {
+    headers['Content-Security-Policy'] = CSP_NONHTML;
+  }
   event.respondWith(new Response(event.request.method === 'HEAD' ? null : body, {
     status: responseStatus,
-    headers: { 'content-type': contentType, 'cache-control': cache, ...SECURE }
+    headers
   }));
 });`;
 
