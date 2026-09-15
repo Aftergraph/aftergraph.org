@@ -22,8 +22,9 @@ import { fetchLatestCut, fetchEnvelope, envelopeToProjection } from './lib/atlas
 import enrichFixtures from '../../docs/atlas/enrich/fixtures.json';
 import { pulseRows, contractRows, diffProjections } from './lib/sliceC.js';
 import Home from './Home.jsx';
+import ReconciliationPanel from './components/ReconciliationPanel.jsx';
 
-const VIEWS = ['home', 'topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask'];
+const VIEWS = ['home', 'topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask', 'reconciliation'];
 
 const GENERATOR_CMD =
   'node site/generate-atlas-projection.mjs --ledger <ledger-dir> --gov <governance-clone> --out site/atlas-projection.json';
@@ -605,6 +606,7 @@ export default function App() {
         {view === 'research' && <ResearchView projection={projection} />}
         {view === 'snapshots' && <SnapshotsView projection={projection} />}
         {view === 'ask' && <AskView projection={projection} q={askQ} setQ={setAskQ} hits={askHits} setHits={setAskHits} />}
+        {view === 'reconciliation' && <ReconciliationPanel />}
       </div>
       )}
       {view !== 'home' && (
