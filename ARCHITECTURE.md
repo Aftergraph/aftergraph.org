@@ -122,4 +122,9 @@ Before public generation is considered topology-current:
 5. Exact Git state, when displayed, comes from a fresh generated org-state rather than hand-written SHAs.
 6. Public links and launcher destinations are checked independently from claim correctness.
 
+> Note: as of #94, `site/worker.js` and the `site/atlas/` build output move to
+> `.gitignore` (generated artefacts). The provenance gate becomes a CI
+> build-then-verify step rather than a `git diff` against a committed bundle.
+> See `DECISIONS.md` #5.
+
 The canonical platform reconciliation backlog is maintained in `Aftergraph/after-graph-governance/docs/PLATFORM-RECONCILIATION-V1.md`.

@@ -74,7 +74,19 @@ jobs:
           exit $STATUS
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
-      - name: Generated bundle is current
-        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
+      - name: Generated bundle is deterministic (no committed artefact)
+        run: |
+          # Worker.js is no longer committed (see DECISIONS.md #5). Provenance is
+          # established by a reproducible CI build at the exact SHA: build twice
+          # and assert byte-equality. A non-deterministic build fails the gate.
+          node site/build-worker.cjs
+          cp site/worker.js /tmp/worker-a.js
+          node site/build-worker.cjs
+          if ! diff -q /tmp/worker-a.js site/worker.js >/dev/null; then
+            echo "BUILD-FAIL: worker.js is not byte-deterministic across two builds"
+            diff /tmp/worker-a.js site/worker.js | head -20
+            exit 1
+          fi
+          node --test site/launcher-worker.test.mjs
       - name: Diff check
         run: git diff --check
