@@ -108,7 +108,7 @@ function EmptyState() {
           margin: '0 0 8px',
         }}
       >
-        No research assertions
+        Ingen assertions endnu
       </h3>
       <p
         style={{
@@ -119,8 +119,7 @@ function EmptyState() {
           lineHeight: 1.5,
         }}
       >
-        Research assertions are indexed from the evidence graph.
-        Publish assertions via the API to see them here.
+        Publish assertions via API'et for at se dem her.
       </p>
     </motion.div>
   );

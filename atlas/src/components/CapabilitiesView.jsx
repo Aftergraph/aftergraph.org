@@ -37,9 +37,9 @@ function ConfidenceBar({ score }) {
 
 function EvidenceBadge({ plane, source }) {
   const colors = {
-    CANONICAL: { bg: 'var(--ag-authority-soft)', text: 'var(--ag-authority)', border: 'rgba(119,89,232,0.3)' },
-    OBSERVED: { bg: 'var(--ag-evidence-soft)', text: 'var(--ag-evidence)', border: 'rgba(36,196,173,0.3)' },
-    PROPOSED: { bg: 'var(--ag-decision-soft)', text: 'var(--ag-decision)', border: 'rgba(240,166,74,0.3)' },
+    CANONICAL: { bg: 'var(--ag-authority-soft)', text: 'var(--ag-authority)', border: 'color-mix(in srgb, var(--ag-authority) 30%, transparent)' },
+    OBSERVED: { bg: 'var(--ag-evidence-soft)', text: 'var(--ag-evidence)', border: 'color-mix(in srgb, var(--ag-evidence) 30%, transparent)' },
+    PROPOSED: { bg: 'var(--ag-decision-soft)', text: 'var(--ag-decision)', border: 'color-mix(in srgb, var(--ag-decision) 30%, transparent)' },
   };
   const c = colors[plane] || colors.OBSERVED;
   return (
@@ -126,7 +126,7 @@ function EmptyState() {
           margin: '0 0 8px',
         }}
       >
-        No capabilities yet
+        Ingen capabilities endnu
       </h3>
       <p
         style={{
@@ -137,8 +137,7 @@ function EmptyState() {
           lineHeight: 1.5,
         }}
       >
-        Capabilities are derived from evidence-backed assertions across the topology.
-        Publish your first capability via the API to see it here.
+        Upload data eller publish en capability via API'et for at komme i gang.
       </p>
     </motion.div>
   );
@@ -207,7 +206,7 @@ export default function CapabilitiesView({ projection }) {
             transition={{ ...MOTION_SURFACE, delay: 0.08 }}
             style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text-muted)', margin: '4px 0 0' }}
           >
-            {caps.length} capabilities with evidence-backed confidence scores
+            {caps.length} capabilities
           </motion.p>
         </div>
 

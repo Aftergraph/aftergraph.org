@@ -16,9 +16,9 @@ async function fetchSnapshots() {
 function DiffBadge({ label, count, type }) {
   if (count === 0) return null;
   const colors = {
-    added: { bg: 'var(--ag-evidence-soft)', text: 'var(--ag-evidence)', border: 'rgba(36,196,173,0.3)' },
-    removed: { bg: 'var(--ag-danger-soft)', text: 'var(--ag-danger)', border: 'rgba(255,107,122,0.3)' },
-    changed: { bg: 'var(--ag-decision-soft)', text: 'var(--ag-decision)', border: 'rgba(240,166,74,0.3)' },
+    added: { bg: 'var(--ag-evidence-soft)', text: 'var(--ag-evidence)', border: 'color-mix(in srgb, var(--ag-evidence) 30%, transparent)' },
+    removed: { bg: 'var(--ag-danger-soft)', text: 'var(--ag-danger)', border: 'color-mix(in srgb, var(--ag-danger) 30%, transparent)' },
+    changed: { bg: 'var(--ag-decision-soft)', text: 'var(--ag-decision)', border: 'color-mix(in srgb, var(--ag-decision) 30%, transparent)' },
   };
   const c = colors[type] || colors.changed;
   return (
@@ -91,7 +91,7 @@ function DiffPanel({ diff, snapshotFile }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="p-4 rounded-xl border"
-        style={{ background: 'var(--ag-danger-soft)', borderColor: 'rgba(255,107,122,0.3)', color: 'var(--ag-danger)', fontSize: 'var(--ag-type-body-sm)' }}
+        style={{ background: 'var(--ag-danger-soft)', borderColor: 'color-mix(in srgb, var(--ag-danger) 30%, transparent)', color: 'var(--ag-danger)', fontSize: 'var(--ag-type-body-sm)' }}
       >
         {diff.error}
       </motion.div>
@@ -185,7 +185,7 @@ function EmptyState() {
           margin: '0 0 8px',
         }}
       >
-        No snapshots yet
+        Ingen snapshots endnu
       </h3>
       <p
         style={{
@@ -196,8 +196,7 @@ function EmptyState() {
           lineHeight: 1.5,
         }}
       >
-        Versioned snapshots are immutable cuts of the evidence graph.
-        Run the generator with --snapshot-dir to create your first snapshot.
+        Kør generatoren med --snapshot-dir for at oprette dit første snapshot.
       </p>
     </motion.div>
   );
@@ -278,7 +277,7 @@ export default function SnapshotsView({ projection }) {
           transition={{ ...MOTION_SURFACE, delay: 0.08 }}
           style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text-muted)', margin: '4px 0 0' }}
         >
-          Immutable versioned cuts — history is never rewritten
+          Versionerede snapshots — historikken overskrives aldrig
         </motion.p>
       </div>
 
@@ -329,7 +328,7 @@ export default function SnapshotsView({ projection }) {
                 className="p-6 rounded-xl border text-center"
                 style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)', color: 'var(--ag-text-muted)', fontSize: 'var(--ag-type-body-sm)' }}
               >
-                Select a snapshot to view its diff against the current projection.
+                Vælg et snapshot for at se diff mod nuværende projection.
               </motion.div>
             )}
           </div>

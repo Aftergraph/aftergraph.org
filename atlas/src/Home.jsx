@@ -6,22 +6,22 @@ const FEATURES = [
   {
     id: "topology",
     title: "Topology",
-    body: "The shape of the system: services, claims, and the evidence that links them.",
-    action: "Open topology",
+    body: "Services, claims og evidence der binder dem sammen.",
+    action: "Åbn topology",
     icon: "◎",
   },
   {
     id: "drift",
     title: "Drift",
-    body: "Where live behavior departs from the record, ordered by signal strength.",
-    action: "Follow the drift",
+    body: "Hvor live adfærd afviger fra registreringen, sorteret efter signalstyrke.",
+    action: "Se drift",
     icon: "↯",
   },
   {
     id: "ask",
     title: "Ask",
-    body: "Put a question to the map. Answers arrive with the trace that produced them.",
-    action: "Ask Atlas",
+    body: "Stil spørgsmål til kortet. Svar kommer med kilden.",
+    action: "Spørg Atlas",
     icon: "?",
   },
 ];
@@ -58,14 +58,14 @@ export default function Home({ onNavigate }) {
         {...fadeUp}
         transition={{ duration: shouldReduceMotion ? 0 : 0.5, ease: [0.16, 1, 0.3, 1] }}
       >
-        <p className="ag-home-eyebrow">Aftergraph Atlas V3</p>
+        <p className="ag-home-eyebrow">Atlas — dit overblik over Aftergraph</p>
         <h1 className="ag-home-title">
-          A living map of your system&rsquo;s evidence.
+          Dit systems evidence — kortlagt.
         </h1>
         <p className="ag-home-sub">
-          Atlas renders how your software actually behaves and ties every claim
-          to the evidence behind it. When reality drifts from the record, you
-          see where it happens, and you can trace why.
+          Atlas viser hvordan din software faktisk opfører sig, og binder hvert
+          claim til sit evidence. Når virkeligheden afviger fra registreringen,
+          ser du hvor og kan spore hvorfor.
         </p>
         <div className="ag-home-cta">
           <button
@@ -73,14 +73,14 @@ export default function Home({ onNavigate }) {
             className="ag-home-btn ag-home-btn-primary"
             onClick={() => go("topology")}
           >
-            Open the map
+            Åbn kortet
           </button>
           <button
             type="button"
             className="ag-home-btn"
             onClick={() => go("ask")}
           >
-            Ask Atlas
+            Spørg Atlas
           </button>
         </div>
       </motion.header>
@@ -118,8 +118,7 @@ export default function Home({ onNavigate }) {
           </g>
         </svg>
         <figcaption className="ag-home-caption">
-          A living map. Each trace connects a claim to the evidence that
-          supports it.
+          Hver trace forbinder et claim med sit evidence.
         </figcaption>
       </motion.figure>
 
@@ -158,7 +157,7 @@ export default function Home({ onNavigate }) {
           ease: [0.16, 1, 0.3, 1],
         }}
       >
-        <span className="ag-home-quicklinks-label">Explore</span>
+        <span className="ag-home-quicklinks-label">Udforsk</span>
         <div className="ag-home-quicklinks-row">
           {QUICK_LINKS.map((link) => (
             <button

@@ -33,7 +33,7 @@ function ModelCard({ model, onSelect, selected }) {
         </h3>
         <span
           className="font-mono uppercase tracking-wider px-1.5 py-0.5 rounded"
-          style={{ fontSize: 9, color: 'var(--ag-authority)', background: 'var(--ag-authority-soft)', border: '1px solid rgba(119,89,232,0.3)' }}
+          style={{ fontSize: 9, color: 'var(--ag-authority)', background: 'var(--ag-authority-soft)', border: '1px solid color-mix(in srgb, var(--ag-authority) 30%, transparent)' }}
         >
           {model.architecture || 'AFM'}
         </span>
@@ -186,7 +186,7 @@ function EmptyState() {
           margin: '0 0 8px',
         }}
       >
-        No models yet
+        Ingen modeller endnu
       </h3>
       <p
         style={{
@@ -197,8 +197,7 @@ function EmptyState() {
           lineHeight: 1.5,
         }}
       >
-        Models are derived from evidence-backed assertions across the topology.
-        Publish your first model via the API to see it here.
+        Registrer din første model via API'et for at se den her.
       </p>
     </motion.div>
   );
@@ -312,7 +311,7 @@ export default function ModelsView({ projection }) {
             transition={{ ...MOTION_SURFACE, delay: 0.08 }}
             style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text-muted)', margin: '4px 0 0' }}
           >
-            {models.length} models with derivation lineage and metadata
+            {models.length} modeller
           </motion.p>
         </div>
 

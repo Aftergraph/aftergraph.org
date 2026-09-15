@@ -44,9 +44,9 @@ function SkeletonRow() {
 
 function ConflictBadge({ status }) {
   const colors = {
-    open: { bg: 'var(--ag-danger-soft)', text: 'var(--ag-danger)', border: 'rgba(255,107,122,0.3)' },
-    resolved: { bg: 'var(--ag-evidence-soft)', text: 'var(--ag-evidence)', border: 'rgba(36,196,173,0.3)' },
-    acknowledged: { bg: 'var(--ag-decision-soft)', text: 'var(--ag-decision)', border: 'rgba(240,166,74,0.3)' },
+    open: { bg: 'var(--ag-danger-soft)', text: 'var(--ag-danger)', border: 'color-mix(in srgb, var(--ag-danger) 30%, transparent)' },
+    resolved: { bg: 'var(--ag-evidence-soft)', text: 'var(--ag-evidence)', border: 'color-mix(in srgb, var(--ag-evidence) 30%, transparent)' },
+    acknowledged: { bg: 'var(--ag-decision-soft)', text: 'var(--ag-decision)', border: 'color-mix(in srgb, var(--ag-decision) 30%, transparent)' },
   };
   const c = colors[status] || colors.open;
   return (
@@ -94,7 +94,7 @@ function ConflictDetailDialog({ conflict, open, onOpenChange }) {
       <Dialog.Portal>
         <Dialog.Overlay
           className="fixed inset-0 z-50 backdrop-blur-sm"
-          style={{ background: 'rgba(8,12,20,0.6)' }}
+          style={{ background: 'color-mix(in srgb, var(--ag-canvas) 60%, transparent)' }}
         />
         <Dialog.Content
           className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-2xl max-h-[80vh] overflow-y-auto z-50 p-6"
@@ -147,7 +147,7 @@ function ConflictDetailDialog({ conflict, open, onOpenChange }) {
               className="p-4 rounded-lg border"
               style={{
                 background: 'var(--ag-danger-soft)',
-                borderColor: 'rgba(255,107,122,0.2)',
+                borderColor: 'color-mix(in srgb, var(--ag-danger) 20%, transparent)',
               }}
             >
               <h4
@@ -305,7 +305,7 @@ export default function ReconciliationPanel() {
             className="p-4 rounded-xl border"
             style={{
               background: 'var(--ag-danger-soft)',
-              borderColor: 'rgba(255,107,122,0.2)',
+              borderColor: 'color-mix(in srgb, var(--ag-danger) 20%, transparent)',
               color: 'var(--ag-danger)',
               fontSize: 'var(--ag-type-body-sm)',
             }}

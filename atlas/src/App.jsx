@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ReactFlow, { Background, Controls, Handle, Position, useNodesState, useEdgesState } from 'reactflow';
 import * as d3 from 'd3';
-import 'reactflow/dist/style.css';
 import {
   deriveGraph,
   focusGraph,
@@ -9,7 +7,6 @@ import {
   moveSelection,
   serializeState,
   parseState,
-  elkOptions,
   shortLabel,
   impactSet,
   answerFromEvidence,
@@ -29,6 +26,8 @@ import ModelsView from './components/ModelsView.jsx';
 import ResearchViewNew from './components/ResearchView.jsx';
 import SnapshotsViewNew from './components/SnapshotsView.jsx';
 import AskViewNew from './components/AskView.jsx';
+
+const LazyTopologyView = React.lazy(() => import('./components/TopologyView.jsx'));
 
 const VIEWS = ['home', 'topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask', 'reconciliation'];
 
@@ -82,43 +81,6 @@ function useProjection() {
     };
   }, []);
   return state;
-}
-
-function NodeCard({ data }) {
-  return (
-    <div className={`rf-node${data.conflict ? ' conflict' : ''}${data.selected ? ' selected' : ''}`} title={data.id}>
-      <Handle type="target" position={Position.Top} />
-      <div className="rf-label">{data.label}</div>
-      <div className="rf-planes">
-        {data.planes.map((p) => (
-          <span key={p} title={p} className={`plane-chip chip-${p}`}>{p.slice(0, 3)}</span>
-        ))}
-      </div>
-      <Handle type="source" position={Position.Bottom} />
-    </div>
-  );
-}
-
-const nodeTypes = { atlasNode: NodeCard };
-let elkInstancePromise;
-function getElk() {
-  if (!elkInstancePromise) {
-    elkInstancePromise = import('elkjs/lib/elk.bundled.js').then(({ default: ELK }) => new ELK());
-  }
-  return elkInstancePromise;
-}
-
-async function layouted(graph) {
-  const elkGraph = {
-    id: 'root',
-    layoutOptions: elkOptions(),
-    children: graph.nodes.map((n) => ({ id: n.id, width: 190, height: 54 })),
-    edges: graph.edges.map((e) => ({ id: e.id, sources: [e.source], targets: [e.target] })),
-  };
-  const elk = await getElk();
-  const laid = await elk.layout(elkGraph);
-  const pos = new Map((laid.children || []).map((c) => [c.id, { x: c.x || 0, y: c.y || 0 }]));
-  return { pos };
 }
 
 function PulseView({ projection, onSelect }) {
@@ -205,11 +167,11 @@ function ResearchView({ projection }) {
       .force('center', d3.forceCenter(w / 2, h / 2))
       .stop();
     for (let i = 0; i < 250; i++) sim.tick();
-    svg.append('g').selectAll('line').data(links).join('line').attr('stroke', '#f0a64a')
+    svg.append('g').selectAll('line').data(links).join('line').attr('stroke', 'var(--ag-decision)')
       .attr('x1', (d) => d.source.x).attr('y1', (d) => d.source.y)
       .attr('x2', (d) => d.target.x).attr('y2', (d) => d.target.y);
     svg.append('g').selectAll('circle').data(nodes).join('circle')
-      .attr('r', 5).attr('fill', '#42c7e8')
+      .attr('r', 5).attr('fill', 'var(--ag-control)')
       .attr('cx', (d) => d.x).attr('cy', (d) => d.y)
       .append('title').text((d) => d.id);
   }, [projection]);
@@ -363,8 +325,6 @@ export default function App() {
     return () => clearInterval(t);
   }, []);
   const [narrow, setNarrow] = useState(() => window.matchMedia('(max-width: 760px)').matches);
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const inspectorRef = useRef(null);
   const graphRef = useRef(null);
   const graphEngaged = useRef(false);
@@ -383,42 +343,6 @@ export default function App() {
     if (narrow && node) return focusGraph(projection, overlay, node, 1);
     return deriveGraph(projection, overlay);
   }, [projection, overlay, narrow, node]);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const { pos } = await layouted(graph);
-      if (cancelled) return;
-      const hot = impact
-        ? new Set([...impact.upstream, ...impact.downstream, node])
-        : xray
-          ? new Set(xray.path)
-          : null;
-      setNodes(
-        graph.nodes.map((n) => ({
-          id: n.id,
-          type: 'atlasNode',
-          position: pos.get(n.id) || { x: 0, y: 0 },
-          style: hot && !hot.has(n.id) ? { opacity: 0.25 } : undefined,
-          data: { label: n.label, id: n.id, planes: n.planes, conflict: drift && n.inConflict, selected: n.id === node },
-        }))
-      );
-      setEdges(
-        graph.edges.map((e) => ({
-          id: e.id,
-          source: e.source,
-          target: e.target,
-          type: 'smoothstep',
-          label: e.relation,
-          animated: false,
-          style: { stroke: drift && e.conflict ? '#f0a64a' : undefined },
-        }))
-      );
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [graph, drift, node, impact, xray, setNodes, setEdges]);
 
   useEffect(() => {
     window.history.replaceState(null, '', serializeState({
@@ -646,21 +570,17 @@ export default function App() {
         <Home onNavigate={openView} />
       </div>
       ) : view === 'topology' ? (
-      <div className="graph" ref={graphRef} tabIndex={0} aria-label="Directed topology. Arrow keys move selection, Enter focuses inspector, Escape clears.">
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onNodeClick={(_, n) => setNode(n.id)}
-          nodeTypes={nodeTypes}
-          fitView
-          proOptions={{ hideAttribution: false }}
-        >
-          <Background />
-          <Controls />
-        </ReactFlow>
-      </div>
+      <React.Suspense fallback={<div className="panel"><p>Loading topology…</p></div>}>
+        <LazyTopologyView
+          graph={graph}
+          drift={drift}
+          node={node}
+          impact={impact}
+          xray={xray}
+          onNodeSelect={(id) => setNode(id)}
+          graphRef={graphRef}
+        />
+      </React.Suspense>
       ) : (
       <div className="center">
         {view === 'pulse' && <PulseView projection={projection} onSelect={(id) => { setNode(id); setView('topology'); }} />}

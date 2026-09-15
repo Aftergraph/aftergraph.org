@@ -44,9 +44,9 @@ function HighlightMatch({ text, query }) {
 
 function PlaneChip({ plane }) {
   const colors = {
-    CANONICAL: { bg: 'var(--ag-authority-soft)', text: 'var(--ag-authority)', border: 'rgba(119,89,232,0.3)' },
-    OBSERVED: { bg: 'var(--ag-evidence-soft)', text: 'var(--ag-evidence)', border: 'rgba(36,196,173,0.3)' },
-    PROPOSED: { bg: 'var(--ag-decision-soft)', text: 'var(--ag-decision)', border: 'rgba(240,166,74,0.3)' },
+    CANONICAL: { bg: 'var(--ag-authority-soft)', text: 'var(--ag-authority)', border: 'color-mix(in srgb, var(--ag-authority) 30%, transparent)' },
+    OBSERVED: { bg: 'var(--ag-evidence-soft)', text: 'var(--ag-evidence)', border: 'color-mix(in srgb, var(--ag-evidence) 30%, transparent)' },
+    PROPOSED: { bg: 'var(--ag-decision-soft)', text: 'var(--ag-decision)', border: 'color-mix(in srgb, var(--ag-decision) 30%, transparent)' },
   };
   const c = colors[plane] || colors.OBSERVED;
   return (
@@ -154,7 +154,7 @@ function EmptyState() {
           margin: '0 0 8px',
         }}
       >
-        Ask Atlas
+        Spørg Atlas
       </h3>
       <p
         style={{
@@ -165,8 +165,7 @@ function EmptyState() {
           lineHeight: 1.5,
         }}
       >
-        V0 extractive Q&A over the evidence graph.
-        Type a query above to find cited assertions — no hallucination.
+        Søg i evidence graph'en. Du får kun svar med kildehenvisning — ingen gæt.
       </p>
     </motion.div>
   );
@@ -236,7 +235,7 @@ export default function AskView({ projection }) {
           transition={{ ...MOTION_SURFACE, delay: 0.08 }}
           style={{ fontSize: 'var(--ag-type-body-sm)', color: 'var(--ag-text-muted)', margin: '4px 0 0' }}
         >
-          V0 extractive — cited assertions only, no hallucination
+          Kun citerede assertions — ingen gæt
         </motion.p>
       </div>
 
@@ -295,7 +294,7 @@ export default function AskView({ projection }) {
             className="p-8 rounded-xl border text-center"
             style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)', color: 'var(--ag-text-muted)', fontSize: 'var(--ag-type-body-sm)' }}
           >
-            Unanswerable from this projection — no supporting assertions found.
+            Ingen matching assertions fundet. Prøv et andet søgeord.
           </motion.div>
         )}
 
@@ -311,7 +310,7 @@ export default function AskView({ projection }) {
             <div className="flex items-center gap-2" style={{ fontSize: 'var(--ag-type-caption)', color: 'var(--ag-text-subtle)' }}>
               <span>{result.hits.length} evidence hits</span>
               {!result.valid && (
-                <span className="px-2 py-0.5 rounded-full border" style={{ color: 'var(--ag-danger)', borderColor: 'rgba(255,107,122,0.3)', background: 'var(--ag-danger-soft)' }}>
+                <span className="px-2 py-0.5 rounded-full border" style={{ color: 'var(--ag-danger)', borderColor: 'color-mix(in srgb, var(--ag-danger) 30%, transparent)', background: 'var(--ag-danger-soft)' }}>
                   validation warning
                 </span>
               )}
