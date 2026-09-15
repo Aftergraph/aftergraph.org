@@ -96,8 +96,8 @@ export default function Home({ onNavigate }) {
           transition={sectionTransition()}
         >
           <span className="ag-eyebrow">Atlas — dit overblik over Aftergraph</span>
-          <h1 className="ag-display">
-            Byg autonome systemer der kan bevise de virkede.
+          <h1 className="ag-display" style={{ fontSize: '70px', letterSpacing: '-2.8px', fontWeight: 600, lineHeight: 1.05 }}>
+            Byg autonome systemer der kan bevise deres arbejde
           </h1>
           <p className="ag-body-lg">
             Atlas forbinder intelligent arbejde med begrænset autoritet, holdbar
