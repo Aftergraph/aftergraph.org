@@ -24,6 +24,11 @@ const server = http.createServer((req, res) => {
   let rel = decodeURIComponent(url.pathname);
   if (rel === '/atlas' || rel === '/atlas/') rel = '/atlas/index.html';
   if (rel === '/community' || rel === '/community/') rel = '/community.html';
+  if (rel === '/launch' || rel === '/launch/') rel = '/launch.html';
+  if (rel === '/sentinel' || rel === '/sentinel/') rel = '/sentinel.html';
+  if (rel === '/status' || rel === '/status/') rel = '/status.html';
+  if (rel === '/404') rel = '/404.html';
+  if (rel === '/' || rel === '') rel = '/index.html';
   // Never escape the site dir.
   const file = path.normalize(path.join(SITE, rel));
   if (!file.startsWith(SITE + path.sep) && file !== SITE) {
