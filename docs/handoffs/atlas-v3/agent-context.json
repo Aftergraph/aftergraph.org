@@ -1,0 +1,29 @@
+{
+  "schema": "aftergraph-atlas-agent-handoff/1.0",
+  "status_date": "2026-09-15",
+  "product_category": "Verifiable System Intelligence",
+  "atlas_mission": "Continuous Verifiable System State",
+  "origin_main_at_handoff": "eb06aa63f1508109e509cd2902fb0a401dc98be5",
+  "current_projection": {
+    "evidence_cut": "2026-09-08T23:23:16Z",
+    "entities": 156,
+    "assertions": 316,
+    "relations": 212,
+    "conflicts": 1
+  },
+  "atlas_v3_implemented": false,
+  "storage": {"d1": "approved-not-configured", "r2": "approved-not-configured"},
+  "primary_workspaces": ["Explore", "Evidence", "Changes", "Trace"],
+  "truth_planes": ["CANONICAL", "OBSERVED", "INFERRED", "PROPOSED", "VERIFIED", "EXECUTED"],
+  "time_model": ["valid_time", "observed_time"],
+  "initial_adapters": ["GovernanceTopologyAdapter", "GovernanceDependenciesAdapter", "GitHubRepositoryAdapter", "SentinelVerificationAdapter"],
+  "hard_constraints": [
+    "no demo or fake production state",
+    "no inferred truth from filenames or repo names",
+    "all sources require typed adapters/contracts",
+    "Atlas is derived state, not source of truth",
+    "contradictions are first-class",
+    "freshness is contract-driven",
+    "dynamic UI follows real state transitions"
+  ]
+}
