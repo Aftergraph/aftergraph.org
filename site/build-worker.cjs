@@ -199,6 +199,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
   <url><loc>https://aftergraph.org/status</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://aftergraph.org/sentinel</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://aftergraph.org/atlas</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://aftergraph.org/studio/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>
 `;
 

@@ -120,6 +120,7 @@ assert.ok(!llms.includes('13 canonical cross-repo contracts'), 'volatile contrac
 
 has(buildWorker, "read('status.html')", 'status source included in worker build');
 has(buildWorker, 'https://aftergraph.org/status', 'status sitemap entry');
+has(buildWorker, '<loc>https://aftergraph.org/studio/</loc>', 'Studio sitemap entry');
 has(buildWorker, "p === '/status' || p === '/status/'", 'status worker route');
 has(worker, "'Content-Security-Policy'", 'CSP');
 has(worker, "'Strict-Transport-Security'", 'HSTS');
@@ -137,7 +138,8 @@ has(statusPage, '21 canonical', 'status page canonical repository count');
 has(statusPage, '12 public', 'status page public repository count');
 has(statusPage, '9 private', 'status page private repository count');
 has(statusPage, 'wi-backend', 'status page canonical Wie backend slug');
-has(statusPage, 'wie.aftergraph.org/api/healthz', 'Wie production health endpoint');
+has(statusPage, 'wie.aftergraph.org', 'status mentions Wie domain for provenance reference');
+assert.ok(!statusPage.includes('wie.aftergraph.org/api/healthz'), 'status must not reference unrouted Wie health endpoint');
 assert.ok(!statusPage.includes('work-intelligence-v2'), 'legacy Work Intelligence slug leaked into status page');
 assert.ok(!statusPage.includes('github.com/Aftergraph/runtime'), 'private Runtime repository link leaked into status page');
 has(statusPage, 'docs.aftergraph.org', 'Knowledge Plane evidence link');
