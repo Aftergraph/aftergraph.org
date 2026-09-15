@@ -51,8 +51,10 @@ const copyFile = (src, dest) => {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.copyFileSync(src, dest);
 };
+const COPY_DENY_SEGMENTS = new Set(['server', 'scripts', 'tests', 'docs']);
 const copyTree = (srcDir, destDir) => {
   for (const entry of fs.readdirSync(srcDir, { withFileTypes: true })) {
+    if (entry.isDirectory() && COPY_DENY_SEGMENTS.has(entry.name)) continue;
     const s = path.join(srcDir, entry.name);
     const d = path.join(destDir, entry.name);
     if (entry.isDirectory()) copyTree(s, d);
@@ -179,7 +181,7 @@ fs.writeFileSync(path.join(DIST, '_headers'), [
 ].join('\n'));
 
 // 5. Denylist + budget + leftover asserts (fail closed).
-const DENY_SEGMENTS = new Set(['server', 'scripts', 'tests', 'docs']);
+const DENY_SEGMENTS = COPY_DENY_SEGMENTS;
 const files = walk(DIST);
 const rel = (f) => path.relative(DIST, f).split(path.sep).join('/');
 for (const file of files) {
