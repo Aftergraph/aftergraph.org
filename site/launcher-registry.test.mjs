@@ -48,8 +48,8 @@ test('launcher actions are navigational or evidence-only', () => {
 test('registry exposes the five V4 public semantic intents without privileged actions', () => {
   const registry = read(registryPath);
   const expected = new Map([
-    ['build', 'Build'], ['govern', 'Govern'], ['execute', 'Execute'],
-    ['verify', 'Verify'], ['research', 'Research'],
+    ['intent-build', 'Build'], ['intent-govern', 'Govern'], ['intent-execute', 'Execute'],
+    ['intent-verify', 'Verify'], ['intent-research', 'Research'],
   ]);
   for (const [id, name] of expected) {
     const action = registry.actions.find((item) => item.id === id);
