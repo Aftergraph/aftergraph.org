@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const html = fs.readFileSync(new URL('./index.html', import.meta.url), 'utf8');
-const planeBlock = html.match(/<div class="platform-chain">([\s\S]*?)<\/div>/)?.[1] ?? '';
+const planeBlock = html.match(/<div class="platform-chain"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? '';
 const intentBlock = html.match(/<div class="intent-grid">([\s\S]*?)<\/section>/)?.[1] ?? '';
 
 const planes = [
@@ -29,7 +29,7 @@ test('homepage exposes the five approved user intents', () => {
 });
 
 test('Studio presents outcome language without claiming verification ownership', () => {
-  assert.match(html, /Goal\s*&rarr;\s*Progress\s*&rarr;\s*Needs You\s*&rarr;\s*<b>Verified Outcome<\/b>/);
+  assert.match(html, /<b>Goal<\/b>\s*&rarr;\s*Progress\s*&rarr;\s*Needs You\s*&rarr;\s*<b>Verified Outcome<\/b>/);
 });
 
 test('strong platform sections expose public source or evidence affordances', () => {
