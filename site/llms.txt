@@ -79,6 +79,8 @@ Wie's canonical public backend repository is `wi-backend`. Public product naming
 - GitHub organization: [github.com/Aftergraph](https://github.com/Aftergraph)
 - Public repository allowlist: `.github`, `after-graph-governance`, `aftergraph.org`, `aie`, `brand`, `docs`, `intelligence-systems-research`, `sentinel`, `studio`, `trust-gateway`, `wi-backend`, `works-execution`
 
-## Evidence rule
+## Telemetry
+
+The Launcher posts bounded, aggregate-only telemetry to `/api/launcher/telemetry` (no raw queries, URLs, or text). Events are validated against an allowlist and aggregated by dimension into a Cloudflare KV namespace (`AG_STATS`) with a 90-day expiration (`expirationTtl: 7776000`). A per-isolate in-memory rate limit caps burst submissions. No individual user identifiers are collected or stored.
 
 Visibility never upgrades evidence. Canonical topology membership does not establish functional conformance, production readiness or APC compatibility. Research claims, experiments, prototypes and production capabilities are labelled by maturity on their owning surfaces. Research evidence is never runtime authority by itself.

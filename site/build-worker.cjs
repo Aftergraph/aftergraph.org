@@ -273,6 +273,7 @@ const TELEMETRY_INTENTS = new Set(['find','action','evidence','verify']);
 const TELEMETRY_STATUS = new Set(['ok','fail']);
 const TELEMETRY_LATENCY = new Set(['lt100','100-299','300-999','gte1000']);
 const TELEMETRY_RESULTS = new Set(['0','1-5','6-20','gt20']);
+const TELEMETRY_RL = new Map();
 async function handleLauncherTelemetry(request) {
   if (request.method !== 'POST') return new Response('', { status: 405, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
   const requestUrl = new URL(request.url);
@@ -291,6 +292,17 @@ async function handleLauncherTelemetry(request) {
   if (payload.status != null && !TELEMETRY_STATUS.has(payload.status)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
   if (payload.latency_bucket != null && !TELEMETRY_LATENCY.has(payload.latency_bucket)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
   if (payload.result_bucket != null && !TELEMETRY_RESULTS.has(payload.result_bucket)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
+  // Per-isolate in-memory rate limit (best-effort burst protection; not a
+  // durable quota). Caps a single Worker isolate at 30 telemetry posts/min/IP
+  // to blunt flood attempts; KV remains the durable store below.
+  const ip = request.headers.get('cf-connecting-ip') || '-';
+  const now = Date.now();
+  const bucket = Math.floor(now / 60000);
+  const rlKey = ip + ':' + bucket;
+  if (!TELEMETRY_RL.has(rlKey)) TELEMETRY_RL.clear();
+  const rlCount = (TELEMETRY_RL.get(rlKey) || 0) + 1;
+  TELEMETRY_RL.set(rlKey, rlCount);
+  if (rlCount > 30) return new Response('', { status: 429, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
   if (typeof AG_STATS === 'undefined') return new Response('', { status: 503, headers: { 'cache-control': 'no-store', 'Content-Security-Policy': CSP_NONHTML, ...SECURE } });
   const day = new Date().toISOString().slice(0, 10);
   const dimensions = [payload.event,payload.item_id||'-',payload.item_kind||'-',payload.intent||'-',payload.status||'-',payload.latency_bucket||'-',payload.result_bucket||'-'].join(':');

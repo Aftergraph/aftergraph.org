@@ -45,7 +45,7 @@ jobs:
       - name: Compile worker
         run: node site/build-worker.cjs
       - name: Launcher Worker telemetry runtime contract
-        run: node --test site/launcher-worker.test.mjs
+        run: node --test site/launcher-worker.test.mjs site/telemetry-rate.test.mjs
       - name: Install Playwright chromium
         run: npx --prefix atlas playwright install --with-deps chromium
       - name: Atlas browser smoke (DOM)

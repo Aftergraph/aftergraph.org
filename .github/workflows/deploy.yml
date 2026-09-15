@@ -52,7 +52,7 @@ jobs:
       - name: Compile canonical worker
         run: node site/build-worker.cjs
       - name: Launcher Worker telemetry runtime contract
-        run: node --test site/launcher-worker.test.mjs
+        run: node --test site/launcher-worker.test.mjs site/telemetry-rate.test.mjs
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is deterministic (no committed artefact)
@@ -116,7 +116,7 @@ jobs:
           node --test site/launcher-registry.test.mjs site/launcher-telemetry.test.mjs
           node scripts/sync-brand.mjs
           node site/build-worker.cjs
-          node --test site/launcher-worker.test.mjs
+          node --test site/launcher-worker.test.mjs site/telemetry-rate.test.mjs
           node site/verify-v2.cjs
       - name: Verify deploy runner Cloudflare session
         shell: pwsh
