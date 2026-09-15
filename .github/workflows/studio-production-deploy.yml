@@ -84,7 +84,7 @@ jobs:
             throw "backend provenance mismatch: expected $env:STUDIO_SHA got $($health.releaseSha)"
           }
           foreach ($path in @('/studio/', '/studio/chat', '/studio/work', '/studio/space', '/studio/manifest.webmanifest', '/studio/sw.js')) {
-            $response = Invoke-WebRequest -Uri "$base$path?verify=$nonce" -Method Get -UseBasicParsing
+            $response = Invoke-WebRequest -Uri "${base}${path}?verify=$nonce" -Method Get -UseBasicParsing
             if ($response.StatusCode -ne 200) { throw "Studio smoke failed: $path -> $($response.StatusCode)" }
           }
           node site/verify-studio.cjs live $base
