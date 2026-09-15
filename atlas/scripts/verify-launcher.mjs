@@ -41,7 +41,7 @@ try {
   assert.ok(communityResults.includes('Open community'), 'launcher search must expose community navigation');
 
   await desktop.locator('#q').fill('> verify');
-  assert.deepEqual(await desktop.locator('.item-name').allTextContents(), ['Verify with Sentinel']);
+  assert.deepEqual(await desktop.locator('.item-name').allTextContents(), ['Verify']);
 
   await desktop.locator('#q').fill('evidence studio');
   assert.deepEqual(await desktop.locator('.item-name').allTextContents(), ['Inspect evidence — Studio']);
