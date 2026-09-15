@@ -36,7 +36,7 @@ const TELEMETRY_INTENTS = new Set(['find','action','evidence','verify']);
 const TELEMETRY_STATUS = new Set(['ok','fail']);
 const TELEMETRY_LATENCY = new Set(['lt100','100-299','300-999','gte1000']);
 const TELEMETRY_RESULTS = new Set(['0','1-5','6-20','gt20']);
-async function handleLauncherTelemetry(request) {
+async function handleLauncherTelemetry(request, env) {
   if (request.method !== 'POST') return new Response('', { status: 405, headers: { 'cache-control': 'no-store', ...SECURE } });
   const requestUrl = new URL(request.url);
   const origin = request.headers.get('origin');
@@ -54,13 +54,13 @@ async function handleLauncherTelemetry(request) {
   if (payload.status != null && !TELEMETRY_STATUS.has(payload.status)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
   if (payload.latency_bucket != null && !TELEMETRY_LATENCY.has(payload.latency_bucket)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
   if (payload.result_bucket != null && !TELEMETRY_RESULTS.has(payload.result_bucket)) return new Response('', { status: 400, headers: { 'cache-control': 'no-store', ...SECURE } });
-  if (typeof AG_STATS === 'undefined') return new Response('', { status: 503, headers: { 'cache-control': 'no-store', ...SECURE } });
+  if (!env.AG_STATS) return new Response('', { status: 503, headers: { 'cache-control': 'no-store', ...SECURE } });
   const day = new Date().toISOString().slice(0, 10);
   const dimensions = [payload.event,payload.item_id||'-',payload.item_kind||'-',payload.intent||'-',payload.status||'-',payload.latency_bucket||'-',payload.result_bucket||'-'].join(':');
   const key = 'launcher:v1:' + day + ':' + dimensions;
   try {
-    const current = Number(await AG_STATS.get(key) || '0');
-    await AG_STATS.put(key, String(Number.isFinite(current) ? current + 1 : 1), { expirationTtl: 7776000 });
+    const current = Number(await env.AG_STATS.get(key) || '0');
+    await env.AG_STATS.put(key, String(Number.isFinite(current) ? current + 1 : 1), { expirationTtl: 7776000 });
     return new Response('', { status: 202, headers: { 'cache-control': 'no-store', ...SECURE } });
   } catch {
     return new Response('', { status: 503, headers: { 'cache-control': 'no-store', ...SECURE } });
@@ -70,7 +70,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const p = url.pathname;
-    if (p === '/api/launcher/telemetry') { return handleLauncherTelemetry(request); }
+    if (p === '/api/launcher/telemetry') { return handleLauncherTelemetry(request, env); }
     // --- Atlas V3 API (D1 + R2 backed) ---
     if (p.startsWith('/api/v3/')) {
       const db = env.ATLAS_V3_DB || null;
