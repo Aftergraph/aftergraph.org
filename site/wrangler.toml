@@ -1,10 +1,20 @@
 name = "aftergraph-site"
 main = "worker.js"
 compatibility_date = "2024-11-01"
+account_id = "1cd2e6c70a2918567a3edcf8eadd7458"
 
 [[kv_namespaces]]
 binding = "AG_STATS"
 id = "7b0696a1cd1b4656b9325589a3b6199c"
+
+[[d1_databases]]
+binding = "ATLAS_V3_DB"
+database_name = "atlas-v3-db"
+database_id = "cf0fb58e-2501-4d17-9471-6c3b0180dca6"
+
+[[r2_buckets]]
+binding = "ATLAS_V3_ARTIFACTS"
+bucket_name = "atlas-v3-artifacts"
 
 [build]
 command = "node build-worker.cjs"

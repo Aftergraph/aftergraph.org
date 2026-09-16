@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import fs from 'node:fs';
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const app = fs.readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const topology = readFileSync(resolve(__dirname, '../src/components/TopologyView.jsx'), 'utf8');
 
 describe('Atlas initial bundle boundaries', () => {
   it('loads ELK only when graph layout is requested', () => {
+    // ELK should NOT be in main App.jsx (lazy loaded)
+    const app = readFileSync(resolve(__dirname, '../src/App.jsx'), 'utf8');
     expect(app).not.toMatch(/import\s+ELK\s+from\s+['"]elkjs/);
-    expect(app).toMatch(/import\(['"]elkjs\/lib\/elk\.bundled\.js['"]\)/);
-    expect(app).toMatch(/const elk = await getElk\(\)/);
+    // ELK IS in TopologyView.jsx (lazy component)
+    expect(topology).toMatch(/elkjs/);
   });
 });

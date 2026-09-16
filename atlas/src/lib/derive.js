@@ -369,7 +369,7 @@ export function parseState(search) {
   return {
     node: p.get('node') || null,
     overlay: overlay.length ? overlay : [...PLANES],
-    view: p.get('view') || 'topology',
+    view: p.get('view') || 'home',
     lens: lenses.has(rawLens) ? rawLens : 'SYSTEM',
     related: p.get('related') || null,
     snapshot: p.get('snapshot') || null,

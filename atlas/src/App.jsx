@@ -1,7 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import ReactFlow, { Background, Controls, Handle, Position, useNodesState, useEdgesState } from 'reactflow';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import 'reactflow/dist/style.css';
 import {
   deriveGraph,
   focusGraph,
@@ -9,7 +7,6 @@ import {
   moveSelection,
   serializeState,
   parseState,
-  elkOptions,
   shortLabel,
   impactSet,
   answerFromEvidence,
@@ -18,11 +15,21 @@ import {
   tracePath,
   validateProjection,
 } from './lib/derive.js';
+import { fetchLatestCut, fetchEnvelope, envelopeToProjection } from './lib/atlas-api.js';
 import enrichFixtures from '../../docs/atlas/enrich/fixtures.json';
 import { pulseRows, contractRows, diffProjections } from './lib/sliceC.js';
 import Home from './Home.jsx';
+import ReconciliationPanel from './components/ReconciliationPanel.jsx';
+import AtlasShell from './components/AtlasShell.jsx';
+import CapabilitiesView from './components/CapabilitiesView.jsx';
+import ModelsView from './components/ModelsView.jsx';
+import ResearchViewNew from './components/ResearchView.jsx';
+import SnapshotsViewNew from './components/SnapshotsView.jsx';
+import AskViewNew from './components/AskView.jsx';
 
-const VIEWS = ['home', 'topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask'];
+const LazyTopologyView = React.lazy(() => import('./components/TopologyView.jsx'));
+
+const VIEWS = ['home', 'topology', 'pulse', 'contracts', 'capabilities', 'models', 'research', 'snapshots', 'ask', 'reconciliation'];
 
 const GENERATOR_CMD =
   'node site/generate-atlas-projection.mjs --ledger <ledger-dir> --gov <governance-clone> --out site/atlas-projection.json';
@@ -39,12 +46,27 @@ function useProjection() {
       return true;
     };
     (async () => {
+      // Priority 1: Live V3 API (D1-backed cuts)
+      try {
+        const cut = await fetchLatestCut();
+        if (cut && cut.id) {
+          const envelope = await fetchEnvelope(cut.id);
+          if (envelope) {
+            const projection = envelopeToProjection(envelope, cut);
+            if (projection && accept(projection, 'v3-api')) return;
+          }
+        }
+      } catch {
+        /* fall through to static sources */
+      }
+      // Priority 2: Build-time embedded projection
       try {
         const mod = await import('../../site/atlas-projection.json');
         if (accept(mod.default, 'build')) return;
       } catch {
         /* fall through to runtime fetch */
       }
+      // Priority 3: Runtime static fetch
       try {
         const res = await fetch('./projection.json', { cache: 'no-store' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -59,43 +81,6 @@ function useProjection() {
     };
   }, []);
   return state;
-}
-
-function NodeCard({ data }) {
-  return (
-    <div className={`rf-node${data.conflict ? ' conflict' : ''}${data.selected ? ' selected' : ''}`} title={data.id}>
-      <Handle type="target" position={Position.Top} />
-      <div className="rf-label">{data.label}</div>
-      <div className="rf-planes">
-        {data.planes.map((p) => (
-          <span key={p} title={p} className={`plane-chip chip-${p}`}>{p.slice(0, 3)}</span>
-        ))}
-      </div>
-      <Handle type="source" position={Position.Bottom} />
-    </div>
-  );
-}
-
-const nodeTypes = { atlasNode: NodeCard };
-let elkInstancePromise;
-function getElk() {
-  if (!elkInstancePromise) {
-    elkInstancePromise = import('elkjs/lib/elk.bundled.js').then(({ default: ELK }) => new ELK());
-  }
-  return elkInstancePromise;
-}
-
-async function layouted(graph) {
-  const elkGraph = {
-    id: 'root',
-    layoutOptions: elkOptions(),
-    children: graph.nodes.map((n) => ({ id: n.id, width: 190, height: 54 })),
-    edges: graph.edges.map((e) => ({ id: e.id, sources: [e.source], targets: [e.target] })),
-  };
-  const elk = await getElk();
-  const laid = await elk.layout(elkGraph);
-  const pos = new Map((laid.children || []).map((c) => [c.id, { x: c.x || 0, y: c.y || 0 }]));
-  return { pos };
 }
 
 function PulseView({ projection, onSelect }) {
@@ -182,11 +167,11 @@ function ResearchView({ projection }) {
       .force('center', d3.forceCenter(w / 2, h / 2))
       .stop();
     for (let i = 0; i < 250; i++) sim.tick();
-    svg.append('g').selectAll('line').data(links).join('line').attr('stroke', '#f0a64a')
+    svg.append('g').selectAll('line').data(links).join('line').attr('stroke', 'var(--ag-decision)')
       .attr('x1', (d) => d.source.x).attr('y1', (d) => d.source.y)
       .attr('x2', (d) => d.target.x).attr('y2', (d) => d.target.y);
     svg.append('g').selectAll('circle').data(nodes).join('circle')
-      .attr('r', 5).attr('fill', '#42c7e8')
+      .attr('r', 5).attr('fill', 'var(--ag-control)')
       .attr('cx', (d) => d.x).attr('cy', (d) => d.y)
       .append('title').text((d) => d.id);
   }, [projection]);
@@ -340,8 +325,6 @@ export default function App() {
     return () => clearInterval(t);
   }, []);
   const [narrow, setNarrow] = useState(() => window.matchMedia('(max-width: 760px)').matches);
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const inspectorRef = useRef(null);
   const graphRef = useRef(null);
   const graphEngaged = useRef(false);
@@ -360,42 +343,6 @@ export default function App() {
     if (narrow && node) return focusGraph(projection, overlay, node, 1);
     return deriveGraph(projection, overlay);
   }, [projection, overlay, narrow, node]);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const { pos } = await layouted(graph);
-      if (cancelled) return;
-      const hot = impact
-        ? new Set([...impact.upstream, ...impact.downstream, node])
-        : xray
-          ? new Set(xray.path)
-          : null;
-      setNodes(
-        graph.nodes.map((n) => ({
-          id: n.id,
-          type: 'atlasNode',
-          position: pos.get(n.id) || { x: 0, y: 0 },
-          style: hot && !hot.has(n.id) ? { opacity: 0.25 } : undefined,
-          data: { label: n.label, id: n.id, planes: n.planes, conflict: drift && n.inConflict, selected: n.id === node },
-        }))
-      );
-      setEdges(
-        graph.edges.map((e) => ({
-          id: e.id,
-          source: e.source,
-          target: e.target,
-          type: 'smoothstep',
-          label: e.relation,
-          animated: false,
-          style: { stroke: drift && e.conflict ? '#f0a64a' : undefined },
-        }))
-      );
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [graph, drift, node, impact, xray, setNodes, setEdges]);
 
   useEffect(() => {
     window.history.replaceState(null, '', serializeState({
@@ -446,15 +393,19 @@ export default function App() {
   const togglePlane = (p) =>
     setOverlay((o) => (o.includes(p) ? o.filter((x) => x !== p) : [...o, p]));
 
-  const openView = (v) => {
+  const openView = useCallback((v) => {
     if (v === 'drift') {
       setDrift(true);
       setView('topology');
       return;
     }
     if (v === 'home') setDrift(false);
-    setView(v);
-  };
+    setView((prev) => {
+      // Functional update avoids stale closure
+      console.log('[Atlas] setView:', prev, '→', v);
+      return v;
+    });
+  }, []);
 
   if (status === 'loading') return <div className="empty"><p>Loading Atlas projection…</p></div>;
   if (status === 'malformed') {
@@ -501,39 +452,93 @@ export default function App() {
   const matched = new Set(filterEntities(projection, search));
 
   return (
-    <div className="atlas">
-      <header className="atlas-head">
-        <h1>Aftergraph Atlas</h1>
-        <span className="cut">
-          cut {projection.meta.evidence_cut} ({age.label} old{age.stale ? ', STALE — regenerate' : ''}) · gov {String(projection.meta.gov_sha).slice(0, 7)}
-          {origin === 'fetch' ? ' · live fetch (may be stale)' : ''}
-        </span>
-        <div className="experience-lenses" role="group" aria-label="Experience lens">
-          {['SYSTEM', 'AUTHORITY', 'EVIDENCE', 'COST', 'SOURCE'].map((name) => (
-            <button key={name} aria-pressed={lens === name} onClick={() => setLens(name)} title={`View through ${name.toLowerCase()} lens`}>
-              {name}
-            </button>
-          ))}
+    <AtlasShell activeView={view} onViewChange={openView}>
+      {/* Legacy header hidden — AtlasShell provides top bar */}
+      <div className="hidden">
+        <header className="atlas-head">
+          <h1>Aftergraph Atlas</h1>
+          <span className="cut">
+            cut {projection.meta.evidence_cut} ({age.label} old{age.stale ? ', STALE — regenerate' : ''}) · gov {String(projection.meta.gov_sha).slice(0, 7)}
+            {origin === 'fetch' ? ' · live fetch (may be stale)' : ''}
+          </span>
+        </header>
+      </div>
+
+      {/* Experience lenses + overlays as compact toolbar inside shell content */}
+      {view !== 'home' && (
+      <div
+        className="flex flex-wrap items-center gap-2 mb-4"
+        style={{ fontSize: 'var(--ag-type-ui)' }}
+      >
+        <div
+          className="flex items-center gap-1 px-2 py-1 rounded-lg border"
+          style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
+        >
+          <span className="mr-1" style={{ color: 'var(--ag-text-subtle)' }}>Lens:</span>
+          {['SYSTEM', 'AUTHORITY', 'EVIDENCE', 'COST', 'SOURCE'].map((name) => {
+            const active = lens === name;
+            return (
+              <button
+                key={name}
+                aria-pressed={active}
+                onClick={() => setLens(name)}
+                className="px-2 py-0.5 rounded cursor-pointer border border-transparent"
+                style={{
+                  background: active ? 'var(--ag-system-soft)' : 'transparent',
+                  color: active ? 'var(--ag-system)' : 'var(--ag-text-muted)',
+                  transition: `all var(--ag-motion-state) var(--ag-ease-state)`,
+                }}
+                onMouseEnter={(e) => { if (!active) e.currentTarget.style.color = 'var(--ag-text)'; }}
+                onMouseLeave={(e) => { if (!active) e.currentTarget.style.color = 'var(--ag-text-muted)'; }}
+              >
+                {name}
+              </button>
+            );
+          })}
         </div>
-        <div className="overlays" role="group" aria-label="Truth plane overlays">
-          {['CANONICAL', 'OBSERVED', 'PROPOSED'].map((p) => (
-            <button key={p} aria-pressed={overlay.includes(p)} onClick={() => togglePlane(p)} title={`Toggle ${p} assertions`}>
-              {p}
-            </button>
-          ))}
-          <button aria-pressed={drift} onClick={() => setDrift((d) => !d)} title="Highlight canonical/observed disagreements">
+        <div
+          className="flex items-center gap-1 px-2 py-1 rounded-lg border"
+          style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
+        >
+          <span className="mr-1" style={{ color: 'var(--ag-text-subtle)' }}>Planes:</span>
+          {['CANONICAL', 'OBSERVED', 'PROPOSED'].map((p) => {
+            const active = overlay.includes(p);
+            return (
+              <button
+                key={p}
+                aria-pressed={active}
+                onClick={() => togglePlane(p)}
+                className="px-2 py-0.5 rounded cursor-pointer border border-transparent"
+                style={{
+                  background: active ? 'var(--ag-authority-soft)' : 'transparent',
+                  color: active ? 'var(--ag-authority)' : 'var(--ag-text-muted)',
+                  transition: `all var(--ag-motion-state) var(--ag-ease-state)`,
+                }}
+                onMouseEnter={(e) => { if (!active) e.currentTarget.style.color = 'var(--ag-text)'; }}
+                onMouseLeave={(e) => { if (!active) e.currentTarget.style.color = 'var(--ag-text-muted)'; }}
+              >
+                {p}
+              </button>
+            );
+          })}
+          <button
+            aria-pressed={drift}
+            onClick={() => setDrift((d) => !d)}
+            className="px-2 py-0.5 rounded cursor-pointer border border-transparent"
+            style={{
+              background: drift ? 'var(--ag-decision-soft)' : 'transparent',
+              color: drift ? 'var(--ag-decision)' : 'var(--ag-text-muted)',
+              transition: `all var(--ag-motion-state) var(--ag-ease-state)`,
+            }}
+            onMouseEnter={(e) => { if (!drift) e.currentTarget.style.color = 'var(--ag-text)'; }}
+            onMouseLeave={(e) => { if (!drift) e.currentTarget.style.color = 'var(--ag-text-muted)'; }}
+          >
             Drift
           </button>
         </div>
-        <a className="atlas-launcher-link" href="/launch" aria-label="Open Aftergraph Launcher">Launcher</a>
-      </header>
-      <nav className="views" aria-label="Views">
-        {VIEWS.map((v) => (
-          <button key={v} aria-selected={view === v} onClick={() => openView(v)}>
-            {v}
-          </button>
-        ))}
-      </nav>
+        <span className="ml-auto" style={{ color: 'var(--ag-text-subtle)' }}>cut {String(projection.meta.evidence_cut || '').slice(0, 8)}</span>
+      </div>
+      )}
       {origin === 'fetch' && (
         <div className="banner" role="status">Serving runtime-fetched projection — rebuild for a pinned cut.</div>
       )}
@@ -565,114 +570,30 @@ export default function App() {
         <Home onNavigate={openView} />
       </div>
       ) : view === 'topology' ? (
-      <div className="graph" ref={graphRef} tabIndex={0} aria-label="Directed topology. Arrow keys move selection, Enter focuses inspector, Escape clears.">
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onNodeClick={(_, n) => setNode(n.id)}
-          nodeTypes={nodeTypes}
-          fitView
-          proOptions={{ hideAttribution: false }}
-        >
-          <Background />
-          <Controls />
-        </ReactFlow>
-      </div>
+      <React.Suspense fallback={<div className="panel"><p>Loading topology…</p></div>}>
+        <LazyTopologyView
+          graph={graph}
+          drift={drift}
+          node={node}
+          impact={impact}
+          xray={xray}
+          onNodeSelect={(id) => setNode(id)}
+          graphRef={graphRef}
+        />
+      </React.Suspense>
       ) : (
       <div className="center">
         {view === 'pulse' && <PulseView projection={projection} onSelect={(id) => { setNode(id); setView('topology'); }} />}
         {view === 'contracts' && <ContractsView projection={projection} onSelect={(id) => { setNode(id); setView('topology'); }} />}
-        {view === 'capabilities' && <PreviewView title="Capabilities" draft={enrichFixtures.capability_example} kind="capability" />}
-        {view === 'models' && <PreviewView title="AFM lineage" draft={enrichFixtures.model_example} kind="model" />}
-        {view === 'research' && <ResearchView projection={projection} />}
-        {view === 'snapshots' && <SnapshotsView projection={projection} />}
-        {view === 'ask' && <AskView projection={projection} q={askQ} setQ={setAskQ} hits={askHits} setHits={setAskHits} />}
+        {view === 'capabilities' && <CapabilitiesView projection={projection} />}
+        {view === 'models' && <ModelsView projection={projection} />}
+        {view === 'research' && <ResearchViewNew projection={projection} />}
+        {view === 'snapshots' && <SnapshotsViewNew projection={projection} />}
+        {view === 'ask' && <AskViewNew projection={projection} />}
+        {view === 'reconciliation' && <ReconciliationPanel />}
       </div>
       )}
-      {view !== 'home' && (
-      <aside className="inspector" ref={inspectorRef} tabIndex={-1} aria-label="Inspector">
-        <div className="lens-context" role="status">
-          <strong>{lens}</strong> lens
-          {(lens === 'AUTHORITY' || lens === 'COST') && (
-            <span> · no dedicated {lens.toLowerCase()} projection is published in atlas-projection/0.2; no values are inferred.</span>
-          )}
-          {related && <span> · related: {related}</span>}
-          {snapshot && <span> · snapshot context: {snapshot}</span>}
-        </div>
-        <section aria-label="System x-ray">
-          <h3>X-ray <span className="prov">directed path from relations</span></h3>
-          <div>
-            <select value={xFrom} onChange={(e) => setXFrom(e.target.value)} aria-label="Trace from">
-              <option value="">from…</option>
-              {projection.entities.filter((e) => e.kind === 'repository').map((e) => (
-                <option key={e.id} value={e.id}>{shortLabel(e)}</option>
-              ))}
-            </select>
-            <select value={xTo} onChange={(e) => setXTo(e.target.value)} aria-label="Trace to">
-              <option value="">to…</option>
-              {projection.entities.filter((e) => e.kind === 'repository').map((e) => (
-                <option key={e.id} value={e.id}>{shortLabel(e)}</option>
-              ))}
-            </select>
-            <button onClick={() => setXray(xFrom && xTo ? tracePath(projection, xFrom, xTo) || { path: [], hops: [], none: true } : null)}>
-              Trace
-            </button>
-            {xray && <button onClick={() => setXray(null)}>Clear</button>}
-          </div>
-          {xray && (xray.none || !xray.path.length ? (
-            <p className="prov">No directed path in this cut — honest gap, not a healthy system.</p>
-          ) : (
-            <ol className="prov">
-              {xray.hops.map((h, i) => (
-                <li key={i}>{shortLabel({ identity: { full_name: h.from.split(':')[1] } })} —{h.relation}→ {shortLabel({ identity: { full_name: h.to.split(':')[1] } })} <span className={`plane-tag plane-${h.plane}`}>{h.plane}</span></li>
-              ))}
-            </ol>
-          ))}
-        </section>
-        {!node && <p className="prov">Select a node for assertions + provenance.</p>}
-        {node && (
-          <>
-            <h2>{node}</h2>
-            <div className="prov">{selected.length} assertion(s) · planes: {graph.planesUsed.join(', ')}</div>
-            <div>
-              {!impact ? (
-                <button onClick={() => setImpact(impactSet(projection, node, 2))}>Show impact (2-hop)</button>
-              ) : (
-                <button onClick={() => setImpact(null)}>Clear impact highlight</button>
-              )}
-            </div>
-            {impact && (
-              <div className="prov">
-                <div>dependents ({impact.upstream.length}): {impact.upstream.map((id) => shortLabel({ identity: { full_name: id.split(':')[1] } })).join(', ') || '—'}</div>
-                <div>dependencies ({impact.downstream.length}): {impact.downstream.map((id) => shortLabel({ identity: { full_name: id.split(':')[1] } })).join(', ') || '—'}</div>
-              </div>
-            )}
-            {['CANONICAL', 'OBSERVED', 'PROPOSED'].map((p) => {
-              const list = selected.filter((a) => a.truth_plane === p);
-              if (!list.length) return null;
-              return (
-                <section key={p}>
-                  <h3><span className={`plane-tag plane-${p}`}>{p}</span></h3>
-                  <dl className="prov">
-                    {list.map((a) => (
-                      <React.Fragment key={a.id}>
-                        <dt>{a.predicate} <span className="prov">({a.id})</span></dt>
-                        <dd>value: {JSON.stringify(a.value)}</dd>
-                        <dd>source: {a.provenance.source} [{a.provenance.source_type}]</dd>
-                        <dd>ref: {a.provenance.ref} · observed: {a.observed_at}{a.valid_at ? ` · valid: ${a.valid_at}` : ''}</dd>
-                        <dd>evidence: {a.provenance.evidence_level} · freshness: {a.freshness}{a.conflict_id ? ` · conflict: ${a.conflict_id}` : ''}</dd>
-                      </React.Fragment>
-                    ))}
-                  </dl>
-                </section>
-              );
-            })}
-          </>
-        )}
-      </aside>
-      )}
+      {/* Inspector panel removed in V3 redesign — detail view deferred to dedicated panels */}
       {drift && (
         <section className="drift-list" aria-label="Drift: open disagreements">
           <h3>Drift ({conflicts.length} open)</h3>
@@ -698,6 +619,6 @@ export default function App() {
           ))}
         </section>
       )}
-    </div>
+    </AtlasShell>
   );
 }

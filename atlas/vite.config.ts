@@ -36,7 +36,8 @@ export default defineConfig({
     },
   },
   test: {
-    environment: 'node',
-    include: ['tests/**/*.test.mjs'],
+    environment: 'jsdom',
+    include: ['tests/**/*.test.mjs', 'src/__tests__/**/*.test.{js,jsx}'],
+    setupFiles: ['./src/__tests__/setup.js'],
   },
 });
