@@ -2,6 +2,14 @@
 
 Architecture decisions, conventions, and known pitfalls for agents and contributors.
 
+## Authority & Storage Boundary
+
+- **Atlas is derived state, never canonical authority.** Governance, Trust Gateway/Relay, Runtime/WORKS, and Sentinel retain their existing ownership boundaries.
+- **D1 + R2 are rebuildable projection/cache storage.** They index and serve evidence-backed cuts; they do not become a second source of truth.
+- **The public Worker is read-only for Atlas state.** `POST /api/v3/artifacts` and `POST /api/v3/publish` fail closed with `403 ATLAS_PUBLIC_MUTATION_DISABLED` before any D1/R2 mutation.
+- **Future publication must use a separate authenticated internal publisher.** Do not add a shared secret, bearer-token shortcut, or browser-accessible write bypass to the public Worker.
+- **Regression gate:** `node --test ../site/atlas-v3-write-boundary.test.mjs` must prove no public write mutates storage and `/api/v3/health` reports `REBUILDABLE_PROJECTION_CACHE`, `canonical_truth:false`, and `public_mutation:DISABLED`.
+
 ## State Management
 
 - **View switching uses functional `setState`**: Always use `setState(prev => ...)` when updating view state (e.g., `openView`). Direct state references in closures become stale due to React's batching. This was the root cause of the view-switching bug where the UI rendered outdated state after rapid transitions.
