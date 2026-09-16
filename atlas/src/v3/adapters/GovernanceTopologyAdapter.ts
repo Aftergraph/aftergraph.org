@@ -69,7 +69,10 @@ export class GovernanceTopologyAdapter implements SourceAdapterContract {
         observed_time: observedTime,
         payload_hash: `sha256:${simpleHash(JSON.stringify(node))}`,
         payload_ref: `r2://adapters/governance/nodes/${node.id}.json`,
-        truth_plane: 'CANONICAL',
+        epistemic: 'observed',
+        currentness: 'current',
+        source_class: 'canonical_source',
+        verification: 'unverified',
       });
     }
 
@@ -81,7 +84,10 @@ export class GovernanceTopologyAdapter implements SourceAdapterContract {
         observed_time: observedTime,
         payload_hash: `sha256:${simpleHash(JSON.stringify(edge))}`,
         payload_ref: `r2://adapters/governance/edges/${edge.from}_${edge.to}.json`,
-        truth_plane: 'CANONICAL',
+        epistemic: 'observed',
+        currentness: 'current',
+        source_class: 'canonical_source',
+        verification: 'unverified',
       });
     }
 

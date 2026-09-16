@@ -61,7 +61,10 @@ export class SentinelVerificationAdapter implements SourceAdapterContract {
         observed_time: observedTime,
         payload_hash: `sha256:${simpleHash(JSON.stringify(check))}`,
         payload_ref: check.evidence_url ?? `r2://adapters/sentinel/checks/${check.check_id}.json`,
-        truth_plane: check.status === 'pass' ? 'VERIFIED' : 'EXECUTED',
+        epistemic: 'observed',
+        currentness: 'current',
+        source_class: 'verification',
+        verification: check.status === 'pass' ? 'verified' : check.status === 'fail' ? 'rejected' : 'indeterminate',
       });
     }
 

@@ -40,6 +40,12 @@ export class GitHubRepositoryAdapter implements SourceAdapterContract {
 
   toEnvelopes(data: GitHubRepoData): EvidenceEnvelope[] {
     const observedTime = new Date().toISOString();
+    const dimensions = {
+      epistemic: 'observed' as const,
+      currentness: 'current' as const,
+      source_class: 'observation' as const,
+      verification: 'unverified' as const,
+    };
 
     return [
       {
@@ -49,7 +55,7 @@ export class GitHubRepositoryAdapter implements SourceAdapterContract {
         observed_time: observedTime,
         payload_hash: `sha256:${simpleHash(JSON.stringify(data))}`,
         payload_ref: `r2://adapters/github/repos/${data.full_name.replace('/', '_')}.json`,
-        truth_plane: 'OBSERVED',
+        ...dimensions,
       },
       {
         id: `env-gh-head-${data.full_name.replace('/', '_')}`,
@@ -58,7 +64,7 @@ export class GitHubRepositoryAdapter implements SourceAdapterContract {
         observed_time: observedTime,
         payload_hash: `sha256:${simpleHash(data.sha)}`,
         payload_ref: `r2://adapters/github/heads/${data.full_name.replace('/', '_')}/${data.sha.substring(0, 7)}.json`,
-        truth_plane: 'VERIFIED',
+        ...dimensions,
       },
     ];
   }

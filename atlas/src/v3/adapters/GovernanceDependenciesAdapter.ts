@@ -55,7 +55,10 @@ export class GovernanceDependenciesAdapter implements SourceAdapterContract {
         observed_time: observedTime,
         payload_hash: `sha256:${simpleHash(JSON.stringify(dep))}`,
         payload_ref: `r2://adapters/deps/${dep.package_name}/${dep.version}.json`,
-        truth_plane: 'OBSERVED',
+        epistemic: 'observed',
+        currentness: 'current',
+        source_class: 'canonical_source',
+        verification: 'unverified',
       });
     }
 

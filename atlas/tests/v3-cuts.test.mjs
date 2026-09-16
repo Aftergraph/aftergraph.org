@@ -9,7 +9,10 @@ function makeEnvelope(id, adapter = 'test-adapter') {
     observed_time: '2026-09-15T10:05:00Z',
     payload_hash: `sha256:${id}`,
     payload_ref: `r2://test/${id}.json`,
-    truth_plane: 'OBSERVED',
+    epistemic: 'observed',
+    currentness: 'current',
+    source_class: 'observation',
+    verification: 'unverified',
   };
 }
 

@@ -36,7 +36,7 @@ describe('GovernanceTopologyAdapter', () => {
     const envelopes = adapter.toEnvelopes(data);
     expect(envelopes.length).toBe(2);
     expect(envelopes[0].source_adapter_id).toBe('governance-topology-adapter');
-    expect(envelopes[0].truth_plane).toBe('CANONICAL');
+    expect(envelopes[0]).toMatchObject({ epistemic: 'observed', currentness: 'current', source_class: 'canonical_source', verification: 'unverified' });
     expect(envelopes[0].payload_hash).toMatch(/^sha256:/);
     expect(envelopes[1].id).toContain('env-gov-edge');
   });
@@ -73,7 +73,7 @@ describe('GovernanceDependenciesAdapter', () => {
     };
     const envelopes = adapter.toEnvelopes(data);
     expect(envelopes.length).toBe(2);
-    expect(envelopes[0].truth_plane).toBe('OBSERVED');
+    expect(envelopes[0]).toMatchObject({ epistemic: 'observed', currentness: 'current', source_class: 'canonical_source', verification: 'unverified' });
     expect(envelopes[0].payload_ref).toContain('r2://adapters/deps/');
   });
 });
@@ -101,7 +101,7 @@ describe('GitHubRepositoryAdapter', () => {
     expect(envelopes.length).toBe(2);
     expect(envelopes[0].id).toContain('env-gh-repo');
     expect(envelopes[1].id).toContain('env-gh-head');
-    expect(envelopes[1].truth_plane).toBe('VERIFIED');
+    expect(envelopes[1]).toMatchObject({ epistemic: 'observed', currentness: 'current', source_class: 'observation', verification: 'unverified' });
   });
 });
 
@@ -132,7 +132,7 @@ describe('SentinelVerificationAdapter', () => {
     expect(adapter.validate(data)).toBe(false);
   });
 
-  it('toEnvelopes maps pass→VERIFIED, fail→EXECUTED', () => {
+  it('toEnvelopes maps Sentinel status only into verification outcome', () => {
     const data = {
       checks: [
         { check_id: 'c-pass', target: 'ci', status: 'pass', verified_at: '2026-09-15T10:00:00Z' },
@@ -143,7 +143,7 @@ describe('SentinelVerificationAdapter', () => {
     };
     const envelopes = adapter.toEnvelopes(data);
     expect(envelopes.length).toBe(2);
-    expect(envelopes[0].truth_plane).toBe('VERIFIED');
-    expect(envelopes[1].truth_plane).toBe('EXECUTED');
+    expect(envelopes[0]).toMatchObject({ epistemic: 'observed', source_class: 'verification', verification: 'verified' });
+    expect(envelopes[1]).toMatchObject({ epistemic: 'observed', source_class: 'verification', verification: 'rejected' });
   });
 });
