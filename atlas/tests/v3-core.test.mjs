@@ -1,25 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { TRUTH_PLANES } from '../src/v3/types.ts';
+import { EPISTEMIC_STATES, CURRENTNESS_STATES, SOURCE_CLASSES, VERIFICATION_STATES } from '../src/v3/types.ts';
 
 // Phase 1 TDD: Core domain model contracts
 // These tests define the irreducible evidence primitives.
 
-describe('TruthPlane', () => {
-  it('contains exactly 6 planes', () => {
-    expect(TRUTH_PLANES).toHaveLength(6);
-  });
-
-  it('includes all required planes', () => {
-    const required = ['CANONICAL', 'OBSERVED', 'INFERRED', 'PROPOSED', 'VERIFIED', 'EXECUTED'];
-    for (const plane of required) {
-      expect(TRUTH_PLANES).toContain(plane);
-    }
-  });
-
-  it('does not contain DEMO or FAKE planes', () => {
-    expect(TRUTH_PLANES).not.toContain('DEMO');
-    expect(TRUTH_PLANES).not.toContain('FAKE');
-    expect(TRUTH_PLANES).not.toContain('SYNTHETIC');
+describe('Evidence dimensions', () => {
+  it('keeps epistemic, currentness, source, and verification orthogonal', () => {
+    expect(EPISTEMIC_STATES).toEqual(['observed', 'inferred', 'predicted', 'unknown']);
+    expect(CURRENTNESS_STATES).toEqual(['current', 'stale', 'disputed', 'superseded']);
+    expect(SOURCE_CLASSES).toContain('canonical_source');
+    expect(VERIFICATION_STATES).toEqual(['unverified', 'verified', 'rejected', 'indeterminate']);
   });
 });
 
@@ -33,16 +23,19 @@ describe('EvidenceEnvelope contract', () => {
       observed_time: '2026-09-15T10:05:00Z',
       payload_hash: 'sha256:abc123',
       payload_ref: 'r2://cuts/2026-09-15/env-001.json',
-      truth_plane: 'OBSERVED',
+      epistemic: 'observed',
+      currentness: 'current',
+      source_class: 'observation',
+      verification: 'unverified',
     };
     expect(envelope.valid_time).not.toBe(envelope.observed_time);
   });
 
-  it('rejects invalid truth planes at type level', () => {
-    // TypeScript enforces this at compile time; runtime guard test:
-    const validPlanes = new Set(TRUTH_PLANES);
-    expect(validPlanes.has('OBSERVED')).toBe(true);
-    expect(validPlanes.has('INVALID_PLANE')).toBe(false);
+  it('keeps verification independent from epistemic observation', () => {
+    expect(EPISTEMIC_STATES).toContain('observed');
+    expect(EPISTEMIC_STATES).not.toContain('verified');
+    expect(VERIFICATION_STATES).toContain('verified');
+    expect(VERIFICATION_STATES).not.toContain('observed');
   });
 });
 

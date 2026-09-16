@@ -15,7 +15,10 @@ const envelopes = [
     observed_time: '2026-09-15T10:05:00Z',
     payload_hash: 'sha256:aaa',
     payload_ref: 'r2://blob/1',
-    truth_plane: 'OBSERVED',
+    epistemic: 'observed',
+    currentness: 'current',
+    source_class: 'observation',
+    verification: 'unverified',
   },
   {
     id: 'env-2',
@@ -24,7 +27,10 @@ const envelopes = [
     observed_time: '2026-09-15T11:05:00Z',
     payload_hash: 'sha256:bbb',
     payload_ref: 'r2://blob/2',
-    truth_plane: 'VERIFIED',
+    epistemic: 'observed',
+    currentness: 'current',
+    source_class: 'verification',
+    verification: 'verified',
   },
 ];
 
@@ -114,9 +120,10 @@ describe('ExploreWorkspace', () => {
     expect(ws.query({ min_confidence: 0.5 })).toHaveLength(3);
   });
 
-  it('filters by truth_plane via envelope join', () => {
-    expect(ws.query({ truth_plane: 'OBSERVED' })).toHaveLength(2);
-    expect(ws.query({ truth_plane: 'VERIFIED' })).toHaveLength(1);
+  it('filters independently by evidence dimensions via envelope join', () => {
+    expect(ws.query({ epistemic: 'observed' })).toHaveLength(3);
+    expect(ws.query({ source_class: 'verification' })).toHaveLength(1);
+    expect(ws.query({ verification: 'verified' })).toHaveLength(1);
   });
 
   it('respects limit', () => {
@@ -169,14 +176,15 @@ describe('EvidenceWorkspace', () => {
     expect(ws.query({ source_adapter_id: 'sentinel-adapter' })).toHaveLength(1);
   });
 
-  it('filters by truth_plane', () => {
-    expect(ws.query({ truth_plane: 'VERIFIED' })).toHaveLength(1);
+  it('filters by verification and source class', () => {
+    expect(ws.query({ verification: 'verified' })).toHaveLength(1);
+    expect(ws.query({ source_class: 'observation' })).toHaveLength(2);
   });
 
   it('render produces text lines with provenance info', () => {
     const result = ws.render();
     expect(result.format).toBe('text');
-    expect(result.content).toContain('OBSERVED');
+    expect(result.content).toContain('observed/current/observation/unverified');
     expect(result.content).toContain('github-adapter');
     expect(result.metadata.workspace).toBe('evidence');
   });

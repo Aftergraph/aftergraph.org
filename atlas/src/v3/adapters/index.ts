@@ -3,3 +3,4 @@ export { GovernanceTopologyAdapter } from './GovernanceTopologyAdapter.ts';
 export { GovernanceDependenciesAdapter } from './GovernanceDependenciesAdapter.ts';
 export { GitHubRepositoryAdapter } from './GitHubRepositoryAdapter.ts';
 export { SentinelVerificationAdapter } from './SentinelVerificationAdapter.ts';
+export { RuntimeWorldStatePublicAdapter } from './RuntimeWorldStatePublicAdapter.ts';

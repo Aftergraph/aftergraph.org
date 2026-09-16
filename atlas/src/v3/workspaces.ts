@@ -1,7 +1,7 @@
 // Atlas V3 Phase 6: Read-only projection workspaces
 // These are VIEW layers over the core data model — they never mutate Claims/Cuts.
 
-import type { Claim, CutManifest, CutDelta, EvidenceEnvelope, TruthPlane } from './types.ts';
+import type { Claim, CutManifest, CutDelta, EvidenceEnvelope, EpistemicState, CurrentnessState, SourceClass, VerificationState } from './types.ts';
 
 // Duck-typed interfaces for data that may come from other phases (cuts.ts, reconciliation.ts)
 // We only depend on types.ts directly; these allow workspace code to operate on
@@ -11,7 +11,10 @@ export interface WorkspaceQueryOptions {
   subject?: string;
   predicate?: string;
   object?: string;
-  truth_plane?: TruthPlane;
+  epistemic?: EpistemicState;
+  currentness?: CurrentnessState;
+  source_class?: SourceClass;
+  verification?: VerificationState;
   min_confidence?: number;
   limit?: number;
 }
@@ -56,11 +59,16 @@ export class ExploreWorkspace {
     if (options.min_confidence !== undefined) {
       results = results.filter(c => (c.confidence ?? 0) >= options.min_confidence!);
     }
-    if (options.truth_plane) {
+    if (options.epistemic || options.currentness || options.source_class || options.verification) {
       const envelopeMap = new Map(this.envelopes.map(e => [e.id, e]));
       results = results.filter(c => {
         const env = envelopeMap.get(c.envelope_id);
-        return env?.truth_plane === options.truth_plane;
+        if (!env) return false;
+        if (options.epistemic && env.epistemic !== options.epistemic) return false;
+        if (options.currentness && env.currentness !== options.currentness) return false;
+        if (options.source_class && env.source_class !== options.source_class) return false;
+        if (options.verification && env.verification !== options.verification) return false;
+        return true;
       });
     }
     if (options.limit !== undefined && options.limit > 0) {
@@ -127,9 +135,10 @@ export class EvidenceWorkspace {
     if (options.source_adapter_id) {
       pairs = pairs.filter(p => p.envelope.source_adapter_id === options.source_adapter_id);
     }
-    if (options.truth_plane) {
-      pairs = pairs.filter(p => p.envelope.truth_plane === options.truth_plane);
-    }
+    if (options.epistemic) pairs = pairs.filter(p => p.envelope.epistemic === options.epistemic);
+    if (options.currentness) pairs = pairs.filter(p => p.envelope.currentness === options.currentness);
+    if (options.source_class) pairs = pairs.filter(p => p.envelope.source_class === options.source_class);
+    if (options.verification) pairs = pairs.filter(p => p.envelope.verification === options.verification);
     if (options.subject) {
       pairs = pairs.filter(p => p.claim.subject === options.subject);
     }
@@ -149,7 +158,7 @@ export class EvidenceWorkspace {
   render(results?: Array<{ claim: Claim; envelope: EvidenceEnvelope }>): WorkspaceRenderResult {
     const pairs = results ?? this.query();
     const lines = pairs.map(p =>
-      `[${p.envelope.truth_plane}] ${p.claim.subject} --${p.claim.predicate}--> ${p.claim.object} (source: ${p.envelope.source_adapter_id}, observed: ${p.envelope.observed_time})`
+      `[${p.envelope.epistemic}/${p.envelope.currentness}/${p.envelope.source_class}/${p.envelope.verification}] ${p.claim.subject} --${p.claim.predicate}--> ${p.claim.object} (source: ${p.envelope.source_adapter_id}, observed: ${p.envelope.observed_time})`
     );
     return {
       format: 'text',
@@ -294,7 +303,7 @@ export class TraceWorkspace {
     for (const trace of traces) {
       lines.push(`TRACE ${trace.claim.id}:`);
       lines.push(`  claim: ${trace.claim.subject} --${trace.claim.predicate}--> ${trace.claim.object}`);
-      lines.push(`  envelope: ${trace.envelope.id} (${trace.envelope.truth_plane})`);
+      lines.push(`  envelope: ${trace.envelope.id} (${trace.envelope.epistemic}/${trace.envelope.currentness}/${trace.envelope.source_class}/${trace.envelope.verification})`);
       lines.push(`  source: ${trace.envelope.source_adapter_id}`);
       lines.push(`  valid_time: ${trace.envelope.valid_time}`);
       lines.push(`  observed_time: ${trace.envelope.observed_time}`);
