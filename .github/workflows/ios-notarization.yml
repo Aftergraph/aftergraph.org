@@ -1,0 +1,144 @@
+name: Aftergraph iOS Notarization Pipeline
+
+on:
+  pull_request:
+    paths:
+      - 'ios/**'
+      - 'ios-distribution/scripts/asc_probe.py'
+      - '.github/workflows/ios-notarization.yml'
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: Upload signed build to App Store Connect
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Validate source layout
+        run: |
+          test -f ios/project.yml
+          test -f ios/Aftergraph/AftergraphApp.swift
+          test -f ios-distribution/scripts/asc_probe.py
+          grep -F 'PRODUCT_BUNDLE_IDENTIFIER: org.aftergraph.ios' ios/project.yml
+          python -m py_compile ios-distribution/scripts/asc_probe.py
+          git diff --check
+
+  notarize:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+      APPLE_API_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
+      APPLE_API_PRIVATE_KEY_B64: ${{ secrets.APPLE_API_PRIVATE_KEY_B64 }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Verify Apple credentials are configured
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for key in APPLE_TEAM_ID APPLE_API_KEY_ID APPLE_API_ISSUER_ID APPLE_API_PRIVATE_KEY_B64; do
+            if [ -z "${!key:-}" ]; then
+              echo "::error::Missing GitHub secret: $key"
+              missing=1
+            fi
+          done
+          exit $missing
+
+      - name: Verify Xcode toolchain
+        run: |
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+
+      - name: Install build tooling
+        run: |
+          brew install xcodegen
+          python3 -m pip install --user 'PyJWT[crypto]==2.10.1'
+
+      - name: Materialize App Store Connect key
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${APPLE_API_KEY_ID}.p8"
+          printf '%s' "$APPLE_API_PRIVATE_KEY_B64" | base64 --decode > "$KEY_PATH"
+          chmod 600 "$KEY_PATH"
+          echo "APPLE_API_KEY_PATH=$KEY_PATH" >> "$GITHUB_ENV"
+
+      - name: Probe App Store Connect app record
+        shell: bash
+        run: |
+          python3 ios-distribution/scripts/asc_probe.py --bundle-id org.aftergraph.ios
+
+      - name: Generate Xcode project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Archive with Apple cloud signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild             -project ios/Aftergraph.xcodeproj             -scheme Aftergraph             -configuration Release             -destination 'generic/platform=iOS'             -archivePath "$RUNNER_TEMP/Aftergraph.xcarchive"             DEVELOPMENT_TEAM="$APPLE_TEAM_ID"             CODE_SIGN_STYLE=Automatic             -allowProvisioningUpdates             -authenticationKeyPath "$APPLE_API_KEY_PATH"             -authenticationKeyID "$APPLE_API_KEY_ID"             -authenticationKeyIssuerID "$APPLE_API_ISSUER_ID"             archive
+
+      - name: Export signed IPA
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>teamID</key><string>$APPLE_TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          PLIST
+          mkdir -p "$RUNNER_TEMP/export"
+          xcodebuild             -exportArchive             -archivePath "$RUNNER_TEMP/Aftergraph.xcarchive"             -exportPath "$RUNNER_TEMP/export"             -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist"             -allowProvisioningUpdates             -authenticationKeyPath "$APPLE_API_KEY_PATH"             -authenticationKeyID "$APPLE_API_KEY_ID"             -authenticationKeyIssuerID "$APPLE_API_ISSUER_ID"
+          test -f "$RUNNER_TEMP/export/Aftergraph.ipa"
+          shasum -a 256 "$RUNNER_TEMP/export/Aftergraph.ipa"
+
+      - name: Validate signed IPA
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/ipa"
+          cd "$RUNNER_TEMP/ipa"
+          unzip -q "$RUNNER_TEMP/export/Aftergraph.ipa"
+          codesign --verify --deep --strict --verbose=2 Payload/Aftergraph.app
+          codesign -d --entitlements :- Payload/Aftergraph.app || true
+
+      - name: Upload build to App Store Connect
+        if: ${{ inputs.upload }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcrun altool             --upload-app             --type ios             --file "$RUNNER_TEMP/export/Aftergraph.ipa"             --apiKey "$APPLE_API_KEY_ID"             --apiIssuer "$APPLE_API_ISSUER_ID"
+
+      - name: Wait for App Store Connect processing
+        if: ${{ inputs.upload }}
+        shell: bash
+        run: |
+          python3 ios-distribution/scripts/asc_probe.py             --bundle-id org.aftergraph.ios             --wait-build             --timeout 1200
+
+      - name: Upload signed build evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Aftergraph-iOS-signed-evidence
+          path: |
+            ${{ runner.temp }}/export/Aftergraph.ipa
+            ${{ runner.temp }}/ExportOptions.plist
+          if-no-files-found: error
+          retention-days: 14
