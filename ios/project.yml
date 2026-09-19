@@ -16,6 +16,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: org.aftergraph.ios
         PRODUCT_NAME: Aftergraph
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_CFBundleDisplayName: Aftergraph
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.developer-tools
@@ -24,3 +26,4 @@ targets:
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
         TARGETED_DEVICE_FAMILY: "1,2"
         CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
