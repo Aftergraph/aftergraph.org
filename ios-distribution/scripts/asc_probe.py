@@ -17,6 +17,7 @@ def get(path, bearer):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--bundle-id",default="org.aftergraph.ios")
+    p.add_argument("--build")
     p.add_argument("--wait-build",action="store_true")
     p.add_argument("--timeout",type=int,default=900)
     a=p.parse_args()
@@ -28,20 +29,28 @@ def main():
         raise SystemExit(f"APP_RECORD_MISSING bundleId={a.bundle_id}")
     app=apps[0]
     print("APP_OK", app["id"], app["attributes"].get("name"), app["attributes"].get("bundleId"))
-    versions=get(f"/apps/{app['id']}/appStoreVersions?limit=50",bearer)["data"]
-    print("VERSIONS",[(v["id"],v["attributes"].get("versionString"),v["attributes"].get("appStoreState")) for v in versions])
     if not a.wait_build:
         return
+    if not a.build:
+        raise SystemExit("--build is required with --wait-build")
     deadline=time.time()+a.timeout
+    buildq=urllib.parse.quote(str(a.build),safe="")
     while time.time()<deadline:
-        builds=get(f"/builds?filter[app]={app['id']}&sort=-uploadedDate&limit=5",bearer)["data"]
-        if builds:
-            b=builds[0]
-            print("BUILD_OK",b["id"],b["attributes"].get("version"),b["attributes"].get("processingState"))
-            return
-        print("WAITING_FOR_BUILD", flush=True)
+        builds=get(f"/builds?filter[app]={app['id']}&filter[version]={buildq}&limit=10",bearer)["data"]
+        exact=[b for b in builds if str(b["attributes"].get("version"))==str(a.build)]
+        if exact:
+            b=exact[0]
+            state=b["attributes"].get("processingState")
+            print("BUILD_SEEN",b["id"],b["attributes"].get("version"),state, flush=True)
+            if state=="VALID":
+                print("BUILD_OK",b["id"],a.build,state)
+                return
+            if state in {"FAILED","INVALID"}:
+                raise SystemExit(f"BUILD_PROCESSING_FAILED build={a.build} state={state}")
+        else:
+            print("WAITING_FOR_EXACT_BUILD",a.build,flush=True)
         time.sleep(20)
-    raise SystemExit("BUILD_NOT_VISIBLE_BEFORE_TIMEOUT")
+    raise SystemExit(f"BUILD_NOT_VALID_BEFORE_TIMEOUT build={a.build}")
 
 if __name__=="__main__":
     main()
