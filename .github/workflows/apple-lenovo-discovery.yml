@@ -1,0 +1,143 @@
+name: Apple Lenovo Discovery
+
+on:
+  push:
+    branches:
+      - 'ops/apple-lenovo-discovery'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Verify runner identity
+        shell: pwsh
+        run: |
+          Write-Host "RUNNER_NAME=$env:RUNNER_NAME"
+          Write-Host "COMPUTERNAME=$env:COMPUTERNAME"
+          Write-Host "USERNAME=$env:USERNAME"
+
+      - name: Discover Apple signing material safely
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'SilentlyContinue'
+          $roots = @(
+            "$env:USERPROFILE",
+            "$env:LOCALAPPDATA",
+            "$env:APPDATA",
+            "C:\Users\empir\Documents",
+            "C:\Users\empir\Downloads",
+            "C:\Users\empir\.config",
+            "C:\Users\empir\.appstoreconnect"
+          ) | Where-Object { $_ -and (Test-Path $_) } | Select-Object -Unique
+
+          $patterns = @(
+            "AuthKey_*.p8",
+            "*.p12",
+            "*.mobileprovision",
+            "*.cer",
+            "*.provisionprofile"
+          )
+
+          $hits = @()
+          foreach ($root in $roots) {
+            foreach ($pattern in $patterns) {
+              Get-ChildItem -Path $root -Filter $pattern -File -Recurse -Force -ErrorAction SilentlyContinue |
+                ForEach-Object {
+                  $hits += [pscustomobject]@{
+                    Name = $_.Name
+                    Directory = $_.DirectoryName
+                    Length = $_.Length
+                    LastWriteTime = $_.LastWriteTimeUtc
+                  }
+                }
+            }
+          }
+
+          if ($hits.Count -eq 0) {
+            Write-Host "APPLE_MATERIAL_FOUND=0"
+          } else {
+            Write-Host "APPLE_MATERIAL_FOUND=$($hits.Count)"
+            $hits | Sort-Object Name,Directory | Format-Table -AutoSize
+          }
+
+      - name: Inspect Apple-related environment metadata
+        shell: pwsh
+        run: |
+          $names = @(
+            "APPLE_TEAM_ID",
+            "APPLE_API_KEY_ID",
+            "APPLE_API_ISSUER_ID",
+            "ASC_KEY_ID",
+            "ASC_ISSUER_ID",
+            "FASTLANE_USER"
+          )
+          foreach ($name in $names) {
+            $v = [Environment]::GetEnvironmentVariable($name, "Process")
+            if (-not $v) { $v = [Environment]::GetEnvironmentVariable($name, "User") }
+            if (-not $v) { $v = [Environment]::GetEnvironmentVariable($name, "Machine") }
+            if ($v) {
+              Write-Host "$name=PRESENT(length=$($v.Length))"
+            } else {
+              Write-Host "$name=ABSENT"
+            }
+          }
+
+      - name: Inspect common signing/config files without printing secrets
+        shell: pwsh
+        run: |
+          $paths = @(
+            "$env:USERPROFILE\.appstoreconnect\private_keys",
+            "$env:USERPROFILE\.fastlane",
+            "$env:USERPROFILE\.config\fastlane",
+            "$env:USERPROFILE\.config\appstoreconnect",
+            "$env:USERPROFILE\.credentials",
+            "$env:USERPROFILE\.secrets"
+          )
+          foreach ($p in $paths) {
+            if (Test-Path $p) {
+              Write-Host "FOUND_DIR $p"
+              Get-ChildItem $p -File -Force -ErrorAction SilentlyContinue |
+                Select-Object Name,Length,LastWriteTimeUtc |
+                Format-Table -AutoSize
+            }
+          }
+
+      - name: Inspect installed tooling
+        shell: pwsh
+        run: |
+          foreach ($cmd in @("git","gh","node","npm","python","ruby","fastlane","openssl")) {
+            $x = Get-Command $cmd -ErrorAction SilentlyContinue
+            if ($x) { Write-Host "$cmd=$($x.Source)" } else { Write-Host "$cmd=ABSENT" }
+          }
+          gh auth status 2>&1 | Select-Object -First 20
+
+      - name: Inspect Windows certificate store for Apple subjects
+        shell: pwsh
+        run: |
+          $stores = @("Cert:\CurrentUser\My","Cert:\LocalMachine\My")
+          $found = 0
+          foreach ($s in $stores) {
+            if (Test-Path $s) {
+              Get-ChildItem $s -ErrorAction SilentlyContinue |
+                Where-Object { $_.Subject -match "Apple|Developer ID|iPhone Developer|Apple Distribution" } |
+                ForEach-Object {
+                  $found++
+                  [pscustomobject]@{
+                    Store=$s
+                    Subject=$_.Subject
+                    HasPrivateKey=$_.HasPrivateKey
+                    NotAfter=$_.NotAfter
+                    Thumbprint=$_.Thumbprint.Substring(0,8) + "..."
+                  }
+                } | Format-Table -AutoSize
+            }
+          }
+          Write-Host "APPLE_CERTIFICATES_FOUND=$found"
