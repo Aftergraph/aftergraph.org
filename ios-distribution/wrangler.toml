@@ -1,0 +1,16 @@
+name = "aftergraph-ios-web-distribution"
+main = "src/worker.js"
+compatibility_date = "2026-09-19"
+workers_dev = false
+
+[[routes]]
+pattern = "install.aftergraph.org"
+custom_domain = true
+
+[vars]
+PUBLIC_ORIGIN = "https://install.aftergraph.org"
+APP_SHARE_URL = "https://install.aftergraph.org/"
+BUNDLE_ID = "org.aftergraph.ios"
+SHORT_VERSION_STRING = "1.0.0"
+BUNDLE_VERSION = "1"
+WEB_DISTRIBUTION_ENABLED = "false"
