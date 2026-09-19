@@ -1,0 +1,275 @@
+name: Build Aftergraph Sideload IPA
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ios-sideload-build.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate native iOS source
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf build-ios
+          mkdir -p build-ios/Aftergraph
+          cat > build-ios/project.yml <<'YAML'
+          name: Aftergraph
+          options:
+            bundleIdPrefix: org.aftergraph
+            deploymentTarget:
+              iOS: "17.0"
+          targets:
+            Aftergraph:
+              type: application
+              platform: iOS
+              sources:
+                - Aftergraph
+              settings:
+                base:
+                  PRODUCT_BUNDLE_IDENTIFIER: org.aftergraph.ios
+                  PRODUCT_NAME: Aftergraph
+                  SWIFT_VERSION: "5.0"
+                  CODE_SIGNING_ALLOWED: NO
+                  CODE_SIGNING_REQUIRED: NO
+                  CODE_SIGN_IDENTITY: ""
+                  GENERATE_INFOPLIST_FILE: YES
+                  INFOPLIST_KEY_CFBundleDisplayName: Aftergraph
+                  INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.developer-tools
+                  INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+                  INFOPLIST_KEY_UILaunchScreen_Generation: YES
+                  TARGETED_DEVICE_FAMILY: "1,2"
+          YAML
+
+          cat > build-ios/Aftergraph/AftergraphApp.swift <<'SWIFT'
+          import SwiftUI
+
+          @main
+          struct AftergraphApp: App {
+              var body: some Scene {
+                  WindowGroup {
+                      RootView()
+                          .preferredColorScheme(.dark)
+                  }
+              }
+          }
+
+          struct RootView: View {
+              var body: some View {
+                  TabView {
+                      WarRoomView()
+                          .tabItem { Label("War Room", systemImage: "waveform.path.ecg") }
+                      WorkView()
+                          .tabItem { Label("Work", systemImage: "checklist") }
+                      AgentsView()
+                          .tabItem { Label("Agents", systemImage: "cpu") }
+                      NeedsYouView()
+                          .tabItem { Label("Needs You", systemImage: "exclamationmark.bubble") }
+                      SettingsView()
+                          .tabItem { Label("Settings", systemImage: "gearshape") }
+                  }
+                  .tint(.white)
+              }
+          }
+
+          struct Shell<Content: View>: View {
+              let title: String
+              let content: Content
+              init(_ title: String, @ViewBuilder content: () -> Content) {
+                  self.title = title
+                  self.content = content()
+              }
+              var body: some View {
+                  NavigationStack {
+                      ScrollView {
+                          VStack(alignment: .leading, spacing: 16) { content }
+                              .padding()
+                              .frame(maxWidth: .infinity, alignment: .leading)
+                      }
+                      .background(Color.black)
+                      .navigationTitle(title)
+                  }
+              }
+          }
+
+          struct Metric: View {
+              let value: String
+              let label: String
+              var body: some View {
+                  VStack(alignment: .leading, spacing: 6) {
+                      Text(value).font(.system(size: 30, weight: .bold, design: .rounded))
+                      Text(label).foregroundStyle(.secondary)
+                  }
+                  .padding()
+                  .frame(maxWidth: .infinity, alignment: .leading)
+                  .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18))
+              }
+          }
+
+          struct WarRoomView: View {
+              var body: some View {
+                  Shell("War Room") {
+                      Text("Aftergraph")
+                          .font(.system(size: 42, weight: .bold, design: .rounded))
+                      Text("Governed execution. Observable state. Verifiable outcomes.")
+                          .foregroundStyle(.secondary)
+                      HStack {
+                          Metric(value: "4", label: "Active agents")
+                          Metric(value: "2", label: "Needs you")
+                      }
+                      HStack {
+                          Metric(value: "7", label: "Open missions")
+                          Metric(value: "12", label: "Evidence items")
+                      }
+                      GroupBox("System state") {
+                          VStack(alignment: .leading, spacing: 10) {
+                              Label("Runtime connected", systemImage: "checkmark.circle.fill")
+                              Label("Trust gateway enforced", systemImage: "shield.checkered")
+                              Label("Evidence stream available", systemImage: "doc.text.magnifyingglass")
+                          }
+                          .frame(maxWidth: .infinity, alignment: .leading)
+                      }
+                  }
+              }
+          }
+
+          struct WorkView: View {
+              var body: some View {
+                  Shell("Work") {
+                      ForEach(["Ship iOS distribution", "Verify governed build", "Reconcile runtime state"], id: \.self) { item in
+                          HStack {
+                              Image(systemName: "circle")
+                              VStack(alignment: .leading) {
+                                  Text(item).font(.headline)
+                                  Text("Mission · governed").font(.caption).foregroundStyle(.secondary)
+                              }
+                              Spacer()
+                              Image(systemName: "chevron.right")
+                          }
+                          .padding()
+                          .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                      }
+                  }
+              }
+          }
+
+          struct AgentsView: View {
+              var body: some View {
+                  Shell("Agents") {
+                      ForEach([("Friday","Active","sparkles"),("Hermes","Running","bolt.fill"),("Sentinel","Watching","shield.fill"),("Builder","Ready","hammer.fill")], id: \.0) { agent in
+                          HStack(spacing: 14) {
+                              Image(systemName: agent.2)
+                                  .frame(width: 34, height: 34)
+                                  .background(.white.opacity(0.08), in: Circle())
+                              VStack(alignment: .leading) {
+                                  Text(agent.0).font(.headline)
+                                  Text(agent.1).font(.caption).foregroundStyle(.secondary)
+                              }
+                              Spacer()
+                              Circle().fill(.green).frame(width: 8, height: 8)
+                          }
+                          .padding()
+                          .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                      }
+                  }
+              }
+          }
+
+          struct NeedsYouView: View {
+              var body: some View {
+                  Shell("Needs You") {
+                      Text("2 decisions require authority")
+                          .font(.title2.bold())
+                      ApprovalCard(title: "Deploy iOS distribution", scope: "Production · Cloudflare", risk: "Medium")
+                      ApprovalCard(title: "Approve runtime capability", scope: "Aftergraph Runtime", risk: "High")
+                  }
+              }
+          }
+
+          struct ApprovalCard: View {
+              let title: String
+              let scope: String
+              let risk: String
+              var body: some View {
+                  VStack(alignment: .leading, spacing: 12) {
+                      Text(title).font(.headline)
+                      Text(scope).foregroundStyle(.secondary)
+                      HStack {
+                          Text("Risk: \(risk)").font(.caption)
+                          Spacer()
+                          Button("Review") {}
+                              .buttonStyle(.borderedProminent)
+                              .tint(.white)
+                              .foregroundStyle(.black)
+                      }
+                  }
+                  .padding()
+                  .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18))
+              }
+          }
+
+          struct SettingsView: View {
+              @State private var endpoint = "https://api.aftergraph.org"
+              var body: some View {
+                  Shell("Settings") {
+                      Text("Gateway").font(.headline)
+                      TextField("Endpoint", text: $endpoint)
+                          .textInputAutocapitalization(.never)
+                          .keyboardType(.URL)
+                          .padding()
+                          .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                      LabeledContent("Bundle ID", value: "org.aftergraph.ios")
+                      LabeledContent("Distribution", value: "SideStore / AltStore")
+                      LabeledContent("Authority", value: "Server-side")
+                  }
+              }
+          }
+          SWIFT
+
+          cd build-ios
+          xcodegen generate
+
+      - name: Build unsigned device app
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd build-ios
+          xcodebuild             -project Aftergraph.xcodeproj             -scheme Aftergraph             -configuration Release             -sdk iphoneos             -derivedDataPath DerivedData             CODE_SIGNING_ALLOWED=NO             CODE_SIGNING_REQUIRED=NO             CODE_SIGN_IDENTITY=""             build
+
+      - name: Package unsigned IPA for SideStore
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP="build-ios/DerivedData/Build/Products/Release-iphoneos/Aftergraph.app"
+          test -d "$APP"
+          rm -rf build-ios/Payload
+          mkdir -p build-ios/Payload
+          cp -R "$APP" build-ios/Payload/
+          cd build-ios
+          /usr/bin/zip -qry Aftergraph-unsigned.ipa Payload
+          shasum -a 256 Aftergraph-unsigned.ipa | tee Aftergraph-unsigned.ipa.sha256
+          file Aftergraph-unsigned.ipa
+          unzip -l Aftergraph-unsigned.ipa | head -40
+
+      - name: Upload SideStore artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Aftergraph-iOS-SideStore
+          path: |
+            build-ios/Aftergraph-unsigned.ipa
+            build-ios/Aftergraph-unsigned.ipa.sha256
+          if-no-files-found: error
+          retention-days: 30
