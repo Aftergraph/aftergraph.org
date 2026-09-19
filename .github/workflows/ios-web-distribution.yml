@@ -1,0 +1,82 @@
+name: Aftergraph iOS Web Distribution
+
+on:
+  pull_request:
+    paths:
+      - 'ios-distribution/**'
+      - '.github/workflows/ios-web-distribution.yml'
+  push:
+    branches: ['main']
+    paths:
+      - 'ios-distribution/**'
+      - '.github/workflows/ios-web-distribution.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aftergraph-ios-web-distribution-production
+  cancel-in-progress: false
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Syntax check distribution worker
+        run: node --check ios-distribution/src/worker.js
+      - name: Assert fail-closed default
+        shell: bash
+        run: |
+          grep -F 'WEB_DISTRIBUTION_ENABLED = "false"' ios-distribution/wrangler.toml
+          ! grep -R -E 'PRIVATE_JWK[[:space:]]*=' ios-distribution --exclude='README.md'
+      - name: Diff check
+        run: git diff --check
+
+  deploy:
+    needs: gates
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Verify production runner identity
+        shell: pwsh
+        run: |
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') {
+            throw "unexpected production runner: $env:RUNNER_NAME"
+          }
+      - name: Verify Cloudflare session
+        shell: pwsh
+        run: npx --yes wrangler@4.131.2 whoami
+      - name: Deploy install.aftergraph.org
+        shell: pwsh
+        working-directory: ios-distribution
+        run: npx --yes wrangler@4.131.2 deploy --config wrangler.toml
+      - name: Verify production
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $health = Invoke-RestMethod -Uri 'https://install.aftergraph.org/healthz' -Method Get
+          if ($health.status -ne 'ok' -or $health.service -ne 'aftergraph-ios-web-distribution') {
+            throw 'production health verification failed'
+          }
+          $ready = Invoke-RestMethod -Uri 'https://install.aftergraph.org/api/readiness' -Method Get
+          if ($ready.bundleId -ne 'org.aftergraph.ios' -or $ready.distribution -ne 'apple-eu-web') {
+            throw 'production readiness contract verification failed'
+          }
+          Write-Host "iOS distribution surface live; installable=$($ready.installable)"
