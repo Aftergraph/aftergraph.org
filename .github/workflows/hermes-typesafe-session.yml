@@ -15,22 +15,46 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  sessions:
+  legacy-session:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Find original TypeSafe session by metadata only
+      - name: Inspect legacy TypeSafe request-dump metadata only
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $dir = Join-Path $HOME "AppData\Local\hermes\profiles\avc\sessions"
+          if (-not (Test-Path -LiteralPath $dir)) { throw "legacy sessions dir missing" }
+
+          $files = Get-ChildItem -LiteralPath $dir -File -Filter "request_dump_20260917_133857_2ee3ac_*.json" -ErrorAction SilentlyContinue |
+            Sort-Object Name
+
+          Write-Host ("MATCHED_DUMPS=" + $files.Count)
+          foreach ($f in $files) {
+            Write-Host ("DUMP_FILE=" + $f.Name + "; bytes=" + $f.Length)
+            try {
+              $obj = Get-Content -Raw -LiteralPath $f.FullName | ConvertFrom-Json
+              $props = @($obj.PSObject.Properties.Name)
+              Write-Host ("TOP_LEVEL_KEYS=" + ($props -join ","))
+              foreach ($name in @("session_id","sessionId","id","workspace","cwd","source","created_at","createdAt","timestamp")) {
+                if ($props -contains $name) {
+                  $value = [string]$obj.$name
+                  if ($value -and $value -notmatch "(?i)apikey_|bearer|token") {
+                    Write-Host ("META_" + $name + "=" + $value)
+                  }
+                }
+              }
+            } catch {
+              Write-Host ("METADATA_PARSE_FAILED=" + $f.Name)
+            }
+          }
+
+          Write-Host "CANDIDATE_SESSION_ID=20260917_133857_2ee3ac"
+
+      - name: Check resume syntax only
         shell: pwsh
         run: |
           $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
-
-          Write-Host "=== LIST HELP ==="
-          & $hermes sessions list --help 2>&1 | Select-Object -First 180
-
-          Write-Host "=== EXTENDED SESSION LIST FILTERED ==="
-          $lines = & $hermes sessions list --limit 250 2>&1
-          $lines |
-            Select-String -Pattern "Sep 17|typesafe|splendid-hawking|20260917_133857|13:3|13:4" -CaseSensitive:$false |
-            ForEach-Object { Write-Host $_.Line }
+          & $hermes --help 2>&1 | Select-String -Pattern "resume|continue" -CaseSensitive:$false
