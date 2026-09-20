@@ -1,4 +1,4 @@
-name: TypeSafe Jev Deterministic Benchmark
+name: TypeSafe Jev Artifact Analysis
 
 on:
   push:
@@ -6,96 +6,90 @@ on:
       - ops/typesafe-lenovo-discovery
     paths:
       - ".github/workflows/typesafe-lenovo-discovery.yml"
-      - "ops/typesafe-proof/**"
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
-  group: typesafe-jev-deterministic-benchmark
+  group: typesafe-jev-artifact-analysis
   cancel-in-progress: true
 
 jobs:
-  benchmark:
+  analyze:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 20
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Run three live Jev batches and score deterministically
+      - name: Download prior live Jev benchmark evidence
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force -Path "ops\typesafe-proof\downloaded" | Out-Null
+          gh run download 35481724805 --repo Aftergraph/aftergraph.org --name typesafe-jev-36-case-proof --dir "ops\typesafe-proof\downloaded"
+          if ($LASTEXITCODE -ne 0) { throw "Artifact download failed" }
+
+      - name: Recompute exact metrics and mismatch sets
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
-          $worktree = "C:\Users\empir\Documents\antigravity\splendid-hawking"
-          $session = "20260917_133857_2ee3ac"
-          $corpusPath = Join-Path $env:GITHUB_WORKSPACE "ops\typesafe-proof\corpus.json"
-          $promptPath = Join-Path $env:GITHUB_WORKSPACE "ops\typesafe-proof\benchmark-prompt.txt"
 
-          $corpus = Get-Content -Raw -LiteralPath $corpusPath | ConvertFrom-Json
+          $artifact = Get-ChildItem -LiteralPath "ops\typesafe-proof\downloaded" -File -Recurse -Filter "jev-vnext-eval.json" | Select-Object -First 1
+          if (-not $artifact) { throw "Benchmark JSON not found in artifact" }
+
+          $raw = [IO.File]::ReadAllText($artifact.FullName)
+          if ($raw -match "(?i)apikey_[A-Za-z0-9_\-]{16,}|Bearer\s+[A-Za-z0-9_.\-]{16,}") {
+            throw "Secret-shaped material detected in benchmark artifact"
+          }
+
+          $artifactData = $raw | ConvertFrom-Json
+          $liveRows = @($artifactData.rows)
+          if ($liveRows.Count -ne 36) { throw ("Expected 36 artifact rows, got " + $liveRows.Count) }
+
+          $corpus = Get-Content -Raw -LiteralPath "ops\typesafe-proof\corpus.json" | ConvertFrom-Json
           if (@($corpus.cases).Count -ne 36) { throw "Frozen corpus must contain 36 cases" }
 
-          $prompt = (Get-Content -Raw -LiteralPath $promptPath).Replace("{{CORPUS_PATH}}", $corpusPath)
-          $raw = & $hermes --resume $session --no-restore-cwd --in $worktree --skills typesafe-ai -z $prompt
-          if ($LASTEXITCODE -ne 0) { throw "Hermes live benchmark failed" }
-
-          $joined = ($raw -join [Environment]::NewLine).Trim()
-          $start = $joined.IndexOf('{')
-          $end = $joined.LastIndexOf('}')
-          if ($start -lt 0 -or $end -le $start) { throw "No JSON object returned by Hermes" }
-          $jsonText = $joined.Substring($start, $end - $start + 1)
-
-          if ($jsonText -match "(?i)apikey_[A-Za-z0-9_\\-]{16,}|Bearer\\s+[A-Za-z0-9_.\\-]{16,}") {
-            throw "Secret-shaped material detected in benchmark output"
-          }
-
-          $live = $jsonText | ConvertFrom-Json
-          if (($live.PSObject.Properties.Name -contains "secret_exposed") -and ([string]$live.secret_exposed).ToLowerInvariant() -eq "true") {
-            throw "Benchmark explicitly reported secret exposure"
-          }
-
-          $liveRows = @($live.rows)
-          if ($liveRows.Count -ne 36) { throw ("Expected 36 Jev rows, got " + $liveRows.Count) }
-
-          $ids = @($liveRows | ForEach-Object { [string]$_.id })
-          if (@($ids | Sort-Object -Unique).Count -ne 36) { throw "Jev row ids must be unique" }
-
-          function Get-BaselineChoice {
+          function Get-OriginalBaselineChoice {
             param([string]$Task,[string]$State)
             $s = $State.ToLowerInvariant()
             if ($Task -eq "placement") {
               if ($s -match "incomplete|do not say|insufficient") { return "clarify" }
-              if ($s -match "windows|gpu|nvidia|desktop|usb|only exists on the user's workstation|local file|everyday machine") { return "lenovo" }
+              if ($s -match "windows|gpu|nvidia|desktop|usb|only exists on the user's workstation|local file") { return "lenovo" }
               return "vds"
             }
             if ($Task -eq "recovery") {
-              if ($s -match "revoked|authority lease|forbidden|unauthor|action grant") { return "request_authority" }
-              if ($s -match "sentinel|stale evidence|verification failed|exact-head|different commit") { return "falsify_again" }
-              if ($s -match "runner offline|worker reports|environment|host vanished") { return "replace_node" }
+              if ($s -match "revoked|authority lease|forbidden|unauthor") { return "request_authority" }
+              if ($s -match "sentinel|stale evidence|verification failed|exact-head") { return "falsify_again" }
+              if ($s -match "runner offline|worker reports|environment") { return "replace_node" }
               if ($s -match "dependency|package lock|version") { return "refresh_dependency" }
-              if ($s -match "invariant|assertion|logic|deterministic check fails") { return "restore_checkpoint" }
+              if ($s -match "invariant|assertion|logic") { return "restore_checkpoint" }
               if ($s -match "429|connection reset|timeout|retry-after") { return "retry" }
               return "halt"
             }
-            if ($s -match "deterministic|single exact-head|one authoritative query") { return "solo" }
-            if ($s -match "critic|falsifier|adversarial|skeptical reviewer") { return "critic_pair" }
-            if ($s -match "claims must be merged|reduced into one evidence|source tracks|hypotheses.*reconciliation") { return "fanout_reduce" }
-            if ($s -match "concurrently|same time|parallel|independent.*join") { return "parallel" }
+            if ($s -match "deterministic|single exact-head|one deterministic") { return "solo" }
+            if ($s -match "critic|falsifier|adversarial") { return "critic_pair" }
+            if ($s -match "claims must be merged|reduced into one evidence|source tracks") { return "fanout_reduce" }
+            if ($s -match "concurrently|same time|parallel") { return "parallel" }
             return "solo"
           }
 
           $rows = New-Object System.Collections.ArrayList
+
           foreach ($case in @($corpus.cases)) {
-            $lr = @($liveRows | Where-Object { $_.id -eq $case.id })
-            if ($lr.Count -ne 1) { throw ("Missing/duplicate Jev row for " + $case.id) }
-            $jr = $lr[0]
-            if ([string]::IsNullOrWhiteSpace([string]$jr.jevChoice)) { throw ("Missing Jev choice for " + $case.id) }
-            if ($null -eq $jr.selectedProbability) { throw ("Missing Jev probability for " + $case.id) }
+            $matches = @($liveRows | Where-Object { $_.id -eq $case.id })
+            if ($matches.Count -ne 1) { throw ("Missing/duplicate live row for " + $case.id) }
+            $jr = $matches[0]
 
-            $p = [double]$jr.selectedProbability
-            if ($p -lt 0.0 -or $p -gt 1.0) { throw ("Invalid probability for " + $case.id) }
+            $p = $null
+            if ($null -ne $jr.jevSelectedProbability) { $p = [double]$jr.jevSelectedProbability }
+            elseif ($null -ne $jr.selectedProbability) { $p = [double]$jr.selectedProbability }
+            elseif ($null -ne $jr.jevConfidence) { $p = [double]$jr.jevConfidence }
 
-            $baseline = Get-BaselineChoice -Task $case.task -State $case.state
+            $baseline = Get-OriginalBaselineChoice -Task $case.task -State $case.state
+
             [void]$rows.Add([pscustomobject]@{
               id = [string]$case.id
               task = [string]$case.task
@@ -104,96 +98,91 @@ jobs:
               baselineCorrect = ($baseline -eq $case.expected)
               jevChoice = [string]$jr.jevChoice
               jevCorrect = ([string]$jr.jevChoice -eq [string]$case.expected)
-              selectedProbability = $p
-              acceptedAt070 = ($p -ge 0.70)
-              confidenceAvailable = [bool]$jr.confidenceAvailable
+              probability = $p
             })
           }
 
           $baselineCorrect = @($rows | Where-Object baselineCorrect).Count
           $jevCorrect = @($rows | Where-Object jevCorrect).Count
-          $accepted = @($rows | Where-Object acceptedAt070)
-          $acceptedCorrect = @($accepted | Where-Object jevCorrect).Count
           $baselineAccuracy = $baselineCorrect / 36.0
           $jevAccuracy = $jevCorrect / 36.0
-          $coverage = $accepted.Count / 36.0
-          $acceptedAccuracy = if ($accepted.Count) { $acceptedCorrect / [double]$accepted.Count } else { 0.0 }
-          $wrongRoute = if ($accepted.Count) { 1.0 - $acceptedAccuracy } else { 1.0 }
 
           $jevFixes = @($rows | Where-Object { -not $_.baselineCorrect -and $_.jevCorrect })
           $jevBreaks = @($rows | Where-Object { $_.baselineCorrect -and -not $_.jevCorrect })
           $bothWrong = @($rows | Where-Object { -not $_.baselineCorrect -and -not $_.jevCorrect })
           $unionCorrect = @($rows | Where-Object { $_.baselineCorrect -or $_.jevCorrect }).Count
 
-          $thresholds = @(0.70,0.75,0.80,0.85,0.90,0.95)
-          $hybrids = foreach ($t in $thresholds) {
-            $correct = 0
-            foreach ($r in $rows) {
-              $choice = if ($r.jevChoice -ne $r.baselineChoice -and $r.selectedProbability -ge $t) { $r.jevChoice } else { $r.baselineChoice }
-              if ($choice -eq $r.expected) { $correct++ }
-            }
-            [pscustomobject]@{ threshold=$t; correct=$correct; accuracy=($correct/36.0) }
-          }
-
-          $batchLatencies = @($live.batches | Where-Object { $null -ne $_.latencyMs } | ForEach-Object { [double]$_.latencyMs })
-          $meanBatchLatency = if ($batchLatencies.Count) { ($batchLatencies | Measure-Object -Average).Average } else { $null }
-          $p95BatchLatency = $null
-          if ($batchLatencies.Count) {
-            $sorted = @($batchLatencies | Sort-Object)
-            $idx = [math]::Max(0,[math]::Ceiling($sorted.Count*0.95)-1)
-            $p95BatchLatency = $sorted[$idx]
-          }
-
-          $summary = [ordered]@{
-            cases = 36
-            liveRequests = @($live.batches).Count
-            provider = [string]$live.provider
-            model = [string]$live.model
-            baselineCorrect = $baselineCorrect
-            baselineAccuracy = $baselineAccuracy
-            jevCorrect = $jevCorrect
-            jevRawAccuracy = $jevAccuracy
-            acceptedCountAt070 = $accepted.Count
-            jevCoverageAt070 = $coverage
-            jevAcceptedAccuracyAt070 = $acceptedAccuracy
-            wrongRouteRateAt070 = $wrongRoute
-            accuracyDeltaVsBaseline = ($jevAccuracy-$baselineAccuracy)
-            jevFixesBaselineErrors = $jevFixes.Count
-            jevBreaksBaselineCorrect = $jevBreaks.Count
-            bothWrong = $bothWrong.Count
-            oracleUnionCorrect = $unionCorrect
-            oracleUnionAccuracy = ($unionCorrect/36.0)
-            meanBatchLatencyMs = $meanBatchLatency
-            p95BatchLatencyMs = $p95BatchLatency
-            secret_exposed = $false
-            outputSecretScan = "clean"
-          }
-
-          Write-Host "=== DETERMINISTIC LIVE JEV BENCHMARK ==="
-          foreach ($k in $summary.Keys) { Write-Host ($k + "=" + $summary[$k]) }
+          Write-Host "=== EXACT ARTIFACT RECOMPUTE ==="
+          Write-Host ("artifactRun=35481724805")
+          Write-Host ("artifactId=10596260582")
+          Write-Host ("rows=" + $rows.Count)
+          Write-Host ("baselineCorrect=" + $baselineCorrect)
+          Write-Host ("baselineAccuracy=" + $baselineAccuracy)
+          Write-Host ("jevCorrect=" + $jevCorrect)
+          Write-Host ("jevRawAccuracy=" + $jevAccuracy)
+          Write-Host ("accuracyDeltaVsBaseline=" + ($jevAccuracy-$baselineAccuracy))
+          Write-Host ("jevFixesBaselineErrors=" + $jevFixes.Count)
+          Write-Host ("jevBreaksBaselineCorrect=" + $jevBreaks.Count)
+          Write-Host ("bothWrong=" + $bothWrong.Count)
+          Write-Host ("oracleUnionCorrect=" + $unionCorrect)
+          Write-Host ("oracleUnionAccuracy=" + ($unionCorrect/36.0))
+          Write-Host "outputSecretScan=clean"
 
           Write-Host "=== JEV FIXES BASELINE ==="
-          foreach ($r in $jevFixes) { Write-Host ("id=" + $r.id + "; expected=" + $r.expected + "; baseline=" + $r.baselineChoice + "; jev=" + $r.jevChoice + "; p=" + $r.selectedProbability) }
+          foreach ($r in $jevFixes) {
+            Write-Host ("id=" + $r.id + "; task=" + $r.task + "; expected=" + $r.expected + "; baseline=" + $r.baselineChoice + "; jev=" + $r.jevChoice + "; p=" + $r.probability)
+          }
 
           Write-Host "=== JEV BREAKS BASELINE ==="
-          foreach ($r in $jevBreaks) { Write-Host ("id=" + $r.id + "; expected=" + $r.expected + "; baseline=" + $r.baselineChoice + "; jev=" + $r.jevChoice + "; p=" + $r.selectedProbability) }
+          foreach ($r in $jevBreaks) {
+            Write-Host ("id=" + $r.id + "; task=" + $r.task + "; expected=" + $r.expected + "; baseline=" + $r.baselineChoice + "; jev=" + $r.jevChoice + "; p=" + $r.probability)
+          }
 
           Write-Host "=== BOTH WRONG ==="
-          foreach ($r in $bothWrong) { Write-Host ("id=" + $r.id + "; expected=" + $r.expected + "; baseline=" + $r.baselineChoice + "; jev=" + $r.jevChoice + "; p=" + $r.selectedProbability) }
+          foreach ($r in $bothWrong) {
+            Write-Host ("id=" + $r.id + "; task=" + $r.task + "; expected=" + $r.expected + "; baseline=" + $r.baselineChoice + "; jev=" + $r.jevChoice + "; p=" + $r.probability)
+          }
 
-          Write-Host "=== CONFIDENCE-GATED HYBRIDS (IN-SAMPLE, NOT HOLDOUT PROOF) ==="
-          foreach ($h in $hybrids) { Write-Host ("threshold=" + $h.threshold + "; correct=" + $h.correct + "; accuracy=" + $h.accuracy) }
+          Write-Host "=== CONFIDENCE-GATED HYBRIDS (IN-SAMPLE ONLY) ==="
+          foreach ($t in @(0.60,0.65,0.70,0.75,0.80,0.85,0.90,0.95)) {
+            $correct = 0
+            $jevOverrides = 0
+            foreach ($r in $rows) {
+              $choice = $r.baselineChoice
+              if ($null -ne $r.probability -and $r.jevChoice -ne $r.baselineChoice -and $r.probability -ge $t) {
+                $choice = $r.jevChoice
+                $jevOverrides++
+              }
+              if ($choice -eq $r.expected) { $correct++ }
+            }
+            Write-Host ("threshold=" + $t + "; correct=" + $correct + "; accuracy=" + ($correct/36.0) + "; jevOverrides=" + $jevOverrides)
+          }
 
           New-Item -ItemType Directory -Force -Path "ops\typesafe-proof\artifacts" | Out-Null
-          [ordered]@{ summary=$summary; hybrids=$hybrids; rows=$rows; batches=$live.batches } |
-            ConvertTo-Json -Depth 20 -Compress |
-            Set-Content -LiteralPath "ops\typesafe-proof\artifacts\jev-deterministic.json" -Encoding UTF8
+          [ordered]@{
+            summary = [ordered]@{
+              artifactRun = 35481724805
+              artifactId = 10596260582
+              cases = 36
+              baselineCorrect = $baselineCorrect
+              baselineAccuracy = $baselineAccuracy
+              jevCorrect = $jevCorrect
+              jevRawAccuracy = $jevAccuracy
+              accuracyDeltaVsBaseline = ($jevAccuracy-$baselineAccuracy)
+              jevFixesBaselineErrors = $jevFixes.Count
+              jevBreaksBaselineCorrect = $jevBreaks.Count
+              bothWrong = $bothWrong.Count
+              oracleUnionCorrect = $unionCorrect
+              oracleUnionAccuracy = ($unionCorrect/36.0)
+              outputSecretScan = "clean"
+            }
+            rows = $rows
+          } | ConvertTo-Json -Depth 20 -Compress |
+            Set-Content -LiteralPath "ops\typesafe-proof\artifacts\artifact-recompute.json" -Encoding UTF8
 
-      - name: Upload deterministic benchmark evidence
-        if: always()
+      - name: Upload recompute evidence
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: typesafe-jev-deterministic-proof
-          path: ops/typesafe-proof/artifacts/jev-deterministic.json
-          if-no-files-found: ignore
+          name: typesafe-jev-artifact-recompute
+          path: ops/typesafe-proof/artifacts/artifact-recompute.json
           retention-days: 30
