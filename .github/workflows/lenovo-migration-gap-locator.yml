@@ -1,0 +1,168 @@
+name: Lenovo migration gap locator
+
+on:
+  push:
+    branches:
+      - ops/migration-lenovo-readonly-20260920
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lenovo-migration-gap-locator-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  locate:
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 12
+    steps:
+      - name: Verify Lenovo runner identity
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:COMPUTERNAME -ne 'JONAS-LENOVO') { throw "unexpected host: $env:COMPUTERNAME" }
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw "unexpected runner: $env:RUNNER_NAME" }
+
+      - name: Locate scope gaps and collect policy sources
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $migration = 'C:\Users\empir\Aftergraph\_migration'
+          $out = Join-Path $env:RUNNER_TEMP 'migration-gap-locator.json'
+          $leaseOut = Join-Path $env:RUNNER_TEMP 'lease-sanitized.txt'
+          $finishOut = Join-Path $env:RUNNER_TEMP 'finish-consolidation.py'
+          $verifyOut = Join-Path $env:RUNNER_TEMP 'verify-phase3.sh'
+
+          $git = (Get-Command git.exe -ErrorAction Stop).Source
+          $targets = @('business-ops','relay','rendetalje','renos','sentinel-firetest2')
+          $legacy = @('work-intelligence-v2','work-intelligence-web')
+
+          function Sanitize-Origin([string]$Value) {
+            if ([string]::IsNullOrWhiteSpace($Value)) { return $null }
+            $v = $Value.Trim()
+            $v = $v -replace 'https://[^/@:]+:[^/@]+@', 'https://***:***@'
+            $v = $v -replace 'https://[^/@]+@', 'https://***@'
+            $v = $v -replace '([?&](?:token|access_token|key|secret|password)=)[^&]+', '$1***'
+            return $v
+          }
+
+          function Inspect-Repo([string]$Path) {
+            if (-not (Test-Path -LiteralPath $Path -PathType Container)) {
+              return [ordered]@{ path = $Path; exists = $false }
+            }
+            $item = Get-Item -LiteralPath $Path -Force
+            $inside = @(& $git -C $Path rev-parse --is-inside-work-tree 2>$null)
+            $insideOk = ($LASTEXITCODE -eq 0)
+            $origin = @(& $git -C $Path remote get-url origin 2>$null)
+            $originOk = ($LASTEXITCODE -eq 0)
+            $head = @(& $git -C $Path rev-parse HEAD 2>$null)
+            $headOk = ($LASTEXITCODE -eq 0)
+            $branchName = @(& $git -C $Path symbolic-ref --short -q HEAD 2>$null)
+            $branchOk = ($LASTEXITCODE -eq 0)
+            $status = @(& $git -C $Path status --porcelain=v1 2>$null)
+            $statusOk = ($LASTEXITCODE -eq 0)
+            $wt = @(& $git -C $Path worktree list --porcelain 2>$null)
+            $wtOk = ($LASTEXITCODE -eq 0)
+            return [ordered]@{
+              path = $Path
+              exists = $true
+              link_type = [string]$item.LinkType
+              target = @($item.Target)
+              git_inside = if ($insideOk) { (($inside -join '').Trim()) } else { $null }
+              origin = if ($originOk) { Sanitize-Origin (($origin -join '').Trim()) } else { $null }
+              head = if ($headOk) { (($head -join '').Trim()) } else { $null }
+              branch = if ($branchOk) { (($branchName -join '').Trim()) } else { $null }
+              dirty_count = if ($statusOk) { $status.Count } else { $null }
+              worktree_count = if ($wtOk) { @($wt | Where-Object { $_ -like 'worktree *' }).Count } else { $null }
+            }
+          }
+
+          $candidateSet = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+          foreach ($slug in ($targets + $legacy)) {
+            foreach ($candidate in @(
+              "C:\Users\empir\Aftergraph\repos\$slug",
+              "C:\Users\empir\Aftergraph\$slug",
+              "C:\Users\empir\workspace\$slug",
+              "C:\Users\empir\Documents\antigravity\$slug",
+              "C:\Users\empir\Documents\$slug",
+              "C:\Users\empir\$slug"
+            )) {
+              if (Test-Path -LiteralPath $candidate -PathType Container) { [void]$candidateSet.Add($candidate) }
+            }
+          }
+
+          foreach ($root in @(
+            'C:\Users\empir\Aftergraph',
+            'C:\Users\empir\workspace',
+            'C:\Users\empir\Documents\antigravity'
+          )) {
+            if (-not (Test-Path -LiteralPath $root -PathType Container)) { continue }
+            Get-ChildItem -LiteralPath $root -Directory -Force -Recurse -Depth 4 -ErrorAction SilentlyContinue |
+              Where-Object {
+                ($targets + $legacy) -contains $_.Name -and
+                $_.FullName -notmatch '(?i)\\node_modules\\|\\\.git\\|\\Aftergraph\\archive\\'
+              } |
+              ForEach-Object { [void]$candidateSet.Add($_.FullName) }
+          }
+
+          $found = @()
+          foreach ($p in @($candidateSet | Sort-Object)) {
+            $slug = Split-Path -Leaf $p
+            $found += [ordered]@{
+              slug = $slug
+              classification = if ($targets -contains $slug) { 'CURRENT_ORG_GAP' } else { 'LEGACY_LOCAL' }
+              state = Inspect-Repo $p
+            }
+          }
+
+          $leasePath = Join-Path $migration 'lease'
+          $leaseSafe = @()
+          if (Test-Path -LiteralPath $leasePath -PathType Leaf) {
+            foreach ($line in @(Get-Content -LiteralPath $leasePath)) {
+              $s = [string]$line
+              if ($s -match '(?i)(token|secret|password|credential|private[_ -]?key|api[_ -]?key)') {
+                if ($s -match '^([^:=]+[:=])') { $s = $Matches[1] + ' ***REDACTED***' }
+                else { $s = '***REDACTED_SENSITIVE_LINE***' }
+              }
+              $leaseSafe += $s
+            }
+            $leaseSafe | Set-Content -LiteralPath $leaseOut -Encoding UTF8
+          }
+
+          Copy-Item -LiteralPath (Join-Path $migration 'finish-consolidation.py') -Destination $finishOut
+          Copy-Item -LiteralPath (Join-Path $migration 'verify-phase3.sh') -Destination $verifyOut
+
+          $result = [ordered]@{
+            probe = 'migration-gap-locator/1.0'
+            mutation_performed = $false
+            machine = [ordered]@{ computer_name=$env:COMPUTERNAME; runner_name=$env:RUNNER_NAME }
+            git = $git
+            searched_current_org_gaps = $targets
+            legacy_names = $legacy
+            found = $found
+            current_gap_found_slugs = @($found | Where-Object { $_.classification -eq 'CURRENT_ORG_GAP' } | ForEach-Object { $_.slug } | Sort-Object -Unique)
+            current_gap_not_found = @($targets | Where-Object { (@($found | ForEach-Object { $_.slug })) -notcontains $_ })
+            lease_sanitized = $leaseSafe
+            finish_sha256 = (Get-FileHash -LiteralPath $finishOut -Algorithm SHA256).Hash.ToLowerInvariant()
+            verify_sha256 = (Get-FileHash -LiteralPath $verifyOut -Algorithm SHA256).Hash.ToLowerInvariant()
+          }
+
+          $result | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $out -Encoding UTF8
+          Write-Host '=== GAP LOCATOR ==='
+          Get-Content -LiteralPath $out
+          Write-Host '=== END GAP LOCATOR ==='
+
+      - name: Upload gap evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: lenovo-migration-gap-locator-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/migration-gap-locator.json
+            ${{ runner.temp }}/lease-sanitized.txt
+            ${{ runner.temp }}/finish-consolidation.py
+            ${{ runner.temp }}/verify-phase3.sh
+          if-no-files-found: error
+          retention-days: 7
