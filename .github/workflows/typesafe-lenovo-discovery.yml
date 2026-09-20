@@ -1,0 +1,157 @@
+name: TypeSafe Lenovo Discovery
+
+on:
+  push:
+    branches:
+      - ops/typesafe-lenovo-discovery
+    paths:
+      - ".github/workflows/typesafe-lenovo-discovery.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: typesafe-lenovo-discovery-aftergraph-org
+  cancel-in-progress: true
+
+jobs:
+  discover:
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Discover TypeSafe installation and credential locations safely
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          function Add-UniqueRecord {
+            param([System.Collections.ArrayList]$List, [hashtable]$Record, [string]$Key)
+            $existing = $List | Where-Object { $_[$Key] -eq $Record[$Key] }
+            if (-not $existing) { [void]$List.Add($Record) }
+          }
+
+          $skills = New-Object System.Collections.ArrayList
+          $credentialFiles = New-Object System.Collections.ArrayList
+          $lockfiles = New-Object System.Collections.ArrayList
+          $knownPaths = New-Object System.Collections.ArrayList
+
+          $envStatus = [ordered]@{}
+          foreach ($scopeName in @("Process","User","Machine")) {
+            $scope = [EnvironmentVariableTarget]::$scopeName
+            $value = [Environment]::GetEnvironmentVariable("TYPESAFE_API_KEY", $scope)
+            $envStatus["TYPESAFE_API_KEY_$scopeName"] = if ([string]::IsNullOrWhiteSpace($value)) { "ABSENT" } else { "PRESENT" }
+          }
+
+          $explicitCandidates = @(
+            (Join-Path $HOME ".agents\skills\typesafe-ai\SKILL.md"),
+            (Join-Path $HOME ".agents\skills\typesafe\SKILL.md"),
+            (Join-Path $HOME ".codex\skills\typesafe-ai\SKILL.md"),
+            (Join-Path $HOME ".codex\skills\typesafe\SKILL.md"),
+            (Join-Path $HOME ".claude\plugins\typesafe\SKILL.md"),
+            (Join-Path $HOME ".claude\skills\typesafe-ai\SKILL.md"),
+            (Join-Path $HOME ".claude\skills\typesafe\SKILL.md")
+          )
+          foreach ($p in $explicitCandidates) {
+            [void]$knownPaths.Add([ordered]@{ path=$p; exists=[bool](Test-Path -LiteralPath $p) })
+          }
+
+          $roots = @(
+            (Join-Path $HOME ".agents"),
+            (Join-Path $HOME ".codex"),
+            (Join-Path $HOME ".claude"),
+            (Join-Path $HOME ".config"),
+            (Join-Path $HOME "AppData\Roaming"),
+            (Join-Path $HOME "AppData\Local\hermes"),
+            (Join-Path $HOME "Documents\antigravity")
+          ) | Where-Object { Test-Path -LiteralPath $_ }
+
+          $candidateNames = @(
+            "SKILL.md","skills-lock.json",".env",".env.local",".env.production",
+            "config.json","settings.json","credentials.json","credentials.toml",
+            "config.toml","config.yaml","config.yml"
+          )
+
+          foreach ($root in $roots) {
+            Get-ChildItem -LiteralPath $root -File -Recurse -ErrorAction SilentlyContinue |
+              Where-Object {
+                $_.Length -le 1048576 -and (
+                  $candidateNames -contains $_.Name -or
+                  $_.Name -match "(?i)typesafe|jev|skill"
+                )
+              } |
+              Select-Object -First 5000 |
+              ForEach-Object {
+                $file = $_
+                $path = $file.FullName
+                try { $text = [IO.File]::ReadAllText($path) } catch { return }
+
+                if ($file.Name -eq "SKILL.md" -and $text -match "(?i)typesafe|system one|jev") {
+                  Add-UniqueRecord -List $skills -Key "path" -Record @{
+                    path = $path
+                    bytes = $file.Length
+                    mentions_typesafe = $true
+                    has_api_key_name = [bool]($text -match "(?i)TYPESAFE_API_KEY")
+                  }
+                }
+
+                if ($file.Name -eq "skills-lock.json" -and $text -match "(?i)typesafe-ai|typesafe-ai/skills") {
+                  Add-UniqueRecord -List $lockfiles -Key "path" -Record @{
+                    path = $path
+                    bytes = $file.Length
+                  }
+                }
+
+                $hasEnvName = $text -match "(?i)TYPESAFE_API_KEY"
+                $hasKeyShape = $text -match "(?i)apikey_[a-z0-9_\-]{16,}"
+                if ($hasEnvName -or $hasKeyShape) {
+                  Add-UniqueRecord -List $credentialFiles -Key "path" -Record @{
+                    path = $path
+                    bytes = $file.Length
+                    mentions_env_name = [bool]$hasEnvName
+                    contains_key_shaped_value = [bool]$hasKeyShape
+                  }
+                }
+              }
+          }
+
+          $report = [ordered]@{
+            schema = "typesafe-lenovo-discovery/0.1"
+            machine = $env:COMPUTERNAME
+            runner = $env:RUNNER_NAME
+            home = $HOME
+            environment = $envStatus
+            explicit_skill_paths = $knownPaths
+            skills = $skills
+            lockfiles = $lockfiles
+            credential_files = $credentialFiles
+          }
+
+          $outDir = Join-Path $env:RUNNER_TEMP "typesafe-discovery"
+          New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+          $outPath = Join-Path $outDir "report.json"
+          $report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $outPath -Encoding UTF8
+
+          Write-Host "=== SAFE SUMMARY (NO SECRET VALUES) ==="
+          Write-Host ("Machine=" + $report.machine)
+          Write-Host ("Runner=" + $report.runner)
+          foreach ($k in $envStatus.Keys) { Write-Host ($k + "=" + $envStatus[$k]) }
+          foreach ($p in $knownPaths) { Write-Host ("KNOWN_SKILL_PATH=" + $p.path + "; exists=" + $p.exists) }
+          Write-Host ("TypeSafe skills found=" + $skills.Count)
+          foreach ($s in $skills) {
+            Write-Host ("SKILL_PATH=" + $s.path + "; keyNameMention=" + $s.has_api_key_name)
+          }
+          Write-Host ("TypeSafe lockfiles found=" + $lockfiles.Count)
+          foreach ($l in $lockfiles) { Write-Host ("LOCK_PATH=" + $l.path) }
+          Write-Host ("Credential-bearing candidate files=" + $credentialFiles.Count)
+          foreach ($c in $credentialFiles) {
+            Write-Host ("CREDENTIAL_PATH=" + $c.path + "; envName=" + $c.mentions_env_name + "; keyShape=" + $c.contains_key_shaped_value)
+          }
+
+      - name: Upload redacted discovery report
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: typesafe-lenovo-discovery
+          path: ${{ runner.temp }}\typesafe-discovery\report.json
+          retention-days: 7
