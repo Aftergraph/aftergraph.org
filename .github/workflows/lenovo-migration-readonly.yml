@@ -271,33 +271,3 @@ jobs:
             ${{ runner.temp }}/migration-verify-phase3.txt
           if-no-files-found: warn
           retention-days: 7
-) {
-                $bash = $bashCommand.Source
-              }
-            }
-            if ($bash) {
-              $summary.verify_phase3.attempted = $true
-              $summary.verify_phase3.bash = $bash
-              & $bash 'C:/Users/empir/Aftergraph/_migration/verify-phase3.sh' 2>&1 |
-                Tee-Object -FilePath $verifyOut
-              $verifyCode = $LASTEXITCODE
-              $summary.verify_phase3.exit_code = $verifyCode
-              $global:LASTEXITCODE = 0
-            }
-          }
-
-          $summary | ConvertTo-Json -Depth 9 | Set-Content -LiteralPath $summaryPath -Encoding UTF8
-          Write-Host '=== LENOVO MIGRATION READ-ONLY SUMMARY ==='
-          Get-Content -LiteralPath $summaryPath
-          Write-Host '=== END SUMMARY ==='
-
-      - name: Upload read-only evidence
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: lenovo-migration-readonly-${{ github.run_id }}
-          path: |
-            ${{ runner.temp }}/lenovo-migration-readonly-summary.json
-            ${{ runner.temp }}/migration-verify-phase3.txt
-          if-no-files-found: warn
-          retention-days: 7
