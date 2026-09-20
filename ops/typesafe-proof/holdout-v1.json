@@ -1,0 +1,190 @@
+{
+  "schema": "jev-holdout/1.0",
+  "frozen_rule": {
+    "description": "deterministic baseline unless permitted Jev disagreement has selectedProbability >= 0.70",
+    "threshold": 0.7,
+    "mutable_after_freeze": false
+  },
+  "cases": [
+    {
+      "id": "hp01",
+      "task": "placement",
+      "state": "Run reproducible Rust unit tests inside the standard Linux container image; no user-machine state or device is needed.",
+      "expected": "vds"
+    },
+    {
+      "id": "hp02",
+      "task": "placement",
+      "state": "Validate a COM integration against the installed Windows registry and a native desktop application on the operator workstation.",
+      "expected": "lenovo"
+    },
+    {
+      "id": "hp03",
+      "task": "placement",
+      "state": "The instruction says to run it 'on the machine over there' but gives no machine identity or capability requirement.",
+      "expected": "clarify"
+    },
+    {
+      "id": "hp04",
+      "task": "placement",
+      "state": "Capture one verification frame from the USB webcam physically connected to the operator's workstation.",
+      "expected": "lenovo"
+    },
+    {
+      "id": "hp05",
+      "task": "placement",
+      "state": "Use a headless browser to verify a public website from a clean reproducible environment; nothing local is required.",
+      "expected": "vds"
+    },
+    {
+      "id": "hp06",
+      "task": "placement",
+      "state": "The input is an encrypted project file that exists only on the user's workstation and is not available to server storage.",
+      "expected": "lenovo"
+    },
+    {
+      "id": "hp07",
+      "task": "placement",
+      "state": "Run ordinary Go vet, test, and build for a server package using checked-in dependencies.",
+      "expected": "vds"
+    },
+    {
+      "id": "hp08",
+      "task": "placement",
+      "state": "The mission says 'read from that attached device' but does not identify the device, host, or interface.",
+      "expected": "clarify"
+    },
+    {
+      "id": "hp09",
+      "task": "placement",
+      "state": "The documentation being analyzed describes Windows APIs, but the actual task is text analysis with no Windows runtime dependency.",
+      "expected": "vds"
+    },
+    {
+      "id": "hp10",
+      "task": "placement",
+      "state": "Either compute node could execute this Python job; choose the environment that avoids impacting the operator's everyday workstation.",
+      "expected": "vds"
+    },
+    {
+      "id": "hr01",
+      "task": "recovery",
+      "state": "A read-only request received HTTP 503 before any effect occurred; the service is otherwise healthy.",
+      "expected": "retry"
+    },
+    {
+      "id": "hr02",
+      "task": "recovery",
+      "state": "The execution grant expired between acceptance and dispatch, so the requested action is no longer covered.",
+      "expected": "request_authority"
+    },
+    {
+      "id": "hr03",
+      "task": "recovery",
+      "state": "The deploy command returned success, but external observation shows a different commit than the exact commit under verification.",
+      "expected": "falsify_again"
+    },
+    {
+      "id": "hr04",
+      "task": "recovery",
+      "state": "The worker process disappeared before effect commit and another eligible healthy worker is available.",
+      "expected": "replace_node"
+    },
+    {
+      "id": "hr05",
+      "task": "recovery",
+      "state": "The lockfile resolves to an upstream package version that has been withdrawn, so installation cannot reproduce.",
+      "expected": "refresh_dependency"
+    },
+    {
+      "id": "hr06",
+      "task": "recovery",
+      "state": "The latest change breaks a deterministic invariant while the prior checkpoint is known green.",
+      "expected": "restore_checkpoint"
+    },
+    {
+      "id": "hr07",
+      "task": "recovery",
+      "state": "The provider returned an unknown error after a possibly destructive operation and there is no evidence whether the effect committed.",
+      "expected": "halt"
+    },
+    {
+      "id": "hr08",
+      "task": "recovery",
+      "state": "This is not an authority problem: a DNS timeout occurred during a safe GET and no write was attempted.",
+      "expected": "retry"
+    },
+    {
+      "id": "hr09",
+      "task": "recovery",
+      "state": "At action time the current principal does not match the principal bound into the authority lease.",
+      "expected": "request_authority"
+    },
+    {
+      "id": "hr10",
+      "task": "recovery",
+      "state": "The independent verifier reports that every supplied receipt belongs to the previous commit, not the current one.",
+      "expected": "falsify_again"
+    },
+    {
+      "id": "ht01",
+      "task": "topology",
+      "state": "Compare one observed SHA with one expected SHA and return whether they are equal.",
+      "expected": "solo"
+    },
+    {
+      "id": "ht02",
+      "task": "topology",
+      "state": "Build two independent packages at the same time; completion only needs a deterministic join of their exit statuses.",
+      "expected": "parallel"
+    },
+    {
+      "id": "ht03",
+      "task": "topology",
+      "state": "One agent proposes the security-sensitive implementation while a separately scoped adversarial reviewer tries to falsify it.",
+      "expected": "critic_pair"
+    },
+    {
+      "id": "ht04",
+      "task": "topology",
+      "state": "Investigate four independent hypotheses whose evidence may conflict and must be reconciled into one claim set.",
+      "expected": "fanout_reduce"
+    },
+    {
+      "id": "ht05",
+      "task": "topology",
+      "state": "Validate one JSON document against a deterministic schema; no independent hypothesis adds information.",
+      "expected": "solo"
+    },
+    {
+      "id": "ht06",
+      "task": "topology",
+      "state": "Run smoke tests for two unrelated services concurrently and join only their pass/fail states.",
+      "expected": "parallel"
+    },
+    {
+      "id": "ht07",
+      "task": "topology",
+      "state": "The migration design should be produced once and challenged by an independent skeptical security reviewer.",
+      "expected": "critic_pair"
+    },
+    {
+      "id": "ht08",
+      "task": "topology",
+      "state": "Several research tracks should independently collect claims and evidence before a reducer resolves conflicts.",
+      "expected": "fanout_reduce"
+    },
+    {
+      "id": "ht09",
+      "task": "topology",
+      "state": "Despite mentioning multi-agent documentation, the actual task is one deterministic dry-run check with a single answer.",
+      "expected": "solo"
+    },
+    {
+      "id": "ht10",
+      "task": "topology",
+      "state": "Do not create a critic: the two lint suites are unrelated and can simply execute in parallel before a boolean join.",
+      "expected": "parallel"
+    }
+  ]
+}
