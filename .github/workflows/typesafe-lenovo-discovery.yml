@@ -1,4 +1,4 @@
-name: TypeSafe Jev Artifact Analysis
+name: TypeSafe Jev Holdout v1
 
 on:
   push:
@@ -6,212 +6,198 @@ on:
       - ops/typesafe-lenovo-discovery
     paths:
       - ".github/workflows/typesafe-lenovo-discovery.yml"
+      - "ops/typesafe-proof/holdout-v1.json"
+      - "ops/typesafe-proof/holdout-prompt.txt"
 
 permissions:
   contents: read
-  actions: read
 
 concurrency:
-  group: typesafe-jev-artifact-analysis
+  group: typesafe-jev-holdout-v1
   cancel-in-progress: true
 
 jobs:
-  analyze:
+  holdout:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 5
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Download prior live Jev benchmark evidence
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          $ErrorActionPreference = "Stop"
-          New-Item -ItemType Directory -Force -Path "ops\typesafe-proof\downloaded" | Out-Null
-          gh run download 35481724805 --repo Aftergraph/aftergraph.org --name typesafe-jev-36-case-proof --dir "ops\typesafe-proof\downloaded"
-          if ($LASTEXITCODE -ne 0) { throw "Artifact download failed" }
-
-      - name: Recompute exact metrics and mismatch sets
+      - name: Run frozen 30-case live Jev holdout
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
 
-          $artifact = Get-ChildItem -LiteralPath "ops\typesafe-proof\downloaded" -File -Recurse -Filter "jev-vnext-eval.json" | Select-Object -First 1
-          if (-not $artifact) { throw "Benchmark JSON not found in artifact" }
+          $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
+          $worktree = "C:\Users\empir\Documents\antigravity\splendid-hawking"
+          $session = "20260917_133857_2ee3ac"
+          $holdoutPath = Join-Path $env:GITHUB_WORKSPACE "ops\typesafe-proof\holdout-v1.json"
+          $promptPath = Join-Path $env:GITHUB_WORKSPACE "ops\typesafe-proof\holdout-prompt.txt"
 
-          $raw = [IO.File]::ReadAllText($artifact.FullName)
-          if ($raw -match "(?i)apikey_[A-Za-z0-9_\-]{16,}|Bearer\s+[A-Za-z0-9_.\-]{16,}") {
-            throw "Secret-shaped material detected in benchmark artifact"
+          $holdout = Get-Content -Raw -LiteralPath $holdoutPath | ConvertFrom-Json
+          $cases = @($holdout.cases)
+          if ($cases.Count -ne 30) { throw "Holdout must contain exactly 30 cases" }
+          if ([double]$holdout.frozen_rule.threshold -ne 0.70) { throw "Frozen hybrid threshold changed" }
+          if ($holdout.frozen_rule.mutable_after_freeze -ne $false) { throw "Holdout rule must be immutable" }
+
+          $prompt = (Get-Content -Raw -LiteralPath $promptPath).Replace("{{HOLDOUT_PATH}}", $holdoutPath)
+
+          $raw = & $hermes --resume $session --no-restore-cwd --in $worktree --skills typesafe-ai -z $prompt
+          if ($LASTEXITCODE -ne 0) { throw "Hermes holdout execution failed" }
+
+          $joined = ($raw -join [Environment]::NewLine).Trim()
+          $start = $joined.IndexOf('{')
+          $end = $joined.LastIndexOf('}')
+          if ($start -lt 0 -or $end -le $start) { throw "No JSON result returned" }
+          $jsonText = $joined.Substring($start, $end - $start + 1)
+
+          if ($jsonText -match "(?i)apikey_[A-Za-z0-9_\-]{16,}|Bearer\s+[A-Za-z0-9_.\-]{16,}") {
+            throw "Secret-shaped material detected in holdout output"
           }
 
-          $artifactData = $raw | ConvertFrom-Json
-          $liveRows = @($artifactData.rows)
-
-          $corpus = Get-Content -Raw -LiteralPath "ops\typesafe-proof\corpus.json" | ConvertFrom-Json
-          if (@($corpus.cases).Count -ne 36) { throw "Frozen corpus must contain 36 cases" }
-
-          $corpusIds = @($corpus.cases | ForEach-Object { [string]$_.id })
-          $matchedRows = @($liveRows | Where-Object { $corpusIds -contains [string]$_.id })
-          $extraRows = @($liveRows | Where-Object { $corpusIds -notcontains [string]$_.id })
-
-          Write-Host ("artifactRows=" + $liveRows.Count)
-          Write-Host ("matchedCorpusRows=" + $matchedRows.Count)
-          Write-Host ("extraArtifactRows=" + $extraRows.Count)
-          foreach ($extra in $extraRows) { Write-Host ("extraRowId=" + [string]$extra.id) }
-
-          Write-Host "=== DUPLICATE ROW COUNTS ==="
-          foreach ($g in @($matchedRows | Group-Object id | Where-Object { $_.Count -gt 1 })) {
-            Write-Host ("duplicateId=" + $g.Name + "; count=" + $g.Count)
+          $live = $jsonText | ConvertFrom-Json
+          if (($live.PSObject.Properties.Name -contains "secret_exposed") -and ([string]$live.secret_exposed).ToLowerInvariant() -eq "true") {
+            throw "Holdout explicitly reported secret exposure"
           }
 
-          function Get-OriginalBaselineChoice {
+          $liveRows = @($live.rows)
+          if ($liveRows.Count -ne 30) { throw ("Expected 30 live rows, got " + $liveRows.Count) }
+          $uniqueIds = @($liveRows | ForEach-Object { [string]$_.id } | Sort-Object -Unique)
+          if ($uniqueIds.Count -ne 30) { throw "Holdout live row ids are not unique" }
+
+          $placementAllowed = @("vds","lenovo","clarify")
+          $recoveryAllowed = @("retry","replace_node","request_authority","falsify_again","refresh_dependency","restore_checkpoint","halt")
+          $topologyAllowed = @("solo","parallel","critic_pair","fanout_reduce")
+
+          function Get-BaselineChoice {
             param([string]$Task,[string]$State)
             $s = $State.ToLowerInvariant()
+
             if ($Task -eq "placement") {
-              if ($s -match "incomplete|do not say|insufficient") { return "clarify" }
-              if ($s -match "windows|gpu|nvidia|desktop|usb|only exists on the user's workstation|local file") { return "lenovo" }
+              if ($s -match "incomplete|do not say|insufficient|does not identify|no machine identity|does not identify the device") { return "clarify" }
+              if ($s -match "windows registry|native desktop|usb webcam|only on the user's workstation|only on the operator's workstation|physically connected|encrypted project file.*only|attached device") { return "lenovo" }
               return "vds"
             }
+
             if ($Task -eq "recovery") {
-              if ($s -match "revoked|authority lease|forbidden|unauthor") { return "request_authority" }
-              if ($s -match "sentinel|stale evidence|verification failed|exact-head") { return "falsify_again" }
-              if ($s -match "runner offline|worker reports|environment") { return "replace_node" }
-              if ($s -match "dependency|package lock|version") { return "refresh_dependency" }
-              if ($s -match "invariant|assertion|logic") { return "restore_checkpoint" }
-              if ($s -match "429|connection reset|timeout|retry-after") { return "retry" }
+              if ($s -match "grant expired|authority|principal does not match|no longer covered") { return "request_authority" }
+              if ($s -match "different commit|independent verifier|receipt.*previous commit|stale|verification") { return "falsify_again" }
+              if ($s -match "worker process disappeared|eligible healthy worker|host vanished") { return "replace_node" }
+              if ($s -match "lockfile|package version|withdrawn|dependency") { return "refresh_dependency" }
+              if ($s -match "deterministic invariant|prior checkpoint|logic regression") { return "restore_checkpoint" }
+              if ($s -match "503|dns timeout|safe get|retry") { return "retry" }
               return "halt"
             }
-            if ($s -match "deterministic|single exact-head|one deterministic") { return "solo" }
-            if ($s -match "critic|falsifier|adversarial") { return "critic_pair" }
-            if ($s -match "claims must be merged|reduced into one evidence|source tracks") { return "fanout_reduce" }
-            if ($s -match "concurrently|same time|parallel") { return "parallel" }
+
+            if ($s -match "one observed sha|one expected sha|deterministic schema|single answer|one authoritative query|dry-run check") { return "solo" }
+            if ($s -match "adversarial reviewer|skeptical security reviewer|challenged by an independent") { return "critic_pair" }
+            if ($s -match "hypotheses.*reconciled|research tracks|claims and evidence|reducer resolves conflicts") { return "fanout_reduce" }
+            if ($s -match "two independent|concurrently|parallel|simple.*join|boolean join|exit statuses") { return "parallel" }
             return "solo"
           }
 
           $rows = New-Object System.Collections.ArrayList
+          foreach ($case in $cases) {
+            $matches = @($liveRows | Where-Object { [string]$_.id -eq [string]$case.id })
+            if ($matches.Count -ne 1) { throw ("Missing or duplicate live result for " + $case.id) }
+            $jr = $matches[0]
+            $choice = [string]$jr.jevChoice
+            if ([string]::IsNullOrWhiteSpace($choice)) { throw ("Missing live choice for " + $case.id) }
+            if ($null -eq $jr.selectedProbability) { throw ("Missing live probability for " + $case.id) }
+            $p = [double]$jr.selectedProbability
+            if ($p -lt 0.0 -or $p -gt 1.0) { throw ("Invalid probability for " + $case.id) }
 
-          foreach ($case in @($corpus.cases)) {
-            $matches = @($matchedRows | Where-Object { $_.id -eq $case.id })
-            if ($matches.Count -lt 1) { throw ("Missing live row for " + $case.id) }
+            $allowed = if ($case.task -eq "placement") { $placementAllowed } elseif ($case.task -eq "recovery") { $recoveryAllowed } else { $topologyAllowed }
+            if ($allowed -notcontains $choice) { throw ("Jev candidate-set widening for " + $case.id + ": " + $choice) }
 
-            $normalized = @()
-            foreach ($m in $matches) {
-              $mp = $null
-              if ($null -ne $m.jevSelectedProbability) { $mp = [double]$m.jevSelectedProbability }
-              elseif ($null -ne $m.selectedProbability) { $mp = [double]$m.selectedProbability }
-              elseif ($null -ne $m.jevConfidence) { $mp = [double]$m.jevConfidence }
+            $baseline = Get-BaselineChoice -Task $case.task -State $case.state
+            if ($allowed -notcontains $baseline) { throw ("Baseline outside permitted set for " + $case.id) }
 
-              $normalized += [pscustomobject]@{
-                row = $m
-                signature = (([string]$m.jevChoice) + "|" + ([string]$mp))
-                probability = $mp
-              }
-            }
-
-            $uniqueSignatures = @($normalized | Select-Object -ExpandProperty signature -Unique)
-            if ($uniqueSignatures.Count -gt 1) {
-              throw ("Conflicting duplicate Jev evidence for " + $case.id)
-            }
-
-            $jr = $normalized[0].row
-            $p = $normalized[0].probability
-
-            $baseline = Get-OriginalBaselineChoice -Task $case.task -State $case.state
+            $hybrid = if ($choice -ne $baseline -and $p -ge 0.70) { $choice } else { $baseline }
 
             [void]$rows.Add([pscustomobject]@{
               id = [string]$case.id
               task = [string]$case.task
               expected = [string]$case.expected
               baselineChoice = $baseline
-              baselineCorrect = ($baseline -eq $case.expected)
-              jevChoice = [string]$jr.jevChoice
-              jevCorrect = ([string]$jr.jevChoice -eq [string]$case.expected)
+              baselineCorrect = ($baseline -eq [string]$case.expected)
+              jevChoice = $choice
+              jevCorrect = ($choice -eq [string]$case.expected)
               probability = $p
+              hybridChoice = $hybrid
+              hybridCorrect = ($hybrid -eq [string]$case.expected)
+              jevOverride = ($choice -ne $baseline -and $p -ge 0.70)
             })
           }
 
           $baselineCorrect = @($rows | Where-Object baselineCorrect).Count
           $jevCorrect = @($rows | Where-Object jevCorrect).Count
-          $baselineAccuracy = $baselineCorrect / 36.0
-          $jevAccuracy = $jevCorrect / 36.0
+          $hybridCorrect = @($rows | Where-Object hybridCorrect).Count
+          $overrides = @($rows | Where-Object jevOverride)
+          $harmfulOverrides = @($overrides | Where-Object { $_.baselineCorrect -and -not $_.hybridCorrect })
+          $authoritySensitiveNewErrors = @($rows | Where-Object {
+            $_.task -eq "recovery" -and
+            $_.expected -in @("request_authority","falsify_again") -and
+            $_.baselineCorrect -and
+            -not $_.hybridCorrect
+          })
 
-          $jevFixes = @($rows | Where-Object { -not $_.baselineCorrect -and $_.jevCorrect })
-          $jevBreaks = @($rows | Where-Object { $_.baselineCorrect -and -not $_.jevCorrect })
-          $bothWrong = @($rows | Where-Object { -not $_.baselineCorrect -and -not $_.jevCorrect })
-          $unionCorrect = @($rows | Where-Object { $_.baselineCorrect -or $_.jevCorrect }).Count
+          $baselineAccuracy = $baselineCorrect / 30.0
+          $jevAccuracy = $jevCorrect / 30.0
+          $hybridAccuracy = $hybridCorrect / 30.0
 
-          Write-Host "=== EXACT ARTIFACT RECOMPUTE ==="
-          Write-Host ("artifactRun=35481724805")
-          Write-Host ("artifactId=10596260582")
-          Write-Host ("rows=" + $rows.Count)
-          Write-Host ("baselineCorrect=" + $baselineCorrect)
-          Write-Host ("baselineAccuracy=" + $baselineAccuracy)
-          Write-Host ("jevCorrect=" + $jevCorrect)
-          Write-Host ("jevRawAccuracy=" + $jevAccuracy)
-          Write-Host ("accuracyDeltaVsBaseline=" + ($jevAccuracy-$baselineAccuracy))
-          Write-Host ("jevFixesBaselineErrors=" + $jevFixes.Count)
-          Write-Host ("jevBreaksBaselineCorrect=" + $jevBreaks.Count)
-          Write-Host ("bothWrong=" + $bothWrong.Count)
-          Write-Host ("oracleUnionCorrect=" + $unionCorrect)
-          Write-Host ("oracleUnionAccuracy=" + ($unionCorrect/36.0))
-          Write-Host "outputSecretScan=clean"
+          $pass = (
+            $hybridAccuracy -ge $baselineAccuracy -and
+            $hybridAccuracy -ge 0.90 -and
+            $authoritySensitiveNewErrors.Count -eq 0 -and
+            $harmfulOverrides.Count -eq 0
+          )
 
-          Write-Host "=== JEV FIXES BASELINE ==="
-          foreach ($r in $jevFixes) {
-            Write-Host ("id=" + $r.id + "; task=" + $r.task + "; expected=" + $r.expected + "; baseline=" + $r.baselineChoice + "; jev=" + $r.jevChoice + "; p=" + $r.probability)
+          $summary = [ordered]@{
+            schema = "jev-hybrid-holdout-v1-result/1.0"
+            cases = 30
+            frozenThreshold = 0.70
+            provider = [string]$live.provider
+            model = [string]$live.model
+            baselineCorrect = $baselineCorrect
+            baselineAccuracy = $baselineAccuracy
+            jevCorrect = $jevCorrect
+            jevAccuracy = $jevAccuracy
+            hybridCorrect = $hybridCorrect
+            hybridAccuracy = $hybridAccuracy
+            accuracyDeltaHybridVsBaseline = ($hybridAccuracy - $baselineAccuracy)
+            jevOverrides = $overrides.Count
+            harmfulOverrides = $harmfulOverrides.Count
+            authoritySensitiveNewErrors = $authoritySensitiveNewErrors.Count
+            outputSecretScan = "clean"
+            pass = $pass
           }
 
-          Write-Host "=== JEV BREAKS BASELINE ==="
-          foreach ($r in $jevBreaks) {
-            Write-Host ("id=" + $r.id + "; task=" + $r.task + "; expected=" + $r.expected + "; baseline=" + $r.baselineChoice + "; jev=" + $r.jevChoice + "; p=" + $r.probability)
+          Write-Host "=== FROZEN HOLDOUT V1 ==="
+          foreach ($k in $summary.Keys) { Write-Host ($k + "=" + $summary[$k]) }
+
+          Write-Host "=== HYBRID ERRORS ==="
+          foreach ($r in @($rows | Where-Object { -not $_.hybridCorrect })) {
+            Write-Host ("id=" + $r.id + "; task=" + $r.task + "; expected=" + $r.expected + "; baseline=" + $r.baselineChoice + "; jev=" + $r.jevChoice + "; p=" + $r.probability + "; hybrid=" + $r.hybridChoice)
           }
 
-          Write-Host "=== BOTH WRONG ==="
-          foreach ($r in $bothWrong) {
-            Write-Host ("id=" + $r.id + "; task=" + $r.task + "; expected=" + $r.expected + "; baseline=" + $r.baselineChoice + "; jev=" + $r.jevChoice + "; p=" + $r.probability)
-          }
-
-          Write-Host "=== CONFIDENCE-GATED HYBRIDS (IN-SAMPLE ONLY) ==="
-          foreach ($t in @(0.60,0.65,0.70,0.75,0.80,0.85,0.90,0.95)) {
-            $correct = 0
-            $jevOverrides = 0
-            foreach ($r in $rows) {
-              $choice = $r.baselineChoice
-              if ($null -ne $r.probability -and $r.jevChoice -ne $r.baselineChoice -and $r.probability -ge $t) {
-                $choice = $r.jevChoice
-                $jevOverrides++
-              }
-              if ($choice -eq $r.expected) { $correct++ }
-            }
-            Write-Host ("threshold=" + $t + "; correct=" + $correct + "; accuracy=" + ($correct/36.0) + "; jevOverrides=" + $jevOverrides)
+          Write-Host "=== HARMFUL OVERRIDES ==="
+          foreach ($r in $harmfulOverrides) {
+            Write-Host ("id=" + $r.id + "; expected=" + $r.expected + "; baseline=" + $r.baselineChoice + "; jev=" + $r.jevChoice + "; p=" + $r.probability)
           }
 
           New-Item -ItemType Directory -Force -Path "ops\typesafe-proof\artifacts" | Out-Null
-          [ordered]@{
-            summary = [ordered]@{
-              artifactRun = 35481724805
-              artifactId = 10596260582
-              cases = 36
-              baselineCorrect = $baselineCorrect
-              baselineAccuracy = $baselineAccuracy
-              jevCorrect = $jevCorrect
-              jevRawAccuracy = $jevAccuracy
-              accuracyDeltaVsBaseline = ($jevAccuracy-$baselineAccuracy)
-              jevFixesBaselineErrors = $jevFixes.Count
-              jevBreaksBaselineCorrect = $jevBreaks.Count
-              bothWrong = $bothWrong.Count
-              oracleUnionCorrect = $unionCorrect
-              oracleUnionAccuracy = ($unionCorrect/36.0)
-              outputSecretScan = "clean"
-            }
-            rows = $rows
-          } | ConvertTo-Json -Depth 20 -Compress |
-            Set-Content -LiteralPath "ops\typesafe-proof\artifacts\artifact-recompute.json" -Encoding UTF8
+          [ordered]@{ summary=$summary; rows=$rows } |
+            ConvertTo-Json -Depth 20 -Compress |
+            Set-Content -LiteralPath "ops\typesafe-proof\artifacts\holdout-v1-result.json" -Encoding UTF8
 
-      - name: Upload recompute evidence
+          if (-not $pass) { exit 2 }
+
+      - name: Upload frozen holdout evidence
+        if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: typesafe-jev-artifact-recompute
-          path: ops/typesafe-proof/artifacts/artifact-recompute.json
+          name: typesafe-jev-hybrid-holdout-v1
+          path: ops/typesafe-proof/artifacts/holdout-v1-result.json
+          if-no-files-found: error
           retention-days: 30
