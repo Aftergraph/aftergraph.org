@@ -1,0 +1,172 @@
+name: Lenovo migration deep census
+
+on:
+  push:
+    branches:
+      - ops/migration-lenovo-readonly-20260920
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lenovo-migration-deep-census-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  census:
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 10
+    steps:
+      - name: Verify Lenovo runner identity
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:COMPUTERNAME -ne 'JONAS-LENOVO') { throw "unexpected host: $env:COMPUTERNAME" }
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw "unexpected runner: $env:RUNNER_NAME" }
+
+      - name: Deep read-only migration census
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $migration = 'C:\Users\empir\Aftergraph\_migration'
+          $reposRoot = 'C:\Users\empir\Aftergraph\repos'
+          $outPath = Join-Path $env:RUNNER_TEMP 'aftergraph-migration-deep-census.json'
+
+          function Sanitize-Origin([string]$Value) {
+            if ([string]::IsNullOrWhiteSpace($Value)) { return $null }
+            $v = $Value.Trim()
+            $v = $v -replace 'https://[^/@:]+:[^/@]+@', 'https://***:***@'
+            $v = $v -replace 'https://[^/@]+@', 'https://***@'
+            $v = $v -replace '([?&](?:token|access_token|key|secret|password)=)[^&]+', '$1***'
+            return $v
+          }
+
+          function Git-One([string]$Git, [string]$Path, [string[]]$Args) {
+            $lines = @(& $Git -C $Path @Args 2>$null)
+            if ($LASTEXITCODE -ne 0) { return $null }
+            return (($lines | ForEach-Object { [string]$_ }) -join "`n").Trim()
+          }
+
+          function Context-Lines([string]$Path, [string[]]$Patterns, [int]$Radius = 3) {
+            if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return @() }
+            $lines = @(Get-Content -LiteralPath $Path)
+            $wanted = New-Object 'System.Collections.Generic.HashSet[int]'
+            for ($i = 0; $i -lt $lines.Count; $i++) {
+              foreach ($pattern in $Patterns) {
+                if ([string]$lines[$i] -match $pattern) {
+                  for ($j = [Math]::Max(0, $i-$Radius); $j -le [Math]::Min($lines.Count-1, $i+$Radius); $j++) {
+                    [void]$wanted.Add($j)
+                  }
+                }
+              }
+            }
+            return @($wanted | Sort-Object | ForEach-Object {
+              [ordered]@{ line = ($_ + 1); text = [string]$lines[$_] }
+            })
+          }
+
+          $gitCmd = Get-Command git.exe -ErrorAction Stop
+          $git = $gitCmd.Source
+
+          $currentOrg = @(
+            '.github','afm','after-graph-governance','aftergraph-cron-fabric','aftergraph.org','aie',
+            'autonomous-venture-company','brand','business-ops','context-continuity','continuum','docs',
+            'fihim','intelligence-systems-research','llm-research-development','model-registry','relay',
+            'rendetalje','renos','runtime','sentinel','sentinel-firetest','sentinel-firetest2','skill-abi',
+            'skillport','skills-vault','studio','trust-gateway','veranza','war-room','wi-backend',
+            'wi-frontend','works-execution'
+          )
+
+          $repoRows = @()
+          if (Test-Path -LiteralPath $reposRoot) {
+            foreach ($d in @(Get-ChildItem -LiteralPath $reposRoot -Directory -Force | Sort-Object Name)) {
+              $path = $d.FullName
+              $inside = Git-One $git $path @('rev-parse','--is-inside-work-tree')
+              $origin = Git-One $git $path @('remote','get-url','origin')
+              $head = Git-One $git $path @('rev-parse','HEAD')
+              $branchName = Git-One $git $path @('symbolic-ref','--short','-q','HEAD')
+              $statusLines = @(& $git -C $path status --porcelain=v1 2>$null)
+              $statusOk = ($LASTEXITCODE -eq 0)
+              $wtLines = @(& $git -C $path worktree list --porcelain 2>$null)
+              $wtOk = ($LASTEXITCODE -eq 0)
+              $wtCount = if ($wtOk) { @($wtLines | Where-Object { $_ -like 'worktree *' }).Count } else { $null }
+
+              $repoRows += [ordered]@{
+                slug = $d.Name
+                path = $path
+                link_type = [string]$d.LinkType
+                target = @($d.Target)
+                is_git_worktree = ($inside -eq 'true')
+                origin = Sanitize-Origin $origin
+                head = $head
+                branch = $branchName
+                detached = [string]::IsNullOrWhiteSpace($branchName)
+                dirty_count = if ($statusOk) { $statusLines.Count } else { $null }
+                worktree_count = $wtCount
+              }
+            }
+          }
+
+          $localSlugs = @($repoRows | ForEach-Object { $_.slug })
+          $canonicalPath = Join-Path $migration 'canonical.tsv'
+          $canonicalLines = if (Test-Path -LiteralPath $canonicalPath) {
+            @(Get-Content -LiteralPath $canonicalPath | Where-Object { $_.Trim() -and -not $_.TrimStart().StartsWith('#') })
+          } else { @() }
+          $canonicalSlugs = @($canonicalLines | ForEach-Object { ($_ -split "`t")[0] })
+
+          $leasePath = Join-Path $migration 'lease'
+          $leaseSafe = @()
+          if (Test-Path -LiteralPath $leasePath -PathType Leaf) {
+            foreach ($line in @(Get-Content -LiteralPath $leasePath)) {
+              $s = [string]$line
+              if ($s -match '(?i)(token|secret|password|credential|private[_ -]?key|api[_ -]?key)') {
+                if ($s -match '^([^:=]+[:=])') { $s = $Matches[1] + ' ***REDACTED***' }
+                else { $s = '***REDACTED_SENSITIVE_LINE***' }
+              }
+              $leaseSafe += $s
+            }
+          }
+
+          $verifyPath = Join-Path $migration 'verify-phase3.sh'
+          $finishPath = Join-Path $migration 'finish-consolidation.py'
+
+          $result = [ordered]@{
+            probe = 'aftergraph-migration-deep-census/1.0'
+            mutation_performed = $false
+            machine = [ordered]@{
+              computer_name = $env:COMPUTERNAME
+              runner_name = $env:RUNNER_NAME
+            }
+            git = $git
+            repos_root = $reposRoot
+            repo_count = $repoRows.Count
+            repos = $repoRows
+            current_org_count = $currentOrg.Count
+            current_org_missing_locally = @($currentOrg | Where-Object { $localSlugs -notcontains $_ })
+            local_not_current_org = @($localSlugs | Where-Object { $currentOrg -notcontains $_ })
+            canonical_count = $canonicalSlugs.Count
+            canonical_slugs = $canonicalSlugs
+            current_org_missing_from_canonical = @($currentOrg | Where-Object { $canonicalSlugs -notcontains $_ })
+            canonical_not_current_org = @($canonicalSlugs | Where-Object { $currentOrg -notcontains $_ })
+            lease_sanitized_lines = $leaseSafe
+            verify_wt_abc_context = Context-Lines $verifyPath @('wt/abc','wt\\abc','abc')
+            finish_policy_context = Context-Lines $finishPath @(
+              'approve','lease','idle','lock','rename','WinError','junction',
+              'fihim','skillport','wt[/\\]abc','archive','argparse','move'
+            ) 4
+          }
+
+          $result | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath $outPath -Encoding UTF8
+          Write-Host '=== DEEP CENSUS JSON ==='
+          Get-Content -LiteralPath $outPath
+          Write-Host '=== END DEEP CENSUS ==='
+
+      - name: Upload deep census
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: lenovo-migration-deep-census-${{ github.run_id }}
+          path: ${{ runner.temp }}/aftergraph-migration-deep-census.json
+          if-no-files-found: error
+          retention-days: 7
