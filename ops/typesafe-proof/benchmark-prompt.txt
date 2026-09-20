@@ -10,17 +10,25 @@ TASK:
 Read the frozen benchmark corpus from:
 {{CORPUS_PATH}}
 
-It contains exactly 36 labeled cases across placement, recovery, and topology.
+It contains exactly 36 labeled cases:
+- 12 placement
+- 12 recovery
+- 12 topology
 
-For EACH case make exactly one LIVE TypeSafe System One Choice decision using Jev, with these task contracts:
+IMPORTANT EXECUTION METHOD:
+Make exactly THREE live TypeSafe System One requests total, not 36.
+For each task family, place all 12 case states into one structured state object and create 12 independent Choice questions keyed by case id.
+Every jevChoice and selectedProbability must come from the corresponding live System One answer. Do not substitute your own reasoning for a missing answer.
 
-placement:
+REQUEST 1 — placement, 12 independent questions:
+Criteria for every question:
 - vds = always-on server/VDS is sufficient and preferred
 - lenovo = personal workstation is explicitly required by Windows/GPU/local desktop/local file/local device constraints
 - clarify = requirements are insufficient to decide safely
 Instruction: choose the safest eligible placement; prefer VDS for ordinary server work.
 
-recovery:
+REQUEST 2 — recovery, 12 independent questions:
+Criteria:
 - retry = transient and safe to retry
 - replace_node = worker/environment failed and another eligible node should be used
 - request_authority = authority missing/expired/revoked
@@ -30,7 +38,8 @@ recovery:
 - halt = unknown or unsafe to continue automatically
 Instruction: do not blindly retry authority or verification failures.
 
-topology:
+REQUEST 3 — topology, 12 independent questions:
+Criteria:
 - solo = one deterministic/single-track worker is enough
 - parallel = independent work can run concurrently and simple join is sufficient
 - critic_pair = primary worker plus independent adversarial critic/falsifier
@@ -39,16 +48,19 @@ Instruction: choose the smallest effective topology; do not spawn agents without
 
 Use acceptance threshold 0.70.
 
-Also compute this fixed deterministic baseline:
+Compute this fixed deterministic baseline locally after the three live calls:
 placement: clarify on incomplete/do-not-say/insufficient; lenovo on explicit windows/gpu/nvidia/desktop/usb/local-file/workstation-only wording; otherwise vds.
 recovery: authority/revoked=>request_authority; sentinel/stale/exact-head=>falsify_again; runner-offline/environment=>replace_node; dependency/version=>refresh_dependency; invariant/assertion=>restore_checkpoint; 429/connection-reset/timeout=>retry; otherwise halt.
 topology: deterministic/single exact-head=>solo; critic/falsifier/adversarial=>critic_pair; merged/reduced/source-tracks=>fanout_reduce; concurrently/same-time/parallel=>parallel; otherwise solo.
 
 For each case record:
-id, expected, baselineChoice, baselineCorrect, jevChoice, jevCorrect, selectedProbability if available, confidenceAvailable, acceptedAt070, latencyMs if measurable.
+id, expected, baselineChoice, baselineCorrect, jevChoice, jevCorrect, selectedProbability if available, confidenceAvailable, acceptedAt070.
+
+Also record per-batch live request latency if measurable.
 
 Compute summary:
-cases
+cases=36
+liveRequests=3
 provider
 model
 baselineAccuracy
@@ -56,14 +68,16 @@ jevRawAccuracy
 jevCoverage
 jevAcceptedAccuracy
 wrongRouteRateAccepted
-meanLatencyMs if measurable
-p95LatencyMs if measurable
+meanBatchLatencyMs if measurable
+p95BatchLatencyMs if measurable
 accuracyDeltaVsBaseline
 modelWorks = jevRawAccuracy >= 0.75 AND jevAcceptedAccuracy >= 0.85 AND wrongRouteRateAccepted <= 0.15
 outperformsBaseline = jevRawAccuracy > baselineAccuracy
 secret_exposed=false
 
+Fail closed if any of the 36 live answers is missing.
+
 Return ONLY one valid compact JSON object:
-{"summary":{...},"rows":[...]}
+{"summary":{...},"rows":[...],"batches":[...]}
 
 No markdown fences and no commentary.
