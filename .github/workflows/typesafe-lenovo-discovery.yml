@@ -15,16 +15,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  profile-interface:
+  hermes-typesafe:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Inspect Hermes profile interface
+      - name: Verify Hermes avc + TypeSafe skill oneshot
         shell: pwsh
         run: |
           $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
-          & $hermes profile --help 2>&1 | Select-Object -First 160
-          Write-Host "=== PROFILE LIST ==="
-          & $hermes profile list 2>&1 | Select-Object -First 120
+          $worktree = "C:\Users\empir\Documents\antigravity\splendid-hawking"
+
+          $prompt = @"
+Use the installed TypeSafe skill for this project. Do not reveal, print, quote, or return any API key or secret.
+Inspect only enough local project/profile context to verify that the TypeSafe skill is usable.
+Return exactly one JSON object with these keys:
+skill_loaded (boolean),
+project (string),
+can_attempt_system_one (boolean),
+reason (short string).
+Do not modify files or external systems.
+"@
+
+          & $hermes --in $worktree --skills typesafe-ai -z $prompt
+          if ($LASTEXITCODE -ne 0) { throw "Hermes TypeSafe oneshot failed" }
