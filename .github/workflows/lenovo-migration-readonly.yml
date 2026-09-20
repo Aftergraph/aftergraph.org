@@ -122,6 +122,9 @@ jobs:
             migration_root = Describe-Path $root
             files = [ordered]@{}
             inventory = [ordered]@{}
+            canonical_tsv = [ordered]@{}
+            lease_state = [ordered]@{}
+            tooling = [ordered]@{}
             paths = [ordered]@{}
             processes = @()
             action_runners = [ordered]@{}
@@ -171,6 +174,31 @@ jobs:
               canonical_present_by_name_scan = $present.Count
               canonical_missing_by_name_scan = $missing
               exception_names_present = $exceptionPresent
+            }
+          }
+
+          $canonicalTsvPath = Join-Path $root 'canonical.tsv'
+          if (Test-Path -LiteralPath $canonicalTsvPath -PathType Leaf) {
+            $canonicalLines = @(Get-Content -LiteralPath $canonicalTsvPath | Where-Object { $_.Trim() -and -not $_.TrimStart().StartsWith('#') })
+            $summary.canonical_tsv = [ordered]@{
+              line_count = $canonicalLines.Count
+              first_fields = @($canonicalLines | ForEach-Object { ($_ -split "`t")[0] })
+            }
+          }
+
+          $leasePath = Join-Path $root 'lease'
+          if (Test-Path -LiteralPath $leasePath -PathType Leaf) {
+            try {
+              $leaseJson = Get-Content -LiteralPath $leasePath -Raw | ConvertFrom-Json
+              $leaseOut = [ordered]@{}
+              foreach ($field in @('holder','phase','heartbeat','heartbeat_at','updated_at','lock_holders','expires_at','status')) {
+                if ($leaseJson.PSObject.Properties.Name -contains $field) {
+                  $leaseOut[$field] = $leaseJson.$field
+                }
+              }
+              $summary.lease_state = $leaseOut
+            } catch {
+              $summary.lease_state = [ordered]@{ parse_error = $true }
             }
           }
 
@@ -235,16 +263,29 @@ jobs:
 
           $verifyScript = Join-Path $root 'verify-phase3.sh'
           if (Test-Path -LiteralPath $verifyScript -PathType Leaf) {
-            $bash = $null
-            if (Test-Path -LiteralPath 'C:\Program Files\Git\bin\bash.exe') {
-              $bash = 'C:\Program Files\Git\bin\bash.exe'
+            $gitSources = @((Get-Command git.exe -All -ErrorAction SilentlyContinue | ForEach-Object { $_.Source }) | Sort-Object -Unique)
+            $bashSources = @((Get-Command bash.exe -All -ErrorAction SilentlyContinue | ForEach-Object { $_.Source }) | Sort-Object -Unique)
+            $bashCandidates = @(
+              'C:\Program Files\Git\bin\bash.exe',
+              'C:\Program Files\Git\usr\bin\bash.exe',
+              'C:\Users\empir\AppData\Local\Programs\Git\bin\bash.exe',
+              'C:\Users\empir\AppData\Local\Programs\Git\usr\bin\bash.exe'
+            )
+            foreach ($gitSource in $gitSources) {
+              $gitDir = Split-Path -Parent $gitSource
+              $gitRoot = Split-Path -Parent $gitDir
+              $bashCandidates += (Join-Path $gitRoot 'bin\bash.exe')
+              $bashCandidates += (Join-Path $gitRoot 'usr\bin\bash.exe')
             }
-            if (-not $bash) {
-              $bashCommand = Get-Command bash.exe -ErrorAction SilentlyContinue
-              if ($null -ne $bashCommand -and $bashCommand.Source -notmatch '(?i)System32\\bash[.]exe$') {
-                $bash = $bashCommand.Source
-              }
+            $bash = @($bashCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1)
+            if ($bash.Count -gt 0) { $bash = [string]$bash[0] } else { $bash = $null }
+
+            $summary.tooling = [ordered]@{
+              git_sources = $gitSources
+              bash_command_sources = $bashSources
+              selected_bash = $bash
             }
+
             if ($bash) {
               $summary.verify_phase3.attempted = $true
               $summary.verify_phase3.bash = $bash
