@@ -1,9 +1,6 @@
 name: Lenovo migration deep census
 
 on:
-  push:
-    branches:
-      - ops/migration-lenovo-readonly-20260920
   workflow_dispatch:
 
 permissions:

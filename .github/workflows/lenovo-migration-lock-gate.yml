@@ -1,0 +1,142 @@
+name: Lenovo migration lock gate
+
+on:
+  push:
+    branches:
+      - ops/migration-lenovo-readonly-20260920
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 10
+    steps:
+      - name: Verify physical host
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:COMPUTERNAME -ne 'JONAS-LENOVO') { throw "unexpected host: $env:COMPUTERNAME" }
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw "unexpected runner: $env:RUNNER_NAME" }
+
+      - name: Evaluate non-mutating physical-move gates
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $out = Join-Path $env:RUNNER_TEMP 'migration-lock-gate.json'
+          $python = $null
+          foreach ($name in @('python.exe','python')) {
+            try { $python = (Get-Command $name -ErrorAction Stop).Source; break } catch {}
+          }
+
+          $psutilAvailable = $false
+          if ($python) {
+            & $python -c "import psutil" *> $null
+            $psutilAvailable = ($LASTEXITCODE -eq 0)
+          }
+
+          $pidMap = [ordered]@{
+            fihim = @(17992,26752,10016)
+            skillport = @(34156)
+            wt_abc = @(9152)
+          }
+          $targets = [ordered]@{
+            fihim = 'C:\Users\empir\Documents\antigravity\splendid-hawking'
+            skillport = 'C:\Users\empir\workspace\skillport'
+            wt_abc = 'C:\Users\empir\workspace\wt\abc'
+          }
+
+          $procRows = @()
+          foreach ($group in $pidMap.Keys) {
+            foreach ($pidValue in @($pidMap[$group])) {
+              $p = Get-CimInstance Win32_Process -Filter "ProcessId=$pidValue" -ErrorAction SilentlyContinue
+              $cwd = $null
+              $cwdError = $null
+              if ($p -and $psutilAvailable) {
+                try {
+                  $raw = & $python -c "import psutil,sys; print(psutil.Process(int(sys.argv[1])).cwd())" "$pidValue" 2>$null
+                  if ($LASTEXITCODE -eq 0) { $cwd = (($raw -join '').Trim()) }
+                  else { $cwdError = 'psutil_cwd_failed' }
+                } catch { $cwdError = $_.Exception.GetType().Name }
+              } elseif ($p) {
+                $cwdError = 'psutil_unavailable'
+              }
+              $procRows += [ordered]@{
+                group = $group
+                pid = $pidValue
+                exists = ($null -ne $p)
+                name = if ($p) { [string]$p.Name } else { $null }
+                cwd = $cwd
+                cwd_error = $cwdError
+                cwd_under_target = if ($cwd) {
+                  $cwd.TrimEnd('\').StartsWith(([string]$targets[$group]).TrimEnd('\'), [System.StringComparison]::OrdinalIgnoreCase)
+                } else { $null }
+                commandline_mentions_target = if ($p) {
+                  ([string]$p.CommandLine).IndexOf(([string]$targets[$group]), [System.StringComparison]::OrdinalIgnoreCase) -ge 0
+                } else { $false }
+              }
+            }
+          }
+
+          $treeRows = @()
+          foreach ($group in $targets.Keys) {
+            $path = [string]$targets[$group]
+            if (-not (Test-Path -LiteralPath $path -PathType Container)) {
+              $treeRows += [ordered]@{ group=$group; path=$path; exists=$false }
+              continue
+            }
+            $latest = $null
+            $lockFiles = @()
+            try {
+              $files = @(Get-ChildItem -LiteralPath $path -File -Recurse -Force -ErrorAction SilentlyContinue |
+                Where-Object { $_.FullName -notmatch '(?i)\node_modules\|\.git\objects\|\dist\|\build\' })
+              if ($files.Count -gt 0) {
+                $latestItem = $files | Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 1
+                $latest = $latestItem.LastWriteTimeUtc.ToString('o')
+              }
+              $lockFiles = @($files | Where-Object { $_.Name -match '(?i)(^|\.)lock$|\.lock$' } | Select-Object -First 50 -ExpandProperty FullName)
+            } catch {}
+
+            $gitHead=$null; $dirty=$null; $wtCount=$null
+            try {
+              $git=(Get-Command git.exe -ErrorAction Stop).Source
+              $gitHead=((& $git -C $path rev-parse HEAD 2>$null) -join '').Trim()
+              $status=@(& $git -C $path status --porcelain=v1 2>$null)
+              if ($LASTEXITCODE -eq 0) { $dirty=$status.Count }
+              $wt=@(& $git -C $path worktree list --porcelain 2>$null)
+              if ($LASTEXITCODE -eq 0) { $wtCount=@($wt | Where-Object { $_ -like 'worktree *' }).Count }
+            } catch {}
+
+            $treeRows += [ordered]@{
+              group=$group
+              path=$path
+              exists=$true
+              last_file_write_utc=$latest
+              lock_file_count=$lockFiles.Count
+              lock_file_names=@($lockFiles | ForEach-Object { Split-Path -Leaf $_ })
+              head=$gitHead
+              dirty_count=$dirty
+              worktree_count=$wtCount
+            }
+          }
+
+          $payload=[ordered]@{
+            probe='migration-lock-gate/1.0'
+            mutation_performed=$false
+            observed_utc=(Get-Date).ToUniversalTime().ToString('o')
+            psutil_available=$psutilAvailable
+            processes=$procRows
+            trees=$treeRows
+          }
+          $payload | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $out -Encoding UTF8
+          Get-Content -LiteralPath $out
+
+      - name: Upload gate evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: migration-lock-gate-${{ github.run_id }}
+          path: ${{ runner.temp }}/migration-lock-gate.json
+          if-no-files-found: error
+          retention-days: 7
