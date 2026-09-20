@@ -2,33 +2,29 @@ Use the installed typesafe-ai skill and the TypeSafe credential already present 
 
 SECURITY:
 - Do NOT search filesystem, history, sessions, environment, web, or other files for credentials.
-- Do NOT print, quote, persist, return, or rotate any credential.
+- Do NOT print, quote, persist, return, rotate, or expose any credential.
 - Do NOT modify external systems other than live TypeSafe System One inference requests.
 - secret_exposed must remain false.
 
-TASK:
-Read the frozen benchmark corpus from:
+Read the frozen corpus from:
 {{CORPUS_PATH}}
 
-It contains exactly 36 labeled cases:
-- 12 placement
-- 12 recovery
-- 12 topology
+It contains exactly 36 cases: 12 placement, 12 recovery, 12 topology.
 
-IMPORTANT EXECUTION METHOD:
-Make exactly THREE live TypeSafe System One requests total, not 36.
-For each task family, place all 12 case states into one structured state object and create 12 independent Choice questions keyed by case id.
-Every jevChoice and selectedProbability must come from the corresponding live System One answer. Do not substitute your own reasoning for a missing answer.
+Make exactly THREE live TypeSafe System One requests total:
+1) one request containing all 12 placement cases as structured state plus 12 independent Choice questions keyed by case id;
+2) one request containing all 12 recovery cases plus 12 independent Choice questions keyed by case id;
+3) one request containing all 12 topology cases plus 12 independent Choice questions keyed by case id.
 
-REQUEST 1 — placement, 12 independent questions:
-Criteria for every question:
+Every returned jevChoice and selectedProbability MUST come from the corresponding live System One answer. Never replace a missing System One answer with your own reasoning.
+
+placement criteria:
 - vds = always-on server/VDS is sufficient and preferred
 - lenovo = personal workstation is explicitly required by Windows/GPU/local desktop/local file/local device constraints
 - clarify = requirements are insufficient to decide safely
 Instruction: choose the safest eligible placement; prefer VDS for ordinary server work.
 
-REQUEST 2 — recovery, 12 independent questions:
-Criteria:
+recovery criteria:
 - retry = transient and safe to retry
 - replace_node = worker/environment failed and another eligible node should be used
 - request_authority = authority missing/expired/revoked
@@ -38,46 +34,23 @@ Criteria:
 - halt = unknown or unsafe to continue automatically
 Instruction: do not blindly retry authority or verification failures.
 
-REQUEST 3 — topology, 12 independent questions:
-Criteria:
+topology criteria:
 - solo = one deterministic/single-track worker is enough
 - parallel = independent work can run concurrently and simple join is sufficient
 - critic_pair = primary worker plus independent adversarial critic/falsifier
 - fanout_reduce = multiple independent claim-producing tracks require evidence-aware reduction
 Instruction: choose the smallest effective topology; do not spawn agents without information gain.
 
-Use acceptance threshold 0.70.
+For every case return:
+- id
+- jevChoice
+- selectedProbability
+- confidenceAvailable
 
-Compute this fixed deterministic baseline locally after the three live calls:
-placement: clarify on incomplete/do-not-say/insufficient; lenovo on explicit windows/gpu/nvidia/desktop/usb/local-file/workstation-only wording; otherwise vds.
-recovery: authority/revoked=>request_authority; sentinel/stale/exact-head=>falsify_again; runner-offline/environment=>replace_node; dependency/version=>refresh_dependency; invariant/assertion=>restore_checkpoint; 429/connection-reset/timeout=>retry; otherwise halt.
-topology: deterministic/single exact-head=>solo; critic/falsifier/adversarial=>critic_pair; merged/reduced/source-tracks=>fanout_reduce; concurrently/same-time/parallel=>parallel; otherwise solo.
+Also return one batch record per live request with task and latencyMs if measurable.
 
-For each case record:
-id, expected, baselineChoice, baselineCorrect, jevChoice, jevCorrect, selectedProbability if available, confidenceAvailable, acceptedAt070.
+Return ONLY valid compact JSON:
+{"provider":"typesafe","model":"jev-latest","secret_exposed":false,"rows":[...36 rows...],"batches":[...3 batches...]}
 
-Also record per-batch live request latency if measurable.
-
-Compute summary:
-cases=36
-liveRequests=3
-provider
-model
-baselineAccuracy
-jevRawAccuracy
-jevCoverage
-jevAcceptedAccuracy
-wrongRouteRateAccepted
-meanBatchLatencyMs if measurable
-p95BatchLatencyMs if measurable
-accuracyDeltaVsBaseline
-modelWorks = jevRawAccuracy >= 0.75 AND jevAcceptedAccuracy >= 0.85 AND wrongRouteRateAccepted <= 0.15
-outperformsBaseline = jevRawAccuracy > baselineAccuracy
-secret_exposed=false
-
-Fail closed if any of the 36 live answers is missing.
-
-Return ONLY one valid compact JSON object:
-{"summary":{...},"rows":[...],"batches":[...]}
-
-No markdown fences and no commentary.
+Fail closed rather than fabricating any missing row, choice, or probability.
+No baseline calculations. No accuracy calculations. No markdown or commentary.
