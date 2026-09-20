@@ -241,7 +241,22 @@ jobs:
             }
             if (-not $bash) {
               $bashCommand = Get-Command bash.exe -ErrorAction SilentlyContinue
-              if ($null -ne $bashCommand -and $bashCommand.Source -notmatch '(?i)System32\\bash\.exe -Depth 9 | Set-Content -LiteralPath $summaryPath -Encoding UTF8
+              if ($null -ne $bashCommand -and $bashCommand.Source -notmatch '(?i)System32\\bash[.]exe$') {
+                $bash = $bashCommand.Source
+              }
+            }
+            if ($bash) {
+              $summary.verify_phase3.attempted = $true
+              $summary.verify_phase3.bash = $bash
+              & $bash 'C:/Users/empir/Aftergraph/_migration/verify-phase3.sh' 2>&1 |
+                Tee-Object -FilePath $verifyOut
+              $verifyCode = $LASTEXITCODE
+              $summary.verify_phase3.exit_code = $verifyCode
+              $global:LASTEXITCODE = 0
+            }
+          }
+
+          $summary | ConvertTo-Json -Depth 9 | Set-Content -LiteralPath $summaryPath -Encoding UTF8
           Write-Host '=== LENOVO MIGRATION READ-ONLY SUMMARY ==='
           Get-Content -LiteralPath $summaryPath
           Write-Host '=== END SUMMARY ==='
