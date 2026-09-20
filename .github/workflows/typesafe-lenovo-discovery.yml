@@ -6,7 +6,7 @@ on:
       - ops/typesafe-lenovo-discovery
     paths:
       - ".github/workflows/typesafe-lenovo-discovery.yml"
-      - "ops/typesafe-proof/corpus.json"
+      - "ops/typesafe-proof/**"
 
 permissions:
   contents: read
@@ -30,80 +30,13 @@ jobs:
           $worktree = "C:\Users\empir\Documents\antigravity\splendid-hawking"
           $session = "20260917_133857_2ee3ac"
           $corpus = Join-Path $env:GITHUB_WORKSPACE "ops\typesafe-proof\corpus.json"
+          $promptPath = Join-Path $env:GITHUB_WORKSPACE "ops\typesafe-proof\benchmark-prompt.txt"
 
           if (-not (Test-Path -LiteralPath $hermes)) { throw "Hermes executable missing" }
           if (-not (Test-Path -LiteralPath $corpus)) { throw "Frozen corpus missing" }
+          if (-not (Test-Path -LiteralPath $promptPath)) { throw "Benchmark prompt missing" }
 
-          $prompt = @"
-Use the installed typesafe-ai skill and the TypeSafe credential already present in this resumed session context.
-
-SECURITY:
-- Do NOT search filesystem, history, sessions, environment, web, or other files for credentials.
-- Do NOT print, quote, persist, return, or rotate any credential.
-- Do NOT modify external systems other than live TypeSafe System One inference requests.
-- secret_exposed must remain false.
-
-TASK:
-Read the frozen benchmark corpus from:
-$corpus
-
-It contains exactly 36 labeled cases across placement, recovery, and topology.
-
-For EACH case make exactly one LIVE TypeSafe System One Choice decision using Jev, with these task contracts:
-
-placement:
-- vds = always-on server/VDS is sufficient and preferred
-- lenovo = personal workstation is explicitly required by Windows/GPU/local desktop/local file/local device constraints
-- clarify = requirements are insufficient to decide safely
-Instruction: choose the safest eligible placement; prefer VDS for ordinary server work.
-
-recovery:
-- retry = transient and safe to retry
-- replace_node = worker/environment failed and another eligible node should be used
-- request_authority = authority missing/expired/revoked
-- falsify_again = evidence/verification stale or failed
-- refresh_dependency = dependency/package/version state is causal
-- restore_checkpoint = logic/invariant regression requires rollback
-- halt = unknown or unsafe to continue automatically
-Instruction: do not blindly retry authority or verification failures.
-
-topology:
-- solo = one deterministic/single-track worker is enough
-- parallel = independent work can run concurrently and simple join is sufficient
-- critic_pair = primary worker plus independent adversarial critic/falsifier
-- fanout_reduce = multiple independent claim-producing tracks require evidence-aware reduction
-Instruction: choose the smallest effective topology; do not spawn agents without information gain.
-
-Use acceptance threshold 0.70.
-
-Also compute this fixed deterministic baseline:
-placement: clarify on incomplete/do-not-say/insufficient; lenovo on explicit windows/gpu/nvidia/desktop/usb/local-file/workstation-only wording; otherwise vds.
-recovery: authority/revoked=>request_authority; sentinel/stale/exact-head=>falsify_again; runner-offline/environment=>replace_node; dependency/version=>refresh_dependency; invariant/assertion=>restore_checkpoint; 429/connection-reset/timeout=>retry; otherwise halt.
-topology: deterministic/single exact-head=>solo; critic/falsifier/adversarial=>critic_pair; merged/reduced/source-tracks=>fanout_reduce; concurrently/same-time/parallel=>parallel; otherwise solo.
-
-For each case record: id, expected, baselineChoice, baselineCorrect, jevChoice, jevCorrect, selectedProbability if available, confidenceAvailable, acceptedAt070, latencyMs if measurable.
-
-Compute summary:
-cases
-provider
-model
-baselineAccuracy
-jevRawAccuracy
-jevCoverage
-jevAcceptedAccuracy
-wrongRouteRateAccepted
-meanLatencyMs if measurable
-p95LatencyMs if measurable
-accuracyDeltaVsBaseline
-modelWorks = jevRawAccuracy >= 0.75 AND jevAcceptedAccuracy >= 0.85 AND wrongRouteRateAccepted <= 0.15
-outperformsBaseline = jevRawAccuracy > baselineAccuracy
-secret_exposed=false
-
-Return ONLY one valid compact JSON object:
-{"summary":{...},"rows":[...]}
-
-No markdown fences and no commentary.
-"@
+          $prompt = (Get-Content -Raw -LiteralPath $promptPath).Replace("{{CORPUS_PATH}}", $corpus)
 
           $raw = & $hermes --resume $session --no-restore-cwd --in $worktree --skills typesafe-ai -z $prompt
           if ($LASTEXITCODE -ne 0) { throw "Hermes live benchmark failed" }
