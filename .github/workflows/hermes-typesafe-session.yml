@@ -1,0 +1,30 @@
+name: Hermes TypeSafe Session Discovery
+
+on:
+  push:
+    branches:
+      - ops/typesafe-lenovo-discovery
+    paths:
+      - ".github/workflows/hermes-typesafe-session.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hermes-typesafe-session-discovery
+  cancel-in-progress: true
+
+jobs:
+  sessions:
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Inspect Hermes session interface and recent sessions
+        shell: pwsh
+        run: |
+          $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
+          & $hermes sessions --help 2>&1 | Select-Object -First 120
+          Write-Host "=== RECENT SESSIONS ==="
+          & $hermes sessions list 2>&1 | Select-Object -First 160
