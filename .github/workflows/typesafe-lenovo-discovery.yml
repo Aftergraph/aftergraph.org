@@ -15,27 +15,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  hermes-capability:
+  hermes-path:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 2
+    timeout-minutes: 1
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Inspect Hermes CLI invocation
+      - name: Resolve Hermes executables and profile
         shell: pwsh
         run: |
-          $ErrorActionPreference = "Continue"
-
           foreach ($name in @("hermes","hermes-cli","hermes-agent")) {
             $cmd = Get-Command $name -ErrorAction SilentlyContinue
             if ($cmd) {
               Write-Host ("COMMAND=" + $name + "; path=" + $cmd.Source)
-              & $cmd.Source --help 2>&1 | Select-Object -First 120
+            } else {
+              Write-Host ("COMMAND=" + $name + "; path=ABSENT")
             }
           }
 
           $profile = Join-Path $HOME "AppData\Local\hermes\profiles\avc"
+          Write-Host ("AVC_PROFILE=" + $profile)
           Write-Host ("AVC_PROFILE_EXISTS=" + (Test-Path -LiteralPath $profile))
 
-          $skill = Join-Path $HOME "Documents\antigravity\splendid-hawking\.agents\skills\typesafe-ai\SKILL.md"
-          Write-Host ("TYPESAFE_SKILL_EXISTS=" + (Test-Path -LiteralPath $skill))
+          if (Test-Path -LiteralPath $profile) {
+            Get-ChildItem -LiteralPath $profile -File -ErrorAction SilentlyContinue |
+              Select-Object -First 80 |
+              ForEach-Object { Write-Host ("PROFILE_FILE=" + $_.Name) }
+          }
