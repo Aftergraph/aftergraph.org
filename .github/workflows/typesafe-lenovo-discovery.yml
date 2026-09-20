@@ -15,106 +15,60 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  discover:
+  verify-metadata:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 3
+    timeout-minutes: 2
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Find TypeSafe key file by path only
+      - name: Verify TypeSafe skill and local credential metadata
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
+
           $worktree = Join-Path $HOME "Documents\antigravity\splendid-hawking"
-          $hermes = Join-Path $HOME "AppData\Local\hermes\profiles\avc"
+          $skill = Join-Path $worktree ".agents\skills\typesafe-ai\SKILL.md"
+          $lock = Join-Path $worktree "skills-lock.json"
+          $history = Join-Path $HOME "AppData\Local\hermes\profiles\avc\.hermes_history"
 
-          $report = [ordered]@{
-            schema = "typesafe-lenovo-discovery/0.8"
-            machine = $env:COMPUTERNAME
-            runner = $env:RUNNER_NAME
-            env = [ordered]@{}
-            skill_file = (Join-Path $worktree ".agents\skills\typesafe-ai\SKILL.md")
-            lock_file = (Join-Path $worktree "skills-lock.json")
-            matched_files = @()
-            rg_available = $false
-          }
+          if (-not (Test-Path -LiteralPath $skill)) { throw "TypeSafe skill missing" }
+          if (-not (Test-Path -LiteralPath $lock)) { throw "TypeSafe lockfile missing" }
 
-          foreach ($scopeName in @("Process","User","Machine")) {
-            $scope = [EnvironmentVariableTarget]::$scopeName
-            $value = [Environment]::GetEnvironmentVariable("TYPESAFE_API_KEY", $scope)
-            $report.env["TYPESAFE_API_KEY_$scopeName"] = if ([string]::IsNullOrWhiteSpace($value)) { "ABSENT" } else { "PRESENT" }
-          }
+          $lockJson = Get-Content -Raw -LiteralPath $lock | ConvertFrom-Json
+          $entry = $lockJson.skills.'typesafe-ai'
 
-          $roots = @($worktree, $hermes) | Where-Object { Test-Path -LiteralPath $_ }
-          $paths = New-Object System.Collections.ArrayList
-          $rg = Get-Command rg -ErrorAction SilentlyContinue
+          $skillText = [IO.File]::ReadAllText($skill)
+          $skillHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $skill).Hash.ToLowerInvariant()
 
-          if ($rg) {
-            $report.rg_available = $true
-            foreach ($root in $roots) {
-              $args = @(
-                "-l","-i","--hidden","--no-messages",
-                "--glob","!**/node_modules/**",
-                "--glob","!**/.git/**",
-                "--glob","!**/cache/**",
-                "--glob","!**/Cache/**",
-                "--glob","!**/dist/**",
-                "--glob","!**/build/**",
-                "TYPESAFE_API_KEY|apikey_[A-Za-z0-9_\-]{16,}",
-                $root
-              )
-              $found = & $rg.Source @args 2>$null
-              foreach ($p in @($found)) {
-                if (-not [string]::IsNullOrWhiteSpace($p)) { [void]$paths.Add($p.Trim()) }
+          $historyHasKeyShape = $false
+          $historyHasTypeSafe = $false
+          $typeSafeAdjacentKeyCount = 0
+
+          if (Test-Path -LiteralPath $history) {
+            $historyText = [IO.File]::ReadAllText($history)
+            $historyHasKeyShape = [bool]($historyText -match "(?i)apikey_[A-Za-z0-9_\-]{16,}")
+            $historyHasTypeSafe = [bool]($historyText -match "(?i)typesafe|TYPESAFE_API_KEY|docs\.typesafe\.ai|system one|\bjev\b")
+
+            foreach ($m in [regex]::Matches($historyText, "(?i)apikey_[A-Za-z0-9_\-]{16,}")) {
+              $start = [Math]::Max(0, $m.Index - 800)
+              $length = [Math]::Min($historyText.Length - $start, $m.Length + 1600)
+              $window = $historyText.Substring($start, $length)
+              if ($window -match "(?i)typesafe|TYPESAFE_API_KEY|docs\.typesafe\.ai|system one|\bjev\b") {
+                $typeSafeAdjacentKeyCount++
               }
             }
-          } else {
-            foreach ($root in $roots) {
-              Get-ChildItem -LiteralPath $root -File -Recurse -ErrorAction SilentlyContinue |
-                Where-Object {
-                  $_.Length -le 1048576 -and
-                  $_.FullName -notmatch "(?i)\\node_modules\\|\\\.git\\|\\cache\\|\\dist\\|\\build\\"
-                } |
-                Select-Object -First 12000 |
-                ForEach-Object {
-                  try { $text = [IO.File]::ReadAllText($_.FullName) } catch { return }
-                  if ($text -match "(?i)TYPESAFE_API_KEY|apikey_[A-Za-z0-9_\-]{16,}") {
-                    [void]$paths.Add($_.FullName)
-                  }
-                }
-            }
           }
 
-          foreach ($p in @($paths | Sort-Object -Unique)) {
-            try { $text = [IO.File]::ReadAllText($p) } catch { continue }
-            $report.matched_files += [ordered]@{
-              path = $p
-              mentions_env_name = [bool]($text -match "(?i)TYPESAFE_API_KEY")
-              contains_key_shaped_value = [bool]($text -match "(?i)apikey_[A-Za-z0-9_\-]{16,}")
-            }
-          }
-
-          $outDir = Join-Path $env:RUNNER_TEMP "typesafe-discovery"
-          New-Item -ItemType Directory -Force -Path $outDir | Out-Null
-          $outPath = Join-Path $outDir "report.json"
-          $report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $outPath -Encoding UTF8
-
-          Write-Host "=== SAFE SUMMARY; PATHS ONLY, NO SECRET VALUES ==="
-          Write-Host ("Machine=" + $report.machine)
-          Write-Host ("Runner=" + $report.runner)
-          Write-Host ("SkillExists=" + (Test-Path -LiteralPath $report.skill_file))
-          Write-Host ("SkillPath=" + $report.skill_file)
-          Write-Host ("LockExists=" + (Test-Path -LiteralPath $report.lock_file))
-          Write-Host ("LockPath=" + $report.lock_file)
-          Write-Host ("rg_available=" + $report.rg_available)
-          foreach ($k in $report.env.Keys) { Write-Host ($k + "=" + $report.env[$k]) }
-          foreach ($m in $report.matched_files) {
-            Write-Host ("MATCH_FILE=" + $m.path + "; envName=" + $m.mentions_env_name + "; keyShape=" + $m.contains_key_shaped_value)
-          }
-
-      - name: Upload redacted discovery report
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: typesafe-lenovo-discovery
-          path: ${{ runner.temp }}\typesafe-discovery\report.json
-          retention-days: 7
+          Write-Host ("Machine=" + $env:COMPUTERNAME)
+          Write-Host ("Runner=" + $env:RUNNER_NAME)
+          Write-Host ("SKILL_PATH=" + $skill)
+          Write-Host ("SKILL_SHA256=" + $skillHash)
+          Write-Host ("LOCK_PATH=" + $lock)
+          Write-Host ("LOCK_SOURCE=" + $entry.source)
+          Write-Host ("LOCK_SOURCE_TYPE=" + $entry.sourceType)
+          Write-Host ("LOCK_SKILL_PATH=" + $entry.skillPath)
+          Write-Host ("LOCK_COMPUTED_HASH=" + $entry.computedHash)
+          Write-Host ("HISTORY_PATH=" + $history)
+          Write-Host ("HISTORY_HAS_KEY_SHAPE=" + $historyHasKeyShape)
+          Write-Host ("HISTORY_HAS_TYPESAFE_CONTEXT=" + $historyHasTypeSafe)
+          Write-Host ("TYPESAFE_ADJACENT_KEY_COUNT=" + $typeSafeAdjacentKeyCount)
