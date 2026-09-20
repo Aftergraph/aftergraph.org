@@ -1,4 +1,4 @@
-name: TypeSafe Lenovo Discovery
+name: TypeSafe Jev Full Benchmark
 
 on:
   push:
@@ -6,35 +6,146 @@ on:
       - ops/typesafe-lenovo-discovery
     paths:
       - ".github/workflows/typesafe-lenovo-discovery.yml"
+      - "ops/typesafe-proof/corpus.json"
 
 permissions:
   contents: read
 
 concurrency:
-  group: typesafe-lenovo-discovery-aftergraph-org
+  group: typesafe-jev-full-benchmark
   cancel-in-progress: true
 
 jobs:
-  hermes-profile:
+  benchmark:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 3
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Inspect Hermes profile and one-shot invocation
+      - name: Run 36-case live Jev benchmark through resumed Hermes TypeSafe context
         shell: pwsh
         run: |
-          $ErrorActionPreference = "Continue"
-          $hermes = (Get-Command hermes -ErrorAction Stop).Source
+          $ErrorActionPreference = "Stop"
+          $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
+          $worktree = "C:\Users\empir\Documents\antigravity\splendid-hawking"
+          $session = "20260917_133857_2ee3ac"
+          $corpus = Join-Path $env:GITHUB_WORKSPACE "ops\typesafe-proof\corpus.json"
 
-          Write-Host "=== HERMES HELP ==="
-          & $hermes --help 2>&1 | Select-Object -First 220
+          if (-not (Test-Path -LiteralPath $hermes)) { throw "Hermes executable missing" }
+          if (-not (Test-Path -LiteralPath $corpus)) { throw "Frozen corpus missing" }
 
-          Write-Host "=== PROFILE HELP ==="
-          & $hermes profile --help 2>&1 | Select-Object -First 220
+          $prompt = @"
+Use the installed typesafe-ai skill and the TypeSafe credential already present in this resumed session context.
 
-          Write-Host "=== PROFILE LIST ==="
-          & $hermes profile list 2>&1 | Select-Object -First 120
+SECURITY:
+- Do NOT search filesystem, history, sessions, environment, web, or other files for credentials.
+- Do NOT print, quote, persist, return, or rotate any credential.
+- Do NOT modify external systems other than live TypeSafe System One inference requests.
+- secret_exposed must remain false.
 
-          Write-Host "=== RESUME HELP ==="
-          & $hermes resume --help 2>&1 | Select-Object -First 160
+TASK:
+Read the frozen benchmark corpus from:
+$corpus
+
+It contains exactly 36 labeled cases across placement, recovery, and topology.
+
+For EACH case make exactly one LIVE TypeSafe System One Choice decision using Jev, with these task contracts:
+
+placement:
+- vds = always-on server/VDS is sufficient and preferred
+- lenovo = personal workstation is explicitly required by Windows/GPU/local desktop/local file/local device constraints
+- clarify = requirements are insufficient to decide safely
+Instruction: choose the safest eligible placement; prefer VDS for ordinary server work.
+
+recovery:
+- retry = transient and safe to retry
+- replace_node = worker/environment failed and another eligible node should be used
+- request_authority = authority missing/expired/revoked
+- falsify_again = evidence/verification stale or failed
+- refresh_dependency = dependency/package/version state is causal
+- restore_checkpoint = logic/invariant regression requires rollback
+- halt = unknown or unsafe to continue automatically
+Instruction: do not blindly retry authority or verification failures.
+
+topology:
+- solo = one deterministic/single-track worker is enough
+- parallel = independent work can run concurrently and simple join is sufficient
+- critic_pair = primary worker plus independent adversarial critic/falsifier
+- fanout_reduce = multiple independent claim-producing tracks require evidence-aware reduction
+Instruction: choose the smallest effective topology; do not spawn agents without information gain.
+
+Use acceptance threshold 0.70.
+
+Also compute this fixed deterministic baseline:
+placement: clarify on incomplete/do-not-say/insufficient; lenovo on explicit windows/gpu/nvidia/desktop/usb/local-file/workstation-only wording; otherwise vds.
+recovery: authority/revoked=>request_authority; sentinel/stale/exact-head=>falsify_again; runner-offline/environment=>replace_node; dependency/version=>refresh_dependency; invariant/assertion=>restore_checkpoint; 429/connection-reset/timeout=>retry; otherwise halt.
+topology: deterministic/single exact-head=>solo; critic/falsifier/adversarial=>critic_pair; merged/reduced/source-tracks=>fanout_reduce; concurrently/same-time/parallel=>parallel; otherwise solo.
+
+For each case record: id, expected, baselineChoice, baselineCorrect, jevChoice, jevCorrect, selectedProbability if available, confidenceAvailable, acceptedAt070, latencyMs if measurable.
+
+Compute summary:
+cases
+provider
+model
+baselineAccuracy
+jevRawAccuracy
+jevCoverage
+jevAcceptedAccuracy
+wrongRouteRateAccepted
+meanLatencyMs if measurable
+p95LatencyMs if measurable
+accuracyDeltaVsBaseline
+modelWorks = jevRawAccuracy >= 0.75 AND jevAcceptedAccuracy >= 0.85 AND wrongRouteRateAccepted <= 0.15
+outperformsBaseline = jevRawAccuracy > baselineAccuracy
+secret_exposed=false
+
+Return ONLY one valid compact JSON object:
+{"summary":{...},"rows":[...]}
+
+No markdown fences and no commentary.
+"@
+
+          $raw = & $hermes --resume $session --no-restore-cwd --in $worktree --skills typesafe-ai -z $prompt
+          if ($LASTEXITCODE -ne 0) { throw "Hermes live benchmark failed" }
+
+          $joined = ($raw -join [Environment]::NewLine).Trim()
+          $start = $joined.IndexOf('{')
+          $end = $joined.LastIndexOf('}')
+          if ($start -lt 0 -or $end -le $start) { throw "No JSON object returned by Hermes" }
+          $jsonText = $joined.Substring($start, $end - $start + 1)
+          $result = $jsonText | ConvertFrom-Json
+
+          if ($result.summary.secret_exposed -ne $false) { throw "Secret exposure invariant failed" }
+          if ([int]$result.summary.cases -ne 36) { throw "Expected 36 benchmark cases" }
+
+          New-Item -ItemType Directory -Force -Path "ops\typesafe-proof\artifacts" | Out-Null
+          $result | ConvertTo-Json -Depth 20 -Compress |
+            Set-Content -LiteralPath "ops\typesafe-proof\artifacts\jev-vnext-eval.json" -Encoding UTF8
+
+          Write-Host "=== SAFE LIVE JEV BENCHMARK SUMMARY ==="
+          $s = $result.summary
+          Write-Host ("cases=" + $s.cases)
+          Write-Host ("provider=" + $s.provider)
+          Write-Host ("model=" + $s.model)
+          Write-Host ("baselineAccuracy=" + $s.baselineAccuracy)
+          Write-Host ("jevRawAccuracy=" + $s.jevRawAccuracy)
+          Write-Host ("jevCoverage=" + $s.jevCoverage)
+          Write-Host ("jevAcceptedAccuracy=" + $s.jevAcceptedAccuracy)
+          Write-Host ("wrongRouteRateAccepted=" + $s.wrongRouteRateAccepted)
+          Write-Host ("meanLatencyMs=" + $s.meanLatencyMs)
+          Write-Host ("p95LatencyMs=" + $s.p95LatencyMs)
+          Write-Host ("accuracyDeltaVsBaseline=" + $s.accuracyDeltaVsBaseline)
+          Write-Host ("modelWorks=" + $s.modelWorks)
+          Write-Host ("outperformsBaseline=" + $s.outperformsBaseline)
+          Write-Host ("secret_exposed=" + $s.secret_exposed)
+
+          if ($s.modelWorks -ne $true) { exit 2 }
+
+      - name: Upload benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: typesafe-jev-36-case-proof
+          path: ops/typesafe-proof/artifacts/jev-vnext-eval.json
+          if-no-files-found: ignore
+          retention-days: 30
