@@ -26,17 +26,6 @@ jobs:
         run: |
           $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
           $worktree = "C:\Users\empir\Documents\antigravity\splendid-hawking"
-
-          $prompt = @"
-Use the installed TypeSafe skill for this project. Do not reveal, print, quote, or return any API key or secret.
-Inspect only enough local project/profile context to verify that the TypeSafe skill is usable.
-Return exactly one JSON object with these keys:
-skill_loaded (boolean),
-project (string),
-can_attempt_system_one (boolean),
-reason (short string).
-Do not modify files or external systems.
-"@
-
+          $prompt = 'Use the installed TypeSafe skill for this project. Do not reveal, print, quote, or return any API key or secret. Inspect only enough local project/profile context to verify that the TypeSafe skill is usable. Return exactly one JSON object with keys skill_loaded, project, can_attempt_system_one, reason. Do not modify files or external systems.'
           & $hermes --in $worktree --skills typesafe-ai -z $prompt
           if ($LASTEXITCODE -ne 0) { throw "Hermes TypeSafe oneshot failed" }
