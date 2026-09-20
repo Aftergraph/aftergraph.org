@@ -1,0 +1,58 @@
+Use the installed typesafe-ai skill and the TypeSafe credential already present in this resumed session context.
+
+SECURITY:
+- Do NOT search the filesystem, history, sessions, environment, web, or other files for credentials.
+- Do NOT print, quote, persist, rotate, or return any credential.
+- Do NOT modify any external system except live TypeSafe System One inference requests.
+- Never infer a decision yourself when a live TypeSafe answer is unavailable.
+- secret_exposed must be false.
+
+HOLDOUT:
+Read this already-frozen corpus:
+{{HOLDOUT_PATH}}
+
+The file contains exactly 30 new labeled cases. The labels are for scoring by the workflow; DO NOT use the expected labels to choose the model answer. For each case, use only its id, task, and state as model input.
+
+Make exactly ONE live TypeSafe System One Choice request PER CASE (30 total). Do not batch cases.
+
+For placement, choices and criteria are:
+- vds: always-on VDS/server is sufficient and preferred; avoid affecting the operator workstation
+- lenovo: the personal workstation is explicitly required by Windows-native runtime, local desktop, local-only file, or physical local-device constraints
+- clarify: the provided requirements are insufficient to select safely
+
+For recovery:
+- retry: transient and safe to retry
+- replace_node: worker/environment failed and another eligible node should be used
+- request_authority: current authority is missing, expired, revoked, or principal/action binding no longer covers the action
+- falsify_again: claimed outcome/evidence is stale, contradictory, wrong-head, or failed independent verification
+- refresh_dependency: dependency/package/version state is causal
+- restore_checkpoint: logic/invariant regression should roll back to a known-good checkpoint
+- halt: state is unknown or unsafe to continue automatically
+
+For topology:
+- solo: a single deterministic/single-track worker is enough
+- parallel: independent work can execute concurrently and only a simple deterministic join is required
+- critic_pair: a primary worker plus separately scoped adversarial critic/falsifier is useful
+- fanout_reduce: multiple independent claim-producing tracks require evidence-aware reduction/conflict resolution
+
+For each case return ONLY the live model result:
+- id
+- jevChoice
+- selectedProbability (probability for the selected choice; number 0..1)
+- confidenceAvailable (boolean)
+- latencyMs if directly measurable, otherwise null
+
+Validate locally before returning:
+- exactly 30 unique ids
+- every id belongs to the holdout
+- choice belongs to the allowed choice set for that task
+- selectedProbability is present and within 0..1
+
+Return ONLY one compact valid JSON object:
+{"provider":"typesafe","model":"<actual model/provider version if available>","secret_exposed":false,"rows":[...30 rows...]}
+
+No expected labels.
+No baseline choices.
+No hybrid calculations.
+No accuracy calculations.
+No markdown or commentary.
