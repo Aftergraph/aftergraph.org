@@ -15,41 +15,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check-gh:
+  hermes-capability:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
     timeout-minutes: 2
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Verify local GitHub CLI authority
+      - name: Inspect Hermes CLI invocation
         shell: pwsh
         run: |
           $ErrorActionPreference = "Continue"
-          $gh = Get-Command gh -ErrorAction SilentlyContinue
-          if (-not $gh) {
-            Write-Host "GH_CLI=ABSENT"
-            exit 0
+
+          foreach ($name in @("hermes","hermes-cli","hermes-agent")) {
+            $cmd = Get-Command $name -ErrorAction SilentlyContinue
+            if ($cmd) {
+              Write-Host ("COMMAND=" + $name + "; path=" + $cmd.Source)
+              & $cmd.Source --help 2>&1 | Select-Object -First 120
+            }
           }
 
-          Write-Host ("GH_CLI=" + $gh.Source)
+          $profile = Join-Path $HOME "AppData\Local\hermes\profiles\avc"
+          Write-Host ("AVC_PROFILE_EXISTS=" + (Test-Path -LiteralPath $profile))
 
-          $auth = gh auth status -h github.com 2>&1
-          if ($LASTEXITCODE -eq 0) {
-            Write-Host "GH_AUTH=VALID"
-          } else {
-            Write-Host "GH_AUTH=INVALID"
-          }
-
-          gh repo view Aftergraph/runtime --json nameWithOwner,isPrivate 1>$null 2>$null
-          if ($LASTEXITCODE -eq 0) {
-            Write-Host "RUNTIME_REPO_ACCESS=YES"
-          } else {
-            Write-Host "RUNTIME_REPO_ACCESS=NO"
-          }
-
-          $help = gh secret set --help 2>&1
-          if ($LASTEXITCODE -eq 0) {
-            Write-Host "GH_SECRET_SET_AVAILABLE=YES"
-          } else {
-            Write-Host "GH_SECRET_SET_AVAILABLE=NO"
-          }
+          $skill = Join-Path $HOME "Documents\antigravity\splendid-hawking\.agents\skills\typesafe-ai\SKILL.md"
+          Write-Host ("TYPESAFE_SKILL_EXISTS=" + (Test-Path -LiteralPath $skill))
