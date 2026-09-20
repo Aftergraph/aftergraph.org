@@ -26,5 +26,5 @@ jobs:
         run: |
           $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
           & $hermes sessions --help 2>&1 | Select-Object -First 120
-          Write-Host "=== RECENT SESSIONS ==="
+          Write-Host "=== RECENT SESSIONS (avc active profile) ==="
           & $hermes sessions list 2>&1 | Select-Object -First 160
