@@ -60,6 +60,11 @@ jobs:
           Write-Host ("extraArtifactRows=" + $extraRows.Count)
           foreach ($extra in $extraRows) { Write-Host ("extraRowId=" + [string]$extra.id) }
 
+          Write-Host "=== DUPLICATE ROW COUNTS ==="
+          foreach ($g in @($matchedRows | Group-Object id | Where-Object { $_.Count -gt 1 })) {
+            Write-Host ("duplicateId=" + $g.Name + "; count=" + $g.Count)
+          }
+
           function Get-OriginalBaselineChoice {
             param([string]$Task,[string]$State)
             $s = $State.ToLowerInvariant()
@@ -88,13 +93,29 @@ jobs:
 
           foreach ($case in @($corpus.cases)) {
             $matches = @($matchedRows | Where-Object { $_.id -eq $case.id })
-            if ($matches.Count -ne 1) { throw ("Missing/duplicate live row for " + $case.id) }
-            $jr = $matches[0]
+            if ($matches.Count -lt 1) { throw ("Missing live row for " + $case.id) }
 
-            $p = $null
-            if ($null -ne $jr.jevSelectedProbability) { $p = [double]$jr.jevSelectedProbability }
-            elseif ($null -ne $jr.selectedProbability) { $p = [double]$jr.selectedProbability }
-            elseif ($null -ne $jr.jevConfidence) { $p = [double]$jr.jevConfidence }
+            $normalized = @()
+            foreach ($m in $matches) {
+              $mp = $null
+              if ($null -ne $m.jevSelectedProbability) { $mp = [double]$m.jevSelectedProbability }
+              elseif ($null -ne $m.selectedProbability) { $mp = [double]$m.selectedProbability }
+              elseif ($null -ne $m.jevConfidence) { $mp = [double]$m.jevConfidence }
+
+              $normalized += [pscustomobject]@{
+                row = $m
+                signature = (([string]$m.jevChoice) + "|" + ([string]$mp))
+                probability = $mp
+              }
+            }
+
+            $uniqueSignatures = @($normalized | Select-Object -ExpandProperty signature -Unique)
+            if ($uniqueSignatures.Count -gt 1) {
+              throw ("Conflicting duplicate Jev evidence for " + $case.id)
+            }
+
+            $jr = $normalized[0].row
+            $p = $normalized[0].probability
 
             $baseline = Get-OriginalBaselineChoice -Task $case.task -State $case.state
 
