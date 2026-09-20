@@ -17,140 +17,147 @@ concurrency:
 jobs:
   discover:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 4
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Fast targeted TypeSafe discovery
+      - name: Ultra-targeted TypeSafe discovery
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
+
           $report = [ordered]@{
-            schema = "typesafe-lenovo-discovery/0.2"
+            schema = "typesafe-lenovo-discovery/0.3"
             machine = $env:COMPUTERNAME
             runner = $env:RUNNER_NAME
             home = $HOME
             env = [ordered]@{}
-            explicit_paths = @()
-            skills = @()
+            skill_roots = @()
+            typesafe_dirs = @()
+            skill_files = @()
             lockfiles = @()
             credential_files = @()
-            credential_manager_targets = @()
+            command_paths = @()
           }
 
           foreach ($scopeName in @("Process","User","Machine")) {
             $scope = [EnvironmentVariableTarget]::$scopeName
-            $value = [Environment]::GetEnvironmentVariable("TYPESAFE_API_KEY", $scope)
-            $report.env["TYPESAFE_API_KEY_$scopeName"] = if ([string]::IsNullOrWhiteSpace($value)) { "ABSENT" } else { "PRESENT" }
+            foreach ($varName in @("TYPESAFE_API_KEY","TYPESAFE_BASE_URL","TYPESAFE_DEFAULT_MODEL")) {
+              $value = [Environment]::GetEnvironmentVariable($varName, $scope)
+              $report.env["${varName}_$scopeName"] = if ([string]::IsNullOrWhiteSpace($value)) { "ABSENT" } else { "PRESENT" }
+            }
           }
 
-          $explicit = @(
+          $skillRoots = @(
+            (Join-Path $HOME ".agents\skills"),
+            (Join-Path $HOME ".codex\skills"),
+            (Join-Path $HOME ".claude\skills"),
+            (Join-Path $HOME ".claude\plugins"),
+            (Join-Path $HOME "AppData\Local\hermes\skills")
+          )
+
+          foreach ($root in $skillRoots) {
+            $exists = Test-Path -LiteralPath $root
+            $report.skill_roots += [ordered]@{ path=$root; exists=[bool]$exists }
+            if (-not $exists) { continue }
+
+            Get-ChildItem -LiteralPath $root -Directory -ErrorAction SilentlyContinue |
+              Where-Object { $_.Name -match "(?i)typesafe|jev" } |
+              ForEach-Object {
+                $report.typesafe_dirs += $_.FullName
+              }
+
+            Get-ChildItem -LiteralPath $root -File -Filter "skills-lock.json" -ErrorAction SilentlyContinue |
+              ForEach-Object {
+                try {
+                  $text = [IO.File]::ReadAllText($_.FullName)
+                  if ($text -match "(?i)typesafe-ai|typesafe-ai/skills") {
+                    $report.lockfiles += $_.FullName
+                  }
+                } catch {}
+              }
+          }
+
+          $explicitSkillFiles = @(
             (Join-Path $HOME ".agents\skills\typesafe-ai\SKILL.md"),
             (Join-Path $HOME ".agents\skills\typesafe\SKILL.md"),
             (Join-Path $HOME ".codex\skills\typesafe-ai\SKILL.md"),
             (Join-Path $HOME ".codex\skills\typesafe\SKILL.md"),
             (Join-Path $HOME ".claude\skills\typesafe-ai\SKILL.md"),
-            (Join-Path $HOME ".claude\skills\typesafe\SKILL.md"),
-            (Join-Path $HOME ".claude\plugins\typesafe\SKILL.md"),
-            (Join-Path $HOME ".agents\skills-lock.json"),
-            (Join-Path $HOME ".codex\skills-lock.json"),
-            (Join-Path $HOME ".claude\skills-lock.json")
+            (Join-Path $HOME ".claude\skills\typesafe\SKILL.md")
           )
 
-          foreach ($p in $explicit) {
-            $exists = Test-Path -LiteralPath $p
-            $report.explicit_paths += [ordered]@{ path=$p; exists=[bool]$exists }
-            if ($exists -and (Split-Path $p -Leaf) -eq "SKILL.md") {
+          foreach ($dir in @($report.typesafe_dirs)) {
+            $explicitSkillFiles += (Join-Path $dir "SKILL.md")
+          }
+
+          $explicitSkillFiles = $explicitSkillFiles | Select-Object -Unique
+          foreach ($p in $explicitSkillFiles) {
+            if (-not (Test-Path -LiteralPath $p)) { continue }
+            try {
               $text = [IO.File]::ReadAllText($p)
-              if ($text -match "(?i)typesafe|system one|jev") {
-                $report.skills += [ordered]@{
+              $report.skill_files += [ordered]@{
+                path = $p
+                bytes = (Get-Item $p).Length
+                mentions_typesafe = [bool]($text -match "(?i)typesafe|system one|jev")
+                mentions_api_key_name = [bool]($text -match "(?i)TYPESAFE_API_KEY")
+                contains_key_shaped_value = [bool]($text -match "(?i)apikey_[a-z0-9_\-]{16,}")
+              }
+            } catch {}
+          }
+
+          $candidateConfigs = @(
+            (Join-Path $HOME ".env"),
+            (Join-Path $HOME ".agents\.env"),
+            (Join-Path $HOME ".codex\.env"),
+            (Join-Path $HOME ".claude\.env"),
+            (Join-Path $HOME ".codex\config.toml"),
+            (Join-Path $HOME ".codex\credentials.toml"),
+            (Join-Path $HOME ".agents\config.json"),
+            (Join-Path $HOME ".claude\settings.json"),
+            (Join-Path $HOME "AppData\Local\hermes\.env"),
+            (Join-Path $HOME "AppData\Local\hermes\config.json")
+          )
+
+          foreach ($p in $candidateConfigs) {
+            if (-not (Test-Path -LiteralPath $p)) { continue }
+            try {
+              $text = [IO.File]::ReadAllText($p)
+              $hasName = $text -match "(?i)TYPESAFE_API_KEY"
+              $hasShape = $text -match "(?i)apikey_[a-z0-9_\-]{16,}"
+              if ($hasName -or $hasShape) {
+                $report.credential_files += [ordered]@{
                   path = $p
                   bytes = (Get-Item $p).Length
-                  has_api_key_name = [bool]($text -match "(?i)TYPESAFE_API_KEY")
-                  contains_key_shaped_value = [bool]($text -match "(?i)apikey_[a-z0-9_\-]{16,}")
+                  mentions_api_key_name = [bool]$hasName
+                  contains_key_shaped_value = [bool]$hasShape
                 }
               }
-            }
-            if ($exists -and (Split-Path $p -Leaf) -eq "skills-lock.json") {
-              $text = [IO.File]::ReadAllText($p)
-              if ($text -match "(?i)typesafe-ai|typesafe-ai/skills") {
-                $report.lockfiles += [ordered]@{ path=$p; bytes=(Get-Item $p).Length }
-              }
-            }
+            } catch {}
           }
 
-          $roots = @(
-            (Join-Path $HOME ".agents"),
-            (Join-Path $HOME ".codex"),
-            (Join-Path $HOME ".claude"),
-            (Join-Path $HOME "AppData\Local\hermes")
-          ) | Where-Object { Test-Path -LiteralPath $_ }
-
-          $seen = @{}
-          foreach ($root in $roots) {
-            Get-ChildItem -LiteralPath $root -File -Recurse -ErrorAction SilentlyContinue |
-              Where-Object {
-                $_.Length -le 524288 -and
-                ($_.Name -eq "SKILL.md" -or $_.Name -eq "skills-lock.json" -or $_.Name -match "(?i)typesafe|jev" -or $_.Name -match "(?i)^\.env")
-              } |
-              Select-Object -First 1500 |
-              ForEach-Object {
-                if ($seen.ContainsKey($_.FullName)) { return }
-                $seen[$_.FullName] = $true
-                try { $text = [IO.File]::ReadAllText($_.FullName) } catch { return }
-
-                if ($_.Name -eq "SKILL.md" -and $text -match "(?i)typesafe|system one|jev") {
-                  $report.skills += [ordered]@{
-                    path = $_.FullName
-                    bytes = $_.Length
-                    has_api_key_name = [bool]($text -match "(?i)TYPESAFE_API_KEY")
-                    contains_key_shaped_value = [bool]($text -match "(?i)apikey_[a-z0-9_\-]{16,}")
-                  }
-                }
-
-                if ($_.Name -eq "skills-lock.json" -and $text -match "(?i)typesafe-ai|typesafe-ai/skills") {
-                  $report.lockfiles += [ordered]@{ path=$_.FullName; bytes=$_.Length }
-                }
-
-                $hasName = $text -match "(?i)TYPESAFE_API_KEY"
-                $hasShape = $text -match "(?i)apikey_[a-z0-9_\-]{16,}"
-                if ($hasName -or $hasShape) {
-                  $report.credential_files += [ordered]@{
-                    path = $_.FullName
-                    bytes = $_.Length
-                    mentions_env_name = [bool]$hasName
-                    contains_key_shaped_value = [bool]$hasShape
-                  }
-                }
-              }
+          foreach ($cmd in @("typesafe","claude","codex","npx")) {
+            try {
+              $resolved = (Get-Command $cmd -ErrorAction Stop).Source
+              if ($resolved) { $report.command_paths += [ordered]@{ command=$cmd; path=$resolved } }
+            } catch {}
           }
-
-          try {
-            $cmdkey = (& cmdkey /list 2>$null) -join "`n"
-            foreach ($line in ($cmdkey -split "`n")) {
-              if ($line -match "(?i)typesafe|jev") {
-                $report.credential_manager_targets += ($line.Trim())
-              }
-            }
-          } catch {}
 
           $outDir = Join-Path $env:RUNNER_TEMP "typesafe-discovery"
           New-Item -ItemType Directory -Force -Path $outDir | Out-Null
           $outPath = Join-Path $outDir "report.json"
           $report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $outPath -Encoding UTF8
 
-          Write-Host "=== SAFE SUMMARY; SECRET VALUES NEVER PRINTED ==="
+          Write-Host "=== SAFE SUMMARY; NO SECRET VALUES ==="
           Write-Host ("Machine=" + $report.machine)
           Write-Host ("Runner=" + $report.runner)
           foreach ($k in $report.env.Keys) { Write-Host ($k + "=" + $report.env[$k]) }
-          foreach ($p in $report.explicit_paths) { if ($p.exists) { Write-Host ("EXPLICIT_FOUND=" + $p.path) } }
-          Write-Host ("SKILLS=" + $report.skills.Count)
-          foreach ($s in $report.skills) { Write-Host ("SKILL_PATH=" + $s.path + "; keyName=" + $s.has_api_key_name + "; keyShape=" + $s.contains_key_shaped_value) }
-          Write-Host ("LOCKFILES=" + $report.lockfiles.Count)
-          foreach ($l in $report.lockfiles) { Write-Host ("LOCK_PATH=" + $l.path) }
-          Write-Host ("CREDENTIAL_FILES=" + $report.credential_files.Count)
-          foreach ($cf in $report.credential_files) { Write-Host ("CREDENTIAL_PATH=" + $cf.path + "; keyName=" + $cf.mentions_env_name + "; keyShape=" + $cf.contains_key_shaped_value) }
-          foreach ($t in $report.credential_manager_targets) { Write-Host ("CMDKEY_TARGET=" + $t) }
+          foreach ($r in $report.skill_roots) { Write-Host ("SKILL_ROOT=" + $r.path + "; exists=" + $r.exists) }
+          foreach ($d in $report.typesafe_dirs) { Write-Host ("TYPESAFE_DIR=" + $d) }
+          foreach ($s in $report.skill_files) { Write-Host ("SKILL_FILE=" + $s.path + "; apiKeyName=" + $s.mentions_api_key_name + "; keyShape=" + $s.contains_key_shaped_value) }
+          foreach ($l in $report.lockfiles) { Write-Host ("LOCKFILE=" + $l) }
+          foreach ($cf in $report.credential_files) { Write-Host ("CREDENTIAL_FILE=" + $cf.path + "; apiKeyName=" + $cf.mentions_api_key_name + "; keyShape=" + $cf.contains_key_shaped_value) }
+          foreach ($cp in $report.command_paths) { Write-Host ("COMMAND=" + $cp.command + "; path=" + $cp.path) }
 
       - name: Upload redacted discovery report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
