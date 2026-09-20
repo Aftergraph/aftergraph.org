@@ -15,60 +15,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify-metadata:
+  redacted-context:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
     timeout-minutes: 2
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Verify TypeSafe skill and local credential metadata
+      - name: Show redacted TypeSafe history context
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-
-          $worktree = Join-Path $HOME "Documents\antigravity\splendid-hawking"
-          $skill = Join-Path $worktree ".agents\skills\typesafe-ai\SKILL.md"
-          $lock = Join-Path $worktree "skills-lock.json"
           $history = Join-Path $HOME "AppData\Local\hermes\profiles\avc\.hermes_history"
+          if (-not (Test-Path -LiteralPath $history)) { throw "Hermes history missing" }
 
-          if (-not (Test-Path -LiteralPath $skill)) { throw "TypeSafe skill missing" }
-          if (-not (Test-Path -LiteralPath $lock)) { throw "TypeSafe lockfile missing" }
+          $text = [IO.File]::ReadAllText($history)
+          $matches = [regex]::Matches($text, "(?i)apikey_[A-Za-z0-9_\-]{16,}")
+          $i = 0
 
-          $lockJson = Get-Content -Raw -LiteralPath $lock | ConvertFrom-Json
-          $entry = $lockJson.skills.'typesafe-ai'
+          foreach ($m in $matches) {
+            $start = [Math]::Max(0, $m.Index - 900)
+            $length = [Math]::Min($text.Length - $start, $m.Length + 1800)
+            $window = $text.Substring($start, $length)
 
-          $skillText = [IO.File]::ReadAllText($skill)
-          $skillHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $skill).Hash.ToLowerInvariant()
-
-          $historyHasKeyShape = $false
-          $historyHasTypeSafe = $false
-          $typeSafeAdjacentKeyCount = 0
-
-          if (Test-Path -LiteralPath $history) {
-            $historyText = [IO.File]::ReadAllText($history)
-            $historyHasKeyShape = [bool]($historyText -match "(?i)apikey_[A-Za-z0-9_\-]{16,}")
-            $historyHasTypeSafe = [bool]($historyText -match "(?i)typesafe|TYPESAFE_API_KEY|docs\.typesafe\.ai|system one|\bjev\b")
-
-            foreach ($m in [regex]::Matches($historyText, "(?i)apikey_[A-Za-z0-9_\-]{16,}")) {
-              $start = [Math]::Max(0, $m.Index - 800)
-              $length = [Math]::Min($historyText.Length - $start, $m.Length + 1600)
-              $window = $historyText.Substring($start, $length)
-              if ($window -match "(?i)typesafe|TYPESAFE_API_KEY|docs\.typesafe\.ai|system one|\bjev\b") {
-                $typeSafeAdjacentKeyCount++
-              }
+            if ($window -notmatch "(?i)typesafe|TYPESAFE_API_KEY|docs\.typesafe\.ai|system one|\bjev\b") {
+              continue
             }
+
+            $i++
+            $redacted = [regex]::Replace($window, "(?i)apikey_[A-Za-z0-9_\-]{16,}", "<REDACTED_KEY>")
+            $redacted = [regex]::Replace($redacted, "(?i)(Bearer\s+)[A-Za-z0-9_.\-]+", '$1<REDACTED_BEARER>')
+            Write-Host ("=== TYPESAFE_CONTEXT_" + $i + " ===")
+            Write-Host $redacted
+            Write-Host ("=== END_TYPESAFE_CONTEXT_" + $i + " ===")
           }
 
-          Write-Host ("Machine=" + $env:COMPUTERNAME)
-          Write-Host ("Runner=" + $env:RUNNER_NAME)
-          Write-Host ("SKILL_PATH=" + $skill)
-          Write-Host ("SKILL_SHA256=" + $skillHash)
-          Write-Host ("LOCK_PATH=" + $lock)
-          Write-Host ("LOCK_SOURCE=" + $entry.source)
-          Write-Host ("LOCK_SOURCE_TYPE=" + $entry.sourceType)
-          Write-Host ("LOCK_SKILL_PATH=" + $entry.skillPath)
-          Write-Host ("LOCK_COMPUTED_HASH=" + $entry.computedHash)
-          Write-Host ("HISTORY_PATH=" + $history)
-          Write-Host ("HISTORY_HAS_KEY_SHAPE=" + $historyHasKeyShape)
-          Write-Host ("HISTORY_HAS_TYPESAFE_CONTEXT=" + $historyHasTypeSafe)
-          Write-Host ("TYPESAFE_ADJACENT_KEY_COUNT=" + $typeSafeAdjacentKeyCount)
+          Write-Host ("TypeSafe-adjacent contexts=" + $i)
