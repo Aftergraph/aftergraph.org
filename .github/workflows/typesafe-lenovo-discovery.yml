@@ -15,30 +15,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  hermes-path:
+  profile-interface:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 1
+    timeout-minutes: 2
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Resolve Hermes executables and profile
+      - name: Inspect Hermes profile interface
         shell: pwsh
         run: |
-          foreach ($name in @("hermes","hermes-cli","hermes-agent")) {
-            $cmd = Get-Command $name -ErrorAction SilentlyContinue
-            if ($cmd) {
-              Write-Host ("COMMAND=" + $name + "; path=" + $cmd.Source)
-            } else {
-              Write-Host ("COMMAND=" + $name + "; path=ABSENT")
-            }
-          }
-
-          $profile = Join-Path $HOME "AppData\Local\hermes\profiles\avc"
-          Write-Host ("AVC_PROFILE=" + $profile)
-          Write-Host ("AVC_PROFILE_EXISTS=" + (Test-Path -LiteralPath $profile))
-
-          if (Test-Path -LiteralPath $profile) {
-            Get-ChildItem -LiteralPath $profile -File -ErrorAction SilentlyContinue |
-              Select-Object -First 80 |
-              ForEach-Object { Write-Host ("PROFILE_FILE=" + $_.Name) }
-          }
+          $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
+          & $hermes profile --help 2>&1 | Select-Object -First 160
+          Write-Host "=== PROFILE LIST ==="
+          & $hermes profile list 2>&1 | Select-Object -First 120
