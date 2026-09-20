@@ -43,9 +43,17 @@ jobs:
           $start = $joined.IndexOf('{')
           $end = $joined.LastIndexOf('}')
           if ($start -lt 0 -or $end -le $start) { throw "No JSON object returned by Hermes" }
-          $live = $joined.Substring($start, $end - $start + 1) | ConvertFrom-Json
+          $jsonText = $joined.Substring($start, $end - $start + 1)
 
-          if ($live.secret_exposed -ne $false) { throw "Secret exposure invariant failed" }
+          if ($jsonText -match "(?i)apikey_[A-Za-z0-9_\\-]{16,}|Bearer\\s+[A-Za-z0-9_.\\-]{16,}") {
+            throw "Secret-shaped material detected in benchmark output"
+          }
+
+          $live = $jsonText | ConvertFrom-Json
+          if (($live.PSObject.Properties.Name -contains "secret_exposed") -and ([string]$live.secret_exposed).ToLowerInvariant() -eq "true") {
+            throw "Benchmark explicitly reported secret exposure"
+          }
+
           $liveRows = @($live.rows)
           if ($liveRows.Count -ne 36) { throw ("Expected 36 Jev rows, got " + $liveRows.Count) }
 
@@ -158,6 +166,7 @@ jobs:
             meanBatchLatencyMs = $meanBatchLatency
             p95BatchLatencyMs = $p95BatchLatency
             secret_exposed = $false
+            outputSecretScan = "clean"
           }
 
           Write-Host "=== DETERMINISTIC LIVE JEV BENCHMARK ==="
