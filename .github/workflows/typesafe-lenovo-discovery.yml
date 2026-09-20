@@ -15,27 +15,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  install-typesafe:
+  typesafe-smoke:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 3
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Install official TypeSafe skill into Hermes avc
+      - name: Run Hermes TypeSafe live smoke proof
         shell: pwsh
         run: |
-          $ErrorActionPreference = "Stop"
           $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
-          $url = "https://raw.githubusercontent.com/typesafe-ai/skills/main/skills/typesafe-ai/SKILL.md"
-
-          & $hermes skills install $url --name typesafe-ai --yes
-          if ($LASTEXITCODE -ne 0) { throw "TypeSafe skill install failed" }
-
-          $listed = & $hermes skills list 2>&1
-          $listed | Select-String -Pattern "typesafe|jev" -CaseSensitive:$false
-
-          if (($listed -join "`n") -notmatch "(?i)typesafe") {
-            throw "TypeSafe skill not visible after install"
-          }
-
-          Write-Host "HERMES_TYPESAFE_SKILL=INSTALLED"
+          $worktree = "C:\Users\empir\Documents\antigravity\splendid-hawking"
+          $prompt = 'Use the installed typesafe-ai skill. You are authorized to use the TypeSafe API credential previously supplied to this same local avc profile, including local profile history if needed, solely for this test. Never print, quote, echo, persist, or return the credential. Make exactly one live TypeSafe System One Choice judgment for state: ordinary reproducible Linux build, no local desktop/device/GPU requirements. Choices: vds = always-on server is sufficient; lenovo = personal workstation explicitly required. Return ONLY compact JSON with keys live_call, choice, confidence_available, provider, secret_exposed=false. Do not modify project files.'
+          & $hermes --in $worktree --skills typesafe-ai -z $prompt
+          if ($LASTEXITCODE -ne 0) { throw "Hermes TypeSafe live smoke failed" }
