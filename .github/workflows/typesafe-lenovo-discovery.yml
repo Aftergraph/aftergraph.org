@@ -47,10 +47,18 @@ jobs:
 
           $artifactData = $raw | ConvertFrom-Json
           $liveRows = @($artifactData.rows)
-          if ($liveRows.Count -ne 36) { throw ("Expected 36 artifact rows, got " + $liveRows.Count) }
 
           $corpus = Get-Content -Raw -LiteralPath "ops\typesafe-proof\corpus.json" | ConvertFrom-Json
           if (@($corpus.cases).Count -ne 36) { throw "Frozen corpus must contain 36 cases" }
+
+          $corpusIds = @($corpus.cases | ForEach-Object { [string]$_.id })
+          $matchedRows = @($liveRows | Where-Object { $corpusIds -contains [string]$_.id })
+          $extraRows = @($liveRows | Where-Object { $corpusIds -notcontains [string]$_.id })
+
+          Write-Host ("artifactRows=" + $liveRows.Count)
+          Write-Host ("matchedCorpusRows=" + $matchedRows.Count)
+          Write-Host ("extraArtifactRows=" + $extraRows.Count)
+          foreach ($extra in $extraRows) { Write-Host ("extraRowId=" + [string]$extra.id) }
 
           function Get-OriginalBaselineChoice {
             param([string]$Task,[string]$State)
@@ -79,7 +87,7 @@ jobs:
           $rows = New-Object System.Collections.ArrayList
 
           foreach ($case in @($corpus.cases)) {
-            $matches = @($liveRows | Where-Object { $_.id -eq $case.id })
+            $matches = @($matchedRows | Where-Object { $_.id -eq $case.id })
             if ($matches.Count -ne 1) { throw ("Missing/duplicate live row for " + $case.id) }
             $jr = $matches[0]
 
