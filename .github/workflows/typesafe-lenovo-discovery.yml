@@ -15,18 +15,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  hermes-skill-interface:
+  install-typesafe:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 2
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Inspect Hermes skill manager
+      - name: Install official TypeSafe skill into Hermes avc
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
           $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
-          & $hermes skills --help 2>&1 | Select-Object -First 180
-          Write-Host "=== INSTALL HELP ==="
-          & $hermes skills install --help 2>&1 | Select-Object -First 180
-          Write-Host "=== SKILL LIST TYPESAFE FILTER ==="
-          & $hermes skills list 2>&1 | Select-String -Pattern "typesafe|jev" -CaseSensitive:$false
+          $url = "https://raw.githubusercontent.com/typesafe-ai/skills/main/skills/typesafe-ai/SKILL.md"
+
+          & $hermes skills install $url --name typesafe-ai --yes
+          if ($LASTEXITCODE -ne 0) { throw "TypeSafe skill install failed" }
+
+          $listed = & $hermes skills list 2>&1
+          $listed | Select-String -Pattern "typesafe|jev" -CaseSensitive:$false
+
+          if (($listed -join "`n") -notmatch "(?i)typesafe") {
+            throw "TypeSafe skill not visible after install"
+          }
+
+          Write-Host "HERMES_TYPESAFE_SKILL=INSTALLED"
