@@ -17,14 +17,20 @@ concurrency:
 jobs:
   sessions:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 2
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Inspect Hermes session interface and recent sessions
+      - name: Find original TypeSafe session by metadata only
         shell: pwsh
         run: |
           $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
-          & $hermes sessions --help 2>&1 | Select-Object -First 120
-          Write-Host "=== RECENT SESSIONS (avc active profile) ==="
-          & $hermes sessions list 2>&1 | Select-Object -First 160
+
+          Write-Host "=== LIST HELP ==="
+          & $hermes sessions list --help 2>&1 | Select-Object -First 180
+
+          Write-Host "=== EXTENDED SESSION LIST FILTERED ==="
+          $lines = & $hermes sessions list --limit 250 2>&1
+          $lines |
+            Select-String -Pattern "Sep 17|typesafe|splendid-hawking|20260917_133857|13:3|13:4" -CaseSensitive:$false |
+            ForEach-Object { Write-Host $_.Line }
