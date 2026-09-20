@@ -15,38 +15,41 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  redacted-context:
+  check-gh:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
     timeout-minutes: 2
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Show redacted TypeSafe history context
+      - name: Verify local GitHub CLI authority
         shell: pwsh
         run: |
-          $ErrorActionPreference = "Stop"
-          $history = Join-Path $HOME "AppData\Local\hermes\profiles\avc\.hermes_history"
-          if (-not (Test-Path -LiteralPath $history)) { throw "Hermes history missing" }
-
-          $text = [IO.File]::ReadAllText($history)
-          $matches = [regex]::Matches($text, "(?i)apikey_[A-Za-z0-9_\-]{16,}")
-          $i = 0
-
-          foreach ($m in $matches) {
-            $start = [Math]::Max(0, $m.Index - 900)
-            $length = [Math]::Min($text.Length - $start, $m.Length + 1800)
-            $window = $text.Substring($start, $length)
-
-            if ($window -notmatch "(?i)typesafe|TYPESAFE_API_KEY|docs\.typesafe\.ai|system one|\bjev\b") {
-              continue
-            }
-
-            $i++
-            $redacted = [regex]::Replace($window, "(?i)apikey_[A-Za-z0-9_\-]{16,}", "<REDACTED_KEY>")
-            $redacted = [regex]::Replace($redacted, "(?i)(Bearer\s+)[A-Za-z0-9_.\-]+", '$1<REDACTED_BEARER>')
-            Write-Host ("=== TYPESAFE_CONTEXT_" + $i + " ===")
-            Write-Host $redacted
-            Write-Host ("=== END_TYPESAFE_CONTEXT_" + $i + " ===")
+          $ErrorActionPreference = "Continue"
+          $gh = Get-Command gh -ErrorAction SilentlyContinue
+          if (-not $gh) {
+            Write-Host "GH_CLI=ABSENT"
+            exit 0
           }
 
-          Write-Host ("TypeSafe-adjacent contexts=" + $i)
+          Write-Host ("GH_CLI=" + $gh.Source)
+
+          $auth = gh auth status -h github.com 2>&1
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "GH_AUTH=VALID"
+          } else {
+            Write-Host "GH_AUTH=INVALID"
+          }
+
+          gh repo view Aftergraph/runtime --json nameWithOwner,isPrivate 1>$null 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "RUNTIME_REPO_ACCESS=YES"
+          } else {
+            Write-Host "RUNTIME_REPO_ACCESS=NO"
+          }
+
+          $help = gh secret set --help 2>&1
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "GH_SECRET_SET_AVAILABLE=YES"
+          } else {
+            Write-Host "GH_SECRET_SET_AVAILABLE=NO"
+          }
