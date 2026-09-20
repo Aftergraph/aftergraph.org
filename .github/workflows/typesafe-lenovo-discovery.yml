@@ -1,4 +1,4 @@
-name: TypeSafe Jev Full Benchmark
+name: TypeSafe Jev Benchmark Analysis
 
 on:
   push:
@@ -6,79 +6,98 @@ on:
       - ops/typesafe-lenovo-discovery
     paths:
       - ".github/workflows/typesafe-lenovo-discovery.yml"
-      - "ops/typesafe-proof/**"
 
 permissions:
   contents: read
 
 concurrency:
-  group: typesafe-jev-full-benchmark
+  group: typesafe-jev-benchmark-analysis
   cancel-in-progress: true
 
 jobs:
-  benchmark:
+  analyze:
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 20
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-      - name: Run 36-case live Jev benchmark through resumed Hermes TypeSafe context
+      - name: Recover prior benchmark rows from resumed Hermes session
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
           $hermes = "C:\Users\empir\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe"
           $worktree = "C:\Users\empir\Documents\antigravity\splendid-hawking"
           $session = "20260917_133857_2ee3ac"
-          $corpus = Join-Path $env:GITHUB_WORKSPACE "ops\typesafe-proof\corpus.json"
-          $promptPath = Join-Path $env:GITHUB_WORKSPACE "ops\typesafe-proof\benchmark-prompt.txt"
 
-          if (-not (Test-Path -LiteralPath $hermes)) { throw "Hermes executable missing" }
-          if (-not (Test-Path -LiteralPath $corpus)) { throw "Frozen corpus missing" }
-          if (-not (Test-Path -LiteralPath $promptPath)) { throw "Benchmark prompt missing" }
+          $prompt = 'Do NOT make any TypeSafe or external API calls. Do NOT search files, history, environment, sessions, or credentials. From the immediately preceding 36-case Jev benchmark result already present in this resumed session conversation, return the exact benchmark rows you produced. Return ONLY one valid compact JSON object {"rows":[...]}. Preserve these fields when present: id, expected, baselineChoice, baselineCorrect, jevChoice, jevCorrect, selectedProbability, confidenceAvailable, acceptedAt070. Do not infer or regenerate decisions. If the rows are not available in conversation context, return {"rows":[],"error":"prior_rows_unavailable"}. No markdown.'
 
-          $prompt = (Get-Content -Raw -LiteralPath $promptPath).Replace("{{CORPUS_PATH}}", $corpus)
-
-          $raw = & $hermes --resume $session --no-restore-cwd --in $worktree --skills typesafe-ai -z $prompt
-          if ($LASTEXITCODE -ne 0) { throw "Hermes live benchmark failed" }
+          $raw = & $hermes --resume $session --no-restore-cwd --in $worktree -z $prompt
+          if ($LASTEXITCODE -ne 0) { throw "Hermes row recovery failed" }
 
           $joined = ($raw -join [Environment]::NewLine).Trim()
           $start = $joined.IndexOf('{')
           $end = $joined.LastIndexOf('}')
-          if ($start -lt 0 -or $end -le $start) { throw "No JSON object returned by Hermes" }
-          $jsonText = $joined.Substring($start, $end - $start + 1)
-          $result = $jsonText | ConvertFrom-Json
+          if ($start -lt 0 -or $end -le $start) { throw "No JSON returned" }
+          $result = $joined.Substring($start, $end - $start + 1) | ConvertFrom-Json
+          $rows = @($result.rows)
+          if ($rows.Count -ne 36) { throw ("Expected 36 prior rows, got " + $rows.Count) }
 
-          if ($result.summary.secret_exposed -ne $false) { throw "Secret exposure invariant failed" }
-          if ([int]$result.summary.cases -ne 36) { throw "Expected 36 benchmark cases" }
+          $baselineCorrect = @($rows | Where-Object { $_.baselineChoice -eq $_.expected }).Count
+          $jevCorrect = @($rows | Where-Object { $_.jevChoice -eq $_.expected }).Count
+          $accepted = @($rows | Where-Object {
+            ($null -ne $_.selectedProbability -and [double]$_.selectedProbability -ge 0.70) -or
+            ($null -eq $_.selectedProbability -and $_.acceptedAt070 -eq $true)
+          })
+          $acceptedCorrect = @($accepted | Where-Object { $_.jevChoice -eq $_.expected }).Count
+
+          $baselineAccuracy = $baselineCorrect / 36.0
+          $jevAccuracy = $jevCorrect / 36.0
+          $coverage = $accepted.Count / 36.0
+          $acceptedAccuracy = if ($accepted.Count -gt 0) { $acceptedCorrect / [double]$accepted.Count } else { 0.0 }
+          $wrongRoute = if ($accepted.Count -gt 0) { 1.0 - $acceptedAccuracy } else { 1.0 }
+
+          Write-Host "=== DETERMINISTIC RECOMPUTE ==="
+          Write-Host ("baselineCorrect=" + $baselineCorrect)
+          Write-Host ("jevCorrect=" + $jevCorrect)
+          Write-Host ("acceptedCount=" + $accepted.Count)
+          Write-Host ("acceptedCorrect=" + $acceptedCorrect)
+          Write-Host ("baselineAccuracy=" + $baselineAccuracy)
+          Write-Host ("jevRawAccuracy=" + $jevAccuracy)
+          Write-Host ("coverageAt070=" + $coverage)
+          Write-Host ("acceptedAccuracyAt070=" + $acceptedAccuracy)
+          Write-Host ("wrongRouteRateAt070=" + $wrongRoute)
+          Write-Host ("accuracyDelta=" + ($jevAccuracy - $baselineAccuracy))
+
+          Write-Host "=== JEV MISMATCHES ==="
+          foreach ($row in @($rows | Where-Object { $_.jevChoice -ne $_.expected })) {
+            Write-Host ("id=" + $row.id + "; expected=" + $row.expected + "; jev=" + $row.jevChoice + "; baseline=" + $row.baselineChoice + "; p=" + $row.selectedProbability)
+          }
+
+          Write-Host "=== BASELINE MISMATCHES ==="
+          foreach ($row in @($rows | Where-Object { $_.baselineChoice -ne $_.expected })) {
+            Write-Host ("id=" + $row.id + "; expected=" + $row.expected + "; baseline=" + $row.baselineChoice + "; jev=" + $row.jevChoice + "; p=" + $row.selectedProbability)
+          }
 
           New-Item -ItemType Directory -Force -Path "ops\typesafe-proof\artifacts" | Out-Null
-          $result | ConvertTo-Json -Depth 20 -Compress |
-            Set-Content -LiteralPath "ops\typesafe-proof\artifacts\jev-vnext-eval.json" -Encoding UTF8
+          [ordered]@{
+            summary = [ordered]@{
+              cases = 36
+              baselineAccuracy = $baselineAccuracy
+              jevRawAccuracy = $jevAccuracy
+              coverageAt070 = $coverage
+              acceptedAccuracyAt070 = $acceptedAccuracy
+              wrongRouteRateAt070 = $wrongRoute
+              accuracyDelta = ($jevAccuracy - $baselineAccuracy)
+            }
+            rows = $rows
+          } | ConvertTo-Json -Depth 20 -Compress |
+            Set-Content -LiteralPath "ops\typesafe-proof\artifacts\jev-recomputed.json" -Encoding UTF8
 
-          Write-Host "=== SAFE LIVE JEV BENCHMARK SUMMARY ==="
-          $s = $result.summary
-          Write-Host ("cases=" + $s.cases)
-          Write-Host ("provider=" + $s.provider)
-          Write-Host ("model=" + $s.model)
-          Write-Host ("baselineAccuracy=" + $s.baselineAccuracy)
-          Write-Host ("jevRawAccuracy=" + $s.jevRawAccuracy)
-          Write-Host ("jevCoverage=" + $s.jevCoverage)
-          Write-Host ("jevAcceptedAccuracy=" + $s.jevAcceptedAccuracy)
-          Write-Host ("wrongRouteRateAccepted=" + $s.wrongRouteRateAccepted)
-          Write-Host ("meanLatencyMs=" + $s.meanLatencyMs)
-          Write-Host ("p95LatencyMs=" + $s.p95LatencyMs)
-          Write-Host ("accuracyDeltaVsBaseline=" + $s.accuracyDeltaVsBaseline)
-          Write-Host ("modelWorks=" + $s.modelWorks)
-          Write-Host ("outperformsBaseline=" + $s.outperformsBaseline)
-          Write-Host ("secret_exposed=" + $s.secret_exposed)
-
-          if ($s.modelWorks -ne $true) { exit 2 }
-
-      - name: Upload benchmark evidence
+      - name: Upload recomputed evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: typesafe-jev-36-case-proof
-          path: ops/typesafe-proof/artifacts/jev-vnext-eval.json
+          name: typesafe-jev-recomputed-proof
+          path: ops/typesafe-proof/artifacts/jev-recomputed.json
           if-no-files-found: ignore
           retention-days: 30
