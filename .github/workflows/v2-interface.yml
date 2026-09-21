@@ -22,6 +22,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Setup Node 24
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
       - name: Install Atlas dependencies (lockfile)
         run: npm --prefix atlas ci
       - name: Audit Atlas dependencies
@@ -42,10 +46,16 @@ jobs:
         run: node --test site/launcher-registry.test.mjs site/launcher-telemetry.test.mjs
       - name: Sync canonical Brand OS inputs
         run: node scripts/sync-brand.mjs
+      - name: Build and verify STEWARD edge assets
+        run: |
+          npm --prefix site/steward ci --ignore-scripts
+          node site/steward/prepare-assets.cjs
+          node site/steward/verify-steward.cjs build
+          node --test site/steward-cloudflare-contract.test.mjs
       - name: Compile worker
         run: node site/build-worker.cjs
-      - name: Launcher Worker telemetry runtime contract
-        run: node --test site/launcher-worker.test.mjs
+      - name: Worker runtime contracts
+        run: node --test site/launcher-worker.test.mjs site/steward-worker.test.mjs
       - name: Install Playwright chromium
         run: npx --prefix atlas playwright install --with-deps chromium
       - name: Atlas browser smoke (DOM)
@@ -74,7 +84,12 @@ jobs:
           exit $STATUS
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
-      - name: Generated bundle is current
-        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
+      - name: Generated Worker hash is current
+        run: |
+          actual="$(sha256sum site/worker.js | awk '{print $1}')"
+          expected="$(tr -d '[:space:]' < site/worker.sha256)"
+          test "$actual" = "$expected" || { echo "worker hash drift: $actual != $expected"; exit 1; }
+      - name: Generated source projections are current
+        run: git diff --exit-code -- site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
       - name: Diff check
         run: git diff --check
