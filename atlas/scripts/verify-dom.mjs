@@ -15,13 +15,18 @@ try {
   // Desktop topology
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(`${base}?view=topology`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2500);
     const nodes = await page.locator('.rf-node').count();
     if (nodes < 20) fail(`topology shows ${nodes} nodes, expected >= 20 repository nodes`);
     const header = await page.locator('.atlas-head').innerText();
-    for (const needle of ['Aftergraph Atlas', 'CANONICAL', 'OBSERVED', 'PROPOSED', 'Drift', 'gov']) {
+    for (const needle of ['Aftergraph Atlas', 'gov']) {
       if (!header.includes(needle)) fail(`header missing ${needle}`);
+    }
+    for (const [label, expected] of [['CANONICAL', 'true'], ['OBSERVED', 'true'], ['PROPOSED', 'true'], ['Drift', 'false']]) {
+      const control = page.getByRole('button', { name: label, exact: true });
+      if (await control.count() !== 1) fail(`missing truth-plane control ${label}`);
+      else if (await control.getAttribute('aria-pressed') !== expected) fail(`${label} aria-pressed drift`);
     }
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (overflow > 1) fail(`desktop horizontal overflow: ${overflow}px`);
@@ -58,7 +63,7 @@ try {
     });
     if (!(contrast >= 4.5)) fail(`body text contrast ${contrast.toFixed(2)}:1 below WCAG AA 4.5`);
     // Inspector via URL state
-    await page.goto(`${base}?node=${encodeURIComponent('repo:Aftergraph/aie')}`, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(`${base}?view=topology&node=${encodeURIComponent('repo:Aftergraph/aie')}`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
     const insp = await page.locator('.inspector').innerText();
     for (const needle of ['repo:Aftergraph/aie', 'CANONICAL', 'OBSERVED', 'source:', 'ref:', 'observed:']) {
@@ -83,7 +88,7 @@ try {
   // Truth-plane overlay toggles drive the graph + URL state
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(`${base}?view=topology`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2500);
     // Truth-plane overlay toggles: aria-pressed flips and URL state follows
     const prop = page.getByRole('button', { name: 'PROPOSED', exact: true });
@@ -191,7 +196,7 @@ try {
   // System x-ray traces a directed path from live relations
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(`${base}?view=topology`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
     await page.getByLabel('Trace from').selectOption('repo:Aftergraph/studio');
     await page.getByLabel('Trace to').selectOption('repo:Aftergraph/works-execution');
@@ -203,7 +208,7 @@ try {
   }
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(`${base}?view=topology`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
     const lang = await page.evaluate(() => document.documentElement.lang);
     if (!lang) fail('html lang missing');
@@ -230,7 +235,7 @@ try {
   }
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(`${base}?view=topology`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
     await page.getByLabel('Filter entities').fill('wi-backend');
     await page.waitForTimeout(500);
@@ -242,7 +247,7 @@ try {
   }
   {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-    await page.goto(`${base}?node=${encodeURIComponent('repo:Aftergraph/wi-backend')}`, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(`${base}?view=topology&node=${encodeURIComponent('repo:Aftergraph/wi-backend')}`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
     const nodes = await page.locator('.rf-node').count();
     if (nodes >= 20) fail(`mobile shows ${nodes} nodes, expected neighborhood subset (< 20)`);
@@ -256,7 +261,7 @@ try {
   // Keyboard traversal: arrows move graph selection, Escape clears it
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(`${base}?view=topology`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2500);
     await page.locator('.graph').click();
     await page.keyboard.press('ArrowDown');
@@ -287,7 +292,7 @@ try {
   // Reduced motion must remove decorative animation without removing required state.
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(`${base}?view=topology`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(800);
     const lensCount = await page.getByRole('group', { name: 'Experience lens' }).getByRole('button').count();
     if (lensCount < 3) fail('reduced-motion mode hides required Experience lens state');
@@ -296,7 +301,7 @@ try {
   // Tablet: full graph in a narrower viewport — must render without overflow
   {
     const page = await browser.newPage({ viewport: { width: 820, height: 1180 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(`${base}?view=topology`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2500);
     const nodes = await page.locator('.rf-node').count();
     if (nodes < 20) fail(`tablet shows ${nodes} nodes, expected full topology (>= 20)`);
