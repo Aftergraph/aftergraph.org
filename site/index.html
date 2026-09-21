@@ -100,6 +100,15 @@ button.pnode.final[aria-current="true"] .pdot{background:var(--evidence);box-sha
 .chip-float.cf-b{top:-18px;right:-14px;animation-delay:-3s}
 .chip-float.cf-a{bottom:22%;left:-30px;animation-delay:-1.5s}
 @keyframes chip-float{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+/* ==== Observatory lattice + scroll identity ==== */
+.gnode{animation:gnode 6s ease-in-out infinite}
+.gnode:nth-child(2n){animation-delay:-2s}.gnode:nth-child(3n){animation-delay:-3.5s}
+@keyframes gnode{0%,100%{opacity:.18}50%{opacity:1}}
+.orbit-art,.hero-visual{will-change:transform}
+.nav-links a.active{color:var(--control)}
+.progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:60;pointer-events:none;background:linear-gradient(90deg,var(--control),var(--evidence));transform:scaleX(0);transform-origin:0 50%}
+.product-art{position:relative}
+.product-art::after{content:"";position:absolute;inset:0;border-radius:8px;pointer-events:none;background:radial-gradient(64% 72% at 76% 26%,rgba(66,199,232,.20),transparent 70%),radial-gradient(52% 62% at 16% 84%,rgba(36,196,173,.12),transparent 72%)}
 /* ==== Proof band ==== */
 .proof{padding:40px 0;border-top:1px solid var(--border);position:relative}
 .proof::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(36,196,173,.4),transparent)}
@@ -275,7 +284,7 @@ html{scroll-behavior:auto}
 .button:hover,.intent-card:hover,.product-card:hover,.evidence-cell:hover,.principle:hover{transform:none}
 .reveal{opacity:1;transform:none;transition:none}
 .pulse::after,.product-art .flow{animation:none}
-.hero-eyebrow .tick,.live-pill.ok .live-dot{animation:none}
+.hero-eyebrow .tick,.live-pill.ok .live-dot,.gnode{animation:none}
 .orbit-art .o-rot,.orbit-art .o-rot-rev,.final-cta::before{animation:none}
 .chip-float{animation:none}
 .button.primary::after{display:none}
@@ -284,6 +293,7 @@ html{scroll-behavior:auto}
 </head>
 <body>
 <div class="backdrop" aria-hidden="true"></div>
+<div class="progress" id="progressbar" aria-hidden="true"></div>
 <nav class="nav" aria-label="Primary navigation"><div class="shell" style="display:flex;align-items:center;justify-content:space-between;width:100%"><a class="brand" href="/" aria-label="Aftergraph home"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" stroke="#42c7e8" stroke-width="1.6" opacity=".9"/><circle cx="12" cy="12" r="5.5" stroke="#42c7e8" stroke-width="1.2" stroke-dasharray="2 3" opacity=".7"/><path d="M8.2 12.2l2.5 2.5 5.1-5.4" stroke="#24c4ad" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="1.6" fill="#42c7e8"/></svg>AFTERGRAPH<i>.</i></a>
 <input type="checkbox" id="navtoggle" class="navtoggle" aria-label="Menu">
 <label for="navtoggle" class="burger" aria-label="Toggle menu"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></label>
@@ -303,10 +313,39 @@ html{scroll-behavior:auto}
 <svg class="orbit-art" viewBox="0 0 640 640" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
 <defs>
 <linearGradient id="oge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#42c7e8" stop-opacity=".55"/><stop offset="1" stop-color="#24c4ad" stop-opacity=".15"/></linearGradient>
+<radialGradient id="ogc" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#42c7e8" stop-opacity=".5"/><stop offset="1" stop-color="#42c7e8" stop-opacity="0"/></radialGradient>
+<filter id="ogf" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7"/></filter>
 </defs>
+<circle cx="320" cy="320" r="180" fill="url(#ogc)" opacity=".45"/>
+<circle cx="320" cy="320" r="120" fill="url(#ogc)" opacity=".35" filter="url(#ogf)"/>
 <g class="o-rot"><circle cx="320" cy="320" r="300" fill="none" stroke="rgba(137,147,164,.16)" stroke-dasharray="2 12" stroke-width="1.4"/><circle cx="320" cy="320" r="252" fill="none" stroke="rgba(66,199,232,.22)" stroke-dasharray="1 9" stroke-width="1.2"/><circle cx="320" cy="90" r="4" fill="#42c7e8" opacity=".8"/><circle cx="590" cy="330" r="3" fill="#24c4ad" opacity=".7"/><circle cx="320" cy="552" r="3.5" fill="#7759e8" opacity=".7"/><circle cx="52" cy="306" r="3" fill="#f0a64a" opacity=".6"/></g>
 <g class="o-rot-rev"><circle cx="320" cy="320" r="206" fill="none" stroke="rgba(36,196,173,.18)" stroke-width="1" stroke-dasharray="24 14"/><circle cx="320" cy="114" r="4" fill="#24c4ad" opacity=".9"/><circle cx="526" cy="320" r="3.5" fill="#42c7e8" opacity=".8"/><circle cx="320" cy="526" r="3" fill="#7759e8" opacity=".8"/></g>
 <g stroke="rgba(66,199,232,.14)" stroke-width="1"><line x1="320" y1="20" x2="320" y2="80"/><line x1="620" y1="320" x2="560" y2="320"/><line x1="320" y1="620" x2="320" y2="560"/><line x1="20" y1="320" x2="80" y2="320"/></g>
+<g class="lattice" stroke="rgba(66,199,232,.16)" stroke-width="1.1" fill="none">
+<path d="M70 250 C 170 190, 290 170, 430 205 S 580 310, 600 400"/>
+<path d="M70 395 C 180 330, 300 285, 420 300 S 570 380, 585 455"/>
+<path d="M120 110 C 190 210, 250 280, 370 330 S 520 400, 560 470"/>
+<path d="M150 545 C 220 450, 300 385, 400 345 S 520 300, 575 260"/>
+<path d="M320 60 C 300 160, 300 220, 300 300"/>
+<path d="M320 600 C 300 500, 300 430, 305 350"/>
+</g>
+<g class="gnodes" fill="#7fd9f2">
+<circle class="gnode" cx="120" cy="110" r="3"/>
+<circle class="gnode" cx="150" cy="260" r="2.6"/>
+<circle class="gnode" cx="300" cy="185" r="2.6"/>
+<circle class="gnode" cx="440" cy="228" r="2.8"/>
+<circle class="gnode" cx="560" cy="470" r="2.6"/>
+<circle class="gnode" cx="420" cy="412" r="2.8"/>
+<circle class="gnode" cx="240" cy="420" r="2.6"/>
+<circle class="gnode" cx="96" cy="330" r="2.6"/>
+<circle class="gnode" cx="480" cy="330" r="2.4"/>
+</g>
+<g class="seal" transform="translate(320,320)">
+<circle r="46" fill="none" stroke="rgba(36,196,173,.55)" stroke-width="2" stroke-dasharray="3 9"/>
+<circle r="58" fill="none" stroke="rgba(66,199,232,.35)" stroke-width="1" stroke-dasharray="1 7"/>
+<path d="M-15 -3 l11 12 l19 -22" fill="none" stroke="#24c4ad" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle r="6" fill="#42c7e8" opacity=".9"/>
+</g>
 <path d="M320 60 A 260 260 0 0 1 545 180" fill="none" stroke="url(#oge)" stroke-width="1.6" stroke-dasharray="4 10" opacity=".8"/>
 <path d="M320 580 A 260 260 0 0 1 95 460" fill="none" stroke="url(#oge)" stroke-width="1.6" stroke-dasharray="4 10" opacity=".8"/>
 </svg>
@@ -541,6 +580,17 @@ if(j&&j.status==='ok'&&pill&&txt){pill.classList.add('ok');txt.textContent='live
 }).catch(function(){var t=document.getElementById('livetext');if(t){t.textContent='status: see /status';}});
 if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});document.querySelectorAll('.section,.proof,.final-cta').forEach(function(s){s.classList.add('reveal');io.observe(s);});}
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}
+</script>
+<script>
+(function(){
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var bar=document.getElementById('progressbar');
+if(bar&&!reduce){var ticking=false;var update=function(){var s=document.documentElement;var max=s.scrollHeight-window.innerHeight;bar.style.transform='scaleX('+(max>0?Math.min(1,window.scrollY/max):0)+')';ticking=false;};window.addEventListener('scroll',function(){if(!ticking){requestAnimationFrame(update);ticking=true;}},{passive:true});update();}
+var links={};var secs=[];
+document.querySelectorAll('.nav-links a[href^="#"]').forEach(function(a){var f=a.getAttribute('href').slice(1);if(f&&document.getElementById(f)){links[f]=a;secs.push(f);}});
+if('IntersectionObserver' in window&&secs.length){var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){secs.forEach(function(s){if(links[s]){links[s].classList.toggle('active',s===e.target.id);}});}});},{rootMargin:'-45% 0px -50% 0px'});secs.forEach(function(s){var el=document.getElementById(s);if(el){io2.observe(el);}});}
+if(!reduce){var art=document.querySelector('.orbit-art'),vis=document.querySelector('.hero-visual');if(art&&vis){var mono=function(){var y=window.scrollY;if(y<window.innerHeight&&y>=0){art.style.transform='translate3d(0,'+(y*0.09)+'px,0)';vis.style.transform='translate3d(0,'+(y*0.04)+'px,0)';}else{art.style.transform='';vis.style.transform='';}};var t=false;window.addEventListener('scroll',function(){if(!t){requestAnimationFrame(function(){mono();t=false;});t=true;}},{passive:true});mono();}}
+})();
 </script>
 </body>
 </html>
