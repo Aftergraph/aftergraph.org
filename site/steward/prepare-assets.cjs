@@ -74,9 +74,18 @@ for(const [srcRel,destName] of required){
 const manifest={
   schema:'steward-cloudflare-assets/1.0',
   three_version:'0.180.0',
-  glb:{...EXPECTED.glb,sha256:glbSha,chunks:glb.files.length},
-  export_pack:{...EXPECTED.zip,sha256:zipSha,chunks:zip.files.length},
-  r2_prefix:'steward/v1/'
+  glb:{
+    ...EXPECTED.glb,
+    sha256:glbSha,
+    chunks:glb.files.length,
+    r2_key:'steward/v1/sha256/'+glbSha+'/steward-rig-v1.glb'
+  },
+  export_pack:{
+    ...EXPECTED.zip,
+    sha256:zipSha,
+    chunks:zip.files.length,
+    r2_key:'steward/v1/sha256/'+zipSha+'/steward-rig-v1-verified-exports.zip'
+  }
 };
 fs.writeFileSync(path.join(DIST,'asset-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 console.log('STEWARD-ASSET-PREP-PASS glb_chunks='+glb.files.length+' zip_chunks='+zip.files.length);
