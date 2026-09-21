@@ -144,3 +144,50 @@ jobs:
           if ($telemetryCode -ne 405) { throw "launcher telemetry contract failed -> $telemetryCode" }
 
           Write-Host "production verified at exact HEAD $env:GITHUB_SHA"
+
+  lenovo-works-bootstrap-probe:
+    name: Lenovo WORKS bootstrap probe
+    if: github.event_name == 'pull_request' && github.head_ref == 'bootstrap/lenovo-works-native-20260921'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 5
+    steps:
+      - name: Verify exact physical runner
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Write-Host ('host=' + [Environment]::MachineName)
+          Write-Host ('runner_name=' + $env:RUNNER_NAME)
+          Write-Host ('runner_os=' + $env:RUNNER_OS)
+          Write-Host ('runner_arch=' + $env:RUNNER_ARCH)
+          if ([Environment]::MachineName -ne 'JONAS-LENOVO') { throw 'wrong_host' }
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'wrong_runner' }
+      - name: Inspect native bootstrap prerequisites without secret values
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $paths = @(
+            "$env:LOCALAPPDATA\Aftergraph\WORKS\worker.secrets.json",
+            "$env:LOCALAPPDATA\Aftergraph\WORKS\works-worker.exe",
+            "C:\Aftergraph\WORKS\worker.secrets.json",
+            "C:\Aftergraph\WORKS\works-worker.exe"
+          )
+          foreach ($p in $paths) { Write-Host ('exists ' + $p + '=' + (Test-Path -LiteralPath $p)) }
+          foreach ($name in @('WORKS_API','WORKS_ENROLL_SECRET','WORKS_GITHUB_TOKEN','WORKS_POOL','WORKS_WORKER_ID')) {
+            $v = [Environment]::GetEnvironmentVariable($name)
+            Write-Host ($name + '_present=' + (-not [string]::IsNullOrWhiteSpace($v)))
+          }
+          foreach ($cmd in @('git.exe','go.exe','gh.exe','ssh.exe','tailscale.exe','cloudflared.exe')) {
+            Write-Host ($cmd + '_present=' + [bool](Get-Command $cmd -ErrorAction SilentlyContinue))
+          }
+          foreach ($task in @('Aftergraph WORKS Worker','Hermes_Gateway','Hermes_Gateway_avc','Aftergraph-Remote-MCP')) {
+            $found = Get-ScheduledTask -TaskName $task -ErrorAction SilentlyContinue
+            Write-Host ('task ' + $task + '_present=' + [bool]$found)
+          }
+          $tcp = Test-NetConnection -ComputerName 'works.rendetalje.dk' -Port 443 -WarningAction SilentlyContinue
+          Write-Host ('works_https_reachable=' + [bool]$tcp.TcpTestSucceeded)
+          try {
+            $r = Invoke-WebRequest -Uri 'https://works.rendetalje.dk/' -Method Head -MaximumRedirection 0 -ErrorAction Stop
+            Write-Host ('works_http_status=' + [int]$r.StatusCode)
+          } catch {
+            if ($_.Exception.Response) { Write-Host ('works_http_status=' + [int]$_.Exception.Response.StatusCode) } else { Write-Host 'works_http_status=unreachable' }
+          }
