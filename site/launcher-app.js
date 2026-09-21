@@ -12,6 +12,7 @@ const ICONS = {
   trust:'<path d="M9.5 14.5 7 17a3 3 0 0 1-4-4l3-3a3 3 0 0 1 4 0M14.5 9.5 17 7a3 3 0 0 1 4 4l-3 3a3 3 0 0 1-4 0M8.5 15.5l7-7"/>',
   aie:'<path d="m12 4 8 15H4L12 4Z"/><circle cx="12" cy="14" r="1"/>',
   runtime:'<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Zm0 9 8-4.5M12 12 4 7.5M12 12v9"/>',
+  steward:'<circle cx="12" cy="11" r="6"/><path d="M8.5 10.5h7M10 14h4M12 5V3M5 7 3.5 5.5M19 7l1.5-1.5M7 19c1.5-2 8.5-2 10 0"/>',
   atlas:'<circle cx="6" cy="12" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="18" cy="17" r="2"/><path d="m8 11 8-3M8 13l8 3"/>',
   docs:'<path d="M6 3h8l4 4v14H6V3Zm8 0v5h4M9 12h6M9 16h6"/>',
   brand:'<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><circle cx="12" cy="12" r="2.5"/>',
