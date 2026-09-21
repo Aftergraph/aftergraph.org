@@ -7,6 +7,7 @@
   },
   "featured_entities": [
     "studio",
+    "steward",
     "work-intelligence",
     "sentinel",
     "works-execution",
@@ -46,6 +47,34 @@
       "evidence": {
         "source": "Aftergraph/after-graph-governance docs/platform-topology/1.0.json@4ad398e",
         "ref": "4ad398e3f2230bfa096dda7f29bb834bc4aa1654",
+        "cut": "2026-09-08T23:23:16Z"
+      }
+    },
+    {
+      "id": "steward",
+      "kind": "entity",
+      "group": "Products / Systems",
+      "name": "STEWARD",
+      "description": "Governed intelligent execution surface that projects externally owned authority, work, runtime and verification state without becoming canonical truth.",
+      "url": "/steward/",
+      "maturity": "prototype",
+      "aliases": [
+        "steward",
+        "agent presence",
+        "governed agent",
+        "keeper",
+        "presence projection",
+        "verified agent"
+      ],
+      "icon": "steward",
+      "repo": null,
+      "canonical_role": null,
+      "canonical_plane": null,
+      "source_visibility": "public-surface",
+      "evidence_url": "/atlas",
+      "evidence": {
+        "source": "Aftergraph public surface registry",
+        "ref": null,
         "cut": "2026-09-08T23:23:16Z"
       }
     },
