@@ -61,8 +61,13 @@ jobs:
         run: node --test site/launcher-worker.test.mjs
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
-      - name: Generated bundle is current
-        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
+      - name: Generated Worker hash is current
+        run: |
+          actual="$(sha256sum site/worker.js | awk '{print $1}')"
+          expected="$(tr -d '[:space:]' < site/worker.sha256)"
+          test "$actual" = "$expected" || { echo "worker hash drift: $actual != $expected"; exit 1; }
+      - name: Generated source projections are current
+        run: git diff --exit-code -- site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
       - name: Diff check
         run: git diff --check
 
