@@ -2,6 +2,7 @@
   "schema": "aftergraph-launcher-surfaces/1.0",
   "featured_entities": [
     "studio",
+    "steward",
     "work-intelligence",
     "sentinel",
     "works-execution",
@@ -31,6 +32,22 @@
         "operate"
       ],
       "icon": "studio"
+    },
+    {
+      "id": "steward",
+      "name": "STEWARD",
+      "url": "/steward/",
+      "maturity": "prototype",
+      "aliases": [
+        "steward",
+        "agent presence",
+        "governed agent",
+        "keeper",
+        "presence projection",
+        "verified agent"
+      ],
+      "icon": "steward",
+      "description": "Governed intelligent execution surface that projects externally owned authority, work, runtime and verification state without becoming canonical truth."
     },
     {
       "id": "work-intelligence",

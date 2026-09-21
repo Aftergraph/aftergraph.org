@@ -49,14 +49,25 @@ jobs:
         run: node --test site/launcher-registry.test.mjs site/launcher-telemetry.test.mjs
       - name: Sync canonical Brand OS inputs
         run: node scripts/sync-brand.mjs
+      - name: Build and verify STEWARD edge assets
+        run: |
+          npm --prefix site/steward ci --ignore-scripts
+          node site/steward/prepare-assets.cjs
+          node site/steward/verify-steward.cjs build
+          node --test site/steward-cloudflare-contract.test.mjs
       - name: Compile canonical worker
         run: node site/build-worker.cjs
       - name: Launcher Worker telemetry runtime contract
         run: node --test site/launcher-worker.test.mjs
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
-      - name: Generated bundle is current
-        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
+      - name: Generated Worker hash is current
+        run: |
+          actual="$(sha256sum site/worker.js | awk '{print $1}')"
+          expected="$(tr -d '[:space:]' < site/worker.sha256)"
+          test "$actual" = "$expected" || { echo "worker hash drift: $actual != $expected"; exit 1; }
+      - name: Generated source projections are current
+        run: git diff --exit-code -- site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
       - name: Diff check
         run: git diff --check
 
@@ -109,6 +120,26 @@ jobs:
       - name: Verify deploy runner Cloudflare session
         shell: pwsh
         run: npx --yes wrangler@4.131.2 whoami
+      - name: Upload and re-verify exact STEWARD artifacts in R2
+        shell: pwsh
+        working-directory: site
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $bucket = 'atlas-v3-artifacts'
+          $glbSha = '187819a9086b12366f33f5290db98f7921b55e0674bf4aaee000e76241cb605f'
+          $zipSha = 'd10fc1d7b174630241dbde64a8cedba380e36dfaecc31ddb3bfe75d28b9b1024'
+          $glbKey = "steward/v1/sha256/$glbSha/steward-rig-v1.glb"
+          $zipKey = "steward/v1/sha256/$zipSha/steward-rig-v1-verified-exports.zip"
+          npx --yes wrangler@4.131.2 r2 object put "$bucket/$glbKey" --file steward/dist/assets/steward-rig-v1.glb --content-type model/gltf-binary --cache-control "public, max-age=31536000, immutable" --remote
+          npx --yes wrangler@4.131.2 r2 object put "$bucket/$zipKey" --file steward/dist/assets/steward-rig-v1-verified-exports.zip --content-type application/zip --content-disposition 'attachment; filename="steward-rig-v1-verified-exports.zip"' --cache-control "public, max-age=31536000, immutable" --remote
+          Remove-Item steward/dist/r2-verify.glb, steward/dist/r2-verify.zip -Force -ErrorAction SilentlyContinue
+          npx --yes wrangler@4.131.2 r2 object get "$bucket/$glbKey" --file steward/dist/r2-verify.glb --remote
+          npx --yes wrangler@4.131.2 r2 object get "$bucket/$zipKey" --file steward/dist/r2-verify.zip --remote
+          $remoteGlb = (Get-FileHash steward/dist/r2-verify.glb -Algorithm SHA256).Hash.ToLowerInvariant()
+          $remoteZip = (Get-FileHash steward/dist/r2-verify.zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($remoteGlb -ne $glbSha) { throw "R2 GLB SHA mismatch: $remoteGlb" }
+          if ($remoteZip -ne $zipSha) { throw "R2 export-pack SHA mismatch: $remoteZip" }
+          Write-Host "STEWARD_R2_VERIFY=PASS"
       - name: Deploy exact HEAD to Cloudflare Workers
         shell: pwsh
         working-directory: site
@@ -124,7 +155,9 @@ jobs:
             throw "health provenance mismatch: expected $env:GITHUB_SHA, got $($health.sha)"
           }
 
-          $paths = @('/', '/launch', '/launcher-app.js', '/launcher-registry.json', '/status', '/sentinel', '/robots.txt', '/sitemap.xml')
+          $paths = @('/', '/launch', '/launcher-app.js', '/launcher-registry.json', '/status', '/sentinel', '/robots.txt', '/sitemap.xml',
+            '/steward/', '/steward/app.js', '/steward/security', '/steward/evidence.json', '/steward/asset-manifest.json', '/steward/version.json',
+            '/steward/vendor/three.module.js', '/steward/vendor/GLTFLoader.js')
           if (Select-String -Path 'site/worker.js' -Pattern "p === '/community'" -Quiet) {
             $paths += '/community'
           }
@@ -142,5 +175,12 @@ jobs:
             if ($_.Exception.Response) { $telemetryCode = [int]$_.Exception.Response.StatusCode } else { throw }
           }
           if ($telemetryCode -ne 405) { throw "launcher telemetry contract failed -> $telemetryCode" }
+
+          node site/steward/verify-steward.cjs live $base
+
+          $stewardVersion = Invoke-RestMethod -Uri "$base/steward/version.json?verify=$env:GITHUB_SHA" -Method Get
+          if ($stewardVersion.sha -ne $env:GITHUB_SHA) {
+            throw "STEWARD provenance mismatch: expected $env:GITHUB_SHA, got $($stewardVersion.sha)"
+          }
 
           Write-Host "production verified at exact HEAD $env:GITHUB_SHA"

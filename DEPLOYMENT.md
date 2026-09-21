@@ -44,6 +44,30 @@ Routes: `aftergraph.org/*` + `www.aftergraph.org/*` → `aftergraph-site`.
 Production is verified through `/healthz` plus HTTP 200 smoke checks for `/`,
 `/launch`, `/status`, `/robots.txt` and `/sitemap.xml`.
 
+## STEWARD public surface (/steward)
+
+STEWARD is served by the existing canonical `aftergraph-site` Worker at
+`https://aftergraph.org/steward/`; it does not create a parallel host, DNS
+record, or Worker route.
+
+The HTML, scoped JavaScript, self-hosted Three.js runtime and evidence manifest
+are compiled into `aftergraph-site`. The verified rig binaries remain in the
+existing `atlas-v3-artifacts` R2 bucket under content-addressed keys:
+
+- `steward/v1/sha256/187819a9086b12366f33f5290db98f7921b55e0674bf4aaee000e76241cb605f/steward-rig-v1.glb`
+- `steward/v1/sha256/d10fc1d7b174630241dbde64a8cedba380e36dfaecc31ddb3bfe75d28b9b1024/steward-rig-v1-verified-exports.zip`
+
+Production deployment reconstructs both files from committed chunks, validates
+their exact hashes and GLB structure, uploads them with Wrangler `--remote`,
+downloads them again for SHA verification, deploys the exact main HEAD, then
+re-downloads the public `/steward/assets/*` routes and verifies the hashes a
+second time. A missing R2 binding/object fails closed with HTTP 503 rather than
+falling back to an unverified binary.
+
+The visible character is a projection only. The surface cannot grant authority,
+advance durable work, or manufacture verification state; those owners remain
+outside the public renderer.
+
 ## Studio demo (aftergraph-studio, Tier-0)
 
 The interactive Studio demo at `https://aftergraph.org/studio/` is a separate

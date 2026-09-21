@@ -40,6 +40,65 @@ const llms = read('llms.txt');
 const security = read('security.txt');
 const experienceHero = read('experience-hero.js');
 
+// ---- STEWARD (/steward): governed product surface + verified rig distribution ----
+const STEWARD_DIR = path.join(SITE, 'steward');
+const STEWARD_DIST = path.join(STEWARD_DIR, 'dist');
+const stewardRead = (file) => fs.readFileSync(path.join(STEWARD_DIR, file), 'utf8');
+const stewardDistRead = (file) => fs.readFileSync(path.join(STEWARD_DIST, file), 'utf8');
+for (const required of [
+  'index.html',
+  'app.js',
+  'security.html',
+  'evidence.json',
+  'dist/asset-manifest.json',
+  'dist/vendor/three.module.js',
+  'dist/vendor/three.core.js',
+  'dist/vendor/GLTFLoader.js',
+  'dist/vendor/BufferGeometryUtils.js',
+]) {
+  assert(fs.existsSync(path.join(STEWARD_DIR, required)), `STEWARD build input missing: site/steward/${required}; run npm --prefix site/steward ci && node site/steward/prepare-assets.cjs`);
+}
+const stewardHtml = stewardRead('index.html');
+const stewardApp = stewardRead('app.js');
+const stewardSecurity = stewardRead('security.html');
+const stewardEvidenceRaw = stewardRead('evidence.json');
+const stewardAssetManifestRaw = stewardDistRead('asset-manifest.json');
+let stewardEvidence;
+let stewardAssetManifest;
+try { stewardEvidence = JSON.parse(stewardEvidenceRaw); } catch { assert(false, 'STEWARD evidence.json is not valid JSON'); }
+try { stewardAssetManifest = JSON.parse(stewardAssetManifestRaw); } catch { assert(false, 'STEWARD asset-manifest.json is not valid JSON'); }
+assert(stewardAssetManifest.schema === 'steward-cloudflare-assets/1.0', 'STEWARD asset manifest schema drift');
+assert(stewardAssetManifest.glb?.sha256 === stewardEvidence.exports?.glb?.sha256, 'STEWARD GLB manifest/evidence SHA drift');
+assert(stewardAssetManifest.export_pack?.sha256 === stewardEvidence.exports?.package_zip?.sha256, 'STEWARD export manifest/evidence SHA drift');
+assert(/^steward\/v1\/sha256\/[0-9a-f]{64}\//.test(stewardAssetManifest.glb?.r2_key || ''), 'STEWARD GLB R2 key must be content-addressed');
+assert(/^steward\/v1\/sha256\/[0-9a-f]{64}\//.test(stewardAssetManifest.export_pack?.r2_key || ''), 'STEWARD export-pack R2 key must be content-addressed');
+const STEWARD_VENDOR_FILES = {};
+for (const f of ['three.module.js', 'three.core.js', 'GLTFLoader.js', 'BufferGeometryUtils.js']) {
+  STEWARD_VENDOR_FILES[`/steward/vendor/${f}`] = stewardDistRead(`vendor/${f}`);
+}
+const stewardVersion = JSON.stringify({
+  schema: 'steward-public-surface/1.0',
+  sha: process.env.AG_SHA || 'local',
+  deployed: process.env.AG_DEPLOYED || 'build-time',
+  projection_contract: 'steward.presence-projection/1.0',
+  glb_sha256: stewardAssetManifest.glb.sha256,
+  export_pack_sha256: stewardAssetManifest.export_pack.sha256,
+});
+const STEWARD_R2_ROUTES = {
+  '/steward/assets/steward-rig-v1.glb': {
+    key: stewardAssetManifest.glb.r2_key,
+    contentType: 'model/gltf-binary',
+    contentDisposition: 'inline; filename="steward-rig-v1.glb"',
+    bytes: stewardAssetManifest.glb.bytes,
+  },
+  '/steward/assets/steward-rig-v1-verified-exports.zip': {
+    key: stewardAssetManifest.export_pack.r2_key,
+    contentType: 'application/zip',
+    contentDisposition: 'attachment; filename="steward-rig-v1-verified-exports.zip"',
+    bytes: stewardAssetManifest.export_pack.bytes,
+  },
+};
+
 // ---- Atlas (/atlas): vite-built observatory, inlined as static routes ----
 // Built by `npm --prefix ../atlas run build` into site/atlas/ BEFORE this script
 // (vite wipes stale hashed bundles; projection.json is source data, copied in here).
@@ -210,6 +269,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
   <url><loc>https://aftergraph.org/sentinel</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://aftergraph.org/atlas</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://aftergraph.org/studio/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://aftergraph.org/steward/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>
 `;
 
@@ -236,6 +296,14 @@ const SECURITY = ${JSON.stringify(security)};
 const STATUS = ${JSON.stringify(statusBuilt)};
 const SENTINEL = ${JSON.stringify(sentinel)};
 const COMMUNITY = ${JSON.stringify(community)};
+const STEWARD_HTML = ${JSON.stringify(stewardHtml)};
+const STEWARD_APP = ${JSON.stringify(stewardApp)};
+const STEWARD_SECURITY = ${JSON.stringify(stewardSecurity)};
+const STEWARD_EVIDENCE = ${JSON.stringify(stewardEvidenceRaw)};
+const STEWARD_ASSET_MANIFEST = ${JSON.stringify(stewardAssetManifestRaw)};
+const STEWARD_VERSION = ${JSON.stringify(stewardVersion)};
+const STEWARD_VENDOR_FILES = ${JSON.stringify(STEWARD_VENDOR_FILES)};
+const STEWARD_R2_ROUTES = ${JSON.stringify(STEWARD_R2_ROUTES)};
 const ATLAS_HTML = ${JSON.stringify(atlasHtml)};
 const ATLAS_PROJECTION = ${JSON.stringify(ATLAS_PROJECTION_RAW)};
 const ATLAS_EXPERIENCE = ${JSON.stringify(ATLAS_EXPERIENCE_RAW)};
@@ -288,6 +356,31 @@ export default {
     const url = new URL(request.url);
     const p = url.pathname;
     if (p === '/api/launcher/telemetry') { return handleLauncherTelemetry(request, env); }
+    if ((p === '/steward' || p.startsWith('/steward/')) && request.method !== 'GET' && request.method !== 'HEAD') {
+      return new Response('', { status: 405, headers: { 'allow': 'GET, HEAD', 'cache-control': 'no-store', ...SECURE } });
+    }
+    if (STEWARD_R2_ROUTES[p]) {
+      const route = STEWARD_R2_ROUTES[p];
+      const bucket = env.ATLAS_V3_ARTIFACTS || null;
+      if (!bucket) return new Response('STEWARD artifact store unavailable', { status: 503, headers: { 'content-type': 'text/plain;charset=utf-8', 'cache-control': 'no-store', ...SECURE } });
+      try {
+        const object = await bucket.get(route.key);
+        if (!object || !object.body || object.size !== route.bytes) {
+          return new Response('STEWARD verified artifact unavailable', { status: 503, headers: { 'content-type': 'text/plain;charset=utf-8', 'cache-control': 'no-store', ...SECURE } });
+        }
+        const headers = {
+          'content-type': route.contentType,
+          'content-disposition': route.contentDisposition,
+          'content-length': String(object.size),
+          'cache-control': 'public, max-age=31536000, immutable',
+          'etag': object.httpEtag,
+          ...SECURE,
+        };
+        return new Response(request.method === 'HEAD' ? null : object.body, { status: 200, headers });
+      } catch {
+        return new Response('STEWARD verified artifact unavailable', { status: 503, headers: { 'content-type': 'text/plain;charset=utf-8', 'cache-control': 'no-store', ...SECURE } });
+      }
+    }
     // --- Atlas V3 API (D1 + R2 backed) ---
     if (p.startsWith('/api/v3/')) {
       const db = env.ATLAS_V3_DB || null;
@@ -368,6 +461,13 @@ export default {
     else if (ICON_FILES[p]) { body = Uint8Array.from(atob(ICON_FILES[p]), c => c.charCodeAt(0)); contentType = 'image/png'; cache = 'public, max-age=86400'; }
     else if (p === '/launcher-app.js') { body = LAUNCH_APP; contentType = 'text/javascript;charset=utf-8'; cache = 'public, max-age=300'; }
     else if (p === '/launcher-registry.json') { body = LAUNCHER_REGISTRY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
+    else if (p === '/steward' || p === '/steward/') { body = STEWARD_HTML; cache = 'public, max-age=300'; }
+    else if (p === '/steward/app.js') { body = STEWARD_APP; contentType = 'text/javascript;charset=utf-8'; cache = 'public, max-age=300'; }
+    else if (p === '/steward/security' || p === '/steward/security/') { body = STEWARD_SECURITY; cache = 'public, max-age=300'; }
+    else if (p === '/steward/evidence.json') { body = STEWARD_EVIDENCE; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
+    else if (p === '/steward/asset-manifest.json') { body = STEWARD_ASSET_MANIFEST; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
+    else if (p === '/steward/version.json') { body = STEWARD_VERSION; contentType = 'application/json;charset=utf-8'; cache = 'no-store'; }
+    else if (STEWARD_VENDOR_FILES[p]) { body = STEWARD_VENDOR_FILES[p]; contentType = 'text/javascript;charset=utf-8'; cache = 'public, max-age=86400'; }
     else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
     else if (p === '/status' || p === '/status/') { body = STATUS; }
     else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }
@@ -414,6 +514,7 @@ command = "node build-worker.cjs"
 
 console.log('worker.js bytes:', worker.length);
 console.log('atlas: html', atlasHtml.length, '| projection', ATLAS_PROJECTION_RAW.length, '| experience', ATLAS_EXPERIENCE_RAW.length, '| assets', Object.keys(ATLAS_FILES).join(','));
+console.log('steward: glb', stewardAssetManifest.glb.sha256, stewardAssetManifest.glb.bytes, '| export', stewardAssetManifest.export_pack.sha256, stewardAssetManifest.export_pack.bytes, '| vendor', Object.keys(STEWARD_VENDOR_FILES).join(','));
 console.log('landing with meta bytes:', landing.length, '| launch:', launch.length);
 console.log('topology gates: PASS');
 console.log('favicon injected:', landing.includes('/favicon.ico'), '| JSON-LD:', landing.includes('application/ld+json'));
