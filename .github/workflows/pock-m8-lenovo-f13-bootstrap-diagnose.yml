@@ -1,0 +1,62 @@
+name: Pock M8 F13 private bootstrap timing diagnosis
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f13-bootstrap-diagnose.yml
+
+permissions: {}
+
+jobs:
+  inspect-bootstrap:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 5
+    steps:
+      - name: Time private patch fetch and WSL start without printing private bytes
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $base = 'repos/Aftergraph/Pock-bot/contents/'
+          $f11 = $base + 'frontiers/m8-f11/pock-m8-f11-candidate-on-f10.patch?ref=worker/m8-f11-interactive-binding-20260924'
+          $f13 = $base + 'frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=worker/m8-f13-browser-protocol-20260924'
+          $runner = $base + 'frontiers/m8-f13/pock_m8_lenovo_f13_execute.py?ref=worker/m8-f13-browser-protocol-20260924'
+          $program = (Get-Command gh).Source
+          $records = @()
+          $paths = @()
+          try {
+            $items = @(@('f11-fetch', $f11), @('f13-fetch', $f13), @('runner-fetch', $runner))
+            foreach ($item in $items) {
+              $out = Join-Path $env:RUNNER_TEMP ('f13-bootstrap-' + $env:GITHUB_RUN_ID + '-' + $item[0] + '.out')
+              $err = Join-Path $env:RUNNER_TEMP ('f13-bootstrap-' + $env:GITHUB_RUN_ID + '-' + $item[0] + '.err')
+              $paths += @($out, $err)
+              $p = Start-Process -FilePath $program -ArgumentList @('api', $item[1]) -PassThru -NoNewWindow -RedirectStandardOutput $out -RedirectStandardError $err
+              $sw = [Diagnostics.Stopwatch]::StartNew()
+              $finished = $p.WaitForExit(25000)
+              if (-not $finished) { $p.Kill($true); $p.WaitForExit() }
+              $sw.Stop()
+              $exit = if ($finished) { $p.ExitCode } else { $null }
+              $records += @{phase=$item[0]; elapsedMs=$sw.ElapsedMilliseconds; completed=$finished;
+                exitCode=$exit; stdoutBytes=(Get-Item $out).Length;
+                stderrBytes=(Get-Item $err).Length}
+              if (-not $finished) { break }
+            }
+            $out = Join-Path $env:RUNNER_TEMP ('f13-bootstrap-' + $env:GITHUB_RUN_ID + '-wsl.out')
+            $err = Join-Path $env:RUNNER_TEMP ('f13-bootstrap-' + $env:GITHUB_RUN_ID + '-wsl.err')
+            $paths += @($out, $err)
+            $p = Start-Process -FilePath 'wsl.exe' -ArgumentList @('-d','Ubuntu-26.04','--','/bin/true') -PassThru -NoNewWindow -RedirectStandardOutput $out -RedirectStandardError $err
+            $sw = [Diagnostics.Stopwatch]::StartNew()
+            $finished = $p.WaitForExit(25000)
+            if (-not $finished) { $p.Kill($true); $p.WaitForExit() }
+            $sw.Stop()
+            $exit = if ($finished) { $p.ExitCode } else { $null }
+            $records += @{phase='wsl-start'; elapsedMs=$sw.ElapsedMilliseconds; completed=$finished;
+              exitCode=$exit; stdoutBytes=(Get-Item $out).Length;
+              stderrBytes=(Get-Item $err).Length}
+            @{contract='PockM8F13BootstrapTiming/v1'; readOnly=$true; runId='36069489311'; results=$records} | ConvertTo-Json -Depth 6 -Compress
+          } finally {
+            foreach ($path in $paths) { Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue }
+          }
