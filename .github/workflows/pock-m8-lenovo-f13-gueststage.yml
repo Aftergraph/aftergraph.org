@@ -130,8 +130,10 @@ jobs:
                       for deb in debs:
                           fields=run(['dpkg-deb','-f',str(deb),'Package','Version'],timeout=10)
                           if fields['exitCode']!=0:raise RuntimeError('deb_metadata_failed')
-                          package,version=fields['stdout'].splitlines()[:2]
-                          meta=run(['apt-cache',*aptopts,'show',package],timeout=15)
+                          labels=dict(line.split(': ',1) for line in fields['stdout'].splitlines() if ': ' in line)
+                          package,version=labels.get('Package'),labels.get('Version')
+                          if not package or not version:raise RuntimeError('deb_package_version_fields_missing')
+                          meta=run(['apt-cache',*aptopts,'show',package+'='+version],timeout=15)
                           stanza=next((s for s in meta['stdout'].split('\n\n') if 'Version: '+version in s),None)
                           if stanza is None:raise RuntimeError('signed_noble_apt_stanza_missing:'+package)
                           match=re.search(r'^SHA256: ([a-f0-9]{64})$',stanza,re.M)
