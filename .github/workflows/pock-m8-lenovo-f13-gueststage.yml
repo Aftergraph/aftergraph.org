@@ -31,6 +31,7 @@ jobs:
           from pathlib import Path
           import re
           import shutil
+          import socket
           import struct
           import subprocess
           import sys
@@ -84,6 +85,17 @@ jobs:
                       resolv=stage/'etc/resolv.conf'
                       if resolv.is_symlink() or resolv.exists():resolv.unlink()
                       resolv.write_bytes(Path('/etc/resolv.conf').read_bytes())
+                      # The minimal CI rootfs lacks a working DNS NSS path in chroot.
+                      # Resolve on the host and map only the signed Ubuntu mirrors in the copied tree.
+                      host_dns={}
+                      for domain in ['archive.ubuntu.com','security.ubuntu.com']:
+                          infos=socket.getaddrinfo(domain,80,family=socket.AF_INET,type=socket.SOCK_STREAM)
+                          if not infos:raise RuntimeError('host_dns_failed:'+domain)
+                          host_dns[domain]=infos[0][4][0]
+                      hosts=stage/'etc/hosts'
+                      if hosts.is_symlink() or hosts.exists():hosts.unlink()
+                      hosts.write_text('127.0.0.1 localhost\n'+''.join(ip+' '+name+'\n' for name,ip in host_dns.items()))
+                      state['hostResolvedUbuntuMirrors']=host_dns
                       keyring=stage/'usr/share/keyrings/ubuntu-archive-keyring.gpg'
                       if not keyring.is_file():raise RuntimeError('ubuntu_archive_keyring_missing_in_copied_guest')
                       sources=stage/'etc/apt/sources.list.d/pock-f13-noble.sources'
