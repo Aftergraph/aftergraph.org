@@ -51,6 +51,8 @@ jobs:
           PINNED = {
               KERNEL: '9204218e8bcca6ac23848d74f45df2eb19d7f31e8277840a7d145a0df8b078d2',
               ROOTFS: 'ad2f45d74a002bcbf6a0c6d0aba5d4c8e2cdf071aa30f1f1d363edc4a504b3a7',
+              FIRECRACKER: '99ad0f5cd0514a88aad0e9ae8cfdb3cc3b4ab9d190e1194602406c786b5de7a5',
+              JAILER: '65ef226e96f0ceda55ba643f445801ef2cc0ea667ef67cad8ac4f406c9c8434f',
           }
           
           
@@ -84,8 +86,12 @@ jobs:
                       s.connect(self.path)
                       pid, uid, gid = struct.unpack('3i', s.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12))
                       state, ticks = proc_state(pid)
-                      if not os.path.samefile(f'/proc/{pid}/exe', FIRECRACKER) or ticks is None or state == 'Z':
-                          raise PermissionError('firecracker_api_peer_executable_or_lifecycle_mismatch')
+                      if pid <= 0 or ticks is None or state == 'Z':
+                          raise PermissionError('firecracker_api_peer_lifecycle_unavailable')
+                      if sha(f'/proc/{pid}/exe') != PINNED[FIRECRACKER]:
+                          raise PermissionError('firecracker_api_peer_binary_digest_mismatch')
+                      if not os.path.samefile(f'/proc/{pid}/root', Path(self.path).parent):
+                          raise PermissionError('firecracker_api_peer_jail_root_mismatch')
                       if self.expected is not None and (pid, ticks) != self.expected:
                           raise PermissionError('firecracker_api_peer_changed')
                       self.peer = (pid, ticks)
