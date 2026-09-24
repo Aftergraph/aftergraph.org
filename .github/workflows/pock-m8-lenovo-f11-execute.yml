@@ -32,8 +32,8 @@ jobs:
           $got = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
           if ($got -ne $pin) { throw 'private_f11_patch_digest_mismatch' }
           [IO.File]::WriteAllBytes($tempPatch, $bytes)
-          $linuxPatch = (& wsl.exe -d Ubuntu-26.04 -- wslpath -u $tempPatch).Trim()
-          if ($LASTEXITCODE -ne 0 -or !$linuxPatch) { throw 'private_f11_patch_wslpath_failed' }
+          if ($tempPatch -notmatch '^[A-Za-z]:\\') { throw 'private_f11_patch_windows_path_invalid' }
+          $linuxPatch = '/mnt/' + $tempPatch.Substring(0, 1).ToLowerInvariant() + $tempPatch.Substring(2).Replace('\', '/')
           try {
           $probe = @'
           #!/usr/bin/env python3
