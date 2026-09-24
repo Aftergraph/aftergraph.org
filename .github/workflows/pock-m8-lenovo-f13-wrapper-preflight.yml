@@ -1,0 +1,71 @@
+name: Pock M8 F13 exact wrapper read-only preflight
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f13-wrapper-preflight.yml
+
+permissions: {}
+
+jobs:
+  preflight:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 8
+    steps:
+      - name: Exercise exact private wrapper until root creation then stop
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $branch = 'worker/m8-f13-browser-protocol-20260924'
+          $items = @(
+            @('frontiers/m8-f11/pock-m8-f11-candidate-on-f10.patch?ref=worker/m8-f11-interactive-binding-20260924', 'f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b', 'f11.patch'),
+            @('frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=' + $branch, '603905054856a33b658f1d28e6447a9ad01f7e6e0c255f3e3c1d4cfa7e07da58', 'f13.patch'),
+            @('frontiers/m8-f13/pock_m8_lenovo_f13_execute.py?ref=' + $branch, '729145036efa4e7ccc3c48ed79a945c7c7b9b2543e5aa6f6fd75102c77d72c94', 'runner.py')
+          )
+          $paths = @()
+          try {
+            foreach ($item in $items) {
+              $text = & gh api ('repos/Aftergraph/Pock-bot/contents/' + $item[0])
+              if ($LASTEXITCODE -ne 0) { throw 'private_fetch_failed' }
+              $blob = $text | ConvertFrom-Json
+              $bytes = [Convert]::FromBase64String(($blob.content -replace '\s',''))
+              $digest = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+              if ($digest -ne $item[1]) { throw 'private_hash_invalid' }
+              $path = Join-Path $env:RUNNER_TEMP ('pock-pre-' + $env:GITHUB_RUN_ID + '-' + $item[2])
+              $paths += $path
+              [IO.File]::WriteAllBytes($path, $bytes)
+              Write-Output ('FETCH_PASS ' + $item[2] + ' bytes=' + $bytes.Length)
+            }
+            $linux = @($paths | ForEach-Object { '/mnt/' + $_.Substring(0,1).ToLowerInvariant() + $_.Substring(2).Replace('\','/') })
+            $probe = @'
+          import json, pathlib, runpy, sys, time
+          path, runid, f11, f13, patchsha, tree = sys.argv[1:]
+          print(json.dumps({'contract':'PockM8F13WrapperPreflight/v1','phase':'args','runId':runid,
+                            'filesReadable':[pathlib.Path(x).is_file() for x in (path,f11,f13)],
+                            'guestTreeExists':pathlib.Path(tree).is_dir()}),flush=True)
+          module=runpy.run_path(path,run_name='__f13_readonly_preflight__')
+          print(json.dumps({'contract':'PockM8F13WrapperPreflight/v1','phase':'module_imported'}),flush=True)
+          target=pathlib.Path('/root/pock-m8-ci-f13-'+runid)
+          original=pathlib.Path.mkdir
+          def stop_mutation(self,*args,**kwargs):
+              if self==target:raise RuntimeError('PRE_ROOT_CHECKS_PASS')
+              raise RuntimeError('UNEXPECTED_MUTATION_ATTEMPT')
+          pathlib.Path.mkdir=stop_mutation
+          sys.argv=[path,runid,f11,f13,patchsha,tree]
+          started=time.monotonic()
+          result=module['main']()
+          print(json.dumps({'contract':'PockM8F13WrapperPreflight/v1','phase':'before_root_create',
+                            'seconds':round(time.monotonic()-started,3),'wrapperReturn':result}),flush=True)
+          '@
+            $encoded=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
+            $command="import base64;exec(compile(base64.b64decode('$encoded'),'<f13-wrapper-preflight>','exec'))"
+            Write-Output 'WSL_ENTER'
+            & wsl.exe -d Ubuntu-26.04 -- python3 -c $command $linux[2] '36069489311' $linux[0] $linux[1] '603905054856a33b658f1d28e6447a9ad01f7e6e0c255f3e3c1d4cfa7e07da58' '/root/pock-m8-f13-gueststage-36068890418/rootfs'
+            if ($LASTEXITCODE -ne 0) { throw "wrapper_readonly_exit_$LASTEXITCODE" }
+          } finally {
+            foreach ($path in $paths) { Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue }
+          }
