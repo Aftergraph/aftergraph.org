@@ -100,11 +100,15 @@ jobs:
                       state['hostResolvedUbuntuMirrors']=host_dns
                       keyring=stage/'usr/share/keyrings/ubuntu-archive-keyring.gpg'
                       if not keyring.is_file():raise RuntimeError('ubuntu_archive_keyring_missing_in_copied_guest')
-                      sources=stage/'etc/apt/sources.list.d/pock-f13-noble.sources'
-                      sources.parent.mkdir(parents=True,exist_ok=True)
-                      sources.write_text('Types: deb\nURIs: http://archive.ubuntu.com/ubuntu\nSuites: noble noble-updates\nComponents: main universe\nSigned-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\n')
-                      state['isolatedAptSourcesSha256']=sha(sources)
+                      sources=stage/'etc/apt/sources.list.d/ubuntu.sources'
+                      if not sources.is_file():raise RuntimeError('stock_guest_ubuntu_sources_missing')
+                      source_text=sources.read_text()
+                      if 'noble' not in source_text or 'Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg' not in source_text:
+                          raise RuntimeError('stock_guest_ubuntu_sources_not_signed')
+                      state['stockSignedAptSourcesSha256']=sha(sources)
                       state['guestUbuntuArchiveKeyringSha256']=sha(keyring)
+                      guest_tmp=stage/'tmp';guest_tmp.mkdir(exist_ok=True)
+                      guest_tmp.chmod(0o1777)
                       update=chroot(stage,['/usr/bin/apt-get','update','-o','Acquire::Retries=2'],timeout=240)
                       state['aptUpdateExit']=update['exitCode']
                       state['aptUpdateStdoutTail']=update['stdout'][-900:]
