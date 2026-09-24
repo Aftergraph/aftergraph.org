@@ -28,7 +28,7 @@ jobs:
           $blob = $blobJson | ConvertFrom-Json
           if ($blob.encoding -ne 'base64') { throw 'private_f11_patch_encoding_invalid' }
           $bytes = [Convert]::FromBase64String(($blob.content -replace '\s', ''))
-          $pin = 'b7ceecad328ebfff2796625c2bef6e749d1af0c2c92218dc283b55f922f6c2d9'
+          $pin = '0dc32acc13f716cd915ec009ccfbff76259ec9443ea196d844f6cc7b75771d16'
           $got = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
           if ($got -ne $pin) { throw 'private_f11_patch_digest_mismatch' }
           [IO.File]::WriteAllBytes($tempPatch, $bytes)
@@ -136,7 +136,7 @@ jobs:
                   if sha(agent)!='19352249eba0f3403ff33f1ea38fcc76cebc6d9c5312c76ebf5f135bf17720f4':
                       raise RuntimeError('f10_guest_agent_identity_mismatch')
                   state['guestAgentSha256']=sha(agent)
-                  if not patch.is_file() or sha(patch)!='b7ceecad328ebfff2796625c2bef6e749d1af0c2c92218dc283b55f922f6c2d9':
+                  if not patch.is_file() or sha(patch)!='0dc32acc13f716cd915ec009ccfbff76259ec9443ea196d844f6cc7b75771d16':
                       raise RuntimeError('private_f11_patch_digest_mismatch')
                   apply_check=call(['git','apply','--check',str(patch)],env=dict(os.environ),timeout=15,cwd=source)
                   if apply_check.returncode:
@@ -152,8 +152,7 @@ jobs:
                   build=call(['python3','-B',str(project_root/'scripts/build_pock_guest_workload_image.py'),
                               '--rootfs-tree',str(TREE),'--output',str(guest),
                               '--agent',str(project_root/'guest_workload_agent_v23.py'),
-                              '--interactive-source',str(project_root),
-                              '--python-deps','/root/pock-m8-gate/pylibs'],env=env,timeout=480)
+                              '--interactive-source',str(project_root)],env=env,timeout=480)
                   if build.returncode:
                       raise RuntimeError('guest_image_build_failed:'+build.stderr.strip()[-650:])
                   build_data=json.loads(build.stdout)
