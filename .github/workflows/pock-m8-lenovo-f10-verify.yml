@@ -1,0 +1,111 @@
+name: Pock M8 F10 independent artifact verifier
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f10-verify.yml
+
+permissions: {}
+
+jobs:
+  verify:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 6
+    steps:
+      - name: Read-only verification of exact private source and canonical guest proof
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          #!/usr/bin/env python3
+          """Independent read-only verifier for the exact F10 CI execution artifacts."""
+          from hashlib import sha256
+          import json
+          from pathlib import Path
+          import sys
+          
+          ROOT=Path('/root/pock-m8-ci-f10-36026019275')
+          EXPECTED={
+              'sourceZip':'1017465270d11f99f55eb540061ce902589b45c56be7a03308db19f80d937122',
+              'agent':'19352249eba0f3403ff33f1ea38fcc76cebc6d9c5312c76ebf5f135bf17720f4',
+              'proof':'d46adebe30e0dacf9c147a6f1e2f05b212e77d511a66eb114312bef992a6b5a2',
+              'boot':'477bbf027dc8da5cc13a904e7e4fe79329ce2d64cf376aa7e6e6ba3bf92a2843',
+              'observation':'5e6dbc4b9e42ebe98bbe6d5b5f4db03411ff2b67a1e74e2967e7c5f09185861f',
+              'serial':'4d68e41b9c93f4fc447d5f5b7a9843d1207ef3041182d00a4dde261b9e4a6126',
+              'kernel':'9204218e8bcca6ac23848d74f45df2eb19d7f31e8277840a7d145a0df8b078d2',
+              'rootfs':'ad2f45d74a002bcbf6a0c6d0aba5d4c8e2cdf071aa30f1f1d363edc4a504b3a7',
+          }
+          
+          def sha(path):
+              h=sha256()
+              with path.open('rb') as stream:
+                  for block in iter(lambda:stream.read(1024*1024),b''):
+                      h.update(block)
+              return h.hexdigest()
+          
+          def canonical_hash(obj):
+              return sha256(json.dumps(obj,sort_keys=True,separators=(',',':'),
+                                       ensure_ascii=False,allow_nan=False).encode()).hexdigest()
+          
+          def check(name,predicate):
+              checks.append((name,bool(predicate)))
+          
+          checks=[]
+          try:
+              top=json.loads((ROOT/'CI_F10_RESULT.json').read_text())
+              evidence=json.loads((ROOT/'execution.json').read_text())
+              plan=json.loads((ROOT/'plan.json').read_text())
+              proof=evidence['executionProof']
+              serial=ROOT/'execution.json.serial.log'
+              agent=ROOT/'source/project/guest_workload_agent_v23.py'
+              guest=ROOT/'guest-workload.ext4'
+              check('private source identity',top['sourceZipSha256']==EXPECTED['sourceZip'] and top['sourceFilesVerified']==719)
+              check('exact fixed guest agent bytes',sha(agent)==EXPECTED['agent']==top['guestAgentSha256'])
+              check('proof identity',proof['proofHash']==EXPECTED['proof']==top['executionProofHash'])
+              material={k:v for k,v in proof.items() if k not in ('proofHash','truthStatus','hardwareAttestation','proofSemantics')}
+              check('proof hash recomputed independently',canonical_hash(material)==EXPECTED['proof'])
+              check('boot and observation bindings',proof['bootProofHash']==EXPECTED['boot']==top['bootProofHash']
+                    and proof['bootObservationHash']==EXPECTED['observation']==top['bootObservationHash'])
+              check('plan and image bindings',proof['launchPlanHash']==top['canonicalPlanHash']==plan['planHash']
+                    and proof['imageDigest']==plan['imageDigest'] and proof['networkMode']=='no-interface-deny-all')
+              check('same observed VMM peer through guest vsock and shutdown',
+                    proof['guestVsockPeerIdentityHash']==top['shutdown']['vmmPeerIdentityHash'])
+              check('guest workload claims remain scoped',proof['contract']=='HabitatMicroVMExecutionProof/v1'
+                    and proof['truthStatus']=='REAL_LOCAL_EXERCISED' and proof['hardwareAttestation']=='BLOCKED'
+                    and proof['exitCode']==0)
+              check('fresh built guest image intact',sha(guest)==top['guestRootfsSha256']==plan['rootfsSha256'])
+              serial_data=serial.read_bytes()
+              check('serial exact bytes + guest boot and clean VMM exit',
+                    sha256(serial_data).hexdigest()==EXPECTED['serial']==top['serialEvidence']['sha256']
+                    and b'Linux version' in serial_data and b'Kernel panic' not in serial_data
+                    and b'Firecracker exiting successfully. exit_code=0' in serial_data)
+              check('runner exited cleanly with guest-driven shutdown',
+                    top['runnerExitCode']==0 and top['truthStatus']=='PRINCIPAL_CANONICAL_F10_VSOCK_OBSERVED'
+                    and evidence['truthStatus']=='PRINCIPAL_OBSERVED_PENDING_INDEPENDENT_REPRODUCTION'
+                    and evidence['shutdown']['request']=='SEND_CTRL_ALT_DEL_ACCEPTED'
+                    and evidence['shutdown']['vmmExited'] is True)
+              check('pristine kernel and original rootfs unchanged',
+                    sha(Path('/root/pock-m8-boot/vmlinux-6.18.48'))==EXPECTED['kernel']
+                    and sha(Path('/root/pock-m8-boot/ubuntu-24.04.ext4'))==EXPECTED['rootfs'])
+              def secret_field(v):
+                  if isinstance(v,dict):
+                      return any('responsekey' in k.lower() or secret_field(x) for k,x in v.items())
+                  if isinstance(v,list):return any(secret_field(x) for x in v)
+                  return False
+              check('no challenge response key persisted in evidence',not secret_field(evidence))
+          except Exception as exc:
+              checks.append(('verifier exception '+type(exc).__name__,False))
+          result={'contract':'PockM8F10IndependentArtifactVerifier/v1',
+                  'targetRunId':'36026019275','checks':checks,'passed':sum(v for _,v in checks),
+                  'total':len(checks),'truthStatus':'ARTIFACT_VERIFIED' if all(v for _,v in checks) else 'BLOCKED'}
+          print(json.dumps(result,sort_keys=True))
+          sys.exit(0 if result['truthStatus']=='ARTIFACT_VERIFIED' else 2)
+          '@
+          $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($probe))
+          $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<pock-f10-verify>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -c $python
+          if ($LASTEXITCODE -ne 0) { throw "pock_f10_verify_exit_$LASTEXITCODE" }
