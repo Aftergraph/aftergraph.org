@@ -1,0 +1,58 @@
+name: Pock M8 F13 private fetch timing diagnosis
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f13-transport-diagnose.yml
+
+permissions: {}
+
+jobs:
+  diagnose:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 5
+    steps:
+      - name: Measure private fetch and WSL startup without printing source
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $urls = @(
+            'repos/Aftergraph/Pock-bot/contents/frontiers/m8-f11/pock-m8-f11-candidate-on-f10.patch?ref=worker/m8-f11-interactive-binding-20260924',
+            'repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=worker/m8-f13-browser-protocol-20260924',
+            'repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock_m8_lenovo_f13_execute.py?ref=worker/m8-f13-browser-protocol-20260924'
+          )
+          $results = @()
+          $scratch = Join-Path $env:RUNNER_TEMP ('pock-f13-probe-' + $env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Path $scratch -ErrorAction Stop | Out-Null
+          try {
+            $ghExe = (Get-Command gh -ErrorAction Stop).Source
+            for ($i=0; $i -lt $urls.Count; $i++) {
+              $out = Join-Path $scratch ('fetch-' + $i + '.json')
+              $err = Join-Path $scratch ('fetch-' + $i + '.err')
+              $watch = [Diagnostics.Stopwatch]::StartNew()
+              $p = Start-Process -FilePath $ghExe -ArgumentList @('api', $urls[$i]) -RedirectStandardOutput $out -RedirectStandardError $err -PassThru -NoNewWindow
+              $finished = $p.WaitForExit(20000)
+              if (-not $finished) { $p.Kill($true); $p.WaitForExit() }
+              $watch.Stop()
+              $entry = @{phase='private-fetch'; index=$i; finished=$finished; elapsedMs=$watch.ElapsedMilliseconds; exitCode=if ($finished) {$p.ExitCode} else {-999}; outputBytes=if (Test-Path $out) {(Get-Item $out).Length} else {0}; errorBytes=if (Test-Path $err) {(Get-Item $err).Length} else {0}}
+              if ($finished -and $p.ExitCode -eq 0) {
+                $obj = Get-Content -Raw $out | ConvertFrom-Json
+                $entry.encoding = $obj.encoding
+                $entry.blobSha = $obj.sha
+              }
+              $results += $entry
+            }
+            $watch = [Diagnostics.Stopwatch]::StartNew()
+            $p = Start-Process -FilePath 'wsl.exe' -ArgumentList @('-d','Ubuntu-26.04','--','/bin/true') -PassThru -NoNewWindow
+            $finished = $p.WaitForExit(20000)
+            if (-not $finished) { $p.Kill($true); $p.WaitForExit() }
+            $watch.Stop()
+            $results += @{phase='wsl-start';finished=$finished;elapsedMs=$watch.ElapsedMilliseconds;exitCode=if($finished){$p.ExitCode}else{-999}}
+            @{contract='PockM8F13PrivateFetchTiming/v1';readOnly=$true;results=$results} | ConvertTo-Json -Depth 5 -Compress
+          } finally {
+            Remove-Item -LiteralPath $scratch -Recurse -Force -ErrorAction SilentlyContinue
+          }
