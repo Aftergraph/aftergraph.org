@@ -199,3 +199,5 @@ jobs:
           $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<pock-f10-execute>','exec'))"
           & wsl.exe -d Ubuntu-26.04 -- python3 -c $python $env:GITHUB_RUN_ID
           if ($LASTEXITCODE -ne 0) { throw "pock_f10_execution_exit_$LASTEXITCODE" }
+
+# F10 independent fresh boot reproduction, same pinned private source and isolated run ID.
