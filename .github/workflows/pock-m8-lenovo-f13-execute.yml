@@ -1,0 +1,51 @@
+name: Pock M8 F13 private guest browser proof
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f13-execute.yml
+
+permissions: {}
+
+jobs:
+  f13-execute:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 25
+    steps:
+      - name: Run pinned private F13 source and browser image on Lenovo
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $privateRef = 'worker/m8-f13-browser-protocol-20260924'
+          $items = @(
+            @('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f11/pock-m8-f11-candidate-on-f10.patch?ref=worker/m8-f11-interactive-binding-20260924', 'f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b', 'f11.patch'),
+            @('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=' + $privateRef, '603905054856a33b658f1d28e6447a9ad01f7e6e0c255f3e3c1d4cfa7e07da58', 'f13.patch'),
+            @('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock_m8_lenovo_f13_execute.py?ref=' + $privateRef, '729145036efa4e7ccc3c48ed79a945c7c7b9b2543e5aa6f6fd75102c77d72c94', 'f13-runner.py')
+          )
+          $paths = @()
+          try {
+            foreach ($item in $items) {
+              $blobJson = & gh api $item[0]
+              if ($LASTEXITCODE -ne 0) { throw 'private_f13_artifact_unavailable' }
+              $blob = $blobJson | ConvertFrom-Json
+              if ($blob.encoding -ne 'base64') { throw 'private_f13_artifact_encoding_invalid' }
+              $bytes = [Convert]::FromBase64String(($blob.content -replace '\s', ''))
+              $digest = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+              if ($digest -ne $item[1]) { throw 'private_f13_artifact_digest_mismatch' }
+              $path = Join-Path $env:RUNNER_TEMP ('pock-' + $env:GITHUB_RUN_ID + '-' + $item[2])
+              $paths += $path
+              [IO.File]::WriteAllBytes($path, $bytes)
+            }
+            $linux = @($paths | ForEach-Object {
+              if ($_ -notmatch '^[A-Za-z]:\\') { throw 'runner_temp_windows_path_invalid' }
+              '/mnt/' + $_.Substring(0, 1).ToLowerInvariant() + $_.Substring(2).Replace('\', '/')
+            })
+            & wsl.exe -d Ubuntu-26.04 -- python3 -B $linux[2] $env:GITHUB_RUN_ID $linux[0] $linux[1] '603905054856a33b658f1d28e6447a9ad01f7e6e0c255f3e3c1d4cfa7e07da58' '/root/pock-m8-f13-gueststage-36068890418/rootfs'
+            if ($LASTEXITCODE -ne 0) { throw "pock_f13_browser_exit_$LASTEXITCODE" }
+          } finally {
+            foreach ($path in $paths) { Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue }
+          }
