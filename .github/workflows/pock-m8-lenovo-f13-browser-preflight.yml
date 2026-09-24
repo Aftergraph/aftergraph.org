@@ -1,0 +1,52 @@
+name: Pock M8 F13 guest browser read-only preflight
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f13-browser-preflight.yml
+
+permissions: {}
+
+jobs:
+  browser-preflight:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 10
+    steps:
+      - name: Inventory generic browser and image substrate without source or secrets
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          import json, os, pathlib, shutil, subprocess
+          def stat(path):
+              p=pathlib.Path(path)
+              return {'present':p.is_file(),'size':p.stat().st_size if p.is_file() else None,'executable':os.access(p,os.X_OK) if p.is_file() else False}
+          root=pathlib.Path('/root/pock-m8-boot/squashfs-root')
+          candidates=['usr/bin/chromium','usr/bin/chromium-browser','usr/bin/google-chrome','usr/bin/google-chrome-stable','opt/google/chrome/chrome','usr/lib/chromium/chromium','usr/lib/chromium-browser/chromium-browser','usr/bin/firefox']
+          host={name:{'path':shutil.which(name),'stat':stat(shutil.which(name)) if shutil.which(name) else None} for name in ['chromium','chromium-browser','google-chrome','google-chrome-stable','firefox','playwright','python3','unsquashfs','mkfs.ext4']}
+          packages=[]
+          for status in [pathlib.Path('/var/lib/dpkg/status'),root/'var/lib/dpkg/status']:
+              matched=[]
+              if status.is_file():
+                  for block in status.read_text(errors='replace').split('\n\n'):
+                      if any(line.startswith('Package: ') and any(word in line.lower() for word in ['chromium','google-chrome','firefox','playwright']) for line in block.splitlines()):
+                          matched.append({key:value for key,value in (line.split(': ',1) for line in block.splitlines() if ': ' in line) if key in ['Package','Status','Version']})
+              packages.append({'path':str(status),'entries':matched})
+          caches=[]
+          for parent in [pathlib.Path('/var/cache/apt/archives'),root/'var/cache/apt/archives',pathlib.Path('/root/.cache/ms-playwright')]:
+              names=[]
+              if parent.is_dir(): names=[p.name for p in parent.iterdir() if any(word in p.name.lower() for word in ['chrom','firefox','webkit'])][:20]
+              caches.append({'path':str(parent),'names':names})
+          images={str(p):stat(p) for p in [pathlib.Path('/root/pock-m8-boot/ubuntu-24.04.ext4'),pathlib.Path('/root/pock-m8-boot/vmlinux-6.18.48'),pathlib.Path('/root/pock-m8-ci-f11-36043975895/guest-workload.ext4')]}
+          mem=pathlib.Path('/proc/meminfo').read_text().splitlines()[:4]
+          fs=shutil.disk_usage('/root')
+          print(json.dumps({'contract':'PockM8F13BrowserPreflight/v1','wslHost':os.uname().nodename,'uid':os.geteuid(),'rootfsTreePresent':root.is_dir(),'rootfsCandidates':{name:stat(root/name) for name in candidates},'hostCandidates':host,'packageStatuses':packages,'browserCaches':caches,'images':images,'meminfo':mem,'diskFreeBytes':fs.free,'readOnly':True},sort_keys=True))
+          '@
+          $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
+          $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<f13-browser-preflight>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -B -c $python
+          if ($LASTEXITCODE -ne 0) { throw "f13_preflight_exit_$LASTEXITCODE" }
