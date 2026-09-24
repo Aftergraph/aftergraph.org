@@ -1,0 +1,88 @@
+name: Pock M8 F9 Lenovo source admission
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f9-preflight.yml
+
+permissions: {}
+
+jobs:
+  preflight:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 5
+    steps:
+      - name: Authenticate private F9 ZIP and images without printing source
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          #!/usr/bin/env python3
+          """Read-only F9 source, image and tool admission on the Lenovo WSL worker."""
+          import hashlib
+          import json
+          from pathlib import Path
+          import sys
+          from zipfile import ZipFile
+          
+          PIN = {
+              'bundle': '1017465270d11f99f55eb540061ce902589b45c56be7a03308db19f80d937122',
+              'kernel': '9204218e8bcca6ac23848d74f45df2eb19d7f31e8277840a7d145a0df8b078d2',
+              'rootfs': 'ad2f45d74a002bcbf6a0c6d0aba5d4c8e2cdf071aa30f1f1d363edc4a504b3a7',
+              'firecracker': '99ad0f5cd0514a88aad0e9ae8cfdb3cc3b4ab9d190e1194602406c786b5de7a5',
+              'jailer': '65ef226e96f0ceda55ba643f445801ef2cc0ea667ef67cad8ac4f406c9c8434f',
+          }
+          BOOTS = Path('/root/pock-m8-boot')
+          paths = [Path('/root/pock-bot-v23-m8-f9-worker-handoff.zip'),
+                   BOOTS / 'pock-bot-v23-m8-f9-worker-handoff.zip',
+                   Path('/mnt/c/Users/empir/Downloads/pock-bot-v23-m8-f9-worker-handoff.zip'),
+                   Path('/mnt/c/Aftergraph/Pock Bot/pock-bot-v23-m8-f9-worker-handoff.zip')]
+          
+          def sha(path):
+              h = hashlib.sha256()
+              with path.open('rb') as stream:
+                  for block in iter(lambda: stream.read(1024 * 1024), b''):
+                      h.update(block)
+              return h.hexdigest()
+          
+          source = next((p for p in paths if p.is_file() and sha(p) == PIN['bundle']), None)
+          result = {'contract':'PockM8LenovoF9Preflight/v1','sourceHashMatch':source is not None,
+                    'sourceLocationIndex':paths.index(source) if source is not None else None}
+          if source:
+              try:
+                  with ZipFile(source) as z:
+                      result['zipIntegrity'] = z.testzip() is None
+                      names = z.namelist()
+                      result['canonicalRunnerPresent'] = any(n.endswith('/project/scripts/pock_m8_f3_host_run.py') for n in names)
+                      result['guestAgentPresent'] = any(n.endswith('/project/guest_workload_agent_v23.py') for n in names)
+              except Exception as exc:
+                  result['zipError'] = type(exc).__name__
+          for label, path in {'kernel':BOOTS/'vmlinux-6.18.48',
+                              'rootfs':BOOTS/'ubuntu-24.04.ext4',
+                              'firecracker':Path('/root/pock-m8-gate/bin/firecracker'),
+                              'jailer':Path('/root/pock-m8-gate/bin/jailer')}.items():
+              result[label+'HashMatch'] = path.is_file() and sha(path)==PIN[label]
+          for i, root in enumerate([BOOTS/'squashfs-root', BOOTS/'ubuntu-24.04-root',
+                                    Path('/root/pock-m8-boot/rootfs'),
+                                    Path('/root/pock-m8-boot/ubuntu-24.04')]):
+              if root.is_dir() and (root/'etc/os-release').is_file() and (root/'usr/bin/python3').exists():
+                  result['rootfsTreeCandidate'] = i
+                  break
+          else:
+              result['rootfsTreeCandidate'] = None
+          result['mkfsPresent'] = Path('/usr/sbin/mkfs.ext4').is_file() or Path('/sbin/mkfs.ext4').is_file()
+          result['unsquashfsPresent'] = Path('/usr/bin/unsquashfs').is_file()
+          result['truthStatus'] = 'READY_FOR_ISOLATED_F9_BUILD' if all(result.get(k) for k in (
+              'sourceHashMatch','zipIntegrity','canonicalRunnerPresent','guestAgentPresent',
+              'kernelHashMatch','rootfsHashMatch','firecrackerHashMatch','jailerHashMatch','mkfsPresent')) else 'BLOCKED'
+          print(json.dumps(result,sort_keys=True))
+          sys.exit(0 if result['truthStatus']=='READY_FOR_ISOLATED_F9_BUILD' else 2)
+          '@
+          $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($probe))
+          $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<pock-f9-preflight>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -c $python
+          if ($LASTEXITCODE -ne 0) { throw "pock_f9_preflight_exit_$LASTEXITCODE" }
