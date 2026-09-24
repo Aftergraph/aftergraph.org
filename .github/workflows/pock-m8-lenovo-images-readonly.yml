@@ -1,0 +1,52 @@
+name: Pock M8 Lenovo image identity read-only
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-images-readonly.yml
+
+permissions: {}
+
+jobs:
+  images:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 6
+    steps:
+      - name: Authenticate pristine guest images without revealing their bytes
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          import hashlib
+          import json
+          import os
+          import sys
+
+          def sha(path):
+              h = hashlib.sha256()
+              with open(path, 'rb') as stream:
+                  for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+                      h.update(chunk)
+              return h.hexdigest()
+
+          kernel = '/root/pock-m8-boot/vmlinux-6.18.48'
+          rootfs = '/root/pock-m8-boot/ubuntu-24.04.ext4'
+          result = {'contract': 'PockM8LenovoImageIdentity/v1',
+                    'uidIsRoot': os.geteuid() == 0,
+                    'kernelMatch': os.path.isfile(kernel) and sha(kernel) ==
+                    '9204218e8bcca6ac23848d74f45df2eb19d7f31e8277840a7d145a0df8b078d2',
+                    'rootfsMatch': os.path.isfile(rootfs) and sha(rootfs) ==
+                    'ad2f45d74a002bcbf6a0c6d0aba5d4c8e2cdf071aa30f1f1d363edc4a504b3a7'}
+          ready = all(result[k] for k in ('uidIsRoot', 'kernelMatch', 'rootfsMatch'))
+          result['truthStatus'] = 'IMAGES_PRISTINE_READY' if ready else 'BLOCKED'
+          print(json.dumps(result, sort_keys=True))
+          sys.exit(0 if ready else 2)
+          '@
+          $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($probe))
+          $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<pock-m8-images>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -c $python
+          if ($LASTEXITCODE -ne 0) { throw "pock_m8_image_readonly_exit_$LASTEXITCODE" }
