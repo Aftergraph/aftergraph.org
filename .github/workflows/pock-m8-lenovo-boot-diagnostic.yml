@@ -33,7 +33,7 @@ jobs:
           
           run = '36020213739'
           base = Path('/root/pock-m8-ci-' + run)
-          jail = base / 'jails/firecracker/pockm8ci-' + run + '/root'
+          jail = base / 'jails' / 'firecracker' / ('pockm8ci-' + run) / 'root'
           fc = Path('/root/pock-m8-gate/bin/firecracker')
           sock = jail / 'fc.sock'
           out = {'contract': 'PockM8LenovoVMMIdentityDiagnostic/v1',
