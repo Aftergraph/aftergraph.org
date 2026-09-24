@@ -1,0 +1,50 @@
+name: Pock M8 Lenovo private channel discovery
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-private-channel-probe.yml
+
+permissions: {}
+
+jobs:
+  private-channel:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 3
+    steps:
+      - name: Check private Pock source and local access without printing credentials
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $candidates = @(
+            "$env:USERPROFILE\Downloads\pock-bot-v23-m8-f9-worker-handoff.zip",
+            'C:\Aftergraph\Pock Bot\pock-bot-v23-m8-f9-worker-handoff.zip',
+            "$env:USERPROFILE\Downloads\pock-bot-v23-m8-f8-worker-handoff.zip"
+          )
+          $found = @($candidates | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | ForEach-Object { Split-Path -Leaf $_ })
+          $gh = Get-Command gh -ErrorAction SilentlyContinue
+          $privateAccessible = $false
+          if ($gh) {
+            $old = $ErrorActionPreference
+            $ErrorActionPreference = 'Continue'
+            & gh api repos/Aftergraph/Pock-bot --jq .full_name *> $null
+            $privateAccessible = $LASTEXITCODE -eq 0
+            $ErrorActionPreference = $old
+          }
+          $probe = @'
+          import json
+          from pathlib import Path
+          names = ['pock-bot-v23-m8-f9-worker-handoff.zip', 'pock-bot-v23-m8-f8-worker-handoff.zip']
+          roots = [Path('/root'), Path('/mnt/c/Users/empir/Downloads'), Path('/mnt/c/Aftergraph/Pock Bot')]
+          found = [name for name in names if any((root/name).is_file() for root in roots)]
+          print(json.dumps({'contract':'PockM8PrivateChannelProbe/v1','wslArchives':found},sort_keys=True))
+          '@
+          $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($probe))
+          $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<pock-m8-private-probe>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -c $python
+          if ($LASTEXITCODE -ne 0) { throw "pock_m8_private_probe_exit_$LASTEXITCODE" }
+          Write-Output ("PRIVATE_CHANNEL=" + ($found -join ',') + ";ghCli=" + [bool]$gh + ";privateRepoAccessible=" + $privateAccessible)
