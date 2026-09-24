@@ -1,0 +1,59 @@
+name: Pock M8 F13 timeout stage diagnosis
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f13-diagnose.yml
+
+permissions: {}
+
+jobs:
+  inspect:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 5
+    steps:
+      - name: Inspect F13 phase files and resource state without reading secrets
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          import json, os, pathlib, shutil, subprocess, time
+          root=pathlib.Path('/root/pock-m8-ci-f13-36069489311')
+          stage=pathlib.Path('/root/pock-m8-f13-gueststage-36068890418/rootfs')
+          names=['source/project/firecracker_guest_browser_v23.py','source/project/scripts/build_pock_guest_browser_image.py',
+                 'guest-workload.ext4','plan.json','execution.json','CI_F13_RESULT.json',
+                 'jails','browser-evidence/READY.json','browser-evidence/before.png','browser-evidence/after.png']
+          def item(path):
+              try:
+                  st=path.lstat()
+                  return {'exists':True,'type':'dir' if path.is_dir() else 'file',
+                          'size':st.st_size,'ageSeconds':round(time.time()-st.st_mtime,1)}
+              except FileNotFoundError: return {'exists':False}
+          result={'contract':'PockM8F13TimeoutDiagnosis/v1','readOnly':True,'runId':'36069489311',
+                  'root':item(root),'guestStage':item(stage),
+                  'phases':{name:item(root/name) for name in names},
+                  'diskFreeBytes':shutil.disk_usage('/root').free}
+          for name in ['plan.json','execution.json','CI_F13_RESULT.json']:
+              p=root/name
+              if p.is_file() and p.stat().st_size<400000:
+                  try:
+                      x=json.loads(p.read_text())
+                      result[name]={'contract':x.get('contract'),'truthStatus':x.get('truthStatus'),
+                                    'failureReason':x.get('failureReason'),'failure':x.get('failure'),
+                                    'rootfsSha256':x.get('rootfsSha256'),
+                                    'runnerExitCode':x.get('runnerExitCode'),
+                                    'bootObservationHash':x.get('bootObservationHash')}
+                  except Exception as exc: result[name]={'parseError':type(exc).__name__}
+          r=subprocess.run(['ps','-eo','comm,etime,rss'],capture_output=True,text=True,timeout=5)
+          result['relatedProcesses']=[line.strip() for line in r.stdout.splitlines()
+                                      if any(token in line.lower() for token in ('mkfs','e2fsck','firecracker','jailer','chrome','python3'))][:30]
+          print(json.dumps(result,sort_keys=True))
+          '@
+          $encoded=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
+          $command="import base64;exec(compile(base64.b64decode('$encoded'),'<f13-readonly-diagnosis>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -c $command
+          if ($LASTEXITCODE -ne 0) { throw "f13_diagnosis_exit_$LASTEXITCODE" }
