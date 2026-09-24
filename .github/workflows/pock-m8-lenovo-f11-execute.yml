@@ -28,7 +28,7 @@ jobs:
           $blob = $blobJson | ConvertFrom-Json
           if ($blob.encoding -ne 'base64') { throw 'private_f11_patch_encoding_invalid' }
           $bytes = [Convert]::FromBase64String(($blob.content -replace '\s', ''))
-          $pin = '018766fd69286dd34fde74dc6ab6f4c9bdc1d1b0522d60940cd3218468f3b28f'
+          $pin = 'b7ceecad328ebfff2796625c2bef6e749d1af0c2c92218dc283b55f922f6c2d9'
           $got = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
           if ($got -ne $pin) { throw 'private_f11_patch_digest_mismatch' }
           [IO.File]::WriteAllBytes($tempPatch, $bytes)
@@ -136,7 +136,7 @@ jobs:
                   if sha(agent)!='19352249eba0f3403ff33f1ea38fcc76cebc6d9c5312c76ebf5f135bf17720f4':
                       raise RuntimeError('f10_guest_agent_identity_mismatch')
                   state['guestAgentSha256']=sha(agent)
-                  if not patch.is_file() or sha(patch)!='018766fd69286dd34fde74dc6ab6f4c9bdc1d1b0522d60940cd3218468f3b28f':
+                  if not patch.is_file() or sha(patch)!='b7ceecad328ebfff2796625c2bef6e749d1af0c2c92218dc283b55f922f6c2d9':
                       raise RuntimeError('private_f11_patch_digest_mismatch')
                   apply_check=call(['git','apply','--check',str(patch)],env=dict(os.environ),timeout=15,cwd=source)
                   if apply_check.returncode:
@@ -155,7 +155,7 @@ jobs:
                               '--interactive-source',str(project_root),
                               '--python-deps','/root/pock-m8-gate/pylibs'],env=env,timeout=480)
                   if build.returncode:
-                      raise RuntimeError('guest_image_build_failed:'+build.stderr.strip()[-140:])
+                      raise RuntimeError('guest_image_build_failed:'+build.stderr.strip()[-650:])
                   build_data=json.loads(build.stdout)
                   if build_data.get('truthStatus')!='SOFTWARE_IMAGE_BUILT_UNBOOTED' or sha(guest)!=build_data.get('rootfsSha256'):
                       raise RuntimeError('guest_image_build_digest_invalid')
@@ -215,7 +215,7 @@ jobs:
                           raise RuntimeError('pristine_'+label+'_changed')
                   state['truthStatus']='PRINCIPAL_F11_GUEST_BINDING_OBSERVED'
               except Exception as exc:
-                  state['failure']=type(exc).__name__+':'+str(exc)[:180]
+                  state['failure']=type(exc).__name__+':'+str(exc)[:650]
               if root.exists():
                   state['evidencePath']=str(root/'CI_F11_RESULT.json')
                   (root/'CI_F11_RESULT.json').write_text(json.dumps(state,sort_keys=True,indent=2)+'\n')
