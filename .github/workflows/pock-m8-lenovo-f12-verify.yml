@@ -1,0 +1,116 @@
+name: Pock M8 F12 guest screen and input truth gate
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f12-verify.yml
+
+permissions: {}
+
+jobs:
+  f12-verify:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 20
+    steps:
+      - name: Apply private F12 truth patch and run host socket regression
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $tempPatch = Join-Path $env:RUNNER_TEMP ('pock-f12-' + $env:GITHUB_RUN_ID + '.patch')
+          $privateRef = 'worker/m8-f12-screen-input-truth-20260924'
+          $apiPath = 'repos/Aftergraph/Pock-bot/contents/frontiers/m8-f12/pock-m8-f12-on-f11.patch?ref=' + $privateRef
+          $blobJson = & gh api $apiPath
+          if ($LASTEXITCODE -ne 0) { throw 'private_f12_patch_unavailable' }
+          $blob = $blobJson | ConvertFrom-Json
+          if ($blob.encoding -ne 'base64') { throw 'private_f12_patch_encoding_invalid' }
+          $bytes = [Convert]::FromBase64String(($blob.content -replace '\s', ''))
+          $pin = '3ca9eacf2ed918adcd848e345318084332c755a6656d87d5b7a2a824701b3507'
+          $got = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+          if ($got -ne $pin) { throw 'private_f12_patch_digest_mismatch' }
+          [IO.File]::WriteAllBytes($tempPatch, $bytes)
+          if ($tempPatch -notmatch '^[A-Za-z]:\\') { throw 'private_f12_patch_windows_path_invalid' }
+          $linuxPatch = '/mnt/' + $tempPatch.Substring(0, 1).ToLowerInvariant() + $tempPatch.Substring(2).Replace('\', '/')
+          try {
+          $probe = @'
+          #!/usr/bin/env python3
+          """Run F12 guest effect truth tests in an isolated copy on Lenovo."""
+          from __future__ import annotations
+          
+          from hashlib import sha256
+          import json
+          import os
+          from pathlib import Path
+          import re
+          import shutil
+          import subprocess
+          import sys
+          
+          PATCH_HASH = '3ca9eacf2ed918adcd848e345318084332c755a6656d87d5b7a2a824701b3507'
+          BASE_HASH = '7921f9c9e27e60232233881e88f4642f86311abceaec67de140e4345d133d820'
+          BASE = Path('/root/pock-m8-ci-f11-36043975895/source/project')
+          TESTS = (
+              'tests/unit/test_v23_f12_guest_effect_truth.py',
+              'tests/unit/test_v23_firecracker_guest_interactive.py',
+              'tests/unit/test_v23_firecracker_vsock_evidence.py',
+              'tests/unit/test_v23_f11_interactive_binding_probe.py',
+              'tests/integration/test_v23_firecracker_vsock_peercred.py',
+              'tests/unit/test_v23_production_trust.py',
+          )
+          
+          
+          def sha(path):
+              with path.open('rb') as stream:
+                  return sha256(stream.read()).hexdigest()
+          
+          
+          def main():
+              if len(sys.argv) != 3 or not re.fullmatch(r'[1-9][0-9]{0,14}', sys.argv[1]):
+                  raise ValueError('numeric_github_run_id_and_private_patch_required')
+              run_id = sys.argv[1]
+              patch = Path(sys.argv[2])
+              root = Path('/root/pock-m8-ci-f12-' + run_id)
+              state = {'contract': 'PockM8F12HostTruthGate/v1', 'runId': run_id,
+                       'patchSha256': PATCH_HASH, 'truthStatus': 'BLOCKED', 'checks': []}
+              try:
+                  if os.geteuid() != 0 or root.exists() or root.is_symlink():
+                      raise RuntimeError('root_required_or_unique_output_exists')
+                  if sha(patch) != PATCH_HASH or sha(BASE/'firecracker_guest_interactive_v23.py') != BASE_HASH:
+                      raise RuntimeError('private_patch_or_base_source_mismatch')
+                  root.mkdir(mode=0o700)
+                  shutil.copytree(BASE, root/'project', symlinks=True)
+                  env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', PYTHONPATH=str(root/'project'))
+                  for cmd in (['git','apply','--check',str(patch)], ['git','apply',str(patch)]):
+                      proc = subprocess.run(cmd, cwd=root, env=env, capture_output=True, text=True, timeout=30)
+                      if proc.returncode:
+                          raise RuntimeError('private_patch_apply_failed:'+proc.stderr[-180:])
+                  for test in TESTS:
+                      proc = subprocess.run(['python3','-B',test],cwd=root/'project',env=env,
+                                            stdin=subprocess.DEVNULL,capture_output=True,text=True,timeout=60)
+                      matches = re.findall(r'^RESULT ([0-9]+)/([0-9]+) PASS$', proc.stdout, re.M)
+                      outcome = {'test':test, 'exitCode':proc.returncode,
+                                 'assertions':matches[-1] if matches else None}
+                      state['checks'].append(outcome)
+                      if proc.returncode != 0 or len(matches) != 1 or matches[0][0] != matches[0][1]:
+                          raise RuntimeError('host_test_failed:'+test+':'+proc.stderr[-120:])
+                  assert sum(int(check['assertions'][0]) for check in state['checks']) == 69
+                  state['truthStatus'] = 'HOST_SOURCE_TESTS_PASS_SCREEN_INPUT_STILL_UNVERIFIED'
+              except Exception as exc:
+                  state['failure'] = type(exc).__name__ + ':' + str(exc)[:220]
+              if root.exists():
+                  (root/'F12_RESULT.json').write_text(json.dumps(state,sort_keys=True,indent=2)+'\n')
+              print(json.dumps(state,sort_keys=True))
+              return 0 if state['truthStatus'] == 'HOST_SOURCE_TESTS_PASS_SCREEN_INPUT_STILL_UNVERIFIED' else 2
+          
+          
+          if __name__ == '__main__':
+              raise SystemExit(main())
+          '@
+          $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($probe))
+          $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<pock-f12-verify>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -c $python $env:GITHUB_RUN_ID $linuxPatch
+          if ($LASTEXITCODE -ne 0) { throw "pock_f12_verify_exit_$LASTEXITCODE" }
+          } finally { Remove-Item -LiteralPath $tempPatch -Force -ErrorAction SilentlyContinue }
