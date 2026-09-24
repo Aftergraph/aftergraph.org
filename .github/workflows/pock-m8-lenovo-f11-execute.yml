@@ -28,7 +28,7 @@ jobs:
           $blob = $blobJson | ConvertFrom-Json
           if ($blob.encoding -ne 'base64') { throw 'private_f11_patch_encoding_invalid' }
           $bytes = [Convert]::FromBase64String(($blob.content -replace '\s', ''))
-          $pin = '0dc32acc13f716cd915ec009ccfbff76259ec9443ea196d844f6cc7b75771d16'
+          $pin = 'f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b'
           $got = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
           if ($got -ne $pin) { throw 'private_f11_patch_digest_mismatch' }
           [IO.File]::WriteAllBytes($tempPatch, $bytes)
@@ -136,7 +136,7 @@ jobs:
                   if sha(agent)!='19352249eba0f3403ff33f1ea38fcc76cebc6d9c5312c76ebf5f135bf17720f4':
                       raise RuntimeError('f10_guest_agent_identity_mismatch')
                   state['guestAgentSha256']=sha(agent)
-                  if not patch.is_file() or sha(patch)!='0dc32acc13f716cd915ec009ccfbff76259ec9443ea196d844f6cc7b75771d16':
+                  if not patch.is_file() or sha(patch)!='f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b':
                       raise RuntimeError('private_f11_patch_digest_mismatch')
                   apply_check=call(['git','apply','--check',str(patch)],env=dict(os.environ),timeout=15,cwd=source)
                   if apply_check.returncode:
@@ -197,7 +197,9 @@ jobs:
                   state['bootObservationHash']=proof.get('bootObservationHash')
                   state['bootProofHash']=proof.get('bootProofHash')
                   state['executionProofHash']=(proof.get('executionProof') or {}).get('proofHash')
-                  state['interactiveBindingProbe']=proof.get('interactiveBindingProbe')
+                  state['interactiveBindingProbe']={
+                      key:value for key,value in (proof.get('interactiveBindingProbe') or {}).items()
+                      if key not in ('bindingEvidence','transportEvidence')}
                   state['shutdown']=proof.get('shutdown')
                   state['serialEvidence']=proof.get('serialEvidence')
                   if (proof.get('truthStatus')!='PRINCIPAL_OBSERVED_PENDING_INDEPENDENT_REPRODUCTION'
