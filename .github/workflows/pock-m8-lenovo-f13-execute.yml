@@ -29,8 +29,30 @@ jobs:
           $paths = @()
           try {
             foreach ($item in $items) {
-              $blobJson = & gh api $item[0]
-              if ($LASTEXITCODE -ne 0) { throw 'private_f13_artifact_unavailable' }
+              $blobJson = $null
+              for ($attempt = 1; $attempt -le 3; $attempt++) {
+                $stdout = Join-Path $env:RUNNER_TEMP ('pock-fetch-' + $env:GITHUB_RUN_ID + '-' + $item[2] + '.out')
+                $stderr = Join-Path $env:RUNNER_TEMP ('pock-fetch-' + $env:GITHUB_RUN_ID + '-' + $item[2] + '.err')
+                Remove-Item -LiteralPath $stdout, $stderr -Force -ErrorAction SilentlyContinue
+                Write-Output ('FETCH_START ' + $item[2] + ' attempt=' + $attempt)
+                try {
+                  $proc = Start-Process -FilePath (Get-Command gh).Source -ArgumentList @('api', $item[0]) -NoNewWindow -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+                  if (-not $proc.WaitForExit(30000)) {
+                    $proc.Kill($true)
+                    $proc.WaitForExit(5000) | Out-Null
+                    Write-Output ('FETCH_TIMEOUT ' + $item[2] + ' attempt=' + $attempt)
+                  } elseif ($proc.ExitCode -eq 0) {
+                    $blobJson = [IO.File]::ReadAllText($stdout)
+                    break
+                  } else {
+                    Write-Output ('FETCH_EXIT ' + $item[2] + ' attempt=' + $attempt + ' code=' + $proc.ExitCode)
+                  }
+                } finally {
+                  Remove-Item -LiteralPath $stdout, $stderr -Force -ErrorAction SilentlyContinue
+                }
+                if ($attempt -lt 3) { Start-Sleep -Seconds 2 }
+              }
+              if (-not $blobJson) { throw ('private_f13_artifact_unavailable_' + $item[2]) }
               $blob = $blobJson | ConvertFrom-Json
               if ($blob.encoding -ne 'base64') { throw 'private_f13_artifact_encoding_invalid' }
               $bytes = [Convert]::FromBase64String(($blob.content -replace '\s', ''))
@@ -39,12 +61,14 @@ jobs:
               $path = Join-Path $env:RUNNER_TEMP ('pock-' + $env:GITHUB_RUN_ID + '-' + $item[2])
               $paths += $path
               [IO.File]::WriteAllBytes($path, $bytes)
+              Write-Output ('FETCH_PASS ' + $item[2] + ' bytes=' + $bytes.Length)
             }
             $linux = @($paths | ForEach-Object {
               if ($_ -notmatch '^[A-Za-z]:\\') { throw 'runner_temp_windows_path_invalid' }
               '/mnt/' + $_.Substring(0, 1).ToLowerInvariant() + $_.Substring(2).Replace('\', '/')
             })
-            & wsl.exe -d Ubuntu-26.04 -- python3 -B $linux[2] $env:GITHUB_RUN_ID $linux[0] $linux[1] '603905054856a33b658f1d28e6447a9ad01f7e6e0c255f3e3c1d4cfa7e07da58' '/root/pock-m8-f13-gueststage-36068890418/rootfs'
+            Write-Output 'WSL_ENTER'
+            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[2] $env:GITHUB_RUN_ID $linux[0] $linux[1] '603905054856a33b658f1d28e6447a9ad01f7e6e0c255f3e3c1d4cfa7e07da58' '/root/pock-m8-f13-gueststage-36068890418/rootfs'
             if ($LASTEXITCODE -ne 0) { throw "pock_f13_browser_exit_$LASTEXITCODE" }
           } finally {
             foreach ($path in $paths) { Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue }
