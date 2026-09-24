@@ -1,0 +1,83 @@
+name: Pock M8 Lenovo boot identity diagnostic read-only
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-boot-diagnostic.yml
+
+permissions: {}
+
+jobs:
+  diagnostic:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 3
+    steps:
+      - name: Read the exact prior boot identity and lifecycle
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          #!/usr/bin/env python3
+          """Read-only identity and lifecycle inspection of one isolated Lenovo boot."""
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import socket
+          import stat
+          import struct
+          
+          run = '36020213739'
+          base = Path('/root/pock-m8-ci-' + run)
+          jail = base / 'jails/firecracker/pockm8ci-' + run + '/root'
+          fc = Path('/root/pock-m8-gate/bin/firecracker')
+          sock = jail / 'fc.sock'
+          out = {'contract': 'PockM8LenovoVMMIdentityDiagnostic/v1',
+                 'runId': run, 'jailExists': jail.is_dir(), 'socketExists': sock.is_socket()}
+          
+          def sha(path):
+              h = hashlib.sha256()
+              with open(path, 'rb') as stream:
+                  for block in iter(lambda: stream.read(1024 * 1024), b''):
+                      h.update(block)
+              return h.hexdigest()
+          
+          try:
+              with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
+                  s.settimeout(2)
+                  s.connect(str(sock))
+                  pid, uid, gid = struct.unpack('3i', s.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12))
+              out.update(peerPid=pid, peerUid=uid, peerGid=gid)
+              if pid > 0:
+                  exe = Path(f'/proc/{pid}/exe')
+                  fields = Path(f'/proc/{pid}/stat').read_text().rsplit(') ', 1)[1].split()
+                  out['peerProcState'] = fields[0]
+                  out['peerStartTicks'] = int(fields[19])
+                  out['exeSamefileOriginal'] = os.path.samefile(exe, fc)
+                  out['exeSha256'] = sha(exe)
+                  out['originalSha256'] = sha(fc)
+                  out['procRootMatchesJail'] = os.path.samefile(f'/proc/{pid}/root', jail)
+          except Exception as exc:
+              out['socketDiagnostic'] = type(exc).__name__ + ':' + str(exc)[:130]
+          
+          for name in ('serial.log', 'jailer.stderr.log'):
+              p = base / name
+              if p.is_file():
+                  b = p.read_bytes()
+                  out[name + 'Bytes'] = len(b)
+                  out[name + 'Sha256'] = hashlib.sha256(b).hexdigest()
+                  if name == 'serial.log':
+                      out.update(kernel=b'Linux version 6.18.48+' in b,
+                                 init=b'Run /sbin/init' in b or b'Freeing unused kernel' in b,
+                                 guestReboot=b'reboot: Restarting system' in b,
+                                 vmmCleanExit=b'Firecracker exiting successfully. exit_code=0' in b)
+          print(json.dumps(out, sort_keys=True))
+          '@
+          $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($probe))
+          $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<pock-m8-diagnostic>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -c $python
+          if ($LASTEXITCODE -ne 0) { throw "pock_m8_diagnostic_exit_$LASTEXITCODE" }
