@@ -1,0 +1,127 @@
+name: Pock M8 F13 browser isolated dependency smoke
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f13-browser-deps.yml
+
+permissions: {}
+
+jobs:
+  browser-deps:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 15
+    steps:
+      - name: Download exact Ubuntu runtime debs without installing and smoke offline screenshot
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          #!/usr/bin/env python3
+          """Resolve exact browser runtime .deb files into an isolated directory; no install."""
+          from __future__ import annotations
+          
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import re
+          import struct
+          import subprocess
+          import sys
+          
+          PIN = {'libnspr4':'2:4.38.2-1ubuntu1','libnss3':'2:3.120-1ubuntu2',
+                 'libasound2t64':'1.2.15.3-1ubuntu1'}
+          BROWSER_SHA = '60c03e8882f4bb47459a905ede1074e1e746c5b765e437c288e460320540a8a3'
+          SOURCE_RUN = '36067269189'
+          
+          
+          def sha(path):
+              h=hashlib.sha256()
+              with path.open('rb') as stream:
+                  for block in iter(lambda:stream.read(1024*1024),b''):h.update(block)
+              return h.hexdigest()
+          
+          
+          def command(args, *, cwd=None, timeout=120, env=None):
+              p=subprocess.run(args,cwd=cwd,timeout=timeout,env=env,stdin=subprocess.DEVNULL,
+                               capture_output=True,text=True,check=False)
+              return {'exitCode':p.returncode,'stdout':p.stdout[-3000:],'stderr':p.stderr[-1000:]}
+          
+          
+          def main():
+              if len(sys.argv)!=2 or not re.fullmatch(r'[1-9][0-9]{0,15}',sys.argv[1]):
+                  raise ValueError('numeric_run_id_required')
+              run_id=sys.argv[1]
+              root=Path('/root/pock-m8-f13-deps-'+run_id)
+              browser=Path('/root/pock-m8-f13-supply-'+SOURCE_RUN+'/extract/chrome-headless-shell-linux64/chrome-headless-shell')
+              state={'contract':'PockM8F13BrowserDependencies/v1','runId':run_id,'sourceRunId':SOURCE_RUN,
+                     'truthStatus':'BLOCKED','browserSha256Expected':BROWSER_SHA,
+                     'aptMode':'DOWNLOAD_ONLY_NO_INSTALL_NO_UPDATE','existingRootfsModified':False,
+                     'pockSourceAccessed':False}
+              try:
+                  if os.geteuid()!=0 or root.exists() or root.is_symlink():
+                      raise RuntimeError('root_required_or_unique_directory_exists')
+                  if not browser.is_file() or sha(browser)!=BROWSER_SHA:
+                      raise RuntimeError('pinned_browser_missing_or_mismatch')
+                  os.umask(0o077)
+                  root.mkdir(mode=0o700)
+                  state['packages']=[]
+                  libtree=root/'libs';libtree.mkdir()
+                  for pkg,version in PIN.items():
+                      metadata=command(['apt-cache','show',pkg],timeout=10)
+                      if metadata['exitCode']!=0:raise RuntimeError('apt_metadata_missing:'+pkg)
+                      stanza=next((s for s in metadata['stdout'].split('\n\n') if 'Version: '+version in s),None)
+                      if stanza is None: raise RuntimeError('apt_version_not_in_metadata:'+pkg)
+                      match=re.search(r'^SHA256: ([a-f0-9]{64})$',stanza,re.M)
+                      if not match:raise RuntimeError('apt_sha256_not_in_metadata:'+pkg)
+                      download=command(['apt-get','download',pkg+'='+version],cwd=root,timeout=180)
+                      if download['exitCode']!=0:
+                          raise RuntimeError('apt_download_failed:'+pkg+':'+download['stderr'][-180:])
+                      files=list(root.glob(pkg+'_*.deb'))
+                      if len(files)!=1:raise RuntimeError('apt_download_file_count:'+pkg)
+                      deb=files[0]
+                      if sha(deb)!=match.group(1):raise RuntimeError('apt_deb_digest_mismatch:'+pkg)
+                      extract=command(['dpkg-deb','-x',str(deb),str(libtree)],timeout=30)
+                      if extract['exitCode']!=0:raise RuntimeError('dpkg_deb_extract_failed:'+pkg)
+                      state['packages'].append({'name':pkg,'version':version,'debBytes':deb.stat().st_size,
+                                                'debSha256':sha(deb),'aptMetadataSha256':match.group(1)})
+                  libpath=str(libtree/'usr/lib/x86_64-linux-gnu')
+                  env=dict(os.environ,LD_LIBRARY_PATH=libpath)
+                  ldd=command(['ldd',str(browser)],env=env,timeout=20)
+                  state['lddExitCode']=ldd['exitCode']
+                  state['missingDependencies']=[line.strip() for line in ldd['stdout'].splitlines() if 'not found' in line]
+                  state['versionProbe']=command([str(browser),'--version'],env=env,timeout=20)
+                  if state['missingDependencies'] or state['versionProbe']['exitCode']!=0:
+                      raise RuntimeError('isolated_library_dependency_resolution_failed')
+                  fixture=root/'fixture.html'
+                  fixture.write_text('<!doctype html><html><head><title>Pock F13</title></head><body><h1>F13 READY</h1></body></html>\n')
+                  screenshot=root/'fixture.png'
+                  state['smokeProbe']=command([str(browser),'--headless','--no-sandbox','--disable-gpu',
+                                               '--disable-dev-shm-usage','--hide-scrollbars',
+                                               '--window-size=800,600','--user-data-dir='+str(root/'profile'),
+                                               '--screenshot='+str(screenshot),fixture.as_uri()],env=env,timeout=60)
+                  if state['smokeProbe']['exitCode']!=0 or not screenshot.is_file():
+                      raise RuntimeError('offline_fixture_screenshot_failed')
+                  with screenshot.open('rb') as stream:header=stream.read(24)
+                  if header[:8]!=b'\x89PNG\r\n\x1a\n':raise RuntimeError('screenshot_not_png')
+                  state['screenshotWidth'],state['screenshotHeight']=struct.unpack('>II',header[16:24])
+                  state['screenshotBytes']=screenshot.stat().st_size
+                  state['screenshotSha256']=sha(screenshot)
+                  state['truthStatus']='HOST_HEADLESS_BROWSER_OFFLINE_SMOKE_PASS_GUEST_UNEXERCISED'
+              except Exception as exc:
+                  state['failure']=type(exc).__name__+':'+str(exc)[:450]
+              print(json.dumps(state,sort_keys=True))
+              return 0 if state['truthStatus']=='HOST_HEADLESS_BROWSER_OFFLINE_SMOKE_PASS_GUEST_UNEXERCISED' else 2
+          
+          
+          if __name__=='__main__':raise SystemExit(main())
+          '@
+          $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
+          $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<f13-browser-deps>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -B -c $python $env:GITHUB_RUN_ID
+          if ($LASTEXITCODE -ne 0) { throw "f13_deps_exit_$LASTEXITCODE" }
