@@ -50,7 +50,7 @@ jobs:
           def run(args, *, timeout=300, cwd=None, env=None):
               p=subprocess.run(args, stdin=subprocess.DEVNULL, capture_output=True,text=True,
                                timeout=timeout,cwd=cwd,env=env,check=False)
-              return {'exitCode':p.returncode,'stdout':p.stdout[-1500:],'stderr':p.stderr[-1500:]}
+              return {'exitCode':p.returncode,'stdout':p.stdout[-20000:],'stderr':p.stderr[-1500:]}
           
           def chroot(stage,args,*,timeout=300):
               return run(['chroot',str(stage),*args],timeout=timeout,
@@ -62,7 +62,7 @@ jobs:
               root=Path('/root/pock-m8-f13-gueststage-'+run_id)
               state={'contract':'PockM8F13GuestBrowserStage/v1','runId':run_id,
                      'truthStatus':'BLOCKED','browserVersionPin':CHROME_VERSION,'browserSha256':BROWSER_SHA,
-                     'aptMode':'APT_UPDATE_AND_DOWNLOAD_ONLY_THEN_NO_DOWNLOAD_INSTALL_IN_COPIED_TREE',
+                     'aptMode':'HOST_APT_SIGNED_NOBLE_ISOLATED_DOWNLOAD_ONLY_DPKG_DEB_EXTRACT_IN_COPIED_TREE',
                      'pristineRootfsModified':False,'pockSourceAccessed':False,'guestBootObserved':False}
               try:
                   if os.geteuid()!=0 or root.exists() or root.is_symlink():raise RuntimeError('root_required_or_unique_stage_exists')
@@ -82,67 +82,63 @@ jobs:
                   before=chroot(stage,['/usr/bin/ldd',guest_binary],timeout=20)
                   state['preInstallMissing']=[x.strip() for x in before['stdout'].splitlines() if 'not found' in x]
                   if state['preInstallMissing']:
-                      resolv=stage/'etc/resolv.conf'
-                      if resolv.is_symlink() or resolv.exists():resolv.unlink()
-                      resolv.write_bytes(Path('/etc/resolv.conf').read_bytes())
-                      resolv.chmod(0o644)  # apt sandbox user _apt must read DNS configuration
-                      # The minimal CI rootfs lacks a working DNS NSS path in chroot.
-                      # Resolve on the host and map only the signed Ubuntu mirrors in the copied tree.
-                      host_dns={}
-                      for domain in ['archive.ubuntu.com','security.ubuntu.com']:
-                          infos=socket.getaddrinfo(domain,80,family=socket.AF_INET,type=socket.SOCK_STREAM)
-                          if not infos:raise RuntimeError('host_dns_failed:'+domain)
-                          host_dns[domain]=infos[0][4][0]
-                      hosts=stage/'etc/hosts'
-                      if hosts.is_symlink() or hosts.exists():hosts.unlink()
-                      hosts.write_text('127.0.0.1 localhost\n'+''.join(ip+' '+name+'\n' for name,ip in host_dns.items()))
-                      hosts.chmod(0o644)
-                      state['hostResolvedUbuntuMirrors']=host_dns
                       keyring=stage/'usr/share/keyrings/ubuntu-archive-keyring.gpg'
-                      if not keyring.is_file():raise RuntimeError('ubuntu_archive_keyring_missing_in_copied_guest')
-                      sources=stage/'etc/apt/sources.list.d/ubuntu.sources'
-                      if not sources.is_file():raise RuntimeError('stock_guest_ubuntu_sources_missing')
-                      source_text=sources.read_text()
-                      if 'noble' not in source_text or 'Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg' not in source_text:
-                          raise RuntimeError('stock_guest_ubuntu_sources_not_signed')
-                      state['stockSignedAptSourcesSha256']=sha(sources)
+                      stock_sources=stage/'etc/apt/sources.list.d/ubuntu.sources'
+                      if not keyring.is_file() or not stock_sources.is_file():
+                          raise RuntimeError('stock_guest_signed_archive_identity_missing')
+                      if 'noble' not in stock_sources.read_text() or 'Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg' not in stock_sources.read_text():
+                          raise RuntimeError('stock_guest_source_not_signed')
                       state['guestUbuntuArchiveKeyringSha256']=sha(keyring)
-                      guest_tmp=stage/'tmp';guest_tmp.mkdir(exist_ok=True)
-                      guest_tmp.chmod(0o1777)
-                      update=chroot(stage,['/usr/bin/apt-get','update','-o','Acquire::Retries=2'],timeout=240)
-                      state['aptUpdateExit']=update['exitCode']
-                      state['aptUpdateStdoutTail']=update['stdout'][-900:]
-                      if update['exitCode']!=0:raise RuntimeError('guest_apt_update_failed:'+update['stderr'][-350:])
-                      names=['libnspr4','libnss3','libasound2t64']
+                      state['stockSignedAptSourcesSha256']=sha(stock_sources)
+                      sources=root/'noble.sources'
+                      sources.write_text('Types: deb\nURIs: http://archive.ubuntu.com/ubuntu\nSuites: noble noble-updates\nComponents: main universe\nSigned-By: '+str(keyring)+'\n')
+                      state['isolatedHostAptSourcesSha256']=sha(sources)
+                      lists=root/'apt-lists';lists.mkdir()
+                      (lists/'partial').mkdir()
+                      cache=root/'apt-archives';cache.mkdir()
+                      (cache/'partial').mkdir()
+                      aptopts=['-o','Dir::Etc::sourcelist='+str(sources),
+                               '-o','Dir::Etc::sourceparts=-',
+                               '-o','Dir::State::lists='+str(lists),
+                               '-o','Dir::Cache::archives='+str(cache),
+                               '-o','Dir::State::status='+str(stage/'var/lib/dpkg/status'),
+                               '-o','APT::Sandbox::User=root',
+                               '-o','Debug::NoLocking=true']
+                      update=run(['apt-get',*aptopts,'update'],timeout=240)
+                      state['isolatedHostAptUpdateExit']=update['exitCode']
+                      state['isolatedHostAptUpdateStdoutTail']=update['stdout'][-650:]
+                      if update['exitCode']!=0:raise RuntimeError('isolated_signed_noble_apt_update_failed:'+update['stderr'][-350:])
+                      names=['libglib2.0-0t64','libnspr4','libnss3','libatk1.0-0t64',
+                             'libatk-bridge2.0-0t64','libdbus-1-3','libx11-6','libxcomposite1',
+                             'libxdamage1','libxext6','libxfixes3','libxrandr2','libgbm1',
+                             'libxcb1','libxkbcommon0','libasound2t64','libatspi2.0-0t64']
                       pins={}
                       for name in names:
-                          info=chroot(stage,['/usr/bin/apt-cache','policy',name],timeout=15)
-                          if info['exitCode']!=0:raise RuntimeError('guest_package_policy_failed:'+name)
+                          info=run(['apt-cache',*aptopts,'policy',name],timeout=15)
                           match=re.search(r'^  Candidate: (\S+)$',info['stdout'],re.M)
-                          if not match or match.group(1)=='(none)':raise RuntimeError('guest_package_candidate_unavailable:'+name)
+                          if info['exitCode']!=0 or not match or match.group(1)=='(none)':
+                              raise RuntimeError('signed_noble_candidate_unavailable:'+name)
                           pins[name]=match.group(1)
                       state['ubuntu24PackagePins']=pins
                       specs=[name+'='+version for name,version in pins.items()]
-                      download=chroot(stage,['/usr/bin/apt-get','-y','--download-only','install',*specs],timeout=240)
-                      state['aptDownloadExit']=download['exitCode']
-                      if download['exitCode']!=0:raise RuntimeError('guest_apt_download_failed:'+download['stderr'][-350:])
-                      cache=stage/'var/cache/apt/archives'
+                      download=run(['apt-get',*aptopts,'-y','--download-only','install',*specs],timeout=300)
+                      state['isolatedHostAptDownloadExit']=download['exitCode']
+                      if download['exitCode']!=0:raise RuntimeError('signed_noble_download_failed:'+download['stderr'][-350:])
                       debs=list(cache.glob('*.deb'))
-                      if not debs:raise RuntimeError('no_guest_debs_downloaded')
+                      if not debs:raise RuntimeError('no_signed_noble_debs_downloaded')
                       state['downloadedDebs']=[]
                       for deb in debs:
                           fields=run(['dpkg-deb','-f',str(deb),'Package','Version'],timeout=10)
                           if fields['exitCode']!=0:raise RuntimeError('deb_metadata_failed')
                           package,version=fields['stdout'].splitlines()[:2]
-                          meta=chroot(stage,['/usr/bin/apt-cache','show',package],timeout=15)
+                          meta=run(['apt-cache',*aptopts,'show',package],timeout=15)
                           stanza=next((s for s in meta['stdout'].split('\n\n') if 'Version: '+version in s),None)
-                          if stanza is None:raise RuntimeError('apt_metadata_stanza_missing:'+package)
+                          if stanza is None:raise RuntimeError('signed_noble_apt_stanza_missing:'+package)
                           match=re.search(r'^SHA256: ([a-f0-9]{64})$',stanza,re.M)
-                          if not match or sha(deb)!=match.group(1):raise RuntimeError('apt_deb_sha_mismatch:'+package)
+                          if not match or sha(deb)!=match.group(1):raise RuntimeError('signed_noble_deb_sha_mismatch:'+package)
+                          extract=run(['dpkg-deb','-x',str(deb),str(stage)],timeout=45)
+                          if extract['exitCode']!=0:raise RuntimeError('signed_noble_deb_extract_failed:'+package)
                           state['downloadedDebs'].append({'package':package,'version':version,'sha256':sha(deb),'bytes':deb.stat().st_size})
-                      install=chroot(stage,['/usr/bin/apt-get','-y','--no-download','install',*specs],timeout=180)
-                      state['aptInstallInCopiedTreeExit']=install['exitCode']
-                      if install['exitCode']!=0:raise RuntimeError('guest_copy_apt_install_failed:'+install['stderr'][-350:])
                   after=chroot(stage,['/usr/bin/ldd',guest_binary],timeout=20)
                   state['postInstallMissing']=[x.strip() for x in after['stdout'].splitlines() if 'not found' in x]
                   state['versionProbe']=chroot(stage,[guest_binary,'--version'],timeout=20)
