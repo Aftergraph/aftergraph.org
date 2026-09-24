@@ -1,0 +1,193 @@
+name: Pock M8 F9 private canonical vsock execution
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f9-execute.yml
+
+permissions: {}
+
+jobs:
+  f9-execute:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 20
+    steps:
+      - name: Run private F9 source with a fresh jailed guest and scoped AF_VSOCK
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          #!/usr/bin/env python3
+          """Run the private F9 runner on Lenovo without copying private source into public CI."""
+          from __future__ import annotations
+          
+          import hashlib
+          import json
+          import os
+          from pathlib import Path, PurePosixPath
+          import re
+          import subprocess
+          import sys
+          from zipfile import ZipFile
+          
+          PIN = {
+              'archive': '1017465270d11f99f55eb540061ce902589b45c56be7a03308db19f80d937122',
+              'kernel': '9204218e8bcca6ac23848d74f45df2eb19d7f31e8277840a7d145a0df8b078d2',
+              'rootfs': 'ad2f45d74a002bcbf6a0c6d0aba5d4c8e2cdf071aa30f1f1d363edc4a504b3a7',
+              'firecracker': '99ad0f5cd0514a88aad0e9ae8cfdb3cc3b4ab9d190e1194602406c786b5de7a5',
+              'jailer': '65ef226e96f0ceda55ba643f445801ef2cc0ea667ef67cad8ac4f406c9c8434f',
+          }
+          BASE = Path('/root/pock-m8-boot')
+          KERNEL = BASE / 'vmlinux-6.18.48'
+          ROOTFS = BASE / 'ubuntu-24.04.ext4'
+          FIRECRACKER = Path('/root/pock-m8-gate/bin/firecracker')
+          JAILER = Path('/root/pock-m8-gate/bin/jailer')
+          ARCHIVE = Path('/mnt/c/Users/empir/Downloads/pock-bot-v23-m8-f9-worker-handoff.zip')
+          TREE = BASE / 'squashfs-root'
+          PREFIX = 'pock-bot-v23-m8-f9-worker-handoff/'
+          
+          
+          def sha(path):
+              h = hashlib.sha256()
+              with path.open('rb') as stream:
+                  for block in iter(lambda: stream.read(1024 * 1024), b''):
+                      h.update(block)
+              return h.hexdigest()
+          
+          
+          def call(command, *, env, timeout):
+              proc = subprocess.run(command, stdin=subprocess.DEVNULL, capture_output=True,
+                                    text=True, env=env, timeout=timeout, check=False)
+              return proc
+          
+          
+          def main():
+              if len(sys.argv) != 2 or not re.fullmatch('[1-9][0-9]{0,14}', sys.argv[1]):
+                  raise ValueError('numeric_github_run_id_required')
+              run_id = sys.argv[1]
+              root = Path('/root/pock-m8-ci-f9-' + run_id)
+              vm_id = 'pockm8f9-' + run_id
+              os.umask(0o077)
+              state = {'contract':'PockM8F9LenovoExecution/v1','runId':run_id,
+                       'truthStatus':'BLOCKED','sourceZipSha256':PIN['archive'],
+                       'networkMode':'no-interface-deny-all'}
+              try:
+                  if os.geteuid() != 0 or root.exists() or root.is_symlink():
+                      raise RuntimeError('root_required_or_unique_run_directory_exists')
+                  for label, path in [('archive',ARCHIVE),('kernel',KERNEL),('rootfs',ROOTFS),
+                                      ('firecracker',FIRECRACKER),('jailer',JAILER)]:
+                      if not path.is_file() or sha(path)!=PIN[label]:
+                          raise RuntimeError(label+'_pinned_sha256_mismatch')
+                  if not TREE.is_dir() or not (TREE/'etc/os-release').is_file() or not (TREE/'usr/bin/python3').exists():
+                      raise RuntimeError('source_rootfs_tree_missing_or_incomplete')
+                  with ZipFile(ARCHIVE) as z:
+                      if z.testzip() is not None:
+                          raise RuntimeError('source_zip_corrupt')
+                      index=z.read(PREFIX+'F9_CHECKSUMS.sha256').decode()
+                      count=0
+                      for line in index.splitlines():
+                          if line.startswith('#'): continue
+                          expected, name=line.split('  ',1)
+                          if hashlib.sha256(z.read(PREFIX+name)).hexdigest()!=expected:
+                              raise RuntimeError('source_member_checksum_mismatch')
+                          count+=1
+                      if count!=719:
+                          raise RuntimeError('source_manifest_count_mismatch')
+                      project=[m for m in z.namelist() if m.startswith(PREFIX+'project/') and not m.endswith('/')]
+                      for name in project:
+                          rel=PurePosixPath(name)
+                          if rel.is_absolute() or '..' in rel.parts or not name.startswith(PREFIX+'project/'):
+                              raise RuntimeError('source_member_path_unsafe')
+                      root.mkdir(mode=0o700)
+                      source=root/'source'
+                      source.mkdir()
+                      for name in project:
+                          dest=source/PurePosixPath(name).relative_to(PREFIX)
+                          dest.parent.mkdir(parents=True,exist_ok=True)
+                          with dest.open('xb') as stream:
+                              stream.write(z.read(name))
+                  state['sourceFilesVerified']=count
+                  project_root=source/'project'
+                  env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1',
+                           PYTHONPATH=':'.join((str(project_root),'/root/pock-m8-gate',
+                                                '/root/pock-m8-gate/pylibs')))
+                  guest=root/'guest-workload.ext4'
+                  build=call(['python3','-B',str(project_root/'scripts/build_pock_guest_workload_image.py'),
+                              '--rootfs-tree',str(TREE),'--output',str(guest),
+                              '--agent',str(project_root/'guest_workload_agent_v23.py')],env=env,timeout=480)
+                  if build.returncode:
+                      raise RuntimeError('guest_image_build_failed:'+build.stderr.strip()[-140:])
+                  build_data=json.loads(build.stdout)
+                  if build_data.get('truthStatus')!='SOFTWARE_IMAGE_BUILT_UNBOOTED' or sha(guest)!=build_data.get('rootfsSha256'):
+                      raise RuntimeError('guest_image_build_digest_invalid')
+                  state['guestRootfsSha256']=build_data['rootfsSha256']
+                  fsck=call(['e2fsck','-fn',str(guest)],env=env,timeout=120)
+                  if fsck.returncode!=0:
+                      raise RuntimeError('guest_image_e2fsck_failed:'+str(fsck.returncode))
+                  state['imageCheck']='E2FSCK_CLEAN'
+                  runner=project_root/'scripts/pock_m8_f3_host_run.py'
+                  base=['python3','-B',str(runner),'--kernel',str(KERNEL),
+                        '--rootfs',str(guest),'--vm-id',vm_id,
+                        '--worker-id','pock-m8-f9-ci','--lease-id','pock-m8-f9-'+run_id,
+                        '--generation','1']
+                  plan_path=root/'plan.json'
+                  plan=call(base+['--output',str(plan_path)],env=env,timeout=45)
+                  if plan.returncode:
+                      raise RuntimeError('f9_plan_failed:'+plan.stderr.strip()[-140:])
+                  planned=json.loads(plan_path.read_text())
+                  if (planned.get('truthStatus')!='SOFTWARE_PLAN_UNEXERCISED'
+                          or planned.get('kernelSha256')!=PIN['kernel']
+                          or planned.get('rootfsSha256')!=state['guestRootfsSha256']
+                          or planned.get('networkMode')!='no-interface-deny-all'
+                          or planned.get('vsockEnabled') is not True):
+                      raise RuntimeError('f9_plan_invariant_failed')
+                  state['canonicalPlanHash']=planned['planHash']
+                  state['planStatus']='SOFTWARE_PLAN_UNEXERCISED'
+                  output=root/'execution.json'
+                  command=base+['--execute','--firecracker',str(FIRECRACKER),
+                                '--jailer',str(JAILER),'--jail-base',str(root/'jails'),
+                                '--uid','0','--gid','0','--output',str(output)]
+                  execution=call(command,env=env,timeout=240)
+                  state['runnerExitCode']=execution.returncode
+                  if not output.is_file():
+                      raise RuntimeError('canonical_runner_did_not_write_evidence:'+execution.stderr.strip()[-140:])
+                  proof=json.loads(output.read_text())
+                  state['runnerTruthStatus']=proof.get('truthStatus')
+                  state['failureReason']=proof.get('failureReason')
+                  state['bootObservationHash']=proof.get('bootObservationHash')
+                  state['bootProofHash']=proof.get('bootProofHash')
+                  state['executionProofHash']=(proof.get('executionProof') or {}).get('proofHash')
+                  state['shutdown']=proof.get('shutdown')
+                  state['serialEvidence']=proof.get('serialEvidence')
+                  if (proof.get('truthStatus')!='PRINCIPAL_OBSERVED_PENDING_INDEPENDENT_REPRODUCTION'
+                          or execution.returncode!=0
+                          or (proof.get('executionProof') or {}).get('contract')!='HabitatMicroVMExecutionProof/v1'
+                          or (proof.get('executionProof') or {}).get('truthStatus')!='REAL_LOCAL_EXERCISED'
+                          or not proof.get('serialEvidence',{}).get('verified')
+                          or not proof.get('shutdown',{}).get('vmmExited')):
+                      raise RuntimeError('canonical_f9_execution_gate_failed')
+                  for label,path in [('archive',ARCHIVE),('kernel',KERNEL),('rootfs',ROOTFS),
+                                     ('firecracker',FIRECRACKER),('jailer',JAILER)]:
+                      if sha(path)!=PIN[label]:
+                          raise RuntimeError('pristine_'+label+'_changed')
+                  state['truthStatus']='PRINCIPAL_CANONICAL_F9_VSOCK_OBSERVED'
+              except Exception as exc:
+                  state['failure']=type(exc).__name__+':'+str(exc)[:180]
+              if root.exists():
+                  state['evidencePath']=str(root/'CI_F9_RESULT.json')
+                  (root/'CI_F9_RESULT.json').write_text(json.dumps(state,sort_keys=True,indent=2)+'\n')
+              print(json.dumps(state,sort_keys=True))
+              return 0 if state['truthStatus']=='PRINCIPAL_CANONICAL_F9_VSOCK_OBSERVED' else 2
+          
+          
+          if __name__=='__main__':
+              raise SystemExit(main())
+          '@
+          $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($probe))
+          $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<pock-f9-execute>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -c $python $env:GITHUB_RUN_ID
+          if ($LASTEXITCODE -ne 0) { throw "pock_f9_execution_exit_$LASTEXITCODE" }
