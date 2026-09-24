@@ -53,10 +53,19 @@ jobs:
                           hits.append(str(pathlib.Path(walk_root)/name))
                   if len(hits)>50: break
               scan.append({'base':str(base),'hits':hits[:50]})
+          libnames=['libnspr4.so','libnss3.so','libnssutil3.so','libasound.so.2']
+          libdirs=[pathlib.Path('/usr/lib/x86_64-linux-gnu'),pathlib.Path('/lib/x86_64-linux-gnu'),root/'usr/lib/x86_64-linux-gnu',root/'lib/x86_64-linux-gnu']
+          libInventory={name:[{'path':str(d/name),'stat':stat(d/name)} for d in libdirs] for name in libnames}
+          aptMetadata={}
+          for pkg in ['libnspr4','libnss3','libasound2t64','libasound2']:
+              try:
+                  proc=subprocess.run(['apt-cache','policy',pkg],capture_output=True,text=True,timeout=8)
+                  aptMetadata[pkg]={'exitCode':proc.returncode,'output':proc.stdout[:650]}
+              except Exception as exc: aptMetadata[pkg]={'error':str(exc)[:100]}
           images={str(p):stat(p) for p in [pathlib.Path('/root/pock-m8-boot/ubuntu-24.04.ext4'),pathlib.Path('/root/pock-m8-boot/vmlinux-6.18.48'),pathlib.Path('/root/pock-m8-ci-f11-36043975895/guest-workload.ext4')]}
           mem=pathlib.Path('/proc/meminfo').read_text().splitlines()[:4]
           fs=shutil.disk_usage('/root')
-          print(json.dumps({'contract':'PockM8F13BrowserPreflight/v1','wslHost':os.uname().nodename,'uid':os.geteuid(),'rootfsTreePresent':root.is_dir(),'rootfsCandidates':{name:stat(root/name) for name in candidates},'hostCandidates':host,'packageStatuses':packages,'browserCaches':caches,'nameScan':scan,'images':images,'meminfo':mem,'diskFreeBytes':fs.free,'readOnly':True},sort_keys=True))
+          print(json.dumps({'contract':'PockM8F13BrowserPreflight/v1','wslHost':os.uname().nodename,'uid':os.geteuid(),'rootfsTreePresent':root.is_dir(),'rootfsCandidates':{name:stat(root/name) for name in candidates},'hostCandidates':host,'packageStatuses':packages,'browserCaches':caches,'nameScan':scan,'libInventory':libInventory,'aptMetadata':aptMetadata,'images':images,'meminfo':mem,'diskFreeBytes':fs.free,'readOnly':True},sort_keys=True))
           '@
           $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
           $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<f13-browser-preflight>','exec'))"
