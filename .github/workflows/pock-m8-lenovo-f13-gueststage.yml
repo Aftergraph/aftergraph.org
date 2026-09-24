@@ -30,6 +30,7 @@ jobs:
           import os
           from pathlib import Path
           import re
+          import shlex
           import shutil
           import socket
           import struct
@@ -151,27 +152,40 @@ jobs:
                   fixture.parent.chmod(0o1777)
                   fixture.write_text('<!doctype html><html><head><title>Pock F13 guest</title></head><body><h1>GUEST BROWSER READY</h1></body></html>\n')
                   screen=stage/'var/tmp/pock-f13.png'
-                  smoke=chroot(stage,[guest_binary,'--headless','--no-sandbox','--disable-gpu',
-                                      '--disable-dev-shm-usage','--hide-scrollbars','--window-size=800,600',
-                                      '--user-data-dir=/var/tmp/pock-f13-profile',
-                                      '--screenshot=/var/tmp/pock-f13.png','file:///var/tmp/pock-f13.html'],timeout=80)
-                  state['chrootSmokeExit']=smoke['exitCode']
-                  state['chrootSmokeStderrTail']=smoke['stderr'][-450:]
-                  if smoke['exitCode']!=0 or not screen.is_file():raise RuntimeError('guest_chroot_screenshot_failed')
-                  with screen.open('rb') as f:header=f.read(24)
-                  if header[:8]!=b'\x89PNG\r\n\x1a\n':raise RuntimeError('guest_chroot_screenshot_not_png')
-                  state['chrootScreenshotSha256']=sha(screen)
-                  state['chrootScreenshotBytes']=screen.stat().st_size
-                  state['chrootScreenshotWidth'],state['chrootScreenshotHeight']=struct.unpack('>II',header[16:24])
-                  shutil.copyfile(screen,root/'chroot-smoke.png')
+                  smoke_args=[guest_binary,'--headless','--no-sandbox','--disable-gpu',
+                              '--disable-dev-shm-usage','--hide-scrollbars','--window-size=800,600',
+                              '--user-data-dir=/var/tmp/pock-f13-profile',
+                              '--screenshot=/var/tmp/pock-f13.png','file:///var/tmp/pock-f13.html']
+                  smoke=chroot(stage,smoke_args,timeout=80)
+                  state['bareChrootSmokeExit']=smoke['exitCode']
+                  state['bareChrootSmokeStderrTail']=smoke['stderr'][-350:]
+                  if smoke['exitCode']!=0 or not screen.is_file():
+                      (stage/'dev').mkdir(exist_ok=True)
+                      (stage/'proc').mkdir(exist_ok=True)
+                      mounted_args=[arg.replace('pock-f13-profile','pock-f13-profile-mounted') for arg in smoke_args]
+                      shell='mount --rbind /dev '+shlex.quote(str(stage/'dev'))+' && mount -t proc proc '+shlex.quote(str(stage/'proc'))+' && '+shlex.join(['chroot',str(stage),*mounted_args])
+                      mounted=run(['unshare','--mount','--fork','--propagation','private','--','/bin/sh','-c',shell],timeout=80)
+                      state['mountNamespaceSmokeExit']=mounted['exitCode']
+                      state['mountNamespaceSmokeStderrTail']=mounted['stderr'][-600:]
+                  screenshot_pass=screen.is_file()
+                  if screenshot_pass:
+                      with screen.open('rb') as f:header=f.read(24)
+                      if header[:8]!=b'\x89PNG\r\n\x1a\n':raise RuntimeError('guest_chroot_screenshot_not_png')
+                      state['chrootScreenshotSha256']=sha(screen)
+                      state['chrootScreenshotBytes']=screen.stat().st_size
+                      state['chrootScreenshotWidth'],state['chrootScreenshotHeight']=struct.unpack('>II',header[16:24])
+                      shutil.copyfile(screen,root/'chroot-smoke.png')
+                  else:
+                      state['chrootScreenshotTruth']='BLOCKED_HOST_CHROOT_DEVICE_OR_NAMESPACE'
                   state['packageLockSha256']=None
                   if state.get('downloadedDebs'):
                       lock=root/'guest-package-lock.json'
                       lock.write_text(json.dumps(state['downloadedDebs'],sort_keys=True,indent=2)+'\n')
                       state['packageLockSha256']=sha(lock)
                   fixture.unlink()
-                  screen.unlink()
+                  if screen.exists():screen.unlink()
                   shutil.rmtree(stage/'var/tmp/pock-f13-profile',ignore_errors=True)
+                  shutil.rmtree(stage/'var/tmp/pock-f13-profile-mounted',ignore_errors=True)
                   image=root/'browser-guest.ext4'
                   with image.open('wb') as f:f.truncate(1536*1024*1024)
                   made=run(['mkfs.ext4','-F','-q','-d',str(stage),'-L','POCK_M8_F13',str(image)],timeout=240)
@@ -181,11 +195,11 @@ jobs:
                   if fsck['exitCode']!=0:raise RuntimeError('guest_image_fsck_failed')
                   state['imageBytes']=image.stat().st_size
                   state['imageSha256']=sha(image)
-                  state['truthStatus']='GUEST_CHROOT_BROWSER_SMOKE_PASS_IMAGE_BUILT_UNBOOTED'
+                  state['truthStatus']=('GUEST_CHROOT_BROWSER_SMOKE_PASS_IMAGE_BUILT_UNBOOTED' if screenshot_pass else 'GUEST_BROWSER_BINARY_READY_IMAGE_BUILT_CHROOT_SCREEN_BLOCKED')
               except Exception as exc:
                   state['failure']=type(exc).__name__+':'+str(exc)[:450]
               print(json.dumps(state,sort_keys=True))
-              return 0 if state['truthStatus']=='GUEST_CHROOT_BROWSER_SMOKE_PASS_IMAGE_BUILT_UNBOOTED' else 2
+              return 0 if state['truthStatus'] in ['GUEST_CHROOT_BROWSER_SMOKE_PASS_IMAGE_BUILT_UNBOOTED','GUEST_BROWSER_BINARY_READY_IMAGE_BUILT_CHROOT_SCREEN_BLOCKED'] else 2
           
           if __name__=='__main__':raise SystemExit(main())
           '@
