@@ -92,6 +92,7 @@ jobs:
                           raise PermissionError('firecracker_api_peer_binary_digest_mismatch')
                       if not os.path.samefile(f'/proc/{pid}/root', Path(self.path).parent):
                           raise PermissionError('firecracker_api_peer_jail_root_mismatch')
+                      self.exe_samefile_original = os.path.samefile(f'/proc/{pid}/exe', FIRECRACKER)
                       if self.expected is not None and (pid, ticks) != self.expected:
                           raise PermissionError('firecracker_api_peer_changed')
                       self.peer = (pid, ticks)
@@ -101,7 +102,7 @@ jobs:
                       raise
           
           
-          def api(path, method, route, data=None, expected_peer=None):
+          def api(path, method, route, data=None, expected_peer=None, audit=None):
               c = BoundUnixHTTP(path, expected=expected_peer)
               try:
                   body = None if data is None else json.dumps(data, separators=(',', ':')).encode()
@@ -109,6 +110,9 @@ jobs:
                             headers={'Content-Type': 'application/json'} if body is not None else {})
                   resp = c.getresponse()
                   raw = resp.read()
+                  if audit is not None:
+                      audit['peerExeSamefileOriginal'] = c.exe_samefile_original
+                      audit['peerJailRootMatch'] = True
                   if resp.status not in ((200,) if method == 'GET' else (204,)):
                       raise RuntimeError('firecracker_api_status_' + str(resp.status))
                   return (json.loads(raw) if raw else None), c.peer
@@ -194,7 +198,7 @@ jobs:
                       time.sleep(0.2)
                   if not kernel_seen or not init_seen or not api_path.is_socket():
                       raise TimeoutError('guest_kernel_init_or_api_socket_timeout')
-                  state, peer = api(api_path, 'GET', '/')
+                  state, peer = api(api_path, 'GET', '/', audit=result)
                   if state.get('state') != 'Running':
                       raise RuntimeError('vmm_not_running')
                   result['bootObserved'] = True
@@ -256,6 +260,7 @@ jobs:
                   public = {k: result.get(k) for k in ('contract', 'truthStatus', 'bootObserved',
                             'kernelMarker', 'initMarker', 'panicMarker', 'vmmExited',
                             'guestRebootMarker', 'vmmCleanExitMarker', 'configSha256',
+                            'peerExeSamefileOriginal', 'peerJailRootMatch',
                             'shutdownRequest', 'serialSha256', 'serialBytes',
                             'pristineKernelModePreserved', 'failure')}
                   print(json.dumps(public, sort_keys=True))
