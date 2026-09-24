@@ -232,3 +232,5 @@ jobs:
           & wsl.exe -d Ubuntu-26.04 -- python3 -c $python $env:GITHUB_RUN_ID $linuxPatch
           if ($LASTEXITCODE -ne 0) { throw "pock_f11_binding_exit_$LASTEXITCODE" }
           } finally { Remove-Item -LiteralPath $tempPatch -Force -ErrorAction SilentlyContinue }
+
+# Reproduce the pinned F11 guest binding in a separate isolated VM.
