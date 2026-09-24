@@ -41,10 +41,22 @@ jobs:
               names=[]
               if parent.is_dir(): names=[p.name for p in parent.iterdir() if any(word in p.name.lower() for word in ['chrom','firefox','webkit'])][:20]
               caches.append({'path':str(parent),'names':names})
+          # Independent name scan: catches alternate installation paths missed by the fixed candidate list.
+          scan=[]
+          for base in [root/'usr',root/'opt',pathlib.Path('/usr/bin'),pathlib.Path('/usr/lib'),pathlib.Path('/opt'),pathlib.Path('/root/.cache')]:
+              if not base.is_dir(): continue
+              hits=[]
+              for walk_root,dirs,files in os.walk(base):
+                  dirs[:]=[d for d in dirs if d not in ['node_modules','.git','proc','sys']]
+                  for name in files:
+                      if any(name.lower().startswith(prefix) for prefix in ['chromium','chrome','firefox','headless_shell']):
+                          hits.append(str(pathlib.Path(walk_root)/name))
+                  if len(hits)>50: break
+              scan.append({'base':str(base),'hits':hits[:50]})
           images={str(p):stat(p) for p in [pathlib.Path('/root/pock-m8-boot/ubuntu-24.04.ext4'),pathlib.Path('/root/pock-m8-boot/vmlinux-6.18.48'),pathlib.Path('/root/pock-m8-ci-f11-36043975895/guest-workload.ext4')]}
           mem=pathlib.Path('/proc/meminfo').read_text().splitlines()[:4]
           fs=shutil.disk_usage('/root')
-          print(json.dumps({'contract':'PockM8F13BrowserPreflight/v1','wslHost':os.uname().nodename,'uid':os.geteuid(),'rootfsTreePresent':root.is_dir(),'rootfsCandidates':{name:stat(root/name) for name in candidates},'hostCandidates':host,'packageStatuses':packages,'browserCaches':caches,'images':images,'meminfo':mem,'diskFreeBytes':fs.free,'readOnly':True},sort_keys=True))
+          print(json.dumps({'contract':'PockM8F13BrowserPreflight/v1','wslHost':os.uname().nodename,'uid':os.geteuid(),'rootfsTreePresent':root.is_dir(),'rootfsCandidates':{name:stat(root/name) for name in candidates},'hostCandidates':host,'packageStatuses':packages,'browserCaches':caches,'nameScan':scan,'images':images,'meminfo':mem,'diskFreeBytes':fs.free,'readOnly':True},sort_keys=True))
           '@
           $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
           $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<f13-browser-preflight>','exec'))"
