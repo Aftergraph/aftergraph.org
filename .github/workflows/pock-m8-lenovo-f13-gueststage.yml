@@ -147,6 +147,8 @@ jobs:
                   if state['postInstallMissing'] or state['versionProbe']['exitCode']!=0 or CHROME_VERSION not in state['versionProbe']['stdout']:
                       raise RuntimeError('guest_chroot_browser_dependencies_unresolved')
                   fixture=stage/'var/tmp/pock-f13.html'
+                  fixture.parent.mkdir(parents=True,exist_ok=True)
+                  fixture.parent.chmod(0o1777)
                   fixture.write_text('<!doctype html><html><head><title>Pock F13 guest</title></head><body><h1>GUEST BROWSER READY</h1></body></html>\n')
                   screen=stage/'var/tmp/pock-f13.png'
                   smoke=chroot(stage,[guest_binary,'--headless','--no-sandbox','--disable-gpu',
@@ -161,6 +163,15 @@ jobs:
                   state['chrootScreenshotSha256']=sha(screen)
                   state['chrootScreenshotBytes']=screen.stat().st_size
                   state['chrootScreenshotWidth'],state['chrootScreenshotHeight']=struct.unpack('>II',header[16:24])
+                  shutil.copyfile(screen,root/'chroot-smoke.png')
+                  state['packageLockSha256']=None
+                  if state.get('downloadedDebs'):
+                      lock=root/'guest-package-lock.json'
+                      lock.write_text(json.dumps(state['downloadedDebs'],sort_keys=True,indent=2)+'\n')
+                      state['packageLockSha256']=sha(lock)
+                  fixture.unlink()
+                  screen.unlink()
+                  shutil.rmtree(stage/'var/tmp/pock-f13-profile',ignore_errors=True)
                   image=root/'browser-guest.ext4'
                   with image.open('wb') as f:f.truncate(1536*1024*1024)
                   made=run(['mkfs.ext4','-F','-q','-d',str(stage),'-L','POCK_M8_F13',str(image)],timeout=240)
