@@ -1,0 +1,160 @@
+name: Pock M8 F13 browser Ubuntu 24 isolated guest stage
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f13-gueststage.yml
+
+permissions: {}
+
+jobs:
+  gueststage:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 20
+    steps:
+      - name: Build copied Ubuntu 24 guest with pinned browser and offline chroot screenshot
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          #!/usr/bin/env python3
+          """Build an isolated Ubuntu 24.04 browser guest image with pinned download receipts."""
+          from __future__ import annotations
+          
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import re
+          import shutil
+          import struct
+          import subprocess
+          import sys
+          
+          CHROME_VERSION='154.0.8037.57'
+          BROWSER_SHA='60c03e8882f4bb47459a905ede1074e1e746c5b765e437c288e460320540a8a3'
+          SOURCE_BROWSER=Path('/root/pock-m8-f13-supply-36067269189/extract/chrome-headless-shell-linux64')
+          SOURCE_ROOTFS=Path('/root/pock-m8-boot/squashfs-root')
+          
+          def sha(path):
+              h=hashlib.sha256()
+              with path.open('rb') as f:
+                  for block in iter(lambda:f.read(1024*1024),b''):h.update(block)
+              return h.hexdigest()
+          
+          def run(args, *, timeout=300, cwd=None, env=None):
+              p=subprocess.run(args, stdin=subprocess.DEVNULL, capture_output=True,text=True,
+                               timeout=timeout,cwd=cwd,env=env,check=False)
+              return {'exitCode':p.returncode,'stdout':p.stdout[-1500:],'stderr':p.stderr[-1500:]}
+          
+          def chroot(stage,args,*,timeout=300):
+              return run(['chroot',str(stage),*args],timeout=timeout,
+                         env=dict(os.environ,DEBIAN_FRONTEND='noninteractive',PYTHONDONTWRITEBYTECODE='1'))
+          
+          def main():
+              if len(sys.argv)!=2 or not re.fullmatch(r'[1-9][0-9]{0,15}',sys.argv[1]):raise ValueError('numeric_run_id_required')
+              run_id=sys.argv[1]
+              root=Path('/root/pock-m8-f13-gueststage-'+run_id)
+              state={'contract':'PockM8F13GuestBrowserStage/v1','runId':run_id,
+                     'truthStatus':'BLOCKED','browserVersionPin':CHROME_VERSION,'browserSha256':BROWSER_SHA,
+                     'aptMode':'APT_UPDATE_AND_DOWNLOAD_ONLY_THEN_NO_DOWNLOAD_INSTALL_IN_COPIED_TREE',
+                     'pristineRootfsModified':False,'pockSourceAccessed':False,'guestBootObserved':False}
+              try:
+                  if os.geteuid()!=0 or root.exists() or root.is_symlink():raise RuntimeError('root_required_or_unique_stage_exists')
+                  if not SOURCE_ROOTFS.is_dir() or not (SOURCE_ROOTFS/'etc/os-release').is_file():raise RuntimeError('source_rootfs_missing')
+                  binary=SOURCE_BROWSER/'chrome-headless-shell'
+                  if not binary.is_file() or sha(binary)!=BROWSER_SHA:raise RuntimeError('pinned_browser_missing_or_mismatch')
+                  os.umask(0o077);root.mkdir(mode=0o700)
+                  stage=root/'rootfs';stage.mkdir()
+                  copied=run(['cp','-a','--',str(SOURCE_ROOTFS)+'/.',str(stage)],timeout=240)
+                  if copied['exitCode']!=0:raise RuntimeError('rootfs_copy_failed:'+copied['stderr'][-250:])
+                  browser=stage/'opt/pock-browser/chrome-headless-shell-linux64'
+                  browser.parent.mkdir(parents=True)
+                  shutil.copytree(SOURCE_BROWSER,browser,symlinks=True)
+                  if sha(browser/'chrome-headless-shell')!=BROWSER_SHA:raise RuntimeError('staged_browser_digest_mismatch')
+                  state['stagedBrowserDirBytes']=sum(p.stat().st_size for p in browser.rglob('*') if p.is_file())
+                  guest_binary='/opt/pock-browser/chrome-headless-shell-linux64/chrome-headless-shell'
+                  before=chroot(stage,['/usr/bin/ldd',guest_binary],timeout=20)
+                  state['preInstallMissing']=[x.strip() for x in before['stdout'].splitlines() if 'not found' in x]
+                  if state['preInstallMissing']:
+                      resolv=stage/'etc/resolv.conf'
+                      if resolv.is_symlink() or resolv.exists():resolv.unlink()
+                      resolv.write_bytes(Path('/etc/resolv.conf').read_bytes())
+                      update=chroot(stage,['/usr/bin/apt-get','update','-o','Acquire::Retries=2'],timeout=180)
+                      state['aptUpdateExit']=update['exitCode']
+                      if update['exitCode']!=0:raise RuntimeError('guest_apt_update_failed:'+update['stderr'][-350:])
+                      names=['libnspr4','libnss3','libasound2t64']
+                      pins={}
+                      for name in names:
+                          info=chroot(stage,['/usr/bin/apt-cache','policy',name],timeout=15)
+                          if info['exitCode']!=0:raise RuntimeError('guest_package_policy_failed:'+name)
+                          match=re.search(r'^  Candidate: (\S+)$',info['stdout'],re.M)
+                          if not match or match.group(1)=='(none)':raise RuntimeError('guest_package_candidate_unavailable:'+name)
+                          pins[name]=match.group(1)
+                      state['ubuntu24PackagePins']=pins
+                      specs=[name+'='+version for name,version in pins.items()]
+                      download=chroot(stage,['/usr/bin/apt-get','-y','--download-only','install',*specs],timeout=240)
+                      state['aptDownloadExit']=download['exitCode']
+                      if download['exitCode']!=0:raise RuntimeError('guest_apt_download_failed:'+download['stderr'][-350:])
+                      cache=stage/'var/cache/apt/archives'
+                      debs=list(cache.glob('*.deb'))
+                      if not debs:raise RuntimeError('no_guest_debs_downloaded')
+                      state['downloadedDebs']=[]
+                      for deb in debs:
+                          fields=run(['dpkg-deb','-f',str(deb),'Package','Version'],timeout=10)
+                          if fields['exitCode']!=0:raise RuntimeError('deb_metadata_failed')
+                          package,version=fields['stdout'].splitlines()[:2]
+                          meta=chroot(stage,['/usr/bin/apt-cache','show',package],timeout=15)
+                          stanza=next((s for s in meta['stdout'].split('\n\n') if 'Version: '+version in s),None)
+                          if stanza is None:raise RuntimeError('apt_metadata_stanza_missing:'+package)
+                          match=re.search(r'^SHA256: ([a-f0-9]{64})$',stanza,re.M)
+                          if not match or sha(deb)!=match.group(1):raise RuntimeError('apt_deb_sha_mismatch:'+package)
+                          state['downloadedDebs'].append({'package':package,'version':version,'sha256':sha(deb),'bytes':deb.stat().st_size})
+                      install=chroot(stage,['/usr/bin/apt-get','-y','--no-download','install',*specs],timeout=180)
+                      state['aptInstallInCopiedTreeExit']=install['exitCode']
+                      if install['exitCode']!=0:raise RuntimeError('guest_copy_apt_install_failed:'+install['stderr'][-350:])
+                  after=chroot(stage,['/usr/bin/ldd',guest_binary],timeout=20)
+                  state['postInstallMissing']=[x.strip() for x in after['stdout'].splitlines() if 'not found' in x]
+                  state['versionProbe']=chroot(stage,[guest_binary,'--version'],timeout=20)
+                  if state['postInstallMissing'] or state['versionProbe']['exitCode']!=0 or CHROME_VERSION not in state['versionProbe']['stdout']:
+                      raise RuntimeError('guest_chroot_browser_dependencies_unresolved')
+                  fixture=stage/'var/tmp/pock-f13.html'
+                  fixture.write_text('<!doctype html><html><head><title>Pock F13 guest</title></head><body><h1>GUEST BROWSER READY</h1></body></html>\n')
+                  screen=stage/'var/tmp/pock-f13.png'
+                  smoke=chroot(stage,[guest_binary,'--headless','--no-sandbox','--disable-gpu',
+                                      '--disable-dev-shm-usage','--hide-scrollbars','--window-size=800,600',
+                                      '--user-data-dir=/var/tmp/pock-f13-profile',
+                                      '--screenshot=/var/tmp/pock-f13.png','file:///var/tmp/pock-f13.html'],timeout=80)
+                  state['chrootSmokeExit']=smoke['exitCode']
+                  state['chrootSmokeStderrTail']=smoke['stderr'][-450:]
+                  if smoke['exitCode']!=0 or not screen.is_file():raise RuntimeError('guest_chroot_screenshot_failed')
+                  with screen.open('rb') as f:header=f.read(24)
+                  if header[:8]!=b'\x89PNG\r\n\x1a\n':raise RuntimeError('guest_chroot_screenshot_not_png')
+                  state['chrootScreenshotSha256']=sha(screen)
+                  state['chrootScreenshotBytes']=screen.stat().st_size
+                  state['chrootScreenshotWidth'],state['chrootScreenshotHeight']=struct.unpack('>II',header[16:24])
+                  image=root/'browser-guest.ext4'
+                  with image.open('wb') as f:f.truncate(1536*1024*1024)
+                  made=run(['mkfs.ext4','-F','-q','-d',str(stage),'-L','POCK_M8_F13',str(image)],timeout=240)
+                  if made['exitCode']!=0:raise RuntimeError('guest_image_mkfs_failed:'+made['stderr'][-200:])
+                  fsck=run(['e2fsck','-fn',str(image)],timeout=120)
+                  state['e2fsckExit']=fsck['exitCode']
+                  if fsck['exitCode']!=0:raise RuntimeError('guest_image_fsck_failed')
+                  state['imageBytes']=image.stat().st_size
+                  state['imageSha256']=sha(image)
+                  state['truthStatus']='GUEST_CHROOT_BROWSER_SMOKE_PASS_IMAGE_BUILT_UNBOOTED'
+              except Exception as exc:
+                  state['failure']=type(exc).__name__+':'+str(exc)[:450]
+              print(json.dumps(state,sort_keys=True))
+              return 0 if state['truthStatus']=='GUEST_CHROOT_BROWSER_SMOKE_PASS_IMAGE_BUILT_UNBOOTED' else 2
+          
+          if __name__=='__main__':raise SystemExit(main())
+          '@
+          $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
+          $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<f13-gueststage>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -B -c $python $env:GITHUB_RUN_ID
+          if ($LASTEXITCODE -ne 0) { throw "f13_gueststage_exit_$LASTEXITCODE" }
