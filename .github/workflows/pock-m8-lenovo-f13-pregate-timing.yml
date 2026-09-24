@@ -1,0 +1,69 @@
+name: Pock M8 F13 source pregate timing diagnosis
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f13-pregate-timing.yml
+
+permissions: {}
+
+jobs:
+  pregate:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 9
+    steps:
+      - name: Time pinned prerequisites without modifying source or booting
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          import hashlib,json,pathlib,signal,time,zipfile
+          base=pathlib.Path('/root/pock-m8-boot')
+          items=[('archive',pathlib.Path('/mnt/c/Users/empir/Downloads/pock-bot-v23-m8-f9-worker-handoff.zip')),
+                 ('kernel',base/'vmlinux-6.18.48'),('rootfs',base/'ubuntu-24.04.ext4'),
+                 ('firecracker',pathlib.Path('/root/pock-m8-gate/bin/firecracker')),
+                 ('jailer',pathlib.Path('/root/pock-m8-gate/bin/jailer')),
+                 ('browser',pathlib.Path('/root/pock-m8-f13-gueststage-36068890418/rootfs/opt/pock-browser/chrome-headless-shell-linux64/chrome-headless-shell'))]
+          def emit(name, fn):
+              t=time.monotonic()
+              def timeout(*args): raise TimeoutError(name+'_over_95s')
+              signal.signal(signal.SIGALRM,timeout)
+              signal.alarm(95)
+              try:
+                  result=fn()
+                  print(json.dumps({'contract':'PockM8F13PregatePhase/v1','phase':name,'seconds':round(time.monotonic()-t,3),'result':result},sort_keys=True),flush=True)
+              except Exception as e:
+                  print(json.dumps({'contract':'PockM8F13PregatePhase/v1','phase':name,'seconds':round(time.monotonic()-t,3),'error':type(e).__name__+':'+str(e)[:100]},sort_keys=True),flush=True)
+              finally: signal.alarm(0)
+          def digest(p):
+              h=hashlib.sha256()
+              with p.open('rb') as f:
+                  for chunk in iter(lambda:f.read(1024*1024),b''):h.update(chunk)
+              return {'bytes':p.stat().st_size,'sha256':h.hexdigest()}
+          for name,p in items: emit('sha_'+name,lambda p=p:digest(p))
+          archive=items[0][1]
+          def testzip():
+              with zipfile.ZipFile(archive) as z:
+                  return {'badMember':z.testzip(),'members':len(z.namelist())}
+          emit('zip_testzip',testzip)
+          def manifest():
+              prefix='pock-bot-v23-m8-f9-worker-handoff/'
+              with zipfile.ZipFile(archive) as z:
+                  lines=z.read(prefix+'F9_CHECKSUMS.sha256').decode().splitlines()
+                  count=0
+                  for line in lines:
+                      if line.startswith('#'):continue
+                      digest,path=line.split('  ',1)
+                      if hashlib.sha256(z.read(prefix+path)).hexdigest()!=digest:raise ValueError('member_mismatch')
+                      count+=1
+                  return {'membersVerified':count}
+          emit('zip_manifest',manifest)
+          '@
+          $encoded=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
+          $command="import base64;exec(compile(base64.b64decode('$encoded'),'<f13-readonly-pregate>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -c $command
+          if ($LASTEXITCODE -ne 0) { throw "f13_pregate_exit_$LASTEXITCODE" }
