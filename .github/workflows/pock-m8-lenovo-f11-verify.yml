@@ -1,0 +1,114 @@
+name: Pock M8 F11 read-only interactive binding artifact verification
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-lenovo-f11-verify.yml
+
+permissions: {}
+
+jobs:
+  verify:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 10
+    steps:
+      - name: Independently recompute F11 proof and guest binding evidence
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          #!/usr/bin/env python3
+          """Separate read-only verification of the exact F11 Lenovo execution artifacts."""
+          from __future__ import annotations
+          
+          from hashlib import sha256
+          import json
+          from pathlib import Path
+          import sys
+          
+          RUN = '36043975895'
+          ROOT = Path('/root/pock-m8-ci-f11-' + RUN)
+          PATCH = 'f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b'
+          
+          
+          def hash_obj(obj):
+              return sha256(json.dumps(obj, sort_keys=True, separators=(',', ':'),
+                                       ensure_ascii=False, allow_nan=False).encode()).hexdigest()
+          
+          
+          checks = []
+          
+          
+          def ck(label, outcome):
+              checks.append([label, bool(outcome)])
+          
+          
+          try:
+              top = json.loads((ROOT / 'CI_F11_RESULT.json').read_text())
+              execution = json.loads((ROOT / 'execution.json').read_text())
+              proof = execution['executionProof']
+              probe = execution['interactiveBindingProbe']
+              binding = probe['bindingEvidence']
+              transport = probe['transportEvidence']
+              serial = (ROOT / 'execution.json.serial.log').read_bytes()
+              ck('exact F11 private patch and source identity', top['runId'] == RUN
+                 and top['privatePatchSha256'] == PATCH and top['sourceFilesVerified'] == 719)
+              ck('execution proof hash recomputed', hash_obj({k: v for k, v in proof.items()
+                 if k not in ('proofHash', 'truthStatus', 'hardwareAttestation', 'proofSemantics')}) == proof['proofHash']
+                 and proof['truthStatus'] == 'REAL_LOCAL_EXERCISED')
+              ck('boot and image identity', proof['bootObservationHash'] == execution['bootObservationHash']
+                 == probe['bootObservationHash'] and proof['bootProofHash'] == execution['bootProofHash']
+                 and proof['imageDigest'] == json.loads((ROOT / 'plan.json').read_text())['imageDigest'])
+              ck('guest binding hash recomputed', binding['bindingHash'] == probe['bindingHash']
+                 == hash_obj({k: v for k, v in binding.items() if k not in
+                             ('bindingHash', 'truthStatus', 'realGuestScreenSourceEligible',
+                              'realGuestInputApplicationEligible', 'hardwareAttestation', 'independentObservation')}))
+              ck('observed AF_VSOCK transport hash recomputed', transport['evidenceHash']
+                 == probe['vsockEvidenceHash'] == hash_obj({k: v for k, v in transport.items()
+                 if k not in ('evidenceHash', 'truthStatus', 'realGuestChannel',
+                              'proofSemantics', 'hardwareAttestation', 'independentObservation')}))
+              ck('transport binds exact execution, boot, and session',
+                 transport['executionProofHash'] == proof['proofHash'] == probe['executionProofHash']
+                 and transport['bootObservationHash'] == execution['bootObservationHash']
+                 and transport['sessionId'] == binding['sessionId'] == probe['sessionId']
+                 and transport['bindingReceiptHash'] == binding['bindingReceiptHash'])
+              ck('same jailed VMM observed for guest AF_VSOCK and shutdown',
+                 transport['peerIdentityMatch'] is True
+                 and transport['firecrackerExecutableMatch'] is True
+                 and transport['expectedVmmPeerIdentityHash'] == transport['observedPeerIdentityHash']
+                 == probe['peerIdentityHash'] == top['shutdown']['vmmPeerIdentityHash'])
+              ck('truth stays limited to guest binding', transport['truthStatus']
+                 == 'REAL_VSOCK_BOUND_TO_REAL_BOOT' and binding['realGuestChannel'] is True
+                 and probe['screenProvenance'] == probe['inputApplication'] == 'UNVERIFIED'
+                 and probe['takeoverAuthority'] == 'NOT_GRANTED')
+              ck('exact serial bytes and clean termination', sha256(serial).hexdigest()
+                 == top['serialEvidence']['sha256'] and b'Linux version' in serial
+                 and b'Kernel panic' not in serial
+                 and b'Firecracker exiting successfully. exit_code=0' in serial
+                 and top['runnerExitCode'] == 0 and top['shutdown']['vmmExited'])
+              def raw_key(value):
+                  if isinstance(value, dict):
+                      return any(k.lower() in ('responsekey', 'responsekeyhex') or raw_key(v)
+                                 for k, v in value.items())
+                  if isinstance(value, list):
+                      return any(raw_key(x) for x in value)
+                  return False
+              ck('no challenge response key persisted', not raw_key(execution))
+          except Exception as exc:
+              checks.append(['verifier exception ' + type(exc).__name__ + ':' + str(exc)[:100], False])
+          
+          out = {'contract': 'PockM8F11IndependentArtifactVerifier/v1', 'runId': RUN,
+                 'checks': checks, 'passed': sum(ok for _, ok in checks),
+                 'total': len(checks),
+                 'truthStatus': 'ARTIFACT_VERIFIED' if all(ok for _, ok in checks) else 'BLOCKED'}
+          print(json.dumps(out, sort_keys=True))
+          sys.exit(0 if out['truthStatus'] == 'ARTIFACT_VERIFIED' else 2)
+          '@
+          $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($probe))
+          $python = "import base64;exec(compile(base64.b64decode('$encoded'),'<pock-f11-verify>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -c $python
+          if ($LASTEXITCODE -ne 0) { throw "pock_f11_verify_exit_$LASTEXITCODE" }
