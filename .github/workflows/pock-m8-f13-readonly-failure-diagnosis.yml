@@ -21,7 +21,7 @@ jobs:
           $ErrorActionPreference = 'Stop'
           if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
           $probe = @'
-          import hashlib, json, pathlib, re, sys
+          import hashlib, json, pathlib, re, subprocess, sys
           root=pathlib.Path('/root/pock-m8-ci-f13-36073268552')
           print('F13_DIAG_ROOT_EXISTS='+str(root.is_dir()),flush=True)
           for name in ('CI_F13_RESULT.json','execution.json','plan.json'):
@@ -40,6 +40,14 @@ jobs:
                       if isinstance(obj.get('guestBrowserProbe'),dict): print('BROWSER_PROBE '+json.dumps(obj['guestBrowserProbe'],sort_keys=True)[:3000],flush=True)
               else: continue
           candidates=[]
+          for pattern in ('jails/firecracker/*/root/var/log/journal','jails/firecracker/*/root/run/log/journal'):
+              for directory in root.glob(pattern):
+                  print('JOURNAL_DIR '+str(directory)+' exists='+str(directory.is_dir()),flush=True)
+                  if directory.is_dir():
+                      try:
+                          q=subprocess.run(['journalctl','--directory='+str(directory),'-u','pock-m8-browser.service','--no-pager','-o','cat','-n','100'],capture_output=True,text=True,timeout=15)
+                          print('BROWSER_JOURNAL rc='+str(q.returncode)+'\n'+q.stdout[-12000:]+'\n'+q.stderr[-1000:],flush=True)
+                      except Exception as exc: print('JOURNAL_READ_ERROR '+type(exc).__name__,flush=True)
           for p in root.rglob('*'):
               if not p.is_file(): continue
               if p.name in ('serial.log','fc-serial.log','firecracker.log') or p.name.endswith('.serial.log') or 'browser-evidence' in str(p):
@@ -53,7 +61,7 @@ jobs:
                   data=p.read_bytes(); print(f'SERIAL sha256={hashlib.sha256(data).hexdigest()} size={len(data)}',flush=True)
                   lines=data.decode('utf-8','replace').splitlines()
                   hits=[(i,l) for i,l in enumerate(lines) if re.search(r'browser|receipt|frame|png|Traceback|Exception|4070|pock-m8-(workload|interactive)|Main process exited|Failed with result',l,re.I)]
-                  for i,line in hits[-40:]: print(f'SERIAL_LINE {i} '+line[:500],flush=True)
+                  for i,line in hits[-40:]: print(f'SERIAL_LINE {i} '+line[:1200],flush=True)
           '@
           $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
           $command = "import base64;exec(compile(base64.b64decode('$encoded'),'<f13-readonly-diagnosis>','exec'))"
