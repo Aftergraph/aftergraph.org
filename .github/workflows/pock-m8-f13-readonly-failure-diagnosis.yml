@@ -22,7 +22,7 @@ jobs:
           if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
           $probe = @'
           import hashlib, json, pathlib, re, subprocess, sys
-          root=pathlib.Path('/root/pock-m8-ci-f13-36193297994')
+          root=pathlib.Path('/root/pock-m8-ci-f13-36193679616')
           print('F13_DIAG_ROOT_EXISTS='+str(root.is_dir()),flush=True)
           for name in ('CI_F13_RESULT.json','execution.json','plan.json'):
               p=root/name
