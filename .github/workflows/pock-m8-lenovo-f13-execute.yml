@@ -23,8 +23,8 @@ jobs:
           $privateRef = 'worker/m8-f13-browser-protocol-20260924'
           $items = @(
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f11/pock-m8-f11-candidate-on-f10.patch?ref=worker/m8-f11-interactive-binding-20260924'; digest='f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b'; filename='f11.patch' },
-            @{ api=('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=' + $privateRef); digest='b0649495b58007a7becd7be20ee35af6914fee8322d897059834eb44ffedd229'; filename='f13.patch' },
-            @{ api=('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock_m8_lenovo_f13_execute.py?ref=' + $privateRef); digest='15763f6ec3e023937a24c875e5d5abcdd3d805dc088e014e373be4ac7e385edf'; filename='f13-runner.py' }
+            @{ api=('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=' + $privateRef); digest='e86ec72c6e4ebb76cfc861ed093bd85dcbb6e0b5fc6f64da7b6254d829cc6817'; filename='f13.patch' },
+            @{ api=('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock_m8_lenovo_f13_execute.py?ref=' + $privateRef); digest='896dff0f1161a9c72afcf8aa05ffcb76528c094852ccb7fccc4688880f82b14b'; filename='f13-runner.py' }
           )
           $paths = @()
           try {
@@ -68,7 +68,7 @@ jobs:
               '/mnt/' + $_.Substring(0, 1).ToLowerInvariant() + $_.Substring(2).Replace('\', '/')
             })
             Write-Output 'WSL_ENTER'
-            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[2] $env:GITHUB_RUN_ID $linux[0] $linux[1] 'b0649495b58007a7becd7be20ee35af6914fee8322d897059834eb44ffedd229' '/root/pock-m8-f13-gueststage-36068890418/rootfs'
+            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[2] $env:GITHUB_RUN_ID $linux[0] $linux[1] 'e86ec72c6e4ebb76cfc861ed093bd85dcbb6e0b5fc6f64da7b6254d829cc6817' '/root/pock-m8-f13-gueststage-36068890418/rootfs'
             if ($LASTEXITCODE -ne 0) { throw "pock_f13_browser_exit_$LASTEXITCODE" }
           } finally {
             foreach ($path in $paths) { Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue }
