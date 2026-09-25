@@ -42,17 +42,17 @@ jobs:
           candidates=[]
           for p in root.rglob('*'):
               if not p.is_file(): continue
-              if p.name in ('serial.log','fc-serial.log','firecracker.log') or 'browser-evidence' in str(p):
+              if p.name in ('serial.log','fc-serial.log','firecracker.log') or p.name.endswith('.serial.log') or 'browser-evidence' in str(p):
                   try: size=p.stat().st_size
                   except OSError: continue
                   candidates.append((str(p),size))
           for path,size in candidates[:80]: print(f'CANDIDATE path={path} size={size}',flush=True)
           for path,size in candidates:
               p=pathlib.Path(path)
-              if p.name=='serial.log' and size<2_000_000:
+              if (p.name=='serial.log' or p.name.endswith('.serial.log')) and size<2_000_000:
                   data=p.read_bytes(); print(f'SERIAL sha256={hashlib.sha256(data).hexdigest()} size={len(data)}',flush=True)
                   lines=data.decode('utf-8','replace').splitlines()
-                  hits=[(i,l) for i,l in enumerate(lines) if re.search(r'browser|receipt|frame|png|Traceback|Exception|4070',l,re.I)]
+                  hits=[(i,l) for i,l in enumerate(lines) if re.search(r'browser|receipt|frame|png|Traceback|Exception|4070|pock-m8-(workload|interactive)|Main process exited|Failed with result',l,re.I)]
                   for i,line in hits[-40:]: print(f'SERIAL_LINE {i} '+line[:500],flush=True)
           '@
           $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
