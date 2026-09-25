@@ -1,0 +1,61 @@
+name: Pock M8 F13 read-only receipt failure diagnosis
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-lenovo-kvm-readonly-20260924
+    paths:
+      - .github/workflows/pock-m8-f13-readonly-failure-diagnosis.yml
+
+permissions: {}
+
+jobs:
+  diagnose:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 5
+    steps:
+      - name: Read only F13 result and serial evidence from Lenovo
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $probe = @'
+          import hashlib, json, pathlib, re, sys
+          root=pathlib.Path('/root/pock-m8-ci-f13-36073268552')
+          print('F13_DIAG_ROOT_EXISTS='+str(root.is_dir()),flush=True)
+          for name in ('CI_F13_RESULT.json','execution.json','plan.json'):
+              p=root/name
+              print(f'FILE {name} exists={p.is_file()} size={p.stat().st_size if p.is_file() else 0}',flush=True)
+              if p.is_file() and p.stat().st_size<2_000_000:
+                  obj=json.loads(p.read_text())
+                  if name=='CI_F13_RESULT.json':
+                      print('CI_RESULT '+json.dumps(obj,sort_keys=True),flush=True)
+                  elif name=='execution.json':
+                      def pick(x):
+                          keys=('contract','truthStatus','failureReason','bootObservationHash','bootProofHash','proofHash','imageDigest','vmId','guestBrowserProbe','executionProof','interactiveBindingProbe','shutdown','serialEvidence')
+                          return {k:x.get(k) for k in keys if k in x}
+                      print('EXECUTION_TOP '+json.dumps(pick(obj),sort_keys=True)[:12000],flush=True)
+                      print('EXECUTION_KEYS '+','.join(sorted(obj.keys())),flush=True)
+                      if isinstance(obj.get('guestBrowserProbe'),dict): print('BROWSER_PROBE '+json.dumps(obj['guestBrowserProbe'],sort_keys=True)[:3000],flush=True)
+              else: continue
+          candidates=[]
+          for p in root.rglob('*'):
+              if not p.is_file(): continue
+              if p.name in ('serial.log','fc-serial.log','firecracker.log') or 'browser-evidence' in str(p):
+                  try: size=p.stat().st_size
+                  except OSError: continue
+                  candidates.append((str(p),size))
+          for path,size in candidates[:80]: print(f'CANDIDATE path={path} size={size}',flush=True)
+          for path,size in candidates:
+              p=pathlib.Path(path)
+              if p.name=='serial.log' and size<2_000_000:
+                  data=p.read_bytes(); print(f'SERIAL sha256={hashlib.sha256(data).hexdigest()} size={len(data)}',flush=True)
+                  lines=data.decode('utf-8','replace').splitlines()
+                  hits=[(i,l) for i,l in enumerate(lines) if re.search(r'browser|receipt|frame|png|Traceback|Exception|4070',l,re.I)]
+                  for i,line in hits[-40:]: print(f'SERIAL_LINE {i} '+line[:500],flush=True)
+          '@
+          $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
+          $command = "import base64;exec(compile(base64.b64decode('$encoded'),'<f13-readonly-diagnosis>','exec'))"
+          & wsl.exe -d Ubuntu-26.04 -- python3 -B -u -c $command
+          if ($LASTEXITCODE -ne 0) { throw "f13_readonly_diag_exit_$LASTEXITCODE" }
