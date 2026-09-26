@@ -25,7 +25,7 @@ jobs:
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f11/pock-m8-f11-candidate-on-f10.patch?ref=worker/m8-f11-interactive-binding-20260924'; digest='f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b'; filename='f11.patch' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=worker/m8-f13-browser-protocol-20260924'; digest='8881a0822205ed218a33a9ed8bb3579993bc1fc25000568a92406adb78bc1bd9'; filename='f13.patch' },
             @{ api=('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock-m8-f14-on-f13.patch?ref=' + $privateRef); digest='4990402199536a0228364ee930c93a06b0b9e788e17372be2abdbc38c7fcab6e'; filename='f14.patch' },
-            @{ api=('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock_m8_f14_lenovo_execute.py?ref=' + $privateRef); digest='7d4c9b4de66fd4644ae555503086cdd90705f996178de3287c2e4e92c7106b4c'; filename='f14-runner.py' }
+            @{ api=('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock_m8_f14_lenovo_execute.py?ref=' + $privateRef); digest='722b7ca2f164ec673b470445992a2e506eacfff1e4652c88619ecb19ec5ceba6'; filename='f14-runner.py' }
           )
           $paths = @()
           try {
