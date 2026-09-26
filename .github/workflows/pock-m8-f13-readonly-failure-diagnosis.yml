@@ -1,4 +1,4 @@
-name: Pock M8 F13 read-only receipt verification
+name: Pock M8 F13 read-only artifact verification v2
 
 on:
   push:
@@ -13,203 +13,17 @@ jobs:
   verify:
     if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
-      - name: Verify persisted F13 result and raw evidence read-only on Lenovo
+      - name: Verify persisted F13 proof bytes and decoded guest evidence read-only on Lenovo
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
-          $probe = @'
-          import base64, hashlib, json, pathlib, re, struct, zlib, sys
-          run_id = "36195703803"
-          root = pathlib.Path("/root/pock-m8-ci-f13-" + run_id)
-          failures = []
-          check_total = 0
-          def check(name, ok, detail=""):
-              global check_total
-              check_total += 1
-              status = "PASS" if ok else "FAIL"
-              print("CHECK " + name + "=" + status + ((" " + str(detail)) if detail else ""), flush=True)
-              if not ok:
-                  failures.append(name)
-          def digest(data):
-              return hashlib.sha256(data).hexdigest()
-          def read_json(path, label):
-              try:
-                  raw = path.read_bytes()
-                  value = json.loads(raw)
-                  print("FILE " + label + " bytes=" + str(len(raw)) + " sha256=" + digest(raw), flush=True)
-                  return value
-              except Exception as exc:
-                  check(label + "_read", False, type(exc).__name__)
-                  return {}
-          def under_root(path):
-              try:
-                  real = path.resolve(strict=True)
-                  base = root.resolve(strict=True)
-                  return real == base or base in real.parents
-              except OSError:
-                  return False
-          def png_info(raw):
-              if not raw.startswith(b"\x89PNG\r\n\x1a\n"):
-                  raise ValueError("png_signature")
-              pos = 8
-              width = height = None
-              seen_idat = False
-              seen_end = False
-              chunks = 0
-              while pos < len(raw):
-                  if pos + 12 > len(raw):
-                      raise ValueError("png_truncated_chunk")
-                  length = struct.unpack(">I", raw[pos:pos+4])[0]
-                  kind = raw[pos+4:pos+8]
-                  end = pos + 12 + length
-                  if end > len(raw):
-                      raise ValueError("png_truncated_data")
-                  body = raw[pos+4:pos+8+length]
-                  expected = struct.unpack(">I", raw[pos+8+length:end])[0]
-                  if (zlib.crc32(body) & 0xffffffff) != expected:
-                      raise ValueError("png_crc")
-                  if chunks == 0 and kind != b"IHDR":
-                      raise ValueError("png_ihdr_order")
-                  if kind == b"IHDR":
-                      if width is not None or length != 13:
-                          raise ValueError("png_ihdr_invalid")
-                      width, height = struct.unpack(">II", raw[pos+8:pos+16])
-                  elif kind == b"IDAT":
-                      seen_idat = True
-                  elif kind == b"IEND":
-                      if length != 0 or end != len(raw):
-                          raise ValueError("png_iend_invalid")
-                      seen_end = True
-                  chunks += 1
-                  pos = end
-                  if seen_end:
-                      break
-              if width is None or height is None or width < 1 or height < 1 or width > 4096 or height > 2160:
-                  raise ValueError("png_dimensions")
-              if not seen_idat or not seen_end or pos != len(raw):
-                  raise ValueError("png_structure")
-              return width, height, chunks
-          check("run_root_present", root.is_dir(), str(root))
-          if not root.is_dir():
-              print("F13_READONLY_VERIFICATION=FAIL", flush=True)
-              raise SystemExit(2)
-          ci_path = root / "CI_F13_RESULT.json"
-          ex_path = root / "execution.json"
-          plan_path = root / "plan.json"
-          ci = read_json(ci_path, "CI_F13_RESULT.json")
-          ex = read_json(ex_path, "execution.json")
-          plan = read_json(plan_path, "plan.json")
-          check("run_id", str(ci.get("runId")) == run_id, ci.get("runId"))
-          check("result_path", ci.get("evidencePath") == str(ci_path), ci.get("evidencePath"))
-          check("top_level_truth", ci.get("truthStatus") == "PRINCIPAL_F13_GUEST_BROWSER_SOFTWARE_OBSERVED", ci.get("truthStatus"))
-          check("runner_truth_boundary", ci.get("runnerTruthStatus") == "PRINCIPAL_OBSERVED_PENDING_INDEPENDENT_REPRODUCTION", ci.get("runnerTruthStatus"))
-          check("runner_exit", ci.get("runnerExitCode") == 0 and ci.get("failureReason") is None, ci.get("runnerExitCode"))
-          check("patch_pin", ci.get("f13PatchSha256") == "8881a0822205ed218a33a9ed8bb3579993bc1fc25000568a92406adb78bc1bd9")
-          check("plan_hash_chain", ci.get("canonicalPlanHash") == plan.get("planHash") == ex.get("planHash"),
-                "ci=" + str(ci.get("canonicalPlanHash")) + " plan=" + str(plan.get("planHash")) + " exec=" + str(ex.get("planHash")))
-          ep = ex.get("executionProof") or {}
-          check("execution_proof_contract", ep.get("contract") == "HabitatMicroVMExecutionProof/v1", ep.get("contract"))
-          check("execution_proof_hash_chain", ep.get("proofHash") == ci.get("executionProofHash") and
-                ep.get("launchPlanHash") == plan.get("planHash"),
-                "proof=" + str(ep.get("proofHash")) + " launchPlan=" + str(ep.get("launchPlanHash")))
-          check("boot_hash_chain", ex.get("bootObservationHash") == ci.get("bootObservationHash") == ep.get("bootObservationHash"))
-          browser = ex.get("guestBrowserProbe") or {}
-          ci_browser = ci.get("guestBrowserProbe") or {}
-          binding = ex.get("interactiveBindingProbe") or {}
-          shutdown = ex.get("shutdown") or {}
-          check("browser_truth", browser.get("contract") == "GuestBrowserProbeVerification/v1" and
-                browser.get("truthStatus") == "REAL_GUEST_BROWSER_SOFTWARE_OBSERVED" and
-                ci_browser.get("truthStatus") == browser.get("truthStatus"))
-          check("guest_click_effect", browser.get("guestClaimedClickEffect") is True and
-                browser.get("guestLocalBrowserClickEffectObserved") is True)
-          check("browser_binary_fixture_pins", browser.get("browserBinarySha256") ==
-                "60c03e8882f4bb47459a905ede1074e1e746c5b765e437c288e460320540a8a3" and
-                browser.get("fixtureSha256") == "8bcf07dc165640fffebaf5dee0075459c8fed6dc748454de8f3f85867feb1e50")
-          check("binding_hash_chain", browser.get("bindingHash") == binding.get("bindingHash") == ci_browser.get("bindingHash"))
-          check("browser_execution_chain", browser.get("executionProofHash") == binding.get("executionProofHash") ==
-                ci.get("executionProofHash") and browser.get("bootObservationHash") == binding.get("bootObservationHash"))
-          peer = browser.get("vmmPeerIdentityHash")
-          check("peer_and_shutdown_chain", peer is not None and peer == binding.get("peerIdentityHash") ==
-                shutdown.get("vmmPeerIdentityHash") and shutdown.get("vmmExited") is True)
-          check("guest_channel_peercred", binding.get("realGuestChannel") is True and
-                browser.get("peerObservationMethod") == "SO_PEERCRED_AT_4070_ACCEPT")
-          check("shutdown_request", shutdown.get("request") == "SEND_CTRL_ALT_DEL_ACCEPTED", shutdown.get("request"))
-          serial_meta = ex.get("serialEvidence") or {}
-          ci_serial = ci.get("serialEvidence") or {}
-          serial_name = serial_meta.get("path")
-          serial_path = pathlib.Path(serial_name) if serial_name else root / "execution.json.serial.log"
-          check("serial_path_contained", under_root(serial_path), str(serial_path))
-          serial_data = serial_path.read_bytes() if under_root(serial_path) else b""
-          serial_hash = digest(serial_data)
-          kernel = b"Linux version 6.18.48+" in serial_data
-          init = (b"Run /sbin/init" in serial_data or b"systemd[1]: systemd " in serial_data)
-          panic = b"Kernel panic" in serial_data
-          check("serial_hash_chain", bool(serial_data) and serial_hash == serial_meta.get("sha256") == ci_serial.get("sha256") and
-                len(serial_data) == serial_meta.get("sizeBytes") == ci_serial.get("sizeBytes"),
-                "bytes=" + str(len(serial_data)) + " sha256=" + serial_hash)
-          check("serial_boot_markers", kernel and init and not panic and
-                serial_meta.get("kernelMarker") is True and serial_meta.get("initMarker") is True and serial_meta.get("panicMarker") is False,
-                "kernel=" + str(kernel) + " init=" + str(init) + " panic=" + str(panic))
-          artifacts_value = browser.get("artifactsPath") or ci_browser.get("artifactsPath")
-          artifacts = pathlib.Path(artifacts_value) if artifacts_value else root / "browser-evidence"
-          check("browser_artifact_path_contained", under_root(artifacts), str(artifacts))
-          ready_path = artifacts / "READY.json"
-          receipt_path = artifacts / "receipt.json"
-          before_path = artifacts / "before.png"
-          after_path = artifacts / "after.png"
-          ready = read_json(ready_path, "READY.json") if under_root(ready_path) else {}
-          receipt_raw = receipt_path.read_bytes() if under_root(receipt_path) else b""
-          receipt = json.loads(receipt_raw) if receipt_raw else {}
-          check("receipt_read", bool(receipt_raw), "bytes=" + str(len(receipt_raw)))
-          before = before_path.read_bytes() if under_root(before_path) else b""
-          after = after_path.read_bytes() if under_root(after_path) else b""
-          before_hash, after_hash, receipt_hash = digest(before), digest(after), digest(receipt_raw)
-          check("artifact_set_contract", ready.get("contract") == "GuestBrowserArtifactSet/v1")
-          check("frame_and_receipt_hash_chain",
-                ready.get("beforeFrameSha256") == before_hash == browser.get("beforeFrameSha256") == ci_browser.get("beforeFrameSha256") and
-                ready.get("afterFrameSha256") == after_hash == browser.get("afterFrameSha256") == ci_browser.get("afterFrameSha256") and
-                ready.get("receiptSha256") == receipt_hash == browser.get("receiptSha256") == ci_browser.get("receiptSha256"),
-                "before=" + before_hash + " after=" + after_hash + " receipt=" + receipt_hash)
-          png_ok = True
-          for label, raw in (("before", before), ("after", after)):
-              try:
-                  width, height, chunks = png_info(raw)
-                  print("PNG " + label + " sha256=" + digest(raw) + " dimensions=" + str(width) + "x" + str(height) + " chunks=" + str(chunks), flush=True)
-              except Exception as exc:
-                  png_ok = False
-                  print("PNG " + label + " FAIL " + type(exc).__name__ + ":" + str(exc), flush=True)
-          check("png_crc_dimensions", png_ok and bool(before) and bool(after))
-          try:
-              obs = receipt.get("observation") or {}
-              receipt_before = base64.b64decode(obs["before"]["pngBase64"], validate=True)
-              receipt_after = base64.b64decode(obs["after"]["pngBase64"], validate=True)
-              receipt_frames_match = receipt_before == before and receipt_after == after
-          except Exception as exc:
-              receipt_frames_match = False
-              print("RECEIPT_FRAME_DECODE_FAIL " + type(exc).__name__, flush=True)
-          check("receipt_embedded_frames_match", receipt_frames_match)
-          check("nonclaims_preserved", browser.get("humanTakeover") is False and
-                browser.get("independentObservation") is False and browser.get("hardwareAttestation") == "BLOCKED" and
-                binding.get("inputApplication") == "UNVERIFIED" and binding.get("screenProvenance") == "UNVERIFIED")
-          print("LIMIT hmac_recompute=UNAVAILABLE challenge_key_nonce_not_persisted", flush=True)
-          print("LIMIT human_takeover=" + str(browser.get("humanTakeover")) +
-                " input_application=" + str(binding.get("inputApplication")) +
-                " screen_provenance=" + str(binding.get("screenProvenance")) +
-                " hardware_attestation=" + str(browser.get("hardwareAttestation")) +
-                " independent_observation=" + str(browser.get("independentObservation")), flush=True)
-          print("SUMMARY " + json.dumps({"runId": run_id, "checksTotal": check_total,
-                "checksPassed": check_total-len(failures),
-                "failures": failures, "serialSha256": serial_hash, "beforePngSha256": before_hash,
-                "afterPngSha256": after_hash, "receiptSha256": receipt_hash}, sort_keys=True), flush=True)
-          if failures:
-              print("F13_READONLY_VERIFICATION=FAIL", flush=True)
-              raise SystemExit(2)
-          print("F13_READONLY_VERIFICATION=PASS", flush=True)
-          '@
-          $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
-          $command = "import base64;exec(compile(base64.b64decode('$encoded'),'<f13-readonly-verification>','exec'))"
+          $probePayload = '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'
+          $expectedProbeSha = '0fab1327bfcd632c5eeb11db5dd5b51f6e9baa43bb01952eb9a812fcd5ba7d57'
+          $contextJson = @{ workflowRunId = $env:GITHUB_RUN_ID; verifierCommitSha = $env:GITHUB_SHA } | ConvertTo-Json -Compress
+          $contextEncoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($contextJson))
+          $command = "import base64,gzip,hashlib,json,sys;raw=gzip.decompress(base64.b64decode('$probePayload'));actual=hashlib.sha256(raw).hexdigest();print('PROBE_SOURCE_SHA256='+actual,flush=True);assert actual=='$expectedProbeSha','probe_source_digest_mismatch';ctx=json.loads(base64.b64decode('$contextEncoded'));sys.argv=['f13-readonly-probe',json.dumps(ctx)];ns={'__name__':'__main__'};exec(compile(raw.decode('utf-8'),'<f13-readonly-verify-v2>','exec'),ns,ns)"
           & wsl.exe -d Ubuntu-26.04 -- python3 -B -u -c $command
           if ($LASTEXITCODE -ne 0) { throw "f13_readonly_verify_exit_$LASTEXITCODE" }
