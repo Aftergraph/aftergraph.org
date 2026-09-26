@@ -27,7 +27,7 @@ jobs:
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock-m8-f14-on-f13.patch?ref=895444aaa2ece005282910291c8974ecf74b345b'; filename='f14.patch' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock_m8_f14_lenovo_execute.py?ref=895444aaa2ece005282910291c8974ecf74b345b'; filename='f14-runner.py' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f15/pock-m8-f15-on-f14.patch?ref=f329759a20592c4dc2be063846b2c8f718e5db5b'; filename='f15.patch' },
-            @{ api='repos/Aftergraph/aftergraph.org/contents/frontiers/m8-f15/pock_m8_f15_ci_driver.py?ref=81e4b4e4646de5e6e77d535c6d3689f8f579de51'; filename='f15-driver.py' }
+            @{ api='repos/Aftergraph/aftergraph.org/contents/frontiers/m8-f15/pock_m8_f15_ci_driver.py?ref=fd18d09b03e0895c1f28c565b33160491180a1c5'; filename='f15-driver.py' }
           )
           $paths = @()
           try {
