@@ -25,7 +25,7 @@ jobs:
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f11/pock-m8-f11-candidate-on-f10.patch?ref=91011a8c224bf890ccc07015df8baa26fb02b634'; filename='f11.patch' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=09bd63ebb7de9ca9dbb1302e8b8d9c22b629c0fa'; filename='f13.patch' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock-m8-f14-on-f13.patch?ref=895444aaa2ece005282910291c8974ecf74b345b'; filename='f14.patch' },
-            @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f15/pock-m8-f15-on-f14.patch?ref=6e668d2de4802ef740d1fcf7e7c4424433502950'; filename='f15.patch' },
+            @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f15/pock-m8-f15-on-f14.patch?ref=bd95df0f4de8f1bea626d149ef1c73d6b0820e8a'; filename='f15.patch' },
             @{ api='repos/Aftergraph/aftergraph.org/contents/frontiers/m8-f15/pock_m8_f15_ci_driver.py?ref=8d97a4ad6e185db6466649f68c30174b9abd7ee9'; filename='f15-driver.py' }
           )
           $paths = @()
