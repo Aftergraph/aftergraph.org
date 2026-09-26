@@ -23,3 +23,7 @@ An independent read-only verifier checked the exact run head, branch, workflow p
 ## Scope
 
 This digest identifies the guest tree at the time of this run. It does not attest the tree's provenance, later immutability, bootability, or runtime input behavior. The raw manifest rows were not emitted, only their canonical aggregate digest. Use this value as an expected-value pin for the exact rootfs snapshot; any tree or recorded-metadata change must fail closed and require remeasurement.
+
+## Repeatability check
+
+A second successful run of the same read-only workflow (run `36227367590`, attempt 2, job `108365141574`) on `2026-09-26T07:47:04.6601439Z` produced the identical manifest SHA-256, entry count, and regular-file byte count. Independent verifier C8 confirmed both raw job logs, runner/machine identity, workflow commit and read-only scope. This is repeatability of the same measurement implementation, not a second algorithm.
