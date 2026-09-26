@@ -205,7 +205,7 @@ def main() -> int:
         pos = source_text.find(needle)
         if pos >= 0:
             print("F15_TRANSPORT_SOURCE " + str(candidate), flush=True)
-            for method_name in ("def submit_input", "def next_input_as_worker", "def acknowledge_input_as_worker"):
+            for method_name in ("def _normalize_input_event", "def submit_input", "def next_input_as_worker", "def ack_input_as_worker"):
                 method_pos = source_text.find(method_name)
                 if method_pos >= 0:
                     print("F15_TRANSPORT_METHOD " + method_name, flush=True)
