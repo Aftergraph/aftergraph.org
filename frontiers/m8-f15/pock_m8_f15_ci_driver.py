@@ -265,6 +265,19 @@ def main() -> int:
                 "--x", "80", "--y", "64"],
                cwd=project, env=env, timeout=900)
     emit("F15_HOST_RUN", host, 3200)
+    serial_path = Path(str(output) + ".serial.log")
+    if serial_path.is_file():
+        serial_text = serial_path.read_text(encoding="utf-8", errors="replace")
+        diagnostic_lines = [
+            line for line in serial_text.splitlines()
+            if any(token in line.lower() for token in (
+                "pock-m8-browser", "guest_browser", "traceback", "exception",
+                "error", "failed", "chrom", "4070"
+            ))
+        ]
+        print("F15_SERIAL_DIAGNOSTICS_BEGIN", flush=True)
+        print("\n".join(diagnostic_lines[-120:]), flush=True)
+        print("F15_SERIAL_DIAGNOSTICS_END", flush=True)
     if output.is_file():
         result = json.loads(output.read_text(encoding="utf-8"))
         print("F15_RESULT " + json.dumps({
