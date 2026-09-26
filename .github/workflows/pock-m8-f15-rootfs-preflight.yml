@@ -119,8 +119,18 @@ jobs:
           $scriptWin = Join-Path $env:RUNNER_TEMP ('pock-f15-rootfs-manifest-' + $env:GITHUB_RUN_ID + '.py')
           [IO.File]::WriteAllText($scriptWin, $scriptText, [Text.UTF8Encoding]::new($false))
           try {
-            $scriptWsl = (& wsl.exe -d Ubuntu-26.04 -- wslpath -a $scriptWin).Trim()
-            if ($LASTEXITCODE -ne 0 -or -not $scriptWsl) { throw 'wsl_script_path_conversion_failed' }
+            if ($scriptWin -notmatch '^([A-Za-z]):\\(.+)
+            Write-Output 'WSL_READ_ONLY_MANIFEST_START'
+            & wsl.exe -d Ubuntu-26.04 -- python3 -B $scriptWsl /root/pock-m8-f13-gueststage-36068890418/rootfs
+            if ($LASTEXITCODE -ne 0) { throw "guest_tree_manifest_exit_$LASTEXITCODE" }
+          } finally {
+            Remove-Item -LiteralPath $scriptWin -Force -ErrorAction SilentlyContinue
+          }
+) { throw 'runner_temp_not_drive_path' }
+            $drive = $Matches[1].ToLowerInvariant()
+            $tail = $Matches[2].Replace('\', '/')
+            $scriptWsl = "/mnt/$drive/$tail"
+            if (-not $scriptWsl.StartsWith('/mnt/')) { throw 'wsl_script_path_conversion_failed' }
             Write-Output 'WSL_READ_ONLY_MANIFEST_START'
             & wsl.exe -d Ubuntu-26.04 -- python3 -B $scriptWsl /root/pock-m8-f13-gueststage-36068890418/rootfs
             if ($LASTEXITCODE -ne 0) { throw "guest_tree_manifest_exit_$LASTEXITCODE" }
