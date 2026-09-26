@@ -41,6 +41,94 @@ def emit(label: str, proc: subprocess.CompletedProcess, tail: int = 1800) -> Non
         print(combined[-tail:], flush=True)
 
 
+def apply_context_patch(patch_path: Path, source: Path) -> None:
+    """Apply the staged context-only F15 delta deterministically.
+
+    The candidate file intentionally carries context hunks without numeric range
+    metadata. We therefore apply each hunk by exact old-sequence matching. A
+    hunk must match exactly once; otherwise the gate fails closed.
+    """
+    raw = patch_path.read_text(encoding="utf-8").splitlines()
+    i = 0
+    files = 0
+    hunks = 0
+    while i < len(raw):
+        if not raw[i].startswith("diff --git a/"):
+            i += 1
+            continue
+        header = raw[i].split()
+        if len(header) != 4 or not header[2].startswith("a/") or not header[3].startswith("b/"):
+            raise RuntimeError("f15_patch_file_header_invalid")
+        rel = header[3][2:]
+        target = source / rel
+        i += 1
+        new_file = False
+        while i < len(raw) and not raw[i].startswith("@@") and not raw[i].startswith("diff --git a/"):
+            if raw[i] == "--- /dev/null":
+                new_file = True
+            i += 1
+        file_hunks = []
+        while i < len(raw) and not raw[i].startswith("diff --git a/"):
+            if not raw[i].startswith("@@"):
+                i += 1
+                continue
+            i += 1
+            body = []
+            while i < len(raw) and not raw[i].startswith("@@") and not raw[i].startswith("diff --git a/"):
+                if raw[i] != "\\ No newline at end of file":
+                    body.append(raw[i])
+                i += 1
+            file_hunks.append(body)
+        if not file_hunks:
+            raise RuntimeError("f15_patch_file_without_hunks:" + rel)
+        if new_file:
+            if target.exists() or target.is_symlink():
+                raise RuntimeError("f15_patch_new_file_exists:" + rel)
+            produced = []
+            for body in file_hunks:
+                for line in body:
+                    if line.startswith("+"):
+                        produced.append(line[1:])
+                    elif line.startswith(" "):
+                        produced.append(line[1:])
+                    elif line.startswith("-"):
+                        raise RuntimeError("f15_patch_new_file_deletion_invalid:" + rel)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("\n".join(produced) + "\n", encoding="utf-8", newline="\n")
+            files += 1
+            hunks += len(file_hunks)
+            continue
+        if not target.is_file() or target.is_symlink():
+            raise RuntimeError("f15_patch_target_missing:" + rel)
+        text_value = target.read_text(encoding="utf-8")
+        for body in file_hunks:
+            old_lines = [line[1:] for line in body if line.startswith((" ", "-"))]
+            new_lines = [line[1:] for line in body if line.startswith((" ", "+"))]
+            old = "\n".join(old_lines)
+            new = "\n".join(new_lines)
+            if old_lines:
+                candidates = []
+                start = 0
+                while True:
+                    idx = text_value.find(old, start)
+                    if idx < 0:
+                        break
+                    candidates.append(idx)
+                    start = idx + 1
+                if len(candidates) != 1:
+                    raise RuntimeError(
+                        "f15_patch_context_match_count:" + rel + ":" + str(len(candidates))
+                    )
+                idx = candidates[0]
+                text_value = text_value[:idx] + new + text_value[idx + len(old):]
+            elif new_lines:
+                raise RuntimeError("f15_patch_insertion_without_context:" + rel)
+            hunks += 1
+        target.write_text(text_value, encoding="utf-8", newline="\n")
+        files += 1
+    print(f"F15_CONTEXT_PATCH_APPLIED files={files} hunks={hunks}", flush=True)
+
+
 def main() -> int:
     if len(sys.argv) != 3:
         raise SystemExit("usage: pock_m8_f15_ci_driver.py RUN_ID F15_PATCH")
@@ -62,14 +150,11 @@ def main() -> int:
         ),
     )
 
-    check = run(["git", "apply", "--check", str(patch)], cwd=source, env=env, timeout=30)
-    emit("F15_PATCH_CHECK", check, 1200)
-    if check.returncode:
+    try:
+        apply_context_patch(patch, source)
+    except Exception as exc:
+        print("F15_CONTEXT_PATCH_FAILED " + type(exc).__name__ + ":" + str(exc), flush=True)
         return 10
-    applied = run(["git", "apply", str(patch)], cwd=source, env=env, timeout=30)
-    emit("F15_PATCH_APPLY", applied, 1200)
-    if applied.returncode:
-        return 11
 
     tests = [
         project / "tests/unit/test_v23_f15_pointer_input.py",
