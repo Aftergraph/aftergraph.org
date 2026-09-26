@@ -25,9 +25,8 @@ jobs:
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f11/pock-m8-f11-candidate-on-f10.patch?ref=91011a8c224bf890ccc07015df8baa26fb02b634'; filename='f11.patch' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=09bd63ebb7de9ca9dbb1302e8b8d9c22b629c0fa'; filename='f13.patch' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock-m8-f14-on-f13.patch?ref=895444aaa2ece005282910291c8974ecf74b345b'; filename='f14.patch' },
-            @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock_m8_f14_lenovo_execute.py?ref=895444aaa2ece005282910291c8974ecf74b345b'; filename='f14-runner.py' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f15/pock-m8-f15-on-f14.patch?ref=f329759a20592c4dc2be063846b2c8f718e5db5b'; filename='f15.patch' },
-            @{ api='repos/Aftergraph/aftergraph.org/contents/frontiers/m8-f15/pock_m8_f15_ci_driver.py?ref=fd18d09b03e0895c1f28c565b33160491180a1c5'; filename='f15-driver.py' }
+            @{ api='repos/Aftergraph/aftergraph.org/contents/frontiers/m8-f15/pock_m8_f15_ci_driver.py?ref=8de71c25c1b05921c9ea4129b7c51a30850a0640'; filename='f15-driver.py' }
           )
           $paths = @()
           try {
@@ -50,15 +49,9 @@ jobs:
             })
             $guestTree = '/root/pock-m8-f13-gueststage-36068890418/rootfs'
 
-            $baselineId = $env:GITHUB_RUN_ID + '1'
-            Write-Output ('F14_SOURCE_RECONSTRUCT_START id=' + $baselineId)
-            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[3] $baselineId $linux[0] $linux[1] $linux[2] $guestTree
-            $f14Exit = $LASTEXITCODE
-            Write-Output ('F14_SOURCE_RECONSTRUCT_RUN_EXIT id=' + $baselineId + ' exit=' + $f14Exit)
-            Write-Output 'F14 runtime truth is diagnostic here; F15 independently executes the candidate.'
-
-            Write-Output ('F15_APPLY_TEST_BUILD_EXECUTE_START id=' + $baselineId)
-            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[5] $baselineId $linux[4]
+            $executionId = $env:GITHUB_RUN_ID + '1'
+            Write-Output ('F15_RECONSTRUCT_APPLY_TEST_BUILD_EXECUTE_START id=' + $executionId)
+            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[4] $executionId $linux[0] $linux[1] $linux[2] $linux[3]
             if ($LASTEXITCODE -ne 0) { throw "f15_driver_exit_$LASTEXITCODE" }
             Write-Output 'F15_GATE_PASS'
           } finally {
