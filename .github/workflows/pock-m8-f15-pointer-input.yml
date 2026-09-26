@@ -46,7 +46,7 @@ jobs:
 
             $linux = @($paths | ForEach-Object {
               if ($_ -notmatch '^([A-Za-z]):\\(.+)$') { throw 'runner_temp_windows_path_invalid' }
-              '/mnt/' + $Matches[1].ToLowerInvariant() + '/' + $Matches[2].Replace('\\', '/')
+              '/mnt/' + $Matches[1].ToLowerInvariant() + '/' + $Matches[2].Replace('\', '/')
             })
             $guestTree = '/root/pock-m8-f13-gueststage-36068890418/rootfs'
 
