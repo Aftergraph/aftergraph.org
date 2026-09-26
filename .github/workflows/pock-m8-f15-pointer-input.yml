@@ -50,12 +50,22 @@ jobs:
             })
             $guestTree = '/root/pock-m8-f13-gueststage-36068890418/rootfs'
 
-            Write-Output 'F14_BASELINE_RECONSTRUCT_AND_EXECUTE_START'
-            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[3] $env:GITHUB_RUN_ID $linux[0] $linux[1] $linux[2] $guestTree
-            if ($LASTEXITCODE -ne 0) { throw "f14_baseline_exit_$LASTEXITCODE" }
+            $baselineId = $null
+            foreach ($suffix in @('1', '2')) {
+              $candidateId = $env:GITHUB_RUN_ID + $suffix
+              Write-Output ('F14_BASELINE_RECONSTRUCT_AND_EXECUTE_START id=' + $candidateId)
+              & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[3] $candidateId $linux[0] $linux[1] $linux[2] $guestTree
+              if ($LASTEXITCODE -eq 0) {
+                $baselineId = $candidateId
+                Write-Output ('F14_BASELINE_PASS id=' + $baselineId)
+                break
+              }
+              Write-Output ('F14_BASELINE_RETRY id=' + $candidateId + ' exit=' + $LASTEXITCODE)
+            }
+            if (-not $baselineId) { throw 'f14_baseline_exhausted' }
 
-            Write-Output 'F15_APPLY_TEST_BUILD_EXECUTE_START'
-            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[5] $env:GITHUB_RUN_ID $linux[4]
+            Write-Output ('F15_APPLY_TEST_BUILD_EXECUTE_START id=' + $baselineId)
+            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[5] $baselineId $linux[4]
             if ($LASTEXITCODE -ne 0) { throw "f15_driver_exit_$LASTEXITCODE" }
             Write-Output 'F15_GATE_PASS'
           } finally {
