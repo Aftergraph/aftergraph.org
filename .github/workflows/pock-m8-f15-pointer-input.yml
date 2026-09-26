@@ -26,7 +26,8 @@ jobs:
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=09bd63ebb7de9ca9dbb1302e8b8d9c22b629c0fa'; filename='f13.patch' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock-m8-f14-on-f13.patch?ref=895444aaa2ece005282910291c8974ecf74b345b'; filename='f14.patch' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock_m8_f14_lenovo_execute.py?ref=895444aaa2ece005282910291c8974ecf74b345b'; filename='f14-runner.py' },
-            @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f15/pock-m8-f15-on-f14.patch?ref=f329759a20592c4dc2be063846b2c8f718e5db5b'; filename='f15.patch' }
+            @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f15/pock-m8-f15-on-f14.patch?ref=f329759a20592c4dc2be063846b2c8f718e5db5b'; filename='f15.patch' },
+            @{ api='repos/Aftergraph/aftergraph.org/contents/frontiers/m8-f15/pock_m8_f15_ci_driver.py?ref=81e4b4e4646de5e6e77d535c6d3689f8f579de51'; filename='f15-driver.py' }
           )
           $paths = @()
           try {
@@ -53,116 +54,12 @@ jobs:
             & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[3] $env:GITHUB_RUN_ID $linux[0] $linux[1] $linux[2] $guestTree
             if ($LASTEXITCODE -ne 0) { throw "f14_baseline_exit_$LASTEXITCODE" }
 
-            $scriptText = @'
-            #!/usr/bin/env python3
-            from pathlib import Path
-            import hashlib, json, os, subprocess, sys
-
-            run_id, f15_patch = sys.argv[1:3]
-            root = Path("/root/pock-m8-ci-f14-" + run_id)
-            source = root / "source"
-            project = source / "project"
-            patch = Path(f15_patch)
-            if not project.is_dir() or not patch.is_file():
-                raise SystemExit("f15_source_or_patch_missing")
-
-            env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1",
-                       PYTHONPATH=os.pathsep.join((str(project), str(project / "tests" / "unit"),
-                                                  "/root/pock-m8-gate", "/root/pock-m8-gate/pylibs")))
-            def call(cmd, timeout):
-                return subprocess.run(cmd, cwd=source, env=env, stdin=subprocess.DEVNULL,
-                                      capture_output=True, text=True, timeout=timeout, check=False)
-
-            check = call(["git", "apply", "--check", str(patch)], 30)
-            print("F15_PATCH_CHECK", check.returncode, check.stderr[-800:])
-            if check.returncode:
-                raise SystemExit("f15_patch_check_failed")
-            applied = call(["git", "apply", str(patch)], 30)
-            if applied.returncode:
-                print(applied.stderr[-1200:])
-                raise SystemExit("f15_patch_apply_failed")
-
-            tests = [
-                project / "tests/unit/test_v23_f15_pointer_input.py",
-                project / "tests/unit/test_v23_f14_guest_takeover_bridge.py",
-                project / "tests/unit/test_v23_f13_guest_browser.py",
-                project / "tests/unit/test_v23_f12_guest_effect_truth.py",
-            ]
-            for test in tests:
-                p = subprocess.run([sys.executable, "-B", str(test)], env=env,
-                                   stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=180)
-                print("F15_TEST", test.name, "rc=" + str(p.returncode))
-                print((p.stdout + "\n" + p.stderr)[-1600:])
-                if p.returncode:
-                    raise SystemExit("f15_test_failed:" + test.name)
-
-            compile = subprocess.run([sys.executable, "-B", "-m", "compileall", "-q",
-                                      str(project / "firecracker_guest_takeover_v23.py"),
-                                      str(project / "guest_browser_probe_v23.py"),
-                                      str(project / "firecracker_guest_browser_v23.py"),
-                                      str(project / "scripts/pock_m8_f15_host_run.py")],
-                                     env=env, capture_output=True, text=True, timeout=120)
-            if compile.returncode:
-                print(compile.stderr[-1200:])
-                raise SystemExit("f15_compile_failed")
-
-            outdir = Path("/root/pock-m8-ci-f15-" + run_id)
-            outdir.mkdir(mode=0o700)
-            guest = outdir / "guest-f15.ext4"
-            build = subprocess.run([
-                sys.executable, "-B", str(project / "scripts/build_pock_guest_browser_image.py"),
-                "--rootfs-tree", "/root/pock-m8-f13-gueststage-36068890418/rootfs",
-                "--output", str(guest), "--size-mib", "2048",
-                "--agent", str(project / "guest_workload_agent_v23.py"),
-                "--interactive-source", str(project),
-                "--browser-agent", str(project / "guest_browser_probe_v23.py"),
-                "--browser-sha256", "60c03e8882f4bb47459a905ede1074e1e746c5b765e437c288e460320540a8a3"
-            ], env=env, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=900)
-            print("F15_IMAGE_BUILD rc=" + str(build.returncode))
-            print((build.stdout + "\n" + build.stderr)[-1800:])
-            if build.returncode:
-                raise SystemExit("f15_image_build_failed")
-
-            fsck = subprocess.run(["e2fsck", "-fn", str(guest)], capture_output=True, text=True, timeout=180)
-            print("F15_E2FSCK rc=" + str(fsck.returncode))
-            if fsck.returncode:
-                print((fsck.stdout + "\n" + fsck.stderr)[-1200:])
-                raise SystemExit("f15_e2fsck_failed")
-
-            output = outdir / "f15-result.json"
-            run = subprocess.run([
-                sys.executable, "-B", str(project / "scripts/pock_m8_f15_host_run.py"),
-                "--run-id", run_id,
-                "--kernel", "/root/pock-m8-boot/vmlinux-6.18.48",
-                "--rootfs", str(guest),
-                "--firecracker", "/root/pock-m8-gate/bin/firecracker",
-                "--jailer", "/root/pock-m8-gate/bin/jailer",
-                "--jail-base", str(outdir / "jails"),
-                "--output", str(output), "--x", "80", "--y", "64"
-            ], env=env, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=900)
-            print("F15_HOST_RUN rc=" + str(run.returncode))
-            print((run.stdout + "\n" + run.stderr)[-2400:])
-            if output.is_file():
-                result = json.loads(output.read_text())
-                print("F15_RESULT", json.dumps({
-                    "truthStatus": result.get("truthStatus"),
-                    "pointer": result.get("pointer"),
-                    "guestBrowser": result.get("guestBrowser"),
-                    "failure": result.get("failure"),
-                }, sort_keys=True))
-            if run.returncode:
-                raise SystemExit("f15_host_run_failed")
-            '@
-            $scriptWin = Join-Path $env:RUNNER_TEMP ('pock-f15-driver-' + $env:GITHUB_RUN_ID + '.py')
-            [IO.File]::WriteAllText($scriptWin, $scriptText, [Text.UTF8Encoding]::new($false))
-            if ($scriptWin -notmatch '^([A-Za-z]):\\(.+)$') { throw 'f15_driver_windows_path_invalid' }
-            $scriptWsl = '/mnt/' + $Matches[1].ToLowerInvariant() + '/' + $Matches[2].Replace('\\', '/')
-
             Write-Output 'F15_APPLY_TEST_BUILD_EXECUTE_START'
-            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $scriptWsl $env:GITHUB_RUN_ID $linux[4]
+            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[5] $env:GITHUB_RUN_ID $linux[4]
             if ($LASTEXITCODE -ne 0) { throw "f15_driver_exit_$LASTEXITCODE" }
             Write-Output 'F15_GATE_PASS'
           } finally {
-            foreach ($path in $paths) { Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue }
-            if ($scriptWin) { Remove-Item -LiteralPath $scriptWin -Force -ErrorAction SilentlyContinue }
+            foreach ($path in $paths) {
+              Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue
+            }
           }
