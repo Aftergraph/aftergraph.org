@@ -25,7 +25,10 @@ jobs:
           run_id = "36195703803"
           root = pathlib.Path("/root/pock-m8-ci-f13-" + run_id)
           failures = []
+          check_total = 0
           def check(name, ok, detail=""):
+              global check_total
+              check_total += 1
               status = "PASS" if ok else "FAIL"
               print("CHECK " + name + "=" + status + ((" " + str(detail)) if detail else ""), flush=True)
               if not ok:
@@ -120,12 +123,19 @@ jobs:
           check("browser_truth", browser.get("contract") == "GuestBrowserProbeVerification/v1" and
                 browser.get("truthStatus") == "REAL_GUEST_BROWSER_SOFTWARE_OBSERVED" and
                 ci_browser.get("truthStatus") == browser.get("truthStatus"))
+          check("guest_click_effect", browser.get("guestClaimedClickEffect") is True and
+                browser.get("guestLocalBrowserClickEffectObserved") is True)
+          check("browser_binary_fixture_pins", browser.get("browserBinarySha256") ==
+                "60c03e8882f4bb47459a905ede1074e1e746c5b765e437c288e460320540a8a3" and
+                browser.get("fixtureSha256") == "8bcf07dc165640fffebaf5dee0075459c8fed6dc748454de8f3f85867feb1e50")
           check("binding_hash_chain", browser.get("bindingHash") == binding.get("bindingHash") == ci_browser.get("bindingHash"))
           check("browser_execution_chain", browser.get("executionProofHash") == binding.get("executionProofHash") ==
                 ci.get("executionProofHash") and browser.get("bootObservationHash") == binding.get("bootObservationHash"))
           peer = browser.get("vmmPeerIdentityHash")
           check("peer_and_shutdown_chain", peer is not None and peer == binding.get("peerIdentityHash") ==
                 shutdown.get("vmmPeerIdentityHash") and shutdown.get("vmmExited") is True)
+          check("guest_channel_peercred", binding.get("realGuestChannel") is True and
+                browser.get("peerObservationMethod") == "SO_PEERCRED_AT_4070_ACCEPT")
           check("shutdown_request", shutdown.get("request") == "SEND_CTRL_ALT_DEL_ACCEPTED", shutdown.get("request"))
           serial_meta = ex.get("serialEvidence") or {}
           ci_serial = ci.get("serialEvidence") or {}
@@ -181,13 +191,17 @@ jobs:
               receipt_frames_match = False
               print("RECEIPT_FRAME_DECODE_FAIL " + type(exc).__name__, flush=True)
           check("receipt_embedded_frames_match", receipt_frames_match)
+          check("nonclaims_preserved", browser.get("humanTakeover") is False and
+                browser.get("independentObservation") is False and browser.get("hardwareAttestation") == "BLOCKED" and
+                binding.get("inputApplication") == "UNVERIFIED" and binding.get("screenProvenance") == "UNVERIFIED")
           print("LIMIT hmac_recompute=UNAVAILABLE challenge_key_nonce_not_persisted", flush=True)
           print("LIMIT human_takeover=" + str(browser.get("humanTakeover")) +
                 " input_application=" + str(binding.get("inputApplication")) +
                 " screen_provenance=" + str(binding.get("screenProvenance")) +
                 " hardware_attestation=" + str(browser.get("hardwareAttestation")) +
                 " independent_observation=" + str(browser.get("independentObservation")), flush=True)
-          print("SUMMARY " + json.dumps({"runId": run_id, "checks": 24-len(failures),
+          print("SUMMARY " + json.dumps({"runId": run_id, "checksTotal": check_total,
+                "checksPassed": check_total-len(failures),
                 "failures": failures, "serialSha256": serial_hash, "beforePngSha256": before_hash,
                 "afterPngSha256": after_hash, "receiptSha256": receipt_hash}, sort_keys=True), flush=True)
           if failures:
