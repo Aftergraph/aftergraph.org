@@ -1,4 +1,4 @@
-name: Pock M8 F13 read-only receipt failure diagnosis
+name: Pock M8 F13 read-only receipt verification
 
 on:
   push:
@@ -10,60 +10,192 @@ on:
 permissions: {}
 
 jobs:
-  diagnose:
+  verify:
     if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
     runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
     timeout-minutes: 5
     steps:
-      - name: Read only F13 result and serial evidence from Lenovo
+      - name: Verify persisted F13 result and raw evidence read-only on Lenovo
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
           $probe = @'
-          import hashlib, json, pathlib, re, subprocess, sys
-          root=pathlib.Path('/root/pock-m8-ci-f13-36195322465')
-          print('F13_DIAG_ROOT_EXISTS='+str(root.is_dir()),flush=True)
-          for name in ('CI_F13_RESULT.json','execution.json','plan.json'):
-              p=root/name
-              print(f'FILE {name} exists={p.is_file()} size={p.stat().st_size if p.is_file() else 0}',flush=True)
-              if p.is_file() and p.stat().st_size<2_000_000:
-                  obj=json.loads(p.read_text())
-                  if name=='CI_F13_RESULT.json':
-                      print('CI_RESULT '+json.dumps(obj,sort_keys=True),flush=True)
-                  elif name=='execution.json':
-                      def pick(x):
-                          keys=('contract','truthStatus','failureReason','bootObservationHash','bootProofHash','proofHash','imageDigest','vmId','guestBrowserProbe','executionProof','interactiveBindingProbe','shutdown','serialEvidence')
-                          return {k:x.get(k) for k in keys if k in x}
-                      print('EXECUTION_TOP '+json.dumps(pick(obj),sort_keys=True)[:12000],flush=True)
-                      print('EXECUTION_KEYS '+','.join(sorted(obj.keys())),flush=True)
-                      if isinstance(obj.get('guestBrowserProbe'),dict): print('BROWSER_PROBE '+json.dumps(obj['guestBrowserProbe'],sort_keys=True)[:3000],flush=True)
-              else: continue
-          candidates=[]
-          for pattern in ('jails/firecracker/*/root/var/log/journal','jails/firecracker/*/root/run/log/journal'):
-              for directory in root.glob(pattern):
-                  print('JOURNAL_DIR '+str(directory)+' exists='+str(directory.is_dir()),flush=True)
-                  if directory.is_dir():
-                      try:
-                          q=subprocess.run(['journalctl','--directory='+str(directory),'-u','pock-m8-browser.service','--no-pager','-o','cat','-n','100'],capture_output=True,text=True,timeout=15)
-                          print('BROWSER_JOURNAL rc='+str(q.returncode)+'\n'+q.stdout[-12000:]+'\n'+q.stderr[-1000:],flush=True)
-                      except Exception as exc: print('JOURNAL_READ_ERROR '+type(exc).__name__,flush=True)
-          for p in root.rglob('*'):
-              if not p.is_file(): continue
-              if p.name in ('serial.log','fc-serial.log','firecracker.log') or p.name.endswith('.serial.log') or 'browser-evidence' in str(p):
-                  try: size=p.stat().st_size
-                  except OSError: continue
-                  candidates.append((str(p),size))
-          for path,size in candidates[:80]: print(f'CANDIDATE path={path} size={size}',flush=True)
-          for path,size in candidates:
-              p=pathlib.Path(path)
-              if (p.name=='serial.log' or p.name.endswith('.serial.log')) and size<2_000_000:
-                  data=p.read_bytes(); print(f'SERIAL sha256={hashlib.sha256(data).hexdigest()} size={len(data)}',flush=True)
-                  lines=data.decode('utf-8','replace').splitlines()
-                  hits=[(i,l) for i,l in enumerate(lines) if re.search(r'browser|receipt|frame|png|Traceback|Exception|4070|pock-m8-(workload|interactive)|Main process exited|Failed with result',l,re.I)]
-                  for i,line in hits[-40:]: print(f'SERIAL_LINE {i} '+line[:1200],flush=True)
+          import base64, hashlib, json, pathlib, re, struct, zlib, sys
+          run_id = "36195703803"
+          root = pathlib.Path("/root/pock-m8-ci-f13-" + run_id)
+          failures = []
+          def check(name, ok, detail=""):
+              status = "PASS" if ok else "FAIL"
+              print("CHECK " + name + "=" + status + ((" " + str(detail)) if detail else ""), flush=True)
+              if not ok:
+                  failures.append(name)
+          def digest(data):
+              return hashlib.sha256(data).hexdigest()
+          def read_json(path, label):
+              try:
+                  raw = path.read_bytes()
+                  value = json.loads(raw)
+                  print("FILE " + label + " bytes=" + str(len(raw)) + " sha256=" + digest(raw), flush=True)
+                  return value
+              except Exception as exc:
+                  check(label + "_read", False, type(exc).__name__)
+                  return {}
+          def under_root(path):
+              try:
+                  real = path.resolve(strict=True)
+                  base = root.resolve(strict=True)
+                  return real == base or base in real.parents
+              except OSError:
+                  return False
+          def png_info(raw):
+              if not raw.startswith(b"\x89PNG\r\n\x1a\n"):
+                  raise ValueError("png_signature")
+              pos = 8
+              width = height = None
+              seen_idat = False
+              seen_end = False
+              chunks = 0
+              while pos < len(raw):
+                  if pos + 12 > len(raw):
+                      raise ValueError("png_truncated_chunk")
+                  length = struct.unpack(">I", raw[pos:pos+4])[0]
+                  kind = raw[pos+4:pos+8]
+                  end = pos + 12 + length
+                  if end > len(raw):
+                      raise ValueError("png_truncated_data")
+                  body = raw[pos+4:pos+8+length]
+                  expected = struct.unpack(">I", raw[pos+8+length:end])[0]
+                  if (zlib.crc32(body) & 0xffffffff) != expected:
+                      raise ValueError("png_crc")
+                  if chunks == 0 and kind != b"IHDR":
+                      raise ValueError("png_ihdr_order")
+                  if kind == b"IHDR":
+                      if width is not None or length != 13:
+                          raise ValueError("png_ihdr_invalid")
+                      width, height = struct.unpack(">II", raw[pos+8:pos+16])
+                  elif kind == b"IDAT":
+                      seen_idat = True
+                  elif kind == b"IEND":
+                      if length != 0 or end != len(raw):
+                          raise ValueError("png_iend_invalid")
+                      seen_end = True
+                  chunks += 1
+                  pos = end
+                  if seen_end:
+                      break
+              if width is None or height is None or width < 1 or height < 1 or width > 4096 or height > 2160:
+                  raise ValueError("png_dimensions")
+              if not seen_idat or not seen_end or pos != len(raw):
+                  raise ValueError("png_structure")
+              return width, height, chunks
+          check("run_root_present", root.is_dir(), str(root))
+          if not root.is_dir():
+              print("F13_READONLY_VERIFICATION=FAIL", flush=True)
+              raise SystemExit(2)
+          ci_path = root / "CI_F13_RESULT.json"
+          ex_path = root / "execution.json"
+          plan_path = root / "plan.json"
+          ci = read_json(ci_path, "CI_F13_RESULT.json")
+          ex = read_json(ex_path, "execution.json")
+          plan = read_json(plan_path, "plan.json")
+          check("run_id", str(ci.get("runId")) == run_id, ci.get("runId"))
+          check("result_path", ci.get("evidencePath") == str(ci_path), ci.get("evidencePath"))
+          check("top_level_truth", ci.get("truthStatus") == "PRINCIPAL_F13_GUEST_BROWSER_SOFTWARE_OBSERVED", ci.get("truthStatus"))
+          check("runner_truth_boundary", ci.get("runnerTruthStatus") == "PRINCIPAL_OBSERVED_PENDING_INDEPENDENT_REPRODUCTION", ci.get("runnerTruthStatus"))
+          check("runner_exit", ci.get("runnerExitCode") == 0 and ci.get("failureReason") is None, ci.get("runnerExitCode"))
+          check("patch_pin", ci.get("f13PatchSha256") == "8881a0822205ed218a33a9ed8bb3579993bc1fc25000568a92406adb78bc1bd9")
+          check("plan_hash_chain", ci.get("canonicalPlanHash") == plan.get("planHash") == ex.get("planHash"),
+                "ci=" + str(ci.get("canonicalPlanHash")) + " plan=" + str(plan.get("planHash")) + " exec=" + str(ex.get("planHash")))
+          ep = ex.get("executionProof") or {}
+          check("execution_proof_contract", ep.get("contract") == "HabitatMicroVMExecutionProof/v1", ep.get("contract"))
+          check("execution_proof_hash_chain", ep.get("proofHash") == ci.get("executionProofHash") and
+                ep.get("launchPlanHash") == plan.get("planHash"),
+                "proof=" + str(ep.get("proofHash")) + " launchPlan=" + str(ep.get("launchPlanHash")))
+          check("boot_hash_chain", ex.get("bootObservationHash") == ci.get("bootObservationHash") == ep.get("bootObservationHash"))
+          browser = ex.get("guestBrowserProbe") or {}
+          ci_browser = ci.get("guestBrowserProbe") or {}
+          binding = ex.get("interactiveBindingProbe") or {}
+          shutdown = ex.get("shutdown") or {}
+          check("browser_truth", browser.get("contract") == "GuestBrowserProbeVerification/v1" and
+                browser.get("truthStatus") == "REAL_GUEST_BROWSER_SOFTWARE_OBSERVED" and
+                ci_browser.get("truthStatus") == browser.get("truthStatus"))
+          check("binding_hash_chain", browser.get("bindingHash") == binding.get("bindingHash") == ci_browser.get("bindingHash"))
+          check("browser_execution_chain", browser.get("executionProofHash") == binding.get("executionProofHash") ==
+                ci.get("executionProofHash") and browser.get("bootObservationHash") == binding.get("bootObservationHash"))
+          peer = browser.get("vmmPeerIdentityHash")
+          check("peer_and_shutdown_chain", peer is not None and peer == binding.get("peerIdentityHash") ==
+                shutdown.get("vmmPeerIdentityHash") and shutdown.get("vmmExited") is True)
+          check("shutdown_request", shutdown.get("request") == "SEND_CTRL_ALT_DEL_ACCEPTED", shutdown.get("request"))
+          serial_meta = ex.get("serialEvidence") or {}
+          ci_serial = ci.get("serialEvidence") or {}
+          serial_name = serial_meta.get("path")
+          serial_path = pathlib.Path(serial_name) if serial_name else root / "execution.json.serial.log"
+          check("serial_path_contained", under_root(serial_path), str(serial_path))
+          serial_data = serial_path.read_bytes() if under_root(serial_path) else b""
+          serial_hash = digest(serial_data)
+          kernel = b"Linux version 6.18.48+" in serial_data
+          init = (b"Run /sbin/init" in serial_data or b"systemd[1]: systemd " in serial_data)
+          panic = b"Kernel panic" in serial_data
+          check("serial_hash_chain", bool(serial_data) and serial_hash == serial_meta.get("sha256") == ci_serial.get("sha256") and
+                len(serial_data) == serial_meta.get("sizeBytes") == ci_serial.get("sizeBytes"),
+                "bytes=" + str(len(serial_data)) + " sha256=" + serial_hash)
+          check("serial_boot_markers", kernel and init and not panic and
+                serial_meta.get("kernelMarker") is True and serial_meta.get("initMarker") is True and serial_meta.get("panicMarker") is False,
+                "kernel=" + str(kernel) + " init=" + str(init) + " panic=" + str(panic))
+          artifacts_value = browser.get("artifactsPath") or ci_browser.get("artifactsPath")
+          artifacts = pathlib.Path(artifacts_value) if artifacts_value else root / "browser-evidence"
+          check("browser_artifact_path_contained", under_root(artifacts), str(artifacts))
+          ready_path = artifacts / "READY.json"
+          receipt_path = artifacts / "receipt.json"
+          before_path = artifacts / "before.png"
+          after_path = artifacts / "after.png"
+          ready = read_json(ready_path, "READY.json") if under_root(ready_path) else {}
+          receipt_raw = receipt_path.read_bytes() if under_root(receipt_path) else b""
+          receipt = json.loads(receipt_raw) if receipt_raw else {}
+          check("receipt_read", bool(receipt_raw), "bytes=" + str(len(receipt_raw)))
+          before = before_path.read_bytes() if under_root(before_path) else b""
+          after = after_path.read_bytes() if under_root(after_path) else b""
+          before_hash, after_hash, receipt_hash = digest(before), digest(after), digest(receipt_raw)
+          check("artifact_set_contract", ready.get("contract") == "GuestBrowserArtifactSet/v1")
+          check("frame_and_receipt_hash_chain",
+                ready.get("beforeFrameSha256") == before_hash == browser.get("beforeFrameSha256") == ci_browser.get("beforeFrameSha256") and
+                ready.get("afterFrameSha256") == after_hash == browser.get("afterFrameSha256") == ci_browser.get("afterFrameSha256") and
+                ready.get("receiptSha256") == receipt_hash == browser.get("receiptSha256") == ci_browser.get("receiptSha256"),
+                "before=" + before_hash + " after=" + after_hash + " receipt=" + receipt_hash)
+          png_ok = True
+          for label, raw in (("before", before), ("after", after)):
+              try:
+                  width, height, chunks = png_info(raw)
+                  print("PNG " + label + " sha256=" + digest(raw) + " dimensions=" + str(width) + "x" + str(height) + " chunks=" + str(chunks), flush=True)
+              except Exception as exc:
+                  png_ok = False
+                  print("PNG " + label + " FAIL " + type(exc).__name__ + ":" + str(exc), flush=True)
+          check("png_crc_dimensions", png_ok and bool(before) and bool(after))
+          try:
+              obs = receipt.get("observation") or {}
+              receipt_before = base64.b64decode(obs["before"]["pngBase64"], validate=True)
+              receipt_after = base64.b64decode(obs["after"]["pngBase64"], validate=True)
+              receipt_frames_match = receipt_before == before and receipt_after == after
+          except Exception as exc:
+              receipt_frames_match = False
+              print("RECEIPT_FRAME_DECODE_FAIL " + type(exc).__name__, flush=True)
+          check("receipt_embedded_frames_match", receipt_frames_match)
+          print("LIMIT hmac_recompute=UNAVAILABLE challenge_key_nonce_not_persisted", flush=True)
+          print("LIMIT human_takeover=" + str(browser.get("humanTakeover")) +
+                " input_application=" + str(binding.get("inputApplication")) +
+                " screen_provenance=" + str(binding.get("screenProvenance")) +
+                " hardware_attestation=" + str(browser.get("hardwareAttestation")) +
+                " independent_observation=" + str(browser.get("independentObservation")), flush=True)
+          print("SUMMARY " + json.dumps({"runId": run_id, "checks": 24-len(failures),
+                "failures": failures, "serialSha256": serial_hash, "beforePngSha256": before_hash,
+                "afterPngSha256": after_hash, "receiptSha256": receipt_hash}, sort_keys=True), flush=True)
+          if failures:
+              print("F13_READONLY_VERIFICATION=FAIL", flush=True)
+              raise SystemExit(2)
+          print("F13_READONLY_VERIFICATION=PASS", flush=True)
           '@
           $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($probe))
-          $command = "import base64;exec(compile(base64.b64decode('$encoded'),'<f13-readonly-diagnosis>','exec'))"
+          $command = "import base64;exec(compile(base64.b64decode('$encoded'),'<f13-readonly-verification>','exec'))"
           & wsl.exe -d Ubuntu-26.04 -- python3 -B -u -c $command
-          if ($LASTEXITCODE -ne 0) { throw "f13_readonly_diag_exit_$LASTEXITCODE" }
+          if ($LASTEXITCODE -ne 0) { throw "f13_readonly_verify_exit_$LASTEXITCODE" }
