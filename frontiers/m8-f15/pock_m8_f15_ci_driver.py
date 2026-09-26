@@ -262,7 +262,7 @@ def main() -> int:
                 "--run-id", run_id, "--kernel", str(KERNEL), "--rootfs", str(guest),
                 "--firecracker", str(FIRECRACKER), "--jailer", str(JAILER),
                 "--jail-base", str(outdir / "jails"), "--output", str(output),
-                "--x", "80", "--y", "64"],
+                "--x", "50", "--y", "50"],
                cwd=project, env=env, timeout=900)
     emit("F15_HOST_RUN", host, 3200)
     serial_path = Path(str(output) + ".serial.log")
