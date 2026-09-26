@@ -1,0 +1,129 @@
+name: Pock M8 F15 read-only guest tree manifest preflight
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-f15-pointer-input-20260926
+    paths:
+      - .github/workflows/pock-m8-f15-rootfs-preflight.yml
+
+permissions: {}
+
+jobs:
+  guest-tree-manifest:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 20
+    steps:
+      - name: Measure staged guest tree without modifying it
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $scriptText = @'
+          #!/usr/bin/env python3
+          from pathlib import Path
+          import hashlib
+          import json
+          import os
+          import stat
+          import sys
+
+          ROOT = Path(sys.argv[1])
+          if ROOT.is_symlink() or not ROOT.is_dir():
+              raise SystemExit("guest_tree_root_missing_or_symlink")
+          entries = []
+          total_bytes = 0
+          hardlinks = {}
+
+          def stamp(st):
+              return (st.st_mode, st.st_uid, st.st_gid, st.st_size, st.st_mtime_ns,
+                      st.st_ctime_ns, st.st_nlink, st.st_rdev)
+
+          def xattrs(path):
+              result = []
+              for name in sorted(os.listxattr(path, follow_symlinks=False)):
+                  value = os.getxattr(path, name, follow_symlinks=False)
+                  result.append({"name": name, "sha256": hashlib.sha256(value).hexdigest(),
+                                 "size": len(value)})
+              return result
+
+          def visit(path, rel):
+              global total_bytes
+              before = path.lstat()
+              mode = before.st_mode
+              row = {"path": rel, "mode": stat.S_IMODE(mode), "uid": before.st_uid,
+                     "gid": before.st_gid, "mtimeNs": before.st_mtime_ns,
+                     "ctimeNs": before.st_ctime_ns, "nlink": before.st_nlink,
+                     "xattrs": xattrs(path)}
+              if stat.S_ISREG(mode):
+                  fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
+                  try:
+                      opened = os.fstat(fd)
+                      if stamp(before) != stamp(opened):
+                          raise RuntimeError("guest_tree_file_changed_before_read:" + rel)
+                      h = hashlib.sha256()
+                      size = 0
+                      while True:
+                          block = os.read(fd, 1024 * 1024)
+                          if not block:
+                              break
+                          size += len(block)
+                          h.update(block)
+                      after = os.fstat(fd)
+                      if stamp(opened) != stamp(after) or size != before.st_size:
+                          raise RuntimeError("guest_tree_file_changed_during_read:" + rel)
+                  finally:
+                      os.close(fd)
+                  row.update(type="regular", size=size, sha256=h.hexdigest())
+                  total_bytes += size
+                  if before.st_nlink > 1:
+                      inode = (before.st_dev, before.st_ino)
+                      first = hardlinks.setdefault(inode, rel)
+                      row["hardlinkGroup"] = first
+              elif stat.S_ISDIR(mode):
+                  row.update(type="directory", size=0)
+              elif stat.S_ISLNK(mode):
+                  row.update(type="symlink", target=os.readlink(path))
+              elif stat.S_ISCHR(mode):
+                  row.update(type="character", deviceMajor=os.major(before.st_rdev),
+                             deviceMinor=os.minor(before.st_rdev))
+              elif stat.S_ISBLK(mode):
+                  row.update(type="block", deviceMajor=os.major(before.st_rdev),
+                             deviceMinor=os.minor(before.st_rdev))
+              elif stat.S_ISFIFO(mode):
+                  row.update(type="fifo", size=0)
+              else:
+                  raise RuntimeError("guest_tree_socket_or_unknown_type:" + rel)
+              entries.append(row)
+              if stat.S_ISDIR(mode):
+                  with os.scandir(path) as it:
+                      names = sorted(entry.name for entry in it)
+                  for name in names:
+                      child_rel = name if rel == "." else rel + "/" + name
+                      visit(path / name, child_rel)
+                  after = path.lstat()
+                  if stamp(before) != stamp(after):
+                      raise RuntimeError("guest_tree_directory_changed_during_walk:" + rel)
+
+          visit(ROOT, ".")
+          entries.sort(key=lambda row: row["path"])
+          material = {"contract": "PockGuestRootfsTreeManifest/v1", "entries": entries}
+          encoded = json.dumps(material, sort_keys=True, separators=(",", ":"),
+                               ensure_ascii=True).encode("ascii")
+          digest = hashlib.sha256(encoded).hexdigest()
+          print("GUEST_TREE_MANIFEST contract=PockGuestRootfsTreeManifest/v1"
+                " algorithm=sorted-json-v1 sha256=" + digest
+                + " entries=" + str(len(entries)) + " fileBytes=" + str(total_bytes))
+          '@
+          $scriptWin = Join-Path $env:RUNNER_TEMP ('pock-f15-rootfs-manifest-' + $env:GITHUB_RUN_ID + '.py')
+          [IO.File]::WriteAllText($scriptWin, $scriptText, [Text.UTF8Encoding]::new($false))
+          try {
+            $scriptWsl = (& wsl.exe -d Ubuntu-26.04 -- wslpath -a $scriptWin).Trim()
+            if ($LASTEXITCODE -ne 0 -or -not $scriptWsl) { throw 'wsl_script_path_conversion_failed' }
+            Write-Output 'WSL_READ_ONLY_MANIFEST_START'
+            & wsl.exe -d Ubuntu-26.04 -- python3 -B $scriptWsl /root/pock-m8-f13-gueststage-36068890418/rootfs
+            if ($LASTEXITCODE -ne 0) { throw "guest_tree_manifest_exit_$LASTEXITCODE" }
+          } finally {
+            Remove-Item -LiteralPath $scriptWin -Force -ErrorAction SilentlyContinue
+          }
