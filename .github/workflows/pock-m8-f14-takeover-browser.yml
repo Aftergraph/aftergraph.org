@@ -1,0 +1,77 @@
+name: Pock M8 F14 test-principal guest browser proof
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-f14-takeover-browser-20260926
+    paths:
+      - .github/workflows/pock-m8-f14-takeover-browser.yml
+
+permissions: {}
+
+jobs:
+  f14-execute:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 40
+    steps:
+      - name: Run pinned F14 guest browser exercise on Lenovo
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $privateRef = 'worker/m8-f14-takeover-browser-20260926'
+          $items = @(
+            @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f11/pock-m8-f11-candidate-on-f10.patch?ref=worker/m8-f11-interactive-binding-20260924'; digest='f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b'; filename='f11.patch' },
+            @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=worker/m8-f13-browser-protocol-20260924'; digest='8881a0822205ed218a33a9ed8bb3579993bc1fc25000568a92406adb78bc1bd9'; filename='f13.patch' },
+            @{ api=('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock-m8-f14-on-f13.patch?ref=' + $privateRef); digest='4990402199536a0228364ee930c93a06b0b9e788e17372be2abdbc38c7fcab6e'; filename='f14.patch' },
+            @{ api=('repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock_m8_f14_lenovo_execute.py?ref=' + $privateRef); digest='7d4c9b4de66fd4644ae555503086cdd90705f996178de3287c2e4e92c7106b4c'; filename='f14-runner.py' }
+          )
+          $paths = @()
+          try {
+            foreach ($item in $items) {
+              $blobJson = $null
+              for ($attempt = 1; $attempt -le 3; $attempt++) {
+                $stdout = Join-Path $env:RUNNER_TEMP ('pock-f14-fetch-' + $env:GITHUB_RUN_ID + '-' + $item.filename + '.out')
+                $stderr = Join-Path $env:RUNNER_TEMP ('pock-f14-fetch-' + $env:GITHUB_RUN_ID + '-' + $item.filename + '.err')
+                Remove-Item -LiteralPath $stdout, $stderr -Force -ErrorAction SilentlyContinue
+                Write-Output ('FETCH_START ' + $item.filename + ' attempt=' + $attempt)
+                try {
+                  $proc = Start-Process -FilePath (Get-Command gh).Source -ArgumentList @('api', $item.api) -NoNewWindow -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+                  if (-not $proc.WaitForExit(30000)) {
+                    $proc.Kill($true)
+                    $proc.WaitForExit(5000) | Out-Null
+                    Write-Output ('FETCH_TIMEOUT ' + $item.filename + ' attempt=' + $attempt)
+                  } elseif ($proc.ExitCode -eq 0) {
+                    $blobJson = [IO.File]::ReadAllText($stdout)
+                    break
+                  } else {
+                    Write-Output ('FETCH_EXIT ' + $item.filename + ' attempt=' + $attempt + ' code=' + $proc.ExitCode)
+                  }
+                } finally {
+                  Remove-Item -LiteralPath $stdout, $stderr -Force -ErrorAction SilentlyContinue
+                }
+                if ($attempt -lt 3) { Start-Sleep -Seconds 2 }
+              }
+              if (-not $blobJson) { throw ('private_f14_artifact_unavailable_' + $item.filename) }
+              $blob = $blobJson | ConvertFrom-Json
+              if ($blob.encoding -ne 'base64') { throw 'private_f14_artifact_encoding_invalid' }
+              $bytes = [Convert]::FromBase64String(($blob.content -replace '\s', ''))
+              $actual = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+              if ($actual -ne $item.digest) { throw ('private_f14_artifact_digest_mismatch_' + $item.filename) }
+              $path = Join-Path $env:RUNNER_TEMP ('pock-f14-' + $env:GITHUB_RUN_ID + '-' + $item.filename)
+              $paths += $path
+              [IO.File]::WriteAllBytes($path, $bytes)
+              Write-Output ('FETCH_PASS ' + $item.filename + ' bytes=' + $bytes.Length)
+            }
+            $linux = @($paths | ForEach-Object {
+              if ($_ -notmatch '^[A-Za-z]:\\') { throw 'runner_temp_windows_path_invalid' }
+              '/mnt/' + $_.Substring(0, 1).ToLowerInvariant() + $_.Substring(2).Replace('\', '/')
+            })
+            $guestTree = '/root/pock-m8-f13-gueststage-36068890418/rootfs'
+            Write-Output 'WSL_ENTER'
+            & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[3] $env:GITHUB_RUN_ID $linux[0] $linux[1] $linux[2] $guestTree
+            if ($LASTEXITCODE -ne 0) { throw "pock_f14_browser_exit_$LASTEXITCODE" }
+          } finally {
+            foreach ($path in $paths) { Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue }
+          }
