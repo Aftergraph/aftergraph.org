@@ -20,5 +20,14 @@
     "immutability": "point-in-time-only",
     "bootability": "not-established",
     "microvmExecutionProof": "not-established"
+  },
+  "repeatRun": {
+    "jobId": 108365141574,
+    "runId": 36227367590,
+    "observedAt": "2026-09-26T07:47:04.6601439Z",
+    "sha256": "6913577138324da1f374a7b5a7ec3ccd8c777e4ff74d07a0638e50a46d251b06",
+    "entries": 13993,
+    "regularFileBytes": 889312372,
+    "independentVerification": "pending"
   }
 }
