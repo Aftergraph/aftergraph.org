@@ -196,6 +196,18 @@ def main() -> int:
                PYTHONPATH=os.pathsep.join((str(project), str(project / "tests" / "unit"),
                                            "/root/pock-m8-gate", "/root/pock-m8-gate/pylibs")))
 
+    for candidate in project.rglob("*.py"):
+        try:
+            source_text = candidate.read_text(encoding="utf-8")
+        except Exception:
+            continue
+        needle = "class HabitatInteractiveTransportManager"
+        pos = source_text.find(needle)
+        if pos >= 0:
+            print("F15_TRANSPORT_SOURCE " + str(candidate), flush=True)
+            print(source_text[pos:pos + 14000], flush=True)
+            break
+
     tests = [
         project / "tests/unit/test_v23_f15_pointer_input.py",
         project / "tests/unit/test_v23_f14_guest_takeover_bridge.py",
