@@ -1,0 +1,24 @@
+{
+  "contract": "PockGuestRootfsTreeManifest/v1",
+  "canonicalization": "sorted-json-v1",
+  "rootPath": "/root/pock-m8-f13-gueststage-36068890418/rootfs",
+  "sha256": "6913577138324da1f374a7b5a7ec3ccd8c777e4ff74d07a0638e50a46d251b06",
+  "entries": 13993,
+  "regularFileBytes": 889312372,
+  "observedAt": "2026-09-26T07:38:02.5759071Z",
+  "runner": "lenovo-aftergraph-site-deploy",
+  "machine": "JONAS-LENOVO",
+  "repository": "Aftergraph/aftergraph.org",
+  "branch": "worker/pock-m8-f15-pointer-input-20260926",
+  "workflowCommit": "7b1f324663d7977b4e64061e012a37bd928ac3a1",
+  "workflowPath": ".github/workflows/pock-m8-f15-rootfs-preflight.yml",
+  "runId": 36227367590,
+  "jobId": 108363846861,
+  "verification": "independent-read-only-verifier-pass",
+  "truthBoundaries": {
+    "provenance": "not-established-by-this-manifest",
+    "immutability": "point-in-time-only",
+    "bootability": "not-established",
+    "microvmExecutionProof": "not-established"
+  }
+}
