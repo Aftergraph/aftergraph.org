@@ -1,0 +1,156 @@
+name: Pock M8 F15 evidence closure
+
+on:
+  push:
+    branches:
+      - worker/pock-m8-f15-evidence-closure-20260927
+    paths:
+      - .github/workflows/pock-m8-f15-evidence-closure.yml
+      - frontiers/m8-f15/pock_m8_f15_ci_driver.py
+      - scripts/pock_m8_f15_evidence_package.py
+      - scripts/verify_pock_m8_f15_evidence.py
+
+permissions: {}
+
+jobs:
+  f15-execute:
+    if: github.repository == 'Aftergraph/aftergraph.org' && github.actor == 'JonasAbde'
+    runs-on: [self-hosted, Windows, X64, aftergraph-site-deploy]
+    timeout-minutes: 55
+    steps:
+      - name: Reconstruct, exercise and package F15 on the Lenovo KVM node
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
+          $branch = 'worker/pock-m8-f15-evidence-closure-20260927'
+          $items = @(
+            @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f11/pock-m8-f11-candidate-on-f10.patch?ref=91011a8c224bf890ccc07015df8baa26fb02b634'; filename='f11.patch'; pinName='f11Patch'; sha256='f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b'; blob='2d171f04646738cd8c92e1d6d1290f712b912d48'; repository='Aftergraph/Pock-bot'; ref='91011a8c224bf890ccc07015df8baa26fb02b634' },
+            @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=09bd63ebb7de9ca9dbb1302e8b8d9c22b629c0fa'; filename='f13.patch'; pinName='f13Patch'; sha256='8881a0822205ed218a33a9ed8bb3579993bc1fc25000568a92406adb78bc1bd9'; blob='e3d886426888f0561dc453092afc0a18eda68664'; repository='Aftergraph/Pock-bot'; ref='09bd63ebb7de9ca9dbb1302e8b8d9c22b629c0fa' },
+            @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock-m8-f14-on-f13.patch?ref=895444aaa2ece005282910291c8974ecf74b345b'; filename='f14.patch'; pinName='f14Patch'; sha256='4990402199536a0228364ee930c93a06b0b9e788e17372be2abdbc38c7fcab6e'; blob='a7a8b9d685201e69a2b0e1630b23a014a87cfd93'; repository='Aftergraph/Pock-bot'; ref='895444aaa2ece005282910291c8974ecf74b345b' },
+            @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f15/pock-m8-f15-on-f14.patch?ref=d1e3909e13314327debb361327df26808f312823'; filename='f15.patch'; pinName='f15Patch'; sha256='9d9f88e3f6e52468535e8416549633191dd813ea0ca11bedebe3cd3fa3991010'; blob='e31264eae8bf3f4fa16195fa45761cc877269c4a'; repository='Aftergraph/Pock-bot'; ref='d1e3909e13314327debb361327df26808f312823' },
+            @{ api=('repos/Aftergraph/aftergraph.org/contents/frontiers/m8-f15/pock_m8_f15_ci_driver.py?ref=' + $env:GITHUB_SHA); filename='f15-driver.py'; pinName='driver'; sha256=$null; blob='cec4969c559624530c5b57e11628286a00e3b951'; repository='Aftergraph/aftergraph.org'; ref=$env:GITHUB_SHA },
+            @{ api=('repos/Aftergraph/aftergraph.org/contents/scripts/pock_m8_f15_evidence_package.py?ref=' + $env:GITHUB_SHA); filename='f15-package.py'; pinName='packager'; sha256=$null; blob='6ba8ad08ca69171f97eb3dbe1289edc21c76a93a'; repository='Aftergraph/aftergraph.org'; ref=$env:GITHUB_SHA }
+          )
+          $paths = @()
+          $payloadSha = @{}
+          $sourcePins = @{}
+          $metadataWin = $null
+          $logWin = $null
+          $bundleWin = $null
+          try {
+            foreach ($item in $items) {
+              $blobJson = & gh api $item.api
+              if ($LASTEXITCODE -ne 0) { throw ('fetch_failed_' + $item.filename) }
+              $blob = $blobJson | ConvertFrom-Json
+              if ($blob.encoding -ne 'base64' -or $blob.sha -ne $item.blob) { throw ('source_blob_pin_mismatch_' + $item.filename) }
+              $bytes = [Convert]::FromBase64String(($blob.content -replace '\s', ''))
+              $actualSha = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+              if ($item.sha256 -and $actualSha -ne $item.sha256) { throw ('source_sha256_mismatch_' + $item.filename) }
+              $path = Join-Path $env:RUNNER_TEMP ('pock-f15-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT + '-' + $item.filename)
+              [IO.File]::WriteAllBytes($path, $bytes)
+              $paths += $path
+              $payloadSha[$item.filename] = $actualSha
+              $sourcePins[$item.pinName] = @{
+                repository=$item.repository; ref=$item.ref; gitBlobSha1=$blob.sha; sha256=$actualSha
+              }
+            }
+
+            function ConvertTo-WslPath([string]$value) {
+              if ($value -notmatch '^([A-Za-z]):\\(.+)$') { throw 'runner_temp_windows_path_invalid' }
+              return '/mnt/' + $Matches[1].ToLowerInvariant() + '/' + $Matches[2].Replace('\', '/')
+            }
+            $linux = @($paths | ForEach-Object { ConvertTo-WslPath $_ })
+            $executionId = $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT
+            $baseName = 'pock-f15-evidence-' + $env:GITHUB_RUN_ID + '-' + $env:GITHUB_RUN_ATTEMPT
+            $metadataWin = Join-Path $env:RUNNER_TEMP ($baseName + '.metadata.json')
+            $logWin = Join-Path $env:RUNNER_TEMP ($baseName + '.private-console.log')
+            $bundleWin = Join-Path $env:RUNNER_TEMP $baseName
+            if ((Test-Path -LiteralPath $metadataWin) -or (Test-Path -LiteralPath $logWin) -or (Test-Path -LiteralPath $bundleWin)) { throw 'evidence_temp_path_exists' }
+            $sourcePins.archive = @{ repository='Aftergraph/Pock-bot'; sha256='1017465270d11f99f55eb540061ce902589b45c56be7a03308db19f80d937122'; source='local F9 handoff ZIP' }
+            $sourcePins.browser = @{ sha256='60c03e8882f4bb47459a905ede1074e1e746c5b765e437c288e460320540a8a3'; source='pinned browser binary' }
+            $sourcePins.kernel = @{ sha256='9204218e8bcca6ac23848d74f45df2eb19d7f31e8277840a7d145a0df8b078d2'; source='/root/pock-m8-boot/vmlinux-6.18.48' }
+            $sourcePins.firecracker = @{ sha256='99ad0f5cd0514a88aad0e9ae8cfdb3cc3b4ab9d190e1194602406c786b5de7a5'; source='C4-authenticated v1.17.0 binary' }
+            $sourcePins.jailer = @{ sha256='65ef226e96f0ceda55ba643f445801ef2cc0ea667ef67cad8ac4f406c9c8434f'; source='C4-authenticated v1.17.0 binary' }
+            $sourcePins.guestTree = @{ sha256='6913577138324da1f374a7b5a7ec3ccd8c777e4ff74d07a0638e50a46d251b06'; sourceRunId='36227367590'; currentRunManifestRecomputed=$false }
+            $metadata = @{
+              contract='PockM8F15EvidenceBundle/v1'
+              workflowCommitSha=$env:GITHUB_SHA
+              repository=$env:GITHUB_REPOSITORY
+              branch=$env:GITHUB_REF_NAME
+              runId=$env:GITHUB_RUN_ID
+              runAttempt=$env:GITHUB_RUN_ATTEMPT
+              runUrl=($env:GITHUB_SERVER_URL + '/' + $env:GITHUB_REPOSITORY + '/actions/runs/' + $env:GITHUB_RUN_ID)
+              runnerName=$env:RUNNER_NAME
+              executionId=$executionId
+              sourcePins=$sourcePins
+            }
+            [IO.File]::WriteAllText($metadataWin, (ConvertTo-Json -InputObject $metadata -Depth 12), [Text.UTF8Encoding]::new($false))
+            $linuxMetadata = ConvertTo-WslPath $metadataWin
+            $linuxLog = ConvertTo-WslPath $logWin
+            $linuxBundle = ConvertTo-WslPath $bundleWin
+
+            $driverOutput = & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[4] $executionId $linux[0] $linux[1] $linux[2] $linux[3] 2>&1
+            $driverExit = $LASTEXITCODE
+            $driverText = $driverOutput | Out-String -Width 8192
+            [IO.File]::WriteAllText($logWin, $driverText, [Text.UTF8Encoding]::new($false))
+            Write-Output ('F15_DRIVER_COMPLETE exitCode=' + $driverExit + ' capturedChars=' + $driverText.Length)
+
+            $packageOutput = & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[5] --metadata $linuxMetadata --bundle-dir $linuxBundle --driver-log $linuxLog --driver-file $linux[4] --execution-id $executionId --driver-exit-code $driverExit
+            $packageExit = $LASTEXITCODE
+            foreach ($line in $packageOutput) { Write-Output $line }
+            if ($packageExit -ne 0) { throw ('f15_evidence_package_exit_' + $packageExit) }
+            if ($driverExit -ne 0) { throw ('f15_driver_exit_' + $driverExit) }
+            Write-Output 'F15_EVIDENCE_READY'
+          } finally {
+            foreach ($path in $paths) { Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue }
+            if ($metadataWin) { Remove-Item -LiteralPath $metadataWin -Force -ErrorAction SilentlyContinue }
+            if ($logWin) { Remove-Item -LiteralPath $logWin -Force -ErrorAction SilentlyContinue }
+          }
+
+      - name: Upload bounded F15 evidence bundle
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pock-m8-f15-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pock-f15-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 90
+          if-no-files-found: warn
+
+  f15-artifact-verify:
+    needs: f15-execute
+    if: needs['f15-execute'].result == 'success'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Check out the exact evidence verifier
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          sparse-checkout: scripts/verify_pock_m8_f15_evidence.py
+          persist-credentials: false
+
+      - name: Download the F15 evidence bundle from this run
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: pock-m8-f15-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence
+
+      - name: Verify bundle integrity and truth boundaries
+        shell: bash
+        run: |
+          python3 scripts/verify_pock_m8_f15_evidence.py \
+            --bundle-dir evidence \
+            --workflow-sha "${GITHUB_SHA}" \
+            --run-id "${GITHUB_RUN_ID}" \
+            --run-attempt "${GITHUB_RUN_ATTEMPT}"
+
+      - name: Preserve independent artifact-verification receipt
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pock-m8-f15-verification-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/verification-report.json
+          retention-days: 90
+          if-no-files-found: error
