@@ -323,6 +323,21 @@ def main():
         "resultFailureLabel": failure_label(result_failure),
         "probeFailureLabel": failure_label(probe_failure),
         "guestBrowserProbePresent": bool(browser_probe),
+        "guestFailureCodes": [
+            code for code in (
+                "guest_browser_receipt_eof",
+                "guest_browser_challenge_invalid",
+                "guest_browser_challenge_contract_invalid",
+                "guest_browser_challenge_identity_invalid",
+                "guest_browser_response_key_invalid",
+                "guest_browser_screenshot_visual_change_timeout",
+                "browser_screencast_visual_change_timeout",
+                "guest_browser_click_counter_invalid",
+                "guest_browser_binary_unavailable",
+            ) if code in log
+        ],
+        "browserServiceFailureMarker": "pock-m8-browser.service: Main process exited" in log,
+        "browserTracebackMarker": "Traceback (most recent call last):" in log,
         "present": browser_artifacts.get("present") is True,
         "matchesResult": browser_artifacts.get("matchesResult") is True,
         "fileCount": browser_artifacts.get("fileCount", 0),

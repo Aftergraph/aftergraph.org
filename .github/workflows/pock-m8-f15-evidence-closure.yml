@@ -32,7 +32,7 @@ jobs:
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock-m8-f14-on-f13.patch?ref=895444aaa2ece005282910291c8974ecf74b345b'; filename='f14.patch'; pinName='f14Patch'; sha256='4990402199536a0228364ee930c93a06b0b9e788e17372be2abdbc38c7fcab6e'; blob='a7a8b9d685201e69a2b0e1630b23a014a87cfd93'; repository='Aftergraph/Pock-bot'; ref='895444aaa2ece005282910291c8974ecf74b345b' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f15/pock-m8-f15-on-f14.patch?ref=d9e7ac106c3f5516e04e57ba0b1879013fe83a75'; filename='f15.patch'; pinName='f15Patch'; sha256='17e85c05d2b8130dd6c90d35076748544bdbb4d8a7047c4c57334d46e1e6f94b'; blob='198517ec9263a5311bc52cedba9f6e12b7052045'; repository='Aftergraph/Pock-bot'; ref='d9e7ac106c3f5516e04e57ba0b1879013fe83a75' },
             @{ api=('repos/Aftergraph/aftergraph.org/contents/frontiers/m8-f15/pock_m8_f15_ci_driver.py?ref=' + $env:GITHUB_SHA); filename='f15-driver.py'; pinName='driver'; sha256=$null; blob='e50259950c1edb754f1bf8d4238052e68624e695'; repository='Aftergraph/aftergraph.org'; ref=$env:GITHUB_SHA },
-            @{ api=('repos/Aftergraph/aftergraph.org/contents/scripts/pock_m8_f15_evidence_package.py?ref=' + $env:GITHUB_SHA); filename='f15-package.py'; pinName='packager'; sha256=$null; blob='6f05c932488f177dfc169cbcc57bf3fcb9a97550'; repository='Aftergraph/aftergraph.org'; ref=$env:GITHUB_SHA }
+            @{ api=('repos/Aftergraph/aftergraph.org/contents/scripts/pock_m8_f15_evidence_package.py?ref=' + $env:GITHUB_SHA); filename='f15-package.py'; pinName='packager'; sha256=$null; blob='e193388c20f5dfcec2666bfe1b0806423934a4c9'; repository='Aftergraph/aftergraph.org'; ref=$env:GITHUB_SHA }
           )
           $paths = @()
           $payloadSha = @{}
