@@ -97,6 +97,28 @@ jobs:
             $driverText = $driverOutput | Out-String -Width 8192
             [IO.File]::WriteAllText($logWin, $driverText, [Text.UTF8Encoding]::new($false))
             Write-Output ('F15_DRIVER_COMPLETE exitCode=' + $driverExit + ' capturedChars=' + $driverText.Length)
+            foreach ($line in ($driverText -split '[\r\n]+')) {
+              if (-not $line.StartsWith('F15_RESULT ')) { continue }
+              try {
+                $r = $line.Substring('F15_RESULT '.Length) | ConvertFrom-Json
+                $browser = $r.guestBrowser
+                $ack = $null
+                if ($browser) { $ack = $browser.guestInputAck }
+                $failureCode = $null
+                if ([string]$r.failure -match '^([A-Za-z][A-Za-z0-9_]*(?::[A-Za-z0-9_]+){0,3})') { $failureCode = $Matches[1] }
+                $f13FailureCode = $null
+                if ([string]$r.f13FailureReason -match '^([A-Za-z][A-Za-z0-9_]*(?::[A-Za-z0-9_]+){0,3})') { $f13FailureCode = $Matches[1] }
+                $diag = [ordered]@{
+                  truthStatus=$r.truthStatus; failureCode=$failureCode; f13TruthStatus=$r.f13TruthStatus
+                  f13FailureCode=$f13FailureCode; executionProofStatus=$r.executionProof.truthStatus
+                  interactiveBindingStatus=$r.interactiveBinding.truthStatus
+                  guestBrowserStatus=$browser.truthStatus; pointerInputTruthStatus=$browser.pointerInputTruthStatus
+                  inputMapping=$browser.inputMapping; guestAckContract=$ack.contract; guestAckApplied=$ack.applied
+                  serialVerified=$r.serialEvidence.verified; vmmExited=$r.shutdown.vmmExited
+                }
+                Write-Output ('F15_DIAGNOSTIC ' + (ConvertTo-Json -InputObject $diag -Compress -Depth 5))
+              } catch { Write-Output 'F15_DIAGNOSTIC result_parse=failed' }
+            }
 
             $packageOutput = & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[5] --metadata $linuxMetadata --bundle-dir $linuxBundle --driver-log $linuxLog --driver-file $linux[4] --execution-id $executionId --driver-exit-code $driverExit
             $packageExit = $LASTEXITCODE
