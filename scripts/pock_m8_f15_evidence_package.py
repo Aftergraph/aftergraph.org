@@ -127,46 +127,49 @@ def collect_browser_artifacts(run_dir, result, bundle):
     if any((expected / name).stat().st_size > limit for name, limit in size_limits.items()):
         return {"present": True, "matchesResult": False, "fileCount": len(entries),
                 "failureReason": "browser_artifact_size_limit"}, []
+    binding_checks = {}
     try:
         frame_bytes = {name: (expected / name).read_bytes() for name in names}
         ready = json.loads(frame_bytes["READY.json"])
         receipt = json.loads(frame_bytes["receipt.json"])
         observation = receipt["observation"]
         receipt_text = frame_bytes["receipt.json"].decode("utf-8")
-        matches = (
-            ready.get("contract") == "GuestBrowserArtifactSet/v1"
-            and set(receipt) == {"contract", "bindingHash", "executionProofHash", "nonce",
-                                "observation", "guestBrowserMac"}
-            and set(observation) == {"contract", "browserSource", "browserBinarySha256", "fixtureSha256",
-                                    "before", "after", "inputMethod", "inputEffectObservedInGuestBrowser",
-                                    "independentObservation", "humanTakeover", "hardwareAttestation"}
-            and all(set(observation[phase]) == {"counter", "frameSha256", "pngBase64"}
-                    for phase in ("before", "after"))
-            and observation.get("contract") == "GuestBrowserObservation/v1"
-            and observation.get("browserSource") == "GUEST_LOCAL_CHROMIUM_CDP"
-            and observation.get("inputMethod") == "CDP_INPUT_DISPATCH_MOUSE_EVENT"
-            and observation.get("inputEffectObservedInGuestBrowser") is True
-            and observation.get("independentObservation") is False
-            and observation.get("humanTakeover") is False
-            and observation.get("hardwareAttestation") == "BLOCKED"
-            and not secret_key_found(receipt)
-            and not SENSITIVE_TEXT.search(receipt_text)
-            and ready.get("beforeFrameSha256") == digest(frame_bytes["before.png"])
-            and ready.get("afterFrameSha256") == digest(frame_bytes["after.png"])
-            and ready.get("receiptSha256") == digest(frame_bytes["receipt.json"])
-            and ready.get("receiptSha256") == probe.get("receiptSha256")
-            and ready.get("beforeFrameSha256") == probe.get("beforeFrameSha256")
-            and ready.get("afterFrameSha256") == probe.get("afterFrameSha256")
-            and observation["before"]["frameSha256"] == ready.get("beforeFrameSha256")
-            and observation["after"]["frameSha256"] == ready.get("afterFrameSha256")
-            and observation["before"]["counter"] == "0"
-            and observation["after"]["counter"] == "1"
-        )
-    except (KeyError, TypeError, ValueError, json.JSONDecodeError):
+        binding_checks = {
+            "ready_contract": ready.get("contract") == "GuestBrowserArtifactSet/v1",
+            "receipt_top_level_shape": set(receipt) == {"contract", "bindingHash", "executionProofHash", "nonce",
+                                                        "observation", "guestBrowserMac"},
+            "observation_shape": set(observation) == {"contract", "browserSource", "browserBinarySha256", "fixtureSha256",
+                                                      "before", "after", "inputMethod", "inputEffectObservedInGuestBrowser",
+                                                      "independentObservation", "humanTakeover", "hardwareAttestation"},
+            "phase_shape": all(set(observation[phase]) == {"counter", "frameSha256", "pngBase64"}
+                               for phase in ("before", "after")),
+            "observation_contract": observation.get("contract") == "GuestBrowserObservation/v1",
+            "browser_source": observation.get("browserSource") == "GUEST_LOCAL_CHROMIUM_CDP",
+            "input_method": observation.get("inputMethod") == "CDP_INPUT_DISPATCH_MOUSE_EVENT",
+            "input_effect_flag": observation.get("inputEffectObservedInGuestBrowser") is True,
+            "independent_observation_flag": observation.get("independentObservation") is False,
+            "human_takeover_flag": observation.get("humanTakeover") is False,
+            "hardware_attestation_flag": observation.get("hardwareAttestation") == "BLOCKED",
+            "receipt_redacted": not secret_key_found(receipt) and not SENSITIVE_TEXT.search(receipt_text),
+            "ready_before_hash_matches_file": ready.get("beforeFrameSha256") == digest(frame_bytes["before.png"]),
+            "ready_after_hash_matches_file": ready.get("afterFrameSha256") == digest(frame_bytes["after.png"]),
+            "ready_receipt_hash_matches_file": ready.get("receiptSha256") == digest(frame_bytes["receipt.json"]),
+            "ready_receipt_hash_matches_result": ready.get("receiptSha256") == probe.get("receiptSha256"),
+            "ready_before_hash_matches_result": ready.get("beforeFrameSha256") == probe.get("beforeFrameSha256"),
+            "ready_after_hash_matches_result": ready.get("afterFrameSha256") == probe.get("afterFrameSha256"),
+            "observation_before_hash_matches_ready": observation["before"]["frameSha256"] == ready.get("beforeFrameSha256"),
+            "observation_after_hash_matches_ready": observation["after"]["frameSha256"] == ready.get("afterFrameSha256"),
+            "before_counter": observation["before"]["counter"] == "0",
+            "after_counter": observation["after"]["counter"] == "1",
+        }
+        matches = all(binding_checks.values())
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError, AttributeError):
+        binding_checks = {"receipt_json_or_schema": False}
         matches = False
     if not matches:
         return {"present": True, "matchesResult": False, "fileCount": len(entries),
-                "failureReason": "browser_artifact_binding_invalid"}, []
+                "failureReason": "browser_artifact_binding_invalid",
+                "failedChecks": sorted(k for k, ok in binding_checks.items() if not ok)}, []
     destination = bundle / "browser-evidence"
     destination.mkdir(mode=0o700)
     copied = []
@@ -306,6 +309,7 @@ def main():
         "reportedPathPresent": bool(browser_probe.get("artifactsPath")),
         "reportedPathMatchesExpected": browser_probe.get("artifactsPath") == str(browser_expected),
         "expectedDirectoryPresent": browser_expected.is_dir(),
+        "failedChecks": browser_artifacts.get("failedChecks", []),
     }
     print("F15_BROWSER_EVIDENCE " + json.dumps(browser_diag, sort_keys=True), flush=True)
     print("F15_EVIDENCE_PACKAGE status=" + ("COMPLETE" if complete else "INCOMPLETE")
