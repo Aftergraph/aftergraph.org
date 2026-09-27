@@ -13,6 +13,10 @@ EXPECTED_TESTS = {
     "test_v23_f13_guest_browser.py": 34,
     "test_v23_f12_guest_effect_truth.py": 4,
 }
+EXECUTION_ID = re.compile(r"[0-9]{1,20}-[1-9][0-9]{0,5}\Z")
+MAX_PNG_BYTES = 8 * 1024 * 1024
+MAX_RECEIPT_BYTES = 24 * 1024 * 1024
+MAX_READY_BYTES = 64 * 1024
 SENSITIVE_TEXT = re.compile(
     r"(?i)(session[_-]?key|lease[_-]?token|takeover[_-]?token|response[_-]?key|"
     r"authorization\s*:\s*bearer|password\s*[:=]|api[_-]?key\s*[:=])"
@@ -29,6 +33,17 @@ def sha(path):
         for block in iter(lambda: f.read(1024 * 1024), b""):
             h.update(block)
     return h.hexdigest()
+
+
+def path_has_symlink(path):
+    """Reject symlinks anywhere in a supplied path, including its parents."""
+    path = Path(path)
+    return any(part.is_symlink() for part in (path, *path.parents))
+
+
+def regular_file_without_symlinks(path):
+    path = Path(path)
+    return not path_has_symlink(path) and path.is_file()
 
 
 def parse_checks(log, exit_code):
@@ -92,6 +107,77 @@ def write_json(path, value):
     path.write_text(json.dumps(value, sort_keys=True, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
+def collect_browser_artifacts(run_dir, result, bundle):
+    """Copy the host-persisted PNGs and receipt only from this execution's fixed output path."""
+    probe = ((result or {}).get("f13Run") or {}).get("guestBrowserProbe") or {}
+    expected = run_dir / "browser-evidence"
+    reported = probe.get("artifactsPath")
+    names = ("before.png", "after.png", "receipt.json", "READY.json")
+    if (path_has_symlink(run_dir) or not run_dir.is_dir() or path_has_symlink(expected)
+            or not expected.is_dir() or reported != str(expected)):
+        return {"present": False, "matchesResult": False, "fileCount": 0,
+                "failureReason": "browser_artifact_path_invalid"}, []
+    entries = list(expected.iterdir())
+    if {entry.name for entry in entries} != set(names) or any(
+            path_has_symlink(entry) or not entry.is_file() for entry in entries):
+        return {"present": False, "matchesResult": False, "fileCount": 0,
+                "failureReason": "browser_artifact_file_set_invalid"}, []
+    size_limits = {"before.png": MAX_PNG_BYTES, "after.png": MAX_PNG_BYTES,
+                   "receipt.json": MAX_RECEIPT_BYTES, "READY.json": MAX_READY_BYTES}
+    if any((expected / name).stat().st_size > limit for name, limit in size_limits.items()):
+        return {"present": True, "matchesResult": False, "fileCount": len(entries),
+                "failureReason": "browser_artifact_size_limit"}, []
+    try:
+        frame_bytes = {name: (expected / name).read_bytes() for name in names}
+        ready = json.loads(frame_bytes["READY.json"])
+        receipt = json.loads(frame_bytes["receipt.json"])
+        observation = receipt["observation"]
+        receipt_text = frame_bytes["receipt.json"].decode("utf-8")
+        matches = (
+            ready.get("contract") == "GuestBrowserArtifactSet/v1"
+            and set(receipt) == {"contract", "bindingHash", "executionProofHash", "nonce",
+                                "observation", "guestBrowserMac"}
+            and set(observation) == {"contract", "browserSource", "browserBinarySha256", "fixtureSha256",
+                                    "before", "after", "inputMethod", "inputEffectObservedInGuestBrowser",
+                                    "independentObservation", "humanTakeover", "hardwareAttestation"}
+            and all(set(observation[phase]) == {"counter", "frameSha256", "pngBase64"}
+                    for phase in ("before", "after"))
+            and observation.get("contract") == "GuestBrowserObservation/v1"
+            and observation.get("browserSource") == "GUEST_LOCAL_CHROMIUM_CDP"
+            and observation.get("inputMethod") == "CDP_INPUT_DISPATCH_MOUSE_EVENT"
+            and observation.get("inputEffectObservedInGuestBrowser") is True
+            and observation.get("independentObservation") is False
+            and observation.get("humanTakeover") is False
+            and observation.get("hardwareAttestation") == "BLOCKED"
+            and not secret_key_found(receipt)
+            and not SENSITIVE_TEXT.search(receipt_text)
+            and ready.get("beforeFrameSha256") == digest(frame_bytes["before.png"])
+            and ready.get("afterFrameSha256") == digest(frame_bytes["after.png"])
+            and ready.get("receiptSha256") == digest(frame_bytes["receipt.json"])
+            and ready.get("receiptSha256") == probe.get("receiptSha256")
+            and ready.get("beforeFrameSha256") == probe.get("beforeFrameSha256")
+            and ready.get("afterFrameSha256") == probe.get("afterFrameSha256")
+            and observation["before"]["frameSha256"] == ready.get("beforeFrameSha256")
+            and observation["after"]["frameSha256"] == ready.get("afterFrameSha256")
+            and observation["before"]["counter"] == "0"
+            and observation["after"]["counter"] == "1"
+        )
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError):
+        matches = False
+    if not matches:
+        return {"present": True, "matchesResult": False, "fileCount": len(entries),
+                "failureReason": "browser_artifact_binding_invalid"}, []
+    destination = bundle / "browser-evidence"
+    destination.mkdir(mode=0o700)
+    copied = []
+    for name in names:
+        target = destination / name
+        target.write_bytes(frame_bytes[name])
+        copied.append(target)
+    return {"present": True, "matchesResult": True, "fileCount": len(copied),
+            "captureMethod": probe.get("frameCaptureMethod")}, copied
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--metadata", required=True)
@@ -101,20 +187,37 @@ def main():
     p.add_argument("--execution-id", required=True)
     p.add_argument("--driver-exit-code", required=True, type=int)
     a = p.parse_args()
-    meta = json.loads(Path(a.metadata).read_text(encoding="utf-8"))
-    run_dir = Path("/root/pock-m8-ci-f15-" + a.execution_id)
+    if not EXECUTION_ID.fullmatch(a.execution_id):
+        raise SystemExit("F15_EVIDENCE_PACKAGE_FAIL execution_id_invalid")
+    metadata_path = Path(a.metadata)
+    log_path = Path(a.driver_log)
+    driver_path = Path(a.driver_file)
+    bundle = Path(a.bundle_dir)
+    if (not regular_file_without_symlinks(metadata_path)
+            or not regular_file_without_symlinks(log_path)
+            or not regular_file_without_symlinks(driver_path)
+            or path_has_symlink(bundle)):
+        raise SystemExit("F15_EVIDENCE_PACKAGE_FAIL input_path_invalid")
+    meta = json.loads(metadata_path.read_text(encoding="utf-8"))
+    if not isinstance(meta, dict) or meta.get("executionId") != a.execution_id:
+        raise SystemExit("F15_EVIDENCE_PACKAGE_FAIL metadata_identity_invalid")
+    run_dir = Path("/root") / ("pock-m8-ci-f15-" + a.execution_id)
     result_src = run_dir / "f15-result.json"
     serial_src = Path(str(result_src) + ".serial.log")
     image_src = run_dir / "guest-f15.ext4"
-    log = Path(a.driver_log).read_text(encoding="utf-8", errors="replace")
+    run_dir_safe = not path_has_symlink(run_dir) and run_dir.is_dir()
+    result_safe = run_dir_safe and regular_file_without_symlinks(result_src)
+    serial_safe = run_dir_safe and regular_file_without_symlinks(serial_src)
+    image_safe = run_dir_safe and regular_file_without_symlinks(image_src)
+    log = log_path.read_text(encoding="utf-8", errors="replace")
     checks = parse_checks(log, a.driver_exit_code)
     build = json_after(log, "F15_IMAGE_BUILD rc=")
-    image_sha = sha(image_src) if image_src.is_file() and not image_src.is_symlink() else None
+    image_sha = sha(image_src) if image_safe else None
     image_size = image_src.stat().st_size if image_sha else None
-    result = json.loads(result_src.read_text(encoding="utf-8")) if result_src.is_file() else None
+    result = json.loads(result_src.read_text(encoding="utf-8")) if result_safe else None
     tree = meta["sourcePins"]["guestTree"]
     summary = {
-        "contract": "PockM8F15EvidenceRunSummary/v1",
+        "contract": "PockM8F15EvidenceRunSummary/v2",
         "executionId": a.execution_id,
         "workflowCommitSha": meta["workflowCommitSha"],
         "runUrl": meta["runUrl"],
@@ -129,17 +232,19 @@ def main():
         "result": {"present": result is not None,
                    "contract": result.get("contract") if result else None,
                    "truthStatus": result.get("truthStatus") if result else None},
-        "serial": {"present": serial_src.is_file()},
+        "serial": {"present": serial_safe},
     }
-    bundle = Path(a.bundle_dir)
     bundle.mkdir(parents=True, exist_ok=False)
     copied = []
     if result is not None and not secret_key_found(result):
         target = bundle / "f15-result.json"
         shutil.copyfile(result_src, target)
         copied.append(target)
+    browser_artifacts, browser_files = collect_browser_artifacts(run_dir, result, bundle)
+    summary["browserEvidence"] = browser_artifacts
+    copied.extend(browser_files)
     serial_excluded = None
-    if serial_src.is_file() and not serial_src.is_symlink():
+    if serial_safe:
         raw = serial_src.read_bytes()
         if SENSITIVE_TEXT.search(raw.decode("utf-8", errors="replace")):
             serial_excluded = "sensitive_marker_detected"
@@ -147,32 +252,40 @@ def main():
             target = bundle / "serial.log"
             target.write_bytes(raw)
             copied.append(target)
-    shutil.copyfile(Path(a.driver_file), bundle / "f15-driver.py")
+    shutil.copyfile(driver_path, bundle / "f15-driver.py")
     copied.append(bundle / "f15-driver.py")
     summary["serial"]["excludedReason"] = serial_excluded
     write_json(bundle / "run-summary.json", summary)
     copied.append(bundle / "run-summary.json")
     file_rows = {}
-    for path in sorted(copied, key=lambda x: x.name):
+    for path in sorted(copied, key=lambda x: x.relative_to(bundle).as_posix()):
         raw = path.read_bytes()
-        file_rows[path.name] = {"sha256": digest(raw), "sizeBytes": len(raw)}
+        file_rows[path.relative_to(bundle).as_posix()] = {"sha256": digest(raw), "sizeBytes": len(raw)}
     complete = (
         a.driver_exit_code == 0 and checks["driverGatePass"]
         and checks["allExpectedTestsPass"] and checks["allExpectedSuitesPresent"]
         and all(checks.get(k) == 0 for k in
                 ("compileExitCode", "image_buildExitCode", "e2fsckExitCode", "host_runExitCode"))
         and summary["guestImage"]["matchesBuilder"] and summary["guestImage"]["matchesResult"]
-        and result is not None and serial_src.is_file() and serial_excluded is None
+        and browser_artifacts["present"] and browser_artifacts["matchesResult"]
+        and browser_artifacts["fileCount"] == 4
+        and result is not None and serial_safe and serial_excluded is None
         and not secret_key_found(result)
     )
     manifest = {
-        "contract": "PockM8F15EvidenceBundle/v1",
+        "contract": "PockM8F15EvidenceBundle/v2",
         "packageStatus": "COMPLETE" if complete else "INCOMPLETE",
         "workflow": meta,
         "guestImage": summary["guestImage"],
         "resultBoundary": {
             "truthStatus": result.get("truthStatus") if result else None,
+            "guestBrowserFramesIncluded": browser_artifacts["matchesResult"],
+            "independentFrameAnalysis": False,
             "independentInputEffectObservation": False,
+            "guestReceiptMacIndependentlyVerified": False,
+            "controlInputAckMacIndependentlyVerified": False,
+            "pixelDeltaBoundToPointerCoordinate": False,
+            "guestFrameSourceIndependentlyAuthenticated": False,
             "hardwareAttestation": "BLOCKED",
             "canonicalHabitatMicroVMExecutionProof": False,
         },

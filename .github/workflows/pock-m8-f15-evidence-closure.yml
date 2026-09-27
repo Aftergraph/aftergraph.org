@@ -5,11 +5,13 @@ on:
     branches:
       - worker/pock-m8-f15-evidence-closure-20260927
       - worker/pock-m8-f15-evidence-closure-fallback-20260927
+      - worker/pock-m8-f15-frame-evidence-analysis-20260927
     paths:
       - .github/workflows/pock-m8-f15-evidence-closure.yml
       - frontiers/m8-f15/pock_m8_f15_ci_driver.py
       - scripts/pock_m8_f15_evidence_package.py
       - scripts/verify_pock_m8_f15_evidence.py
+      - frontiers/m8-f15/test_independent_frame_analysis.py
 
 permissions: {}
 
@@ -24,14 +26,13 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           if ($env:RUNNER_NAME -ne 'lenovo-aftergraph-site-deploy') { throw 'unexpected_runner' }
-          $branch = 'worker/pock-m8-f15-evidence-closure-fallback-20260927'
           $items = @(
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f11/pock-m8-f11-candidate-on-f10.patch?ref=91011a8c224bf890ccc07015df8baa26fb02b634'; filename='f11.patch'; pinName='f11Patch'; sha256='f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b'; blob='2d171f04646738cd8c92e1d6d1290f712b912d48'; repository='Aftergraph/Pock-bot'; ref='91011a8c224bf890ccc07015df8baa26fb02b634' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f13/pock-m8-f13-cumulative-on-f11.patch?ref=09bd63ebb7de9ca9dbb1302e8b8d9c22b629c0fa'; filename='f13.patch'; pinName='f13Patch'; sha256='8881a0822205ed218a33a9ed8bb3579993bc1fc25000568a92406adb78bc1bd9'; blob='e3d886426888f0561dc453092afc0a18eda68664'; repository='Aftergraph/Pock-bot'; ref='09bd63ebb7de9ca9dbb1302e8b8d9c22b629c0fa' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f14/pock-m8-f14-on-f13.patch?ref=895444aaa2ece005282910291c8974ecf74b345b'; filename='f14.patch'; pinName='f14Patch'; sha256='4990402199536a0228364ee930c93a06b0b9e788e17372be2abdbc38c7fcab6e'; blob='a7a8b9d685201e69a2b0e1630b23a014a87cfd93'; repository='Aftergraph/Pock-bot'; ref='895444aaa2ece005282910291c8974ecf74b345b' },
             @{ api='repos/Aftergraph/Pock-bot/contents/frontiers/m8-f15/pock-m8-f15-on-f14.patch?ref=d9e7ac106c3f5516e04e57ba0b1879013fe83a75'; filename='f15.patch'; pinName='f15Patch'; sha256='17e85c05d2b8130dd6c90d35076748544bdbb4d8a7047c4c57334d46e1e6f94b'; blob='198517ec9263a5311bc52cedba9f6e12b7052045'; repository='Aftergraph/Pock-bot'; ref='d9e7ac106c3f5516e04e57ba0b1879013fe83a75' },
             @{ api=('repos/Aftergraph/aftergraph.org/contents/frontiers/m8-f15/pock_m8_f15_ci_driver.py?ref=' + $env:GITHUB_SHA); filename='f15-driver.py'; pinName='driver'; sha256=$null; blob='a950444cfa1d6f0d7afb085170666918cc3e95bc'; repository='Aftergraph/aftergraph.org'; ref=$env:GITHUB_SHA },
-            @{ api=('repos/Aftergraph/aftergraph.org/contents/scripts/pock_m8_f15_evidence_package.py?ref=' + $env:GITHUB_SHA); filename='f15-package.py'; pinName='packager'; sha256=$null; blob='d4d57c2b22f4704723764e5061be5b50a1743d22'; repository='Aftergraph/aftergraph.org'; ref=$env:GITHUB_SHA }
+            @{ api=('repos/Aftergraph/aftergraph.org/contents/scripts/pock_m8_f15_evidence_package.py?ref=' + $env:GITHUB_SHA); filename='f15-package.py'; pinName='packager'; sha256=$null; blob='c8547500a7c45918bd93bb670e37709985f9c40e'; repository='Aftergraph/aftergraph.org'; ref=$env:GITHUB_SHA }
           )
           $paths = @()
           $payloadSha = @{}
@@ -75,7 +76,7 @@ jobs:
             $sourcePins.jailer = @{ sha256='65ef226e96f0ceda55ba643f445801ef2cc0ea667ef67cad8ac4f406c9c8434f'; source='C4-authenticated v1.17.0 binary' }
             $sourcePins.guestTree = @{ sha256='6913577138324da1f374a7b5a7ec3ccd8c777e4ff74d07a0638e50a46d251b06'; sourceRunId='36227367590'; currentRunManifestRecomputed=$false }
             $metadata = @{
-              contract='PockM8F15EvidenceBundle/v1'
+              contract='PockM8F15EvidenceBundle/v2'
               workflowCommitSha=$env:GITHUB_SHA
               repository=$env:GITHUB_REPOSITORY
               branch=$env:GITHUB_REF_NAME
@@ -130,7 +131,9 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.sha }}
-          sparse-checkout: scripts/verify_pock_m8_f15_evidence.py
+          sparse-checkout: |
+            scripts/verify_pock_m8_f15_evidence.py
+            frontiers/m8-f15/test_independent_frame_analysis.py
           persist-credentials: false
 
       - name: Download the F15 evidence bundle from this run
@@ -139,7 +142,11 @@ jobs:
           name: pock-m8-f15-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: evidence
 
-      - name: Verify bundle integrity and truth boundaries
+      - name: Exercise independent PNG decoder tests
+        shell: bash
+        run: python3 -B frontiers/m8-f15/test_independent_frame_analysis.py
+
+      - name: Verify bundle integrity, frame pixels and truth boundaries
         shell: bash
         run: |
           python3 scripts/verify_pock_m8_f15_evidence.py \
