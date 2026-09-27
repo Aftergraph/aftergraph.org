@@ -97,29 +97,49 @@ jobs:
             $driverText = $driverOutput | Out-String -Width 8192
             [IO.File]::WriteAllText($logWin, $driverText, [Text.UTF8Encoding]::new($false))
             Write-Output ('F15_DRIVER_COMPLETE exitCode=' + $driverExit + ' capturedChars=' + $driverText.Length)
-            foreach ($line in ($driverText -split '[\r\n]+')) {
+            $driverLines = $driverText -split '[\r\n]+'
+            foreach ($line in $driverLines) {
               if (-not $line.StartsWith('F15_RESULT ')) { continue }
               try {
                 $r = $line.Substring('F15_RESULT '.Length) | ConvertFrom-Json
                 $browser = $r.guestBrowser
                 $ack = $null
-                if ($browser) { $ack = $browser.guestInputAck }
+                $controlAck = $null
+                if ($browser) {
+                  $ack = $browser.guestInputAck
+                  $controlAck = $browser.controlPlaneInputAck
+                }
                 $failureCode = $null
                 if ([string]$r.failure -match '^([A-Za-z][A-Za-z0-9_]*(?::[A-Za-z0-9_]+){0,3})') { $failureCode = $Matches[1] }
-                $f13FailureCode = $null
-                if ([string]$r.f13FailureReason -match '^([A-Za-z][A-Za-z0-9_]*(?::[A-Za-z0-9_]+){0,3})') { $f13FailureCode = $Matches[1] }
                 $diag = [ordered]@{
-                  truthStatus=$r.truthStatus; failureCode=$failureCode; f13TruthStatus=$r.f13TruthStatus
-                  f13FailureCode=$f13FailureCode; executionProofStatus=$r.executionProof.truthStatus
-                  interactiveBindingStatus=$r.interactiveBinding.truthStatus
-                  guestBrowserStatus=$browser.truthStatus; pointerInputTruthStatus=$browser.pointerInputTruthStatus
-                  inputMapping=$browser.inputMapping; guestAckContract=$ack.contract; guestAckApplied=$ack.applied
-                  serialVerified=$r.serialEvidence.verified; vmmExited=$r.shutdown.vmmExited
+                  resultContract=$r.contract; truthStatus=$r.truthStatus; failureCode=$failureCode
+                  guestBrowserStatus=$browser.truthStatus
+                  pointerInputTruthStatus=$browser.pointerInputTruthStatus
+                  inputMapping=$browser.inputMapping
+                  guestAckContract=$ack.contract; guestAckApplied=$ack.applied
+                  controlAckStatus=$controlAck.status
                 }
-                Write-Output ('F15_DIAGNOSTIC ' + (ConvertTo-Json -InputObject $diag -Compress -Depth 5))
-              } catch { Write-Output 'F15_DIAGNOSTIC result_parse=failed' }
+                Write-Output ('F15_DIAGNOSTIC_RESULT ' + (ConvertTo-Json -InputObject $diag -Compress -Depth 5))
+              } catch { Write-Output 'F15_DIAGNOSTIC_RESULT result_parse=failed' }
             }
-
+            $inSerialDiagnostics = $false
+            foreach ($line in $driverLines) {
+              if ($line -eq 'F15_SERIAL_DIAGNOSTICS_BEGIN') { $inSerialDiagnostics = $true; continue }
+              if ($line -eq 'F15_SERIAL_DIAGNOSTICS_END') { $inSerialDiagnostics = $false; continue }
+              if (-not $inSerialDiagnostics) { continue }
+              if ($line -match 'File "[^"]*(?<file>[A-Za-z0-9_.-]+\.py)", line (?<number>\d+), in (?<function>[A-Za-z0-9_<>]+)') {
+                Write-Output ('F15_SERIAL_FRAME file=' + $Matches.file + ' line=' + $Matches.number + ' function=' + $Matches.function)
+              }
+              if ($line -match '(?<code>(?:guest_browser|browser)_[A-Za-z0-9_:-]+)') {
+                Write-Output ('F15_SERIAL_CODE ' + $Matches.code)
+              }
+              if ($line -match '^\s*(?<type>[A-Za-z][A-Za-z0-9_]*(?:Error|Exception)):') {
+                Write-Output ('F15_SERIAL_EXCEPTION ' + $Matches.type)
+              }
+              if ($line -match 'pock-m8-browser\.service: Main process exited, code=(?<kind>exited|killed|dumped), status=(?<status>\d+)') {
+                Write-Output ('F15_SERIAL_SERVICE_EXIT code=' + $Matches.kind + ' status=' + $Matches.status)
+              }
+            }
             $packageOutput = & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[5] --metadata $linuxMetadata --bundle-dir $linuxBundle --driver-log $linuxLog --driver-file $linux[4] --execution-id $executionId --driver-exit-code $driverExit
             $packageExit = $LASTEXITCODE
             foreach ($line in $packageOutput) { Write-Output $line }
