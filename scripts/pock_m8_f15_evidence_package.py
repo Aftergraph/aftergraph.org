@@ -301,8 +301,28 @@ def main():
         manifest_hash + "  f15-evidence-manifest.json\n", encoding="ascii", newline="\n")
     browser_probe = (((result or {}).get("f13Run") or {}).get("guestBrowserProbe") or {})
     browser_expected = run_dir / "browser-evidence"
+    failure_labels = (
+        "guest_browser_receipt_eof",
+        "guest_browser_click_counter_invalid",
+        "browser_screencast_visual_change_timeout",
+        "browser_screenshot_visual_change_timeout",
+        "F15_SOURCE_OR_PATCH_FAILED",
+    )
+    result_failure = result.get("failure") if isinstance(result, dict) else None
+    probe_failure = browser_probe.get("failure") if isinstance(browser_probe, dict) else None
+
+    def failure_label(value):
+        if value is None:
+            return "none"
+        if isinstance(value, str):
+            return next((label for label in failure_labels if label in value), "other_failure_present")
+        return "non_string_failure"
+
     browser_diag = {
         "reason": browser_artifacts.get("failureReason", "none"),
+        "resultFailureLabel": failure_label(result_failure),
+        "probeFailureLabel": failure_label(probe_failure),
+        "guestBrowserProbePresent": bool(browser_probe),
         "present": browser_artifacts.get("present") is True,
         "matchesResult": browser_artifacts.get("matchesResult") is True,
         "fileCount": browser_artifacts.get("fileCount", 0),
