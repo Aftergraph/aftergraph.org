@@ -210,8 +210,28 @@ def apply_browser_frame_observer_fix(project: Path) -> None:
         (
             """                second = _wait_for_changed_page_screenshot(cdp, first_pixels,
 """,
-            """                second = _wait_for_changed_page_screenshot(cdp, fallback_baseline_pixels,
+            """                fallback_deadline = _fallback_capture_deadline(deadline)
+                second = _wait_for_changed_page_screenshot(cdp, fallback_baseline_pixels,
 """,
+        ),
+        (
+            """def _wait_for_changed_page_screenshot(cdp: CDPConnection, baseline_pixels: bytes, *,
+""",
+            """def _fallback_capture_deadline(overall_deadline: float, *, now: float | None = None) -> float:
+    current = time.monotonic() if now is None else now
+    return max(overall_deadline, current + 2.0)
+
+
+def _wait_for_changed_page_screenshot(cdp: CDPConnection, baseline_pixels: bytes, *,
+""",
+        ),
+        (
+            """    for _ in range(20):
+        if time.monotonic() >= deadline:
+            break
+        frame, pixels = _capture_page_screenshot(cdp)""",
+            """    while time.monotonic() < deadline:
+        frame, pixels = _capture_page_screenshot(cdp)""",
         ),
     ]
     for old, new in replacements:
@@ -219,7 +239,31 @@ def apply_browser_frame_observer_fix(project: Path) -> None:
             raise RuntimeError("f15_browser_frame_fix_preimage_mismatch")
         value = value.replace(old, new, 1)
     path.write_text(value, encoding="utf-8")
-    print("F15_BROWSER_FRAME_FIX region=fixture-600x300 fallbackBaseline=page-screenshot", flush=True)
+    test_path = project / "tests/unit/test_v23_f15_fallback_deadline.py"
+    if test_path.exists() or test_path.is_symlink():
+        raise RuntimeError("f15_browser_deadline_test_path_exists")
+    test_source = """from __future__ import annotations
+import sys
+import unittest
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from guest_browser_probe_v23 import _fallback_capture_deadline
+
+
+class FallbackDeadlineTests(unittest.TestCase):
+    def test_expired_parent_deadline_gets_two_second_reserve(self):
+        self.assertEqual(_fallback_capture_deadline(99.0, now=100.0), 102.0)
+
+    def test_future_parent_deadline_remains_the_bound(self):
+        self.assertEqual(_fallback_capture_deadline(105.0, now=100.0), 105.0)
+
+
+if __name__ == "__main__":
+    unittest.main()
+"""
+    test_path.write_text(test_source, encoding="utf-8")
+    print("F15_BROWSER_FRAME_FIX region=fixture-600x300 fallbackBaseline=page-screenshot fallbackReserveSeconds=2", flush=True)
 
 
 
@@ -261,6 +305,7 @@ def main() -> int:
             break
 
     tests = [
+        project / "tests/unit/test_v23_f15_fallback_deadline.py",
         project / "tests/unit/test_v23_f15_pointer_input.py",
         project / "tests/unit/test_v23_f14_guest_takeover_bridge.py",
         project / "tests/unit/test_v23_f13_guest_browser.py",

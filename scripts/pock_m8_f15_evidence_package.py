@@ -8,6 +8,7 @@ import re
 import shutil
 
 EXPECTED_TESTS = {
+    "test_v23_f15_fallback_deadline.py": 2,
     "test_v23_f15_pointer_input.py": 13,
     "test_v23_f14_guest_takeover_bridge.py": 9,
     "test_v23_f13_guest_browser.py": 34,
