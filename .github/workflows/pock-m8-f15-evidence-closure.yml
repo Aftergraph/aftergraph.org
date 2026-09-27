@@ -97,17 +97,8 @@ jobs:
             $driverText = $driverOutput | Out-String -Width 8192
             [IO.File]::WriteAllText($logWin, $driverText, [Text.UTF8Encoding]::new($false))
             Write-Output ('F15_DRIVER_COMPLETE exitCode=' + $driverExit + ' capturedChars=' + $driverText.Length)
-            $diagnosticLines = @($driverText -split "\r?\n" | Where-Object {
-              $_ -match 'F15_BROWSER_FRAME_FIX|F15_SOURCE_OR_PATCH_FAILED|guest_browser_receipt_eof|guest_browser_click_counter_invalid|browser_screencast_visual_change_timeout|browser_screenshot_visual_change_timeout'
-            } | Select-Object -Last 30)
-            foreach ($line in $diagnosticLines) { Write-Output ('F15_DIAGNOSTIC ' + $line.Trim()) }
-            $resultLine = $driverText -split "\r?\n" | Where-Object { $_ -match '^F15_RESULT ' } | Select-Object -Last 1
-            if ($resultLine) {
-              try {
-                $resultJson = $resultLine.Substring(11) | ConvertFrom-Json
-                $failure = [string]$resultJson.failure
-                if ($failure -match '^f13_blocked:[A-Za-z]+Error:[A-Za-z0-9_:.-]{1,200}
-
+            $diagnosticLines = @($driverText -split "\\r?\\n" | Select-String -Pattern 'F15_BROWSER_FRAME_FIX|F15_SOURCE_OR_PATCH_FAILED|guest_browser_receipt_eof|guest_browser_click_counter_invalid|browser_screencast_visual_change_timeout|browser_screenshot_visual_change_timeout' | Select-Object -Last 30)
+            foreach ($line in $diagnosticLines) { Write-Output ('F15_DIAGNOSTIC ' + $line.Line.Trim()) }
             $packageOutput = & wsl.exe -d Ubuntu-26.04 -- python3 -B -u $linux[5] --metadata $linuxMetadata --bundle-dir $linuxBundle --driver-log $linuxLog --driver-file $linux[4] --execution-id $executionId --driver-exit-code $driverExit
             $packageExit = $LASTEXITCODE
             foreach ($line in $packageOutput) { Write-Output $line }
