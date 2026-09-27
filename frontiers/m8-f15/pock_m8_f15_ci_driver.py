@@ -201,6 +201,10 @@ def apply_browser_frame_observer_fix(project: Path) -> None:
     replacements = [
         (region_old, region_new),
         (
+            """<button id="probe" onclick="document.querySelector('#counter').textContent='1';this.textContent='Clicked'">Click</button>""",
+            """<button id="probe" onclick="document.querySelector('#counter').textContent='1';this.textContent='Clicked';this.style.background='#16a34a';document.body.style.background='#18311f'">Click</button>""",
+        ),
+        (
             """            first, first_pixels = _next_screencast_frame(cdp, min(deadline, time.monotonic() + 8.0))
 """,
             """            first, first_pixels = _next_screencast_frame(cdp, min(deadline, time.monotonic() + 8.0))
@@ -330,7 +334,7 @@ if __name__ == "__main__":
     unittest.main()
 """
     test_path.write_text(test_source, encoding="utf-8")
-    print("F15_BROWSER_FRAME_FIX region=fixture-600x300 fallbackBaseline=page-screenshot fallbackReserveSeconds=2", flush=True)
+    print("F15_BROWSER_FRAME_FIX region=fixture-600x300 fallbackBaseline=page-screenshot fallbackReserveSeconds=2 visibleFixtureMutation=high-contrast-click-state", flush=True)
 
 
 
