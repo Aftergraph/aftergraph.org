@@ -184,6 +184,46 @@ def apply_context_patch(patch_path: Path, source: Path) -> None:
     print(f"F15_CONTEXT_PATCH_APPLIED files={files} hunks={hunks}", flush=True)
 
 
+def apply_browser_frame_observer_fix(project: Path) -> None:
+    """Measure the bounded fixture and compare fallback screenshots consistently."""
+    path = project / "guest_browser_probe_v23.py"
+    value = path.read_text(encoding="utf-8")
+    region_old = """    # The fixture's button and counter are adjacent around the click point.
+    left = max(0, int(center_x) - 120)
+    right = min(width, int(center_x) + 220)
+    top = max(0, int(center_y) - 80)
+    bottom = min(height, int(center_y) + 100)
+"""
+    region_new = """    # Compare the fixed app region containing both the fixture button and counter.
+    left, right = 0, min(width, 600)
+    top, bottom = 0, min(height, 300)
+"""
+    replacements = [
+        (region_old, region_new),
+        (
+            """            first, first_pixels = _next_screencast_frame(cdp, min(deadline, time.monotonic() + 8.0))
+""",
+            """            first, first_pixels = _next_screencast_frame(cdp, min(deadline, time.monotonic() + 8.0))
+            _fallback_baseline_frame, fallback_baseline_pixels = _capture_page_screenshot(cdp)
+""",
+        ),
+        (
+            """                second = _wait_for_changed_page_screenshot(cdp, first_pixels,
+""",
+            """                second = _wait_for_changed_page_screenshot(cdp, fallback_baseline_pixels,
+""",
+        ),
+    ]
+    for old, new in replacements:
+        if value.count(old) != 1:
+            raise RuntimeError("f15_browser_frame_fix_preimage_mismatch")
+        value = value.replace(old, new, 1)
+    path.write_text(value, encoding="utf-8")
+    print("F15_BROWSER_FRAME_FIX region=fixture-600x300 fallbackBaseline=page-screenshot", flush=True)
+
+
+
+
 def main() -> int:
     if len(sys.argv) != 6:
         raise SystemExit("usage: driver RUN_ID F11 F13 F14 F15")
@@ -197,6 +237,7 @@ def main() -> int:
         if sha(f15) != PIN["f15"]:
             raise RuntimeError("f15_patch_pin_mismatch")
         apply_context_patch(f15, source)
+        apply_browser_frame_observer_fix(project)
     except Exception as exc:
         print("F15_SOURCE_OR_PATCH_FAILED " + type(exc).__name__ + ":" + str(exc), flush=True)
         return 10
