@@ -81,6 +81,8 @@ def main():
     for name, expected in EXPECTED_PINNED.items():
         if pins.get(name, {}).get("sha256") != expected:
             fail("source_pin_mismatch:" + name)
+    if sha(root / "f15-driver.py") != pins.get("driver", {}).get("sha256"):
+        fail("driver_file_digest_mismatch")
     if pins.get("driver", {}).get("gitBlobSha1") != EXPECTED_DRIVER_BLOB:
         fail("driver_blob_mismatch")
     if pins.get("packager", {}).get("gitBlobSha1") != EXPECTED_PACKAGER_BLOB:
@@ -123,7 +125,10 @@ def main():
             and re.fullmatch(r"[0-9a-f]{64}", str(ack.get("afterFrameSha256", "")))):
         fail("guest_ack_invalid")
     if not (control.get("status") == "applied"
-            and control.get("independentInputEffectObservation") is False):
+            and control.get("independentInputEffectObservation") is False
+            and control.get("eventDigest") == browser.get("inputEventDigest")
+            and ack.get("inputEventDigest") == browser.get("inputEventDigest")
+            and re.fullmatch(r"[0-9a-f]{64}", str(ack.get("ackMac", "")))):
         fail("control_ack_boundary_invalid")
     if result.get("pointer") != {"x": 50, "y": 50}:
         fail("pointer_invalid")
@@ -138,6 +143,8 @@ def main():
         fail("serial_binding_invalid")
     if b"Kernel panic" in serial or b"Linux version 6.18.48" not in serial:
         fail("serial_marker_invalid")
+    if result.get("rootfsSha256") != manifest.get("guestImage", {}).get("sha256"):
+        fail("result_image_sha256_mismatch")
     boundary = manifest.get("resultBoundary", {})
     if not (boundary.get("independentInputEffectObservation") is False
             and boundary.get("hardwareAttestation") == "BLOCKED"
@@ -155,6 +162,7 @@ def main():
         "scope": "artifact integrity and truth-boundary consistency only",
         "notEstablished": ["independent real-boot reproduction",
                            "independent observation of pointer effect",
+                           "current guest-tree manifest recomputation",
                            "hardware attestation",
                            "canonical HabitatMicroVMExecutionProof/v1"],
     }
