@@ -233,6 +233,63 @@ def _wait_for_changed_page_screenshot(cdp: CDPConnection, baseline_pixels: bytes
             """    while time.monotonic() < deadline:
         frame, pixels = _capture_page_screenshot(cdp)""",
         ),
+        (
+            """def _wait_for_changed_page_screenshot(cdp: CDPConnection, baseline_pixels: bytes, *,
+                                       center_x: float, center_y: float,
+                                       deadline: float) -> bytes:
+    while time.monotonic() < deadline:
+        frame, pixels = _capture_page_screenshot(cdp)
+        if _pixel_region_changed(baseline_pixels, pixels, width=800, height=600,
+                                 center_x=center_x, center_y=center_y):
+            return frame
+        time.sleep(min(0.05, max(0.0, deadline - time.monotonic())))
+    raise TimeoutError("browser_screenshot_visual_change_timeout")""",
+            """def _pixel_change_row_counts(before: bytes, after: bytes, *, width: int = 800,
+                             height: int = 600, roi_width: int = 600,
+                             roi_height: int = 300) -> tuple[int, int]:
+    if (width <= 0 or height <= 0 or len(before) != len(after)
+            or len(before) % height != 0):
+        return -1, -1
+    row_bytes = len(before) // height
+    if row_bytes % width != 0:
+        return -1, -1
+    pixel_bytes = row_bytes // width
+    roi_bytes = min(width, max(0, roi_width)) * pixel_bytes
+    roi_rows = min(height, max(0, roi_height))
+    full_changed_rows = sum(
+        before[y * row_bytes:(y + 1) * row_bytes]
+        != after[y * row_bytes:(y + 1) * row_bytes]
+        for y in range(height)
+    )
+    roi_changed_rows = sum(
+        before[y * row_bytes:y * row_bytes + roi_bytes]
+        != after[y * row_bytes:y * row_bytes + roi_bytes]
+        for y in range(roi_rows)
+    )
+    return roi_changed_rows, full_changed_rows
+
+
+def _wait_for_changed_page_screenshot(cdp: CDPConnection, baseline_pixels: bytes, *,
+                                       center_x: float, center_y: float,
+                                       deadline: float) -> bytes:
+    attempts = 0
+    roi_rows = full_rows = -1
+    sample_bytes = 0
+    while time.monotonic() < deadline:
+        frame, pixels = _capture_page_screenshot(cdp)
+        attempts += 1
+        sample_bytes = len(pixels)
+        roi_rows, full_rows = _pixel_change_row_counts(baseline_pixels, pixels)
+        if _pixel_region_changed(baseline_pixels, pixels, width=800, height=600,
+                                 center_x=center_x, center_y=center_y):
+            return frame
+        time.sleep(min(0.05, max(0.0, deadline - time.monotonic())))
+    raise TimeoutError(
+        "browser_screenshot_visual_change_timeout"
+        f":attempts:{attempts}:roiRows:{roi_rows}:fullRows:{full_rows}"
+        f":baselineBytes:{len(baseline_pixels)}:sampleBytes:{sample_bytes}"
+    )""",
+        ),
     ]
     for old, new in replacements:
         if value.count(old) != 1:
@@ -248,7 +305,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from guest_browser_probe_v23 import _fallback_capture_deadline
+from guest_browser_probe_v23 import _fallback_capture_deadline, _pixel_change_row_counts
 
 
 class FallbackDeadlineTests(unittest.TestCase):
@@ -257,6 +314,16 @@ class FallbackDeadlineTests(unittest.TestCase):
 
     def test_future_parent_deadline_remains_the_bound(self):
         self.assertEqual(_fallback_capture_deadline(105.0, now=100.0), 105.0)
+
+    def test_row_counts_separate_fixture_roi_from_outside_changes(self):
+        baseline = bytes(800 * 600 * 4)
+        inside = bytearray(baseline)
+        inside[(50 * 800 + 50) * 4] = 1
+        self.assertEqual(_pixel_change_row_counts(baseline, bytes(inside)), (1, 1))
+        outside = bytearray(baseline)
+        outside[(500 * 800 + 700) * 4] = 1
+        self.assertEqual(_pixel_change_row_counts(baseline, bytes(outside)), (0, 1))
+        self.assertEqual(_pixel_change_row_counts(baseline, baseline), (0, 0))
 
 
 if __name__ == "__main__":
