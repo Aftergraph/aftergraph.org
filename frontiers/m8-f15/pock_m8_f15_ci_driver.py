@@ -22,6 +22,10 @@ PIN = {
     "f11": "f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b",
     "f13": "8881a0822205ed218a33a9ed8bb3579993bc1fc25000568a92406adb78bc1bd9",
     "f14": "4990402199536a0228364ee930c93a06b0b9e788e17372be2abdbc38c7fcab6e",
+    "f15": "9d9f88e3f6e52468535e8416549633191dd813ea0ca11bedebe3cd3fa3991010",
+    "kernel": "9204218e8bcca6ac23848d74f45df2eb19d7f31e8277840a7d145a0df8b078d2",
+    "firecracker": "99ad0f5cd0514a88aad0e9ae8cfdb3cc3b4ab9d190e1194602406c786b5de7a5",
+    "jailer": "65ef226e96f0ceda55ba643f445801ef2cc0ea667ef67cad8ac4f406c9c8434f",
 }
 GUEST_AGENT_APPEND = b'''\n\nimport argparse\n\n\ndef main(argv: list[str] | None = None) -> int:\n    parser = argparse.ArgumentParser(description="Pock M8 fixed guest workload over AF_VSOCK")\n    parser.add_argument("--port", type=int, default=4050)\n    args = parser.parse_args(argv)\n    receipt = PockGuestWorkloadAgent.connect_vsock(port=args.port)\n    print(json.dumps({"contract": receipt["contract"], "transport": receipt["transport"],\n                      "receiptHash": receipt["receiptHash"], "exitCode": receipt["exitCode"]},\n                     sort_keys=True))\n    return 0\n\n\nif __name__ == "__main__":\n    raise SystemExit(main())\n'''
 
@@ -186,7 +190,12 @@ def main() -> int:
     run_id = sys.argv[1]
     f11, f13, f14, f15 = map(Path, sys.argv[2:])
     try:
+        for label, path in (("kernel", KERNEL), ("firecracker", FIRECRACKER), ("jailer", JAILER)):
+            if not path.is_file() or path.is_symlink() or sha(path) != PIN[label]:
+                raise RuntimeError("f15_" + label + "_pin_mismatch")
         source, project = reconstruct_f14(run_id, f11, f13, f14)
+        if sha(f15) != PIN["f15"]:
+            raise RuntimeError("f15_patch_pin_mismatch")
         apply_context_patch(f15, source)
     except Exception as exc:
         print("F15_SOURCE_OR_PATCH_FAILED " + type(exc).__name__ + ":" + str(exc), flush=True)
@@ -201,15 +210,13 @@ def main() -> int:
             source_text = candidate.read_text(encoding="utf-8")
         except Exception:
             continue
-        needle = "class HabitatInteractiveTransportManager"
-        pos = source_text.find(needle)
-        if pos >= 0:
-            print("F15_TRANSPORT_SOURCE " + str(candidate), flush=True)
-            for method_name in ("def _normalize_input_event", "def submit_input", "def next_input_as_worker", "def ack_input_as_worker"):
-                method_pos = source_text.find(method_name)
-                if method_pos >= 0:
-                    print("F15_TRANSPORT_METHOD " + method_name, flush=True)
-                    print(source_text[method_pos:method_pos + 9000], flush=True)
+        if "class HabitatInteractiveTransportManager" in source_text:
+            method_names = ("def _normalize_input_event", "def submit_input",
+                            "def next_input_as_worker", "def ack_input_as_worker")
+            present = [name.removeprefix("def ").split("(")[0] for name in method_names
+                       if name in source_text]
+            print("F15_TRANSPORT_SHAPE sourcePresent=true methods=" + ",".join(present),
+                  flush=True)
             break
 
     tests = [
