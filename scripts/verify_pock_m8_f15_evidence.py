@@ -6,13 +6,13 @@ import json
 from pathlib import Path
 import re
 
-EXPECTED_DRIVER_BLOB = "cec4969c559624530c5b57e11628286a00e3b951"
-EXPECTED_PACKAGER_BLOB = "6ba8ad08ca69171f97eb3dbe1289edc21c76a93a"
+EXPECTED_DRIVER_BLOB = "a950444cfa1d6f0d7afb085170666918cc3e95bc"
+EXPECTED_PACKAGER_BLOB = "d4d57c2b22f4704723764e5061be5b50a1743d22"
 EXPECTED_PINNED = {
     "f11Patch": "f22ece3e4563efc6b7cc0ad772d912ee3484364381d9b1f425277108aa1f964b",
     "f13Patch": "8881a0822205ed218a33a9ed8bb3579993bc1fc25000568a92406adb78bc1bd9",
     "f14Patch": "4990402199536a0228364ee930c93a06b0b9e788e17372be2abdbc38c7fcab6e",
-    "f15Patch": "9d9f88e3f6e52468535e8416549633191dd813ea0ca11bedebe3cd3fa3991010",
+    "f15Patch": "17e85c05d2b8130dd6c90d35076748544bdbb4d8a7047c4c57334d46e1e6f94b",
     "archive": "1017465270d11f99f55eb540061ce902589b45c56be7a03308db19f80d937122",
     "browser": "60c03e8882f4bb47459a905ede1074e1e746c5b765e437c288e460320540a8a3",
     "kernel": "9204218e8bcca6ac23848d74f45df2eb19d7f31e8277840a7d145a0df8b078d2",
@@ -20,7 +20,7 @@ EXPECTED_PINNED = {
     "jailer": "65ef226e96f0ceda55ba643f445801ef2cc0ea667ef67cad8ac4f406c9c8434f",
 }
 EXPECTED_TESTS = {
-    "test_v23_f15_pointer_input.py": 12,
+    "test_v23_f15_pointer_input.py": 13,
     "test_v23_f14_guest_takeover_bridge.py": 9,
     "test_v23_f13_guest_browser.py": 34,
     "test_v23_f12_guest_effect_truth.py": 4,
@@ -115,6 +115,10 @@ def main():
         fail("execution_proof_invalid")
     if result.get("interactiveBinding", {}).get("truthStatus") != "REAL_GUEST_VSOCK_BINDING_ONLY":
         fail("vsock_boundary_invalid")
+    guest_probe = (result.get("f13Run") or {}).get("guestBrowserProbe") or {}
+    capture_method = guest_probe.get("frameCaptureMethod")
+    if capture_method not in {"CDP_PAGE_SCREENCAST", "CDP_PAGE_CAPTURESCREENSHOT_FALLBACK"}:
+        fail("browser_frame_capture_method_invalid")
     browser = result.get("guestBrowser", {})
     ack = browser.get("guestInputAck", {})
     control = browser.get("controlPlaneInputAck", {})
@@ -158,6 +162,7 @@ def main():
         "runAttempt": a.run_attempt,
         "manifestSha256": sha(mp),
         "resultSha256": sha(root / "f15-result.json"),
+        "frameCaptureMethod": capture_method,
         "serialSha256": sha(root / "serial.log"),
         "scope": "artifact integrity and truth-boundary consistency only",
         "notEstablished": ["independent real-boot reproduction",
