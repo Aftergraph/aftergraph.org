@@ -296,6 +296,18 @@ def main():
     manifest_hash = sha(manifest_path)
     (bundle / "f15-evidence-manifest.sha256").write_text(
         manifest_hash + "  f15-evidence-manifest.json\n", encoding="ascii", newline="\n")
+    browser_probe = (((result or {}).get("f13Run") or {}).get("guestBrowserProbe") or {})
+    browser_expected = run_dir / "browser-evidence"
+    browser_diag = {
+        "reason": browser_artifacts.get("failureReason", "none"),
+        "present": browser_artifacts.get("present") is True,
+        "matchesResult": browser_artifacts.get("matchesResult") is True,
+        "fileCount": browser_artifacts.get("fileCount", 0),
+        "reportedPathPresent": bool(browser_probe.get("artifactsPath")),
+        "reportedPathMatchesExpected": browser_probe.get("artifactsPath") == str(browser_expected),
+        "expectedDirectoryPresent": browser_expected.is_dir(),
+    }
+    print("F15_BROWSER_EVIDENCE " + json.dumps(browser_diag, sort_keys=True), flush=True)
     print("F15_EVIDENCE_PACKAGE status=" + ("COMPLETE" if complete else "INCOMPLETE")
           + " fileCount=" + str(len(file_rows)) + " manifestSha256=" + manifest_hash, flush=True)
     return 0 if complete else 43
