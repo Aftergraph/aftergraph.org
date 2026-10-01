@@ -45,3 +45,18 @@ test('telemetry worker enforces same-origin browser submissions', async () => {
   const response = await dispatch({ event: 'registry_loaded', result_bucket: '6-20' }, { origin: 'https://example.com' });
   assert.equal(response.status, 403);
 });
+
+test('deploy provenance endpoint exposes deterministic source identity', async () => {
+  const env = createEnv();
+  const request = new Request('https://aftergraph.org/provenance.json', { method: 'GET' });
+  const response = await worker.fetch(request, env);
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('content-type') || '', /application\/json/);
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+  const body = await response.json();
+  assert.equal(body.schema, 'aftergraph-deploy-provenance/1.0');
+  assert.equal(body.repository, 'Aftergraph/aftergraph.org');
+  assert.equal(body.route, 'aftergraph-site v1.2.0');
+  assert.ok(body.sha);
+  assert.ok(body.deployed);
+});
