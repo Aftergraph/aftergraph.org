@@ -107,7 +107,11 @@ const OG_ATLAS = `
 <meta property="og:title" content="Atlas — Development Observatory">
 <meta property="og:description" content="Read-only evidence-aware digital twin of Aftergraph development. Every claim carries provenance.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://aftergraph.org/atlas">`;
+<meta property="og:url" content="https://aftergraph.org/atlas">
+<meta property="og:image" content="https://aftergraph.org/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Atlas — Development Observatory">
+<meta name="twitter:image" content="https://aftergraph.org/og-image.svg">`;
 atlasHtml = atlasHtml.replace('</head>', `<link rel="icon" type="image/svg+xml" href="/favicon.ico">${OG_ATLAS}\n</head>`);
 
 // Public topology is a Governance projection. These gates fail closed when a
@@ -204,14 +208,22 @@ const OG_SENTINEL = `
 <meta property="og:title" content="Sentinel — Verified Code Review">
 <meta property="og:description" content="PRs into merge-ready verdicts on the exact commit.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://aftergraph.org/sentinel">`;
+<meta property="og:url" content="https://aftergraph.org/sentinel">
+<meta property="og:image" content="https://aftergraph.org/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sentinel — Verified Code Review">
+<meta name="twitter:image" content="https://aftergraph.org/og-image.svg">`;
 
 const OG_COMMUNITY = `
 <meta property="og:site_name" content="Aftergraph">
 <meta property="og:title" content="Community — Aftergraph">
 <meta property="og:description" content="Public deliberation, research reproduction, roadmap input and RFC intake for Aftergraph.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://aftergraph.org/community">`;
+<meta property="og:url" content="https://aftergraph.org/community">
+<meta property="og:image" content="https://aftergraph.org/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Community — Aftergraph">
+<meta name="twitter:image" content="https://aftergraph.org/og-image.svg">`;
 
 const OG_LAUNCH = `
 <meta property="og:site_name" content="Aftergraph">
@@ -219,7 +231,10 @@ const OG_LAUNCH = `
 <meta property="og:description" content="System launcher for public Aftergraph destinations.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aftergraph.org/launch">
-<meta property="og:image" content="https://aftergraph.org/og-image.svg">`;
+<meta property="og:image" content="https://aftergraph.org/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Launcher — Aftergraph">
+<meta name="twitter:image" content="https://aftergraph.org/og-image.svg">`;
 
 landing = landing.replace('</head>', `${FAVICON}${OG}\n</head>`);
 landing = landing.replace('</body>', `<script>${experienceHero}</script>\n</body>`);
