@@ -509,7 +509,7 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <section class="section shell" id="proof">
 <p class="section-kicker">Live evidence</p>
 <h2>Do not trust the claim. Inspect the system.</h2>
-<p class="section-intro">This surface reads Aftergraph's own same-origin health contract at runtime. If the probe cannot be verified, the UI stays explicit about that.</p>
+<p class="section-intro">This surface cross-checks Aftergraph's same-origin health and deploy-provenance contracts at runtime. A verified state requires the exact SHA, route and deployment marker to agree.</p>
 <div class="proof-panel" data-live-proof aria-live="polite">
 <div class="proof-head">
 <div><span class="proof-label">Runtime probe</span><strong style="font:700 20px/1.25 var(--font-display)">aftergraph.org /healthz</strong></div>
@@ -524,6 +524,8 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <div class="proof-actions">
 <a class="button primary" href="/status">Open public status</a>
 <a class="button" href="/healthz">Inspect raw health</a>
+<a class="button" href="/provenance.json">Inspect provenance</a>
+<a class="button" data-proof-commit href="https://github.com/Aftergraph/aftergraph.org">Open exact commit</a>
 <a class="button" href="/atlas">Inspect Atlas</a>
 <a class="button" href="https://github.com/Aftergraph/aftergraph.org">View source</a>
 </div>
@@ -643,6 +645,34 @@ var links={};var secs=[];
 document.querySelectorAll('.nav-links a[href^="#"]').forEach(function(a){var f=a.getAttribute('href').slice(1);if(f&&document.getElementById(f)){links[f]=a;secs.push(f);}});
 if('IntersectionObserver' in window&&secs.length){var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){secs.forEach(function(s){if(links[s]){links[s].classList.toggle('active',s===e.target.id);}});}});},{rootMargin:'-45% 0px -50% 0px'});secs.forEach(function(s){var el=document.getElementById(s);if(el){io2.observe(el);}});}
 if(!reduce){var art=document.querySelector('.orbit-art'),vis=document.querySelector('.hero-visual');if(art&&vis){var mono=function(){var y=window.scrollY;if(y<window.innerHeight&&y>=0){art.style.transform='translate3d(0,'+(y*0.09)+'px,0)';vis.style.transform='translate3d(0,'+(y*0.04)+'px,0)';}else{art.style.transform='';vis.style.transform='';}};var t=false;window.addEventListener('scroll',function(){if(!t){requestAnimationFrame(function(){mono();t=false;});t=true;}},{passive:true});mono();}}
+})();
+</script>
+<script data-live-proof-script>
+(function(){
+  var root=document.querySelector('[data-live-proof]');
+  if(!root||typeof fetch!=='function') return;
+  var state=root.querySelector('[data-proof-state]');
+  var commit=root.querySelector('[data-proof-commit]');
+  var set=function(sel,val){var el=root.querySelector(sel);if(el)el.textContent=(val===undefined||val===null||val==='')?'unverified':String(val);};
+  var getJson=function(path){return fetch(path,{cache:'no-store',headers:{Accept:'application/json'}}).then(function(r){if(!r.ok)throw new Error(path+' HTTP '+r.status);return r.json();});};
+  Promise.all([getJson('/healthz'),getJson('/provenance.json')]).then(function(values){
+    var h=values[0],p=values[1];
+    var valid=p&&p.schema==='aftergraph-deploy-provenance/1.0';
+    var match=valid&&h&&h.status==='ok'&&h.sha===p.sha&&h.route===p.route&&h.deployed===p.deployed;
+    state.dataset.state=match?'ok':'error';
+    state.textContent=match?'Deploy provenance verified':'Provenance mismatch';
+    set('[data-proof-health]',h&&h.status);
+    set('[data-proof-sha]',match&&p&&p.sha);
+    set('[data-proof-deployed]',match&&p&&p.deployed);
+    set('[data-proof-route]',match&&p&&p.route);
+    if(commit&&match&&p.sha&&p.sha!=='local'){
+      commit.href='https://github.com/Aftergraph/aftergraph.org/commit/'+encodeURIComponent(p.sha);
+    }
+  }).catch(function(){
+    state.dataset.state='error';
+    state.textContent='Runtime not verified';
+    set('[data-proof-health]','unavailable');
+  });
 })();
 </script>
 </body>
