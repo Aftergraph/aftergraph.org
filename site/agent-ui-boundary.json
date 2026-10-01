@@ -1,0 +1,89 @@
+{
+  "schema": "aftergraph-agent-ui-boundary/0.1-draft",
+  "status": "illustrative",
+  "authority": "non-canonical",
+  "inspired_by": [
+    {
+      "name": "AG-UI",
+      "url": "https://github.com/ag-ui-protocol/ag-ui",
+      "relationship": "interaction-pattern inspiration only; no compatibility claim"
+    }
+  ],
+  "principles": [
+    "interaction events are not authority",
+    "tool intent must cross trust before consequential execution",
+    "shared UI state is context, not canonical truth",
+    "execution emits inspectable evidence",
+    "verified outcomes require independent evaluation"
+  ],
+  "flow": [
+    {
+      "id": "run",
+      "class": "interaction",
+      "label": "RUN",
+      "semantics": [
+        "start",
+        "finish",
+        "error"
+      ]
+    },
+    {
+      "id": "message",
+      "class": "interaction",
+      "label": "MESSAGE",
+      "semantics": [
+        "start",
+        "delta",
+        "end"
+      ]
+    },
+    {
+      "id": "tool",
+      "class": "interaction",
+      "label": "TOOL",
+      "semantics": [
+        "intent",
+        "args",
+        "result"
+      ]
+    },
+    {
+      "id": "state",
+      "class": "interaction",
+      "label": "STATE",
+      "semantics": [
+        "snapshot",
+        "delta"
+      ]
+    },
+    {
+      "id": "approval",
+      "class": "authority-boundary",
+      "label": "APPROVAL",
+      "semantics": [
+        "pause",
+        "inspect",
+        "authorize"
+      ]
+    },
+    {
+      "id": "evidence",
+      "class": "evidence",
+      "label": "EVIDENCE",
+      "semantics": [
+        "artifacts",
+        "provenance"
+      ]
+    },
+    {
+      "id": "verdict",
+      "class": "verification",
+      "label": "VERDICT",
+      "semantics": [
+        "criteria",
+        "subject",
+        "result"
+      ]
+    }
+  ]
+}
