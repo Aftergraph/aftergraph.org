@@ -15,6 +15,12 @@ let landing = read('index.html');
 let launch = read('launch.html');
 let nextHtml = read('next.html');
 const nextProductsRaw = read('next-products.json');
+// Truth layer: generated at build time by next-src/build-ecosystem-state.mjs.
+// Missing (local build without network) means an honest empty state, never a guess.
+const ecosystemStateRaw = fs.existsSync(path.join(SITE, 'ecosystem-state.json'))
+  ? read('ecosystem-state.json')
+  : JSON.stringify({ schema: 'aftergraph.ecosystem-state/v1', generatedAt: null, source: 'not generated in this build', counts: {}, repos: [] });
+JSON.parse(ecosystemStateRaw);
 const launcherApp = read('launcher-app.js');
 const launcherRegistryRaw = read('launcher-registry.json');
 let launcherRegistry;
@@ -306,6 +312,7 @@ const LANDING = ${JSON.stringify(landing)};
 const LAUNCH = ${JSON.stringify(launch)};
 const NEXT = ${JSON.stringify(nextHtml)};
 const NEXT_PRODUCTS = ${nextProductsRaw};
+const ECOSYSTEM_STATE = ${JSON.stringify(ecosystemStateRaw)};
 const LAUNCH_APP = ${JSON.stringify(launcherApp)};
 const LAUNCHER_REGISTRY = ${JSON.stringify(launcherRegistryRaw)};
 const LAUNCHER_ALLOWED_IDS = new Set(${JSON.stringify(launcherTelemetryIds)});
@@ -456,6 +463,7 @@ export default {
     else if (ICON_FILES[p]) { body = Uint8Array.from(atob(ICON_FILES[p]), c => c.charCodeAt(0)); contentType = 'image/png'; cache = 'public, max-age=86400'; }
     else if (p === '/launcher-app.js') { body = LAUNCH_APP; contentType = 'text/javascript;charset=utf-8'; cache = 'public, max-age=300'; }
     else if (p === '/launcher-registry.json') { body = LAUNCHER_REGISTRY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
+    else if (p === '/next/ecosystem-state.json') { body = ECOSYSTEM_STATE; contentType = 'application/json;charset=utf-8'; extraHeaders = { 'x-robots-tag': 'noindex, nofollow', 'cache-control': 'public, max-age=300' }; }
     else if (p === '/next' || p === '/next/') { body = NEXT; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
     else if (NEXT_PRODUCTS[p.endsWith('/') ? p.slice(0, -1) : p]) { body = NEXT_PRODUCTS[p.endsWith('/') ? p.slice(0, -1) : p]; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
     else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }

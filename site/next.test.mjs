@@ -92,3 +92,44 @@ test('mobile header keeps Talk to us on one line', () => {
   assert.match(html, /\.hdr-r \.btn\{white-space:nowrap\}/);
   assert.match(html, /<span class="kl">Search<\/span>/);
 });
+
+test('truth layer: run aggregation is exact and never optimistic', async () => {
+  const { aggregateRuns } = await import('./next-src/build-ecosystem-state.mjs');
+  assert.equal(aggregateRuns([]).status, 'unknown');
+  assert.equal(aggregateRuns([{ workflow_id: 1, name: 'ci', status: 'completed', conclusion: 'success', created_at: '1' }]).status, 'passing');
+  assert.equal(aggregateRuns([{ workflow_id: 1, name: 'ci', status: 'in_progress', conclusion: null, created_at: '1' }]).status, 'pending');
+  const r = aggregateRuns([
+    { workflow_id: 1, name: 'ci', status: 'completed', conclusion: 'failure', created_at: '1' },
+    { workflow_id: 1, name: 'ci', status: 'completed', conclusion: 'success', created_at: '2' },
+    { workflow_id: 2, name: 'deploy', status: 'completed', conclusion: 'failure', created_at: '1' },
+  ]);
+  assert.equal(r.status, 'failing');
+  assert.deepEqual(r.failing, ['deploy']);
+});
+
+test('truth layer: private repos publish nothing, read errors become unknown', async () => {
+  const { buildState } = await import('./next-src/build-ecosystem-state.mjs');
+  const catalog = { repositories: [{ name: 'secret', visibility: 'private' }, { name: 'open', visibility: 'public' }] };
+  const fetchImpl = async () => ({ ok: false, status: 503, json: async () => ({}) });
+  const s = await buildState({ catalog, token: '', fetchImpl, now: () => new Date('2026-10-02T00:00:00Z') });
+  assert.deepEqual(s.repos[0], { name: 'secret', visibility: 'private', status: 'private' });
+  assert.equal(s.repos[1].status, 'unknown');
+  assert.equal(s.repos[1].head, null);
+  assert.ok(s.repos[1].errors.length > 0);
+  assert.equal(s.generatedAt, '2026-10-02T00:00:00.000Z');
+  assert.equal(s.counts.unknown, 1);
+  assert.equal(s.counts.private, 1);
+});
+
+test('truth layer: /next and product pages render live state from the same-origin JSON', () => {
+  assert.match(html, /id="live"/);
+  assert.match(html, /id="livegrid"/);
+  assert.match(html, /fetch\('\/next\/ecosystem-state\.json'\)/);
+  assert.match(html, /Nothing is shown rather than a guess/);
+  const products = JSON.parse(fs.readFileSync(new URL('./next-products.json', import.meta.url), 'utf8'));
+  for (const [route, page] of Object.entries(products)) {
+    assert.match(page, /data-live-repo="[^"]+"/, route);
+    assert.match(page, /ecosystem-state\.json/, route);
+  }
+  assert.match(worker, /p === '\/next\/ecosystem-state\.json'/);
+});
