@@ -36,3 +36,11 @@ test('strong platform sections expose public source or evidence affordances', ()
   assert.match(html, /class="source-link"[^>]*>Architecture source/);
   assert.match(html, /class="source-link"[^>]*>Inspect evidence/);
 });
+
+test('homepage exposes proof-first developer entry paths', () => {
+  assert.match(html, /href="#platform">Explore the platform<\/a>/);
+  assert.match(html, /href="\/atlas">Open Atlas<\/a>/);
+  assert.match(html, /href="https:\/\/github\.com\/Aftergraph"[^>]*>View source<\/a>/);
+  assert.match(html, /Infrastructure \+ open research · verifiable intelligent systems/);
+  assert.match(html, /Inspect it before you trust it\./);
+});
