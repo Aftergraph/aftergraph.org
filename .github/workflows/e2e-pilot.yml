@@ -13,9 +13,9 @@ jobs:
     continue-on-error: true
     env:
       E2E_TELEMETRY_DISABLED: '1'
-      PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/ms-playwright
     steps:
       - uses: actions/checkout@v4
+      - run: echo "PLAYWRIGHT_BROWSERS_PATH=$RUNNER_TEMP/ms-playwright" >> "$GITHUB_ENV"
       - run: node --version
       - run: npm --prefix e2e ci --no-audit --no-fund
       - run: cd e2e && npx playwright install chromium
