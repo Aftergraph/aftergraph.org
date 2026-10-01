@@ -5,6 +5,8 @@ on:
     paths:
       - 'site/**'
       - 'atlas/**'
+      - 'data/**'
+      - 'scripts/**'
       - 'DEPLOYMENT.md'
       - '.github/workflows/deploy.yml'
   push:
@@ -29,6 +31,13 @@ jobs:
     steps:
       - name: Checkout exact source
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Checkout pinned Governance topology
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: Aftergraph/after-graph-governance
+          ref: 7b963c880c4ccc886d4f06eb80eaf483dee848b4
+          path: governance-source
+          persist-credentials: false
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
@@ -47,6 +56,10 @@ jobs:
         run: node site/verify-atlas.cjs
       - name: Generate governed launcher registry
         run: node scripts/generate-launcher-registry.mjs
+      - name: Generate Governance platform catalog
+        env:
+          AFTERGRAPH_GOVERNANCE_SHA: 7b963c880c4ccc886d4f06eb80eaf483dee848b4
+        run: node scripts/generate-platform-catalog.mjs governance-source
       - name: Launcher registry and telemetry contracts
         run: node --test site/launcher-registry.test.mjs site/launcher-telemetry.test.mjs
       - name: Sync canonical Brand OS inputs
@@ -58,7 +71,7 @@ jobs:
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is current
-        run: git diff --exit-code -- site/wrangler.toml site/atlas-experience.json site/launcher-registry.json
+        run: git diff --exit-code -- site/wrangler.toml site/atlas-experience.json site/launcher-registry.json site/platform-catalog.json
       - name: Diff check
         run: git diff --check
 
@@ -126,7 +139,7 @@ jobs:
             throw "health provenance mismatch: expected $env:GITHUB_SHA, got $($health.sha)"
           }
 
-          $paths = @('/', '/launch', '/launcher-app.js', '/launcher-registry.json', '/status', '/sentinel', '/robots.txt', '/sitemap.xml')
+          $paths = @('/', '/launch', '/launcher-app.js', '/launcher-registry.json', '/platform/catalog.json', '/status', '/sentinel', '/robots.txt', '/sitemap.xml')
           if (Select-String -Path 'site/worker.js' -Pattern "p === '/community'" -Quiet) {
             $paths += '/community'
           }
