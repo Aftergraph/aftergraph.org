@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 const registryPath = new URL('./launcher-registry.json', import.meta.url);
 const sourcePath = new URL('../data/launcher-surfaces.json', import.meta.url);
@@ -11,7 +12,7 @@ const read = (url) => JSON.parse(fs.readFileSync(url, 'utf8'));
 
 test('launcher registry is deterministic and governance-backed', () => {
   const before = fs.readFileSync(registryPath, 'utf8');
-  const run = spawnSync(process.execPath, [generatorPath.pathname], { encoding: 'utf8' });
+  const run = spawnSync(process.execPath, [fileURLToPath(generatorPath)], { encoding: 'utf8' });
   assert.equal(run.status, 0, run.stderr || run.stdout);
   assert.equal(fs.readFileSync(registryPath, 'utf8'), before, 'generator must be byte deterministic');
 

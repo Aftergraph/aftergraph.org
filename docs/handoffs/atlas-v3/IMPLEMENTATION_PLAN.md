@@ -1,6 +1,6 @@
 # Atlas V3 Implementation Plan
 
-**Status:** DRAFT — Generated 2026-09-15
+**Status:** ACTIVE ? P0 storage/authority boundary hardened 2026-09-16
 **Source:** `docs/handoffs/atlas-v3/AGENT_START_HERE.md` + `2026-09-15-agent-handoff.md`
 **Branch:** `atlas/v3-foundation` @ `7a89abbf`
 **Worktree:** `/root/workspace/atlas-v3`
@@ -11,9 +11,11 @@
 
 - [x] Create worktree from `origin/main` @ `7a89abbf`
 - [x] Verify existing `/atlas/` route serves correctly (LIVE at `https://aftergraph.org/atlas/`)
-- [x] Confirm no D1/R2 bindings yet (approved-not-configured)
-- [ ] Configure D1 database binding in `wrangler.toml`
-- [ ] Configure R2 bucket binding in `wrangler.toml`
+- [x] Historical baseline confirmed D1/R2 were initially approved-not-configured
+- [x] Configure D1 database binding in generated `wrangler.toml`
+- [x] Configure R2 bucket binding in generated `wrangler.toml`
+- [x] Classify D1/R2 as `REBUILDABLE_PROJECTION_CACHE`, never canonical truth
+- [x] Fail-close public `POST /api/v3/artifacts` and `POST /api/v3/publish` before storage mutation
 - [ ] Run migration to create initial schema (`evidence_envelopes`, `claims`, `cuts`, `adapters`)
 
 **Gate:** `wrangler deploy --dry-run` succeeds with D1+R2 bindings resolved.
@@ -58,7 +60,9 @@
 
 ## Phase 2: Immutable Cuts with D1+R2
 
-**Objective:** Atomic publication of evidence snapshots.
+**Objective:** Atomic publication of evidence snapshots through an authenticated internal publisher.
+
+> Public `aftergraph.org` Worker routes are read-only for Atlas state. D1/R2 mutation must never be reintroduced on a browser-accessible/public route. The internal publisher must be separately authenticated/authorized and must preserve the canonical authority boundary.
 
 - [ ] Implement D1 index writer: claims/envelopes indexed by `(subject, predicate, valid_time)`
 - [ ] Implement R2 artifact uploader: full payload blobs keyed by `payload_hash`
@@ -113,12 +117,14 @@
 
 ## Phase 5: API
 
-**Objective:** Typed, versioned read/write surface for Atlas state.
+**Objective:** Typed, versioned public read surface for Atlas state, with mutation isolated behind the authenticated internal publisher.
+
+> The public Worker MUST NOT expose an unauthenticated Atlas write API. Ingestion/publication commands belong to the internal publisher/control path, not the public query surface.
 
 - [ ] `GET /api/v3/cuts/latest` → CutManifest
 - [ ] `GET /api/v3/cuts/:id` → Full projection
 - [ ] `GET /api/v3/claims?subject=&predicate=` → Filtered claims
-- [ ] `POST /api/v3/adapters/:id/ingest` → Trigger adapter run
+- [ ] Internal publisher command ? trigger adapter run (not exposed as an unauthenticated public Worker POST)
 - [ ] `GET /api/v3/freshness` → Per-source freshness status
 - [ ] TDD: API returns only persisted state, never computed-on-the-fly
 - [ ] TDD: All responses include `X-Cut-ID` header
@@ -154,6 +160,8 @@
 | Freshness is contract-driven | FreshnessPolicy tests reject global age rules |
 | Bitemporal model enforced | All envelope tests validate `valid_time ≠ observed_time` |
 | Existing `/atlas/` stays live | Route check in every CI run until cutover approved |
+| Public Atlas mutation disabled | `site/atlas-v3-write-boundary.test.mjs` asserts 403 before D1/R2 mutation |
+| Projection storage is non-canonical | Health contract reports `REBUILDABLE_PROJECTION_CACHE` + `canonical_truth:false` |
 | Exact-head CI required | `avc/ci-local` must be green on PR head before merge |
 
 ---

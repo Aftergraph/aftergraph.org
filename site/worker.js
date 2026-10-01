@@ -96,39 +96,19 @@ export default {
           return new Response(JSON.stringify({ conflicts: rows.results || [] }), { status: 200, headers });
         }
         if (p === '/api/v3/artifacts' && method === 'POST') {
-          if (!r2) return new Response(JSON.stringify({ error: 'R2 not bound' }), { status: 503, headers });
-          const body = await request.arrayBuffer();
-          const key = 'atlas-v3/' + Date.now() + '-' + crypto.randomUUID();
-          await r2.put(key, body, { httpMetadata: { contentType: request.headers.get('content-type') || 'application/octet-stream' } });
-          return new Response(JSON.stringify({ key, size: body.byteLength }), { status: 201, headers });
+          return new Response(JSON.stringify({
+            error: 'ATLAS_PUBLIC_MUTATION_DISABLED',
+            required: 'canonical authenticated internal publisher',
+          }), { status: 403, headers });
         }
         if (p === '/api/v3/publish' && method === 'POST') {
-          if (!db) return new Response(JSON.stringify({ error: 'D1 not bound' }), { status: 503, headers });
-          if (!r2) return new Response(JSON.stringify({ error: 'R2 not bound' }), { status: 503, headers });
-          const payload = await request.json();
-          if (!payload.envelopes || !Array.isArray(payload.envelopes)) return new Response(JSON.stringify({ error: 'envelopes[] required' }), { status: 400, headers });
-          if (!payload.claims || !Array.isArray(payload.claims)) return new Response(JSON.stringify({ error: 'claims[] required' }), { status: 400, headers });
-          const now = new Date().toISOString();
-          const cutId = 'cut-' + crypto.randomUUID().slice(0, 8);
-          const canonical = JSON.stringify({ envelopes: payload.envelopes.map(e => e.id).sort(), claims: payload.claims.map(c => c.id).sort() });
-          const hashBuf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonical));
-          const integrityHash = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
-          const r2Key = 'atlas-v3/cuts/' + cutId + '/artifact.json';
-          await r2.put(r2Key, JSON.stringify({ envelopes: payload.envelopes, claims: payload.claims, cut_id: cutId, published_at: now }), { httpMetadata: { contentType: 'application/json' } });
-          await db.prepare('INSERT INTO cuts (id, label, published_at, integrity_hash) VALUES (?, ?, ?, ?)').bind(cutId, payload.label || 'auto-cut', now, integrityHash).run();
-          const envStmt = db.prepare('INSERT OR REPLACE INTO evidence_envelopes (id, source_adapter_id, valid_time, observed_time, payload_hash, payload_ref, truth_plane) VALUES (?, ?, ?, ?, ?, ?, ?)');
-          for (const env of payload.envelopes) {
-            const payloadHash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(env))))).map(b => b.toString(16).padStart(2, '0')).join('');
-            await envStmt.bind(env.id, env.source_adapter_id || env.claim_key || '', env.valid_time || env.observed_at || now, env.observed_at || now, payloadHash, r2Key, env.truth_plane || 'OBSERVED').run();
-          }
-          const claimStmt = db.prepare('INSERT OR REPLACE INTO claims (id, envelope_id, subject, predicate, object, confidence, contradicting_claim_ids) VALUES (?, ?, ?, ?, ?, ?, ?)');
-          for (const claim of payload.claims) {
-            await claimStmt.bind(claim.id, claim.envelope_id || '', claim.subject || '', claim.predicate || '', claim.object || '', claim.confidence ?? null, JSON.stringify(claim.contradicting_claim_ids || [])).run();
-          }
-          return new Response(JSON.stringify({ cut_id: cutId, integrity_hash: integrityHash, d1_ref: 'cuts:' + cutId, r2_ref: r2Key, envelope_count: payload.envelopes.length, claim_count: payload.claims.length }), { status: 201, headers });
+          return new Response(JSON.stringify({
+            error: 'ATLAS_PUBLIC_MUTATION_DISABLED',
+            required: 'canonical authenticated internal publisher',
+          }), { status: 403, headers });
         }
         if (p === '/api/v3/health' && method === 'GET') {
-          return new Response(JSON.stringify({ d1: !!db, r2: !!r2, ts: new Date().toISOString() }), { status: 200, headers });
+          return new Response(JSON.stringify({ d1: !!db, r2: !!r2, storage_role: 'REBUILDABLE_PROJECTION_CACHE', canonical_truth: false, public_mutation: 'DISABLED', write_path: 'CANONICAL_INTERNAL_PUBLISHER_REQUIRED', ts: new Date().toISOString() }), { status: 200, headers });
         }
         return new Response(JSON.stringify({ error: 'not found' }), { status: 404, headers });
       } catch (e) {

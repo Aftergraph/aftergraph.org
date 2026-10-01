@@ -17,6 +17,14 @@ At handoff creation:
 
 Do not claim Atlas V3 is implemented until the production data path and workspaces described below exist and are verified.
 
+### 2026-09-16 P0 reality amendment
+
+The original handoff captured D1/R2 as not yet bound. That historical statement is now superseded for the current implementation branch: D1 and R2 bindings exist, but their role is explicitly **rebuildable projection/cache storage**, not canonical truth.
+
+The public Worker is now required to be read-only for Atlas state. `POST /api/v3/artifacts` and `POST /api/v3/publish` must return `403 ATLAS_PUBLIC_MUTATION_DISABLED` before any D1/R2 operation. Publication must move through a separately authenticated internal publisher; the public edge must not mint authority or accept a shared-secret/browser write bypass.
+
+This boundary is regression-tested by `site/atlas-v3-write-boundary.test.mjs`, and `/api/v3/health` exposes the storage/authority classification so downstream consumers cannot mistake D1/R2 for canonical state.
+
 ## Product category and mission
 
 Category: **Verifiable System Intelligence**
@@ -160,7 +168,7 @@ atlas/cuts/<cut_id>/
 Do not persist private raw evidence in a public-serving bucket.
 
 ### D1
-Temporal/index/query layer, not a second source of truth and not a redundant full graph database.
+Temporal/index/query layer, not a second source of truth and not a redundant full graph database. D1 and R2 together form a rebuildable projection/cache layer. Public Atlas routes may query that layer but may not mutate it.
 
 Initial conceptual tables:
 
