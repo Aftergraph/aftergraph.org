@@ -1,0 +1,28 @@
+name: e2e pilot (observational)
+# Observational only, never a required check (Aftergraph/.github RFC 0001).
+on:
+  pull_request:
+    paths: ['site/**', 'e2e/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: [self-hosted, Linux, X64, vds]
+    timeout-minutes: 10
+    continue-on-error: true
+    env:
+      E2E_TELEMETRY_DISABLED: '1'
+      PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/ms-playwright
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --version
+      - run: npm --prefix e2e ci --no-audit --no-fund
+      - run: cd e2e && npx playwright install chromium
+      - run: cd e2e && npx e2e run
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: e2e/.e2e/
+          if-no-files-found: ignore
