@@ -167,6 +167,25 @@ button.pnode.final[aria-current="true"] .pdot{background:var(--evidence);box-sha
 .product-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
 .product-mini{padding:14px;border:1px solid var(--border);border-radius:8px;background:rgba(8,12,20,.6);font:12px/1.7 var(--font-mono);color:var(--subtle)}
 .product-mini b{color:var(--text);font-weight:600}
+/* agent interaction boundary */
+.interaction-shell{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:20px;align-items:stretch}
+.event-rail{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;padding:20px;border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(180deg,rgba(20,31,64,.5),rgba(8,12,20,.62))}
+.event-node{position:relative;min-height:92px;padding:14px 10px;border:1px solid var(--border);border-radius:10px;background:rgba(8,12,20,.72);color:var(--muted);font:700 10px/1.35 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;text-align:left;cursor:pointer;transition:transform 180ms var(--ease),border-color 180ms var(--ease),color 180ms var(--ease),background 180ms var(--ease)}
+.event-node::after{content:"→";position:absolute;right:-8px;top:50%;transform:translate(50%,-50%);color:var(--subtle);pointer-events:none}
+.event-node:last-child::after{display:none}
+.event-node:hover,.event-node[aria-pressed="true"]{transform:translateY(-2px);border-color:var(--border-strong);color:var(--text);background:var(--control-soft)}
+.event-node[data-class="authority"],.event-node[data-class="approval"]{border-color:rgba(240,166,74,.32)}
+.event-node[data-class="evidence"],.event-node[data-class="verification"]{border-color:rgba(36,196,173,.34)}
+.event-node small{display:block;margin-top:8px;color:var(--subtle);font:500 9px/1.35 var(--font-mono);letter-spacing:0;text-transform:none}
+.event-detail{display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:24px;border:1px solid var(--border-strong);border-radius:var(--radius);background:linear-gradient(145deg,rgba(66,199,232,.08),rgba(8,12,20,.72))}
+.event-detail .eyebrow{font:700 9px/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--control)}
+.event-detail h3{margin:8px 0 10px;font:700 20px/1.25 var(--font-display)}
+.event-detail p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.6}
+.boundary-rule{display:flex;align-items:center;gap:9px;padding:11px 13px;border-left:3px solid var(--decision);background:var(--decision-soft);border-radius:0 9px 9px 0;color:var(--text);font:600 11px/1.45 var(--font-mono)}
+.protocol-note{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px;color:var(--subtle);font:11px/1.5 var(--font-mono)}
+.protocol-note .tag{padding:4px 8px;border:1px solid var(--border);border-radius:999px;color:var(--decision)}
+@media(max-width:1000px){.interaction-shell{grid-template-columns:1fr}.event-rail{grid-template-columns:repeat(4,minmax(0,1fr))}.event-node::after{display:none}}
+@media(max-width:620px){.event-rail{grid-template-columns:1fr 1fr}.event-node{min-height:76px}}
 /* trust */
 .trust-split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
 .trust-statement{font-size:clamp(26px,3.4vw,40px);font-weight:700;line-height:1.16;letter-spacing:-.02em;font-family:var(--font-display)}
@@ -488,6 +507,30 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 </div>
 </section>
 
+<section class="section shell" id="interaction">
+<p class="section-kicker">Agent–user boundary · illustrative</p>
+<h2>Stream the interaction. Govern the action.</h2>
+<p class="section-intro">Modern agent interfaces need ordered, inspectable events. Aftergraph keeps that interaction stream separate from authority, execution evidence and independent verification.</p>
+<div class="interaction-shell">
+<div>
+<div class="event-rail" role="group" aria-label="Illustrative Aftergraph interaction event flow">
+<button class="event-node" type="button" data-event-title="Run lifecycle" data-event-desc="A bounded run starts with an explicit identity and scope. UI lifecycle state is observable, but starting a run does not grant authority." data-event-rule="Lifecycle state is interaction context — not permission." aria-pressed="true">RUN<small>start / finish / error</small></button>
+<button class="event-node" type="button" data-event-title="Streaming message" data-event-desc="Incremental output can render immediately while preserving a stable event identity for the frontend." data-event-rule="Rendered text is communication — not evidence of completion.">MESSAGE<small>start / delta / end</small></button>
+<button class="event-node" type="button" data-event-title="Tool intent" data-event-desc="Tool requests are visible as typed interaction events so the user can understand what the agent intends to do." data-event-rule="Tool intent must cross Trust before execution.">TOOL<small>intent / args / result</small></button>
+<button class="event-node" type="button" data-event-title="Shared state" data-event-desc="Snapshots establish a full UI state; deltas update it incrementally without forcing opaque frontend reconstruction." data-event-rule="Shared state is synchronized context — not canonical authority.">STATE<small>snapshot / delta</small></button>
+<button class="event-node" type="button" data-class="approval" data-event-title="Human approval boundary" data-event-desc="Consequential actions can stop at an explicit approval boundary before execution proceeds." data-event-rule="Approval changes allowed action scope; it is never inferred from UI activity.">APPROVAL<small>pause / inspect / authorize</small></button>
+<button class="event-node" type="button" data-class="evidence" data-event-title="Execution evidence" data-event-desc="The runtime emits inspectable artifacts tied to what actually happened, rather than relying on agent narration." data-event-rule="Evidence describes execution; it still requires evaluation.">EVIDENCE<small>artifacts / provenance</small></button>
+<button class="event-node" type="button" data-class="verification" data-event-title="Independent verification" data-event-desc="A separate verifier checks the exact subject and criteria before a stronger outcome claim is promoted." data-event-rule="Verified outcome is a verdict bound to evidence, not self-report.">VERDICT<small>criteria / subject / result</small></button>
+</div>
+<div class="protocol-note"><span class="tag">Design direction</span><span>Event-stream UX inspired by open agent-interface patterns; not presented as an implemented AG-UI compatibility claim.</span><a class="source-link" style="margin-top:0" href="https://github.com/ag-ui-protocol/ag-ui">Related protocol: AG-UI</a></div>
+</div>
+<aside class="event-detail" data-event-detail>
+<div><span class="eyebrow">Selected boundary</span><h3 data-event-heading>Run lifecycle</h3><p data-event-copy>A bounded run starts with an explicit identity and scope. UI lifecycle state is observable, but starting a run does not grant authority.</p></div>
+<div class="boundary-rule" data-event-rule>Lifecycle state is interaction context — not permission.</div>
+</aside>
+</div>
+</section>
+
 <section class="section shell" id="trust">
 <p class="section-kicker">Why Aftergraph</p>
 <h2>Complete is not verified.</h2>
@@ -672,6 +715,25 @@ if(!reduce){var art=document.querySelector('.orbit-art'),vis=document.querySelec
     state.dataset.state='error';
     state.textContent='Runtime not verified';
     set('[data-proof-health]','unavailable');
+  });
+})();
+</script>
+<script data-agent-boundary-script>
+(function(){
+  var nodes=[].slice.call(document.querySelectorAll('.event-node[data-event-title]'));
+  var detail=document.querySelector('[data-event-detail]');
+  if(!nodes.length||!detail) return;
+  var heading=detail.querySelector('[data-event-heading]');
+  var copy=detail.querySelector('[data-event-copy]');
+  var rule=detail.querySelector('[data-event-rule]');
+  nodes.forEach(function(node){
+    node.addEventListener('click',function(){
+      nodes.forEach(function(n){n.setAttribute('aria-pressed','false');});
+      node.setAttribute('aria-pressed','true');
+      if(heading) heading.textContent=node.dataset.eventTitle||'Interaction event';
+      if(copy) copy.textContent=node.dataset.eventDesc||'';
+      if(rule) rule.textContent=node.dataset.eventRule||'';
+    });
   });
 })();
 </script>
