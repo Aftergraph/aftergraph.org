@@ -123,3 +123,18 @@ test('hero names the audience and leads with a single proof-first primary action
   assert.equal((html.match(/<header class="hero shell">[\s\S]*?<\/header>/)?.[0].match(/class="button primary"/g) ?? []).length, 1);
   assert.match(html, /class="button primary" href="#verify-live" data-cta="hero-verify-live">Verify this site live<\/a>/);
 });
+
+test('homepage names concrete use cases and a real contact route', () => {
+  const block = html.match(/<section class="section shell" id="use-cases">[\s\S]*?<\/section>/)?.[0] ?? '';
+  for (const id of ['agent-prs', 'governed-actions', 'durable-work', 'talk']) {
+    assert.match(block, new RegExp(`data-use-case="${id}"`));
+  }
+  assert.match(html, /data-cta="hero-talk">Talk to us<\/a>/);
+  assert.match(html, /href="https:\/\/github\.com\/orgs\/Aftergraph\/discussions"/);
+});
+
+test('history timeline is newest first', () => {
+  const dates = [...(html.match(/<div class="timeline">[\s\S]*?<\/div>\n<\/section>/)?.[0] ?? '').matchAll(/<span class="t-date">(\d{4}-\d{2}-\d{2})<\/span>/g)].map((m) => m[1]);
+  assert.ok(dates.length >= 2);
+  assert.deepEqual(dates, [...dates].sort().reverse());
+});

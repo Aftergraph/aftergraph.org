@@ -163,6 +163,38 @@ const OG = `
       url: 'https://aftergraph.org',
       name: 'Aftergraph',
       publisher: { '@id': 'https://aftergraph.org/#organization' }
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: 'Studio by Aftergraph',
+      url: 'https://aftergraph.org/studio/',
+      applicationCategory: 'DeveloperApplication',
+      description: 'Operating environment for governed agent work: missions, approvals and inspectable evidence.',
+      publisher: { '@id': 'https://aftergraph.org/#organization' }
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: 'Sentinel by Aftergraph',
+      url: 'https://aftergraph.org/sentinel',
+      applicationCategory: 'DeveloperApplication',
+      description: 'Verified code review that returns evidence-backed SHIP / DO NOT SHIP verdicts on the exact commit.',
+      publisher: { '@id': 'https://aftergraph.org/#organization' }
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: 'Atlas by Aftergraph',
+      url: 'https://aftergraph.org/atlas',
+      applicationCategory: 'DeveloperApplication',
+      description: 'Evidence-aware development observatory and system graph.',
+      publisher: { '@id': 'https://aftergraph.org/#organization' }
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: 'Wie by Aftergraph',
+      url: 'https://github.com/Aftergraph/wi-backend',
+      applicationCategory: 'DeveloperApplication',
+      description: 'Work Intelligence Engine that turns source-neutral observations into reviewable WorkItems.',
+      publisher: { '@id': 'https://aftergraph.org/#organization' }
     }
   ]
 })}</script>`;
