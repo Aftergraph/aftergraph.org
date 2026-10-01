@@ -45,3 +45,21 @@ test('telemetry worker enforces same-origin browser submissions', async () => {
   const response = await dispatch({ event: 'registry_loaded', result_bucket: '6-20' }, { origin: 'https://example.com' });
   assert.equal(response.status, 403);
 });
+
+test('public topology route returns only public classifications and keeps separate maturity/evidence', async () => {
+  const response = await worker.fetch(new Request('https://aftergraph.org/platform/repositories.json'), createEnv());
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('content-type'), /application\/json/);
+  const catalog = await response.json();
+  assert.equal(catalog.schema, 'aftergraph-public-repository-catalog/1.0');
+  assert.ok(catalog.repositories.length > 0);
+  assert.ok(catalog.repositories.every((repository) => repository.visibility === 'public'));
+  assert.ok(catalog.repositories.every((repository) => !('maturity' in repository) && !('evidence' in repository)));
+
+  const pending = catalog.repositories.filter((repository) => repository.classification.state === 'pending');
+  assert.deepEqual(new Set(pending.map((repository) => repository.repository)), new Set(['STEWARD-by-Aftergraph', 'engineering-crew-community']));
+  assert.ok(pending.every((repository) => repository.classification.label === 'Classification pending'));
+  for (const privateName of ['afm', 'context-continuity', 'runtime', 'skills-vault', 'veranza', 'wi-frontend']) {
+    assert.ok(!catalog.repositories.some((repository) => repository.repository === privateName), `private repository name leaked: ${privateName}`);
+  }
+});

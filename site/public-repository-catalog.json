@@ -1,0 +1,210 @@
+{
+  "schema": "aftergraph-public-repository-catalog/1.0",
+  "source": {
+    "contract": "platform-topology/2.0",
+    "repository": "Aftergraph/after-graph-governance",
+    "ref": "c25e557233afac3519cdefd5d04f8997615b655c",
+    "path": "docs/platform-topology/2.0.json",
+    "topology_cut": "2026-10-01"
+  },
+  "repositories": [
+    {
+      "repository": ".github",
+      "url": "https://github.com/Aftergraph/.github",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "organization-community",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "STEWARD-by-Aftergraph",
+      "url": "https://github.com/Aftergraph/STEWARD-by-Aftergraph",
+      "visibility": "public",
+      "classification": {
+        "state": "pending",
+        "role": null,
+        "lifecycle": null,
+        "label": "Classification pending"
+      }
+    },
+    {
+      "repository": "after-graph-governance",
+      "url": "https://github.com/Aftergraph/after-graph-governance",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "canonical-contracts",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "aftergraph-cron-fabric",
+      "url": "https://github.com/Aftergraph/aftergraph-cron-fabric",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "scheduled-observation-fabric",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "aftergraph.org",
+      "url": "https://github.com/Aftergraph/aftergraph.org",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "public-front-door",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "aie",
+      "url": "https://github.com/Aftergraph/aie",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "normative-authority",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "brand",
+      "url": "https://github.com/Aftergraph/brand",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "brand-design-system",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "docs",
+      "url": "https://github.com/Aftergraph/docs",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "knowledge-plane",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "engineering-crew-community",
+      "url": "https://github.com/Aftergraph/engineering-crew-community",
+      "visibility": "public",
+      "classification": {
+        "state": "pending",
+        "role": null,
+        "lifecycle": null,
+        "label": "Classification pending"
+      }
+    },
+    {
+      "repository": "intelligence-systems-research",
+      "url": "https://github.com/Aftergraph/intelligence-systems-research",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "research-assurance",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "sentinel",
+      "url": "https://github.com/Aftergraph/sentinel",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "verified-code-review",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "sentinel-firetest2",
+      "url": "https://github.com/Aftergraph/sentinel-firetest2",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "temporary-verification-fixture",
+        "lifecycle": "temporary",
+        "label": null
+      }
+    },
+    {
+      "repository": "skill-abi",
+      "url": "https://github.com/Aftergraph/skill-abi",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "skill-compatibility-contract",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "studio",
+      "url": "https://github.com/Aftergraph/studio",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "primary-experience",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "trust-gateway",
+      "url": "https://github.com/Aftergraph/trust-gateway",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "runtime-enforcement",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "war-room",
+      "url": "https://github.com/Aftergraph/war-room",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "operational-intelligence-backend-projection",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "wi-backend",
+      "url": "https://github.com/Aftergraph/wi-backend",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "work-inference",
+        "lifecycle": "active",
+        "label": null
+      }
+    },
+    {
+      "repository": "works-execution",
+      "url": "https://github.com/Aftergraph/works-execution",
+      "visibility": "public",
+      "classification": {
+        "state": "classified",
+        "role": "durable-execution",
+        "lifecycle": "active",
+        "label": null
+      }
+    }
+  ]
+}

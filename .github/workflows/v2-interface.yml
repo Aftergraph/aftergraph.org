@@ -5,6 +5,9 @@ on:
     paths:
       - 'site/**'
       - 'atlas/**'
+      - 'data/**'
+      - 'scripts/**'
+      - 'docs/integrations/**'
       - 'DEPLOYMENT.md'
       - '.github/workflows/v2-interface.yml'
   push:
@@ -22,6 +25,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Checkout pinned Governance topology contract
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: Aftergraph/after-graph-governance
+          ref: c25e557233afac3519cdefd5d04f8997615b655c
+          path: governance-source
+          persist-credentials: false
       - name: Install Atlas dependencies (lockfile)
         run: npm --prefix atlas ci
       - name: Audit Atlas dependencies
@@ -38,8 +48,14 @@ jobs:
         run: node site/verify-atlas.cjs
       - name: Generate governed launcher registry
         run: node scripts/generate-launcher-registry.mjs
+      - name: Generate public repository catalog from Governance topology/2.0
+        run: node scripts/generate-public-repository-catalog.mjs governance-source
       - name: Launcher registry and telemetry contracts
         run: node --test site/launcher-registry.test.mjs site/launcher-telemetry.test.mjs
+      - name: Governance topology public projection contracts
+        env:
+          AFTERGRAPH_GOVERNANCE_ROOT: governance-source
+        run: node --test site/governance-topology-adapter.test.mjs
       - name: Sync canonical Brand OS inputs
         run: node scripts/sync-brand.mjs
       - name: Compile worker
@@ -75,6 +91,6 @@ jobs:
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is current
-        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
+        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json site/public-repository-catalog.json
       - name: Diff check
         run: git diff --check
