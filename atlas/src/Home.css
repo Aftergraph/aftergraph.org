@@ -394,3 +394,44 @@
     padding-top: 0;
   }
 }
+
+/* Truth-cut provenance */
+.ag-cut-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-top:26px;
+}
+.ag-cut-card{
+  min-width:0;
+  padding:16px 18px;
+  border:1px solid var(--border,#24304a);
+  border-radius:12px;
+  background:rgba(8,12,20,.58);
+}
+.ag-cut-card span{
+  display:block;
+  margin-bottom:7px;
+  font:700 10px/1.2 var(--font-mono,monospace);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--subtle,#7f8aa3);
+}
+.ag-cut-card strong{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font:700 17px/1.3 var(--font-display,sans-serif);
+  color:var(--text,#f4f7fb);
+}
+.ag-cut-card small{
+  display:block;
+  margin-top:7px;
+  color:var(--muted,#9aa6bd);
+  font-size:12px;
+  line-height:1.45;
+}
+@media(max-width:680px){
+  .ag-cut-grid{grid-template-columns:1fr}
+}
