@@ -53,7 +53,7 @@ test('company numbers match the catalog', () => {
 
 test('content is visible without JavaScript', () => {
   assert.match(html, /<body class="nojs">/);
-  assert.match(html, /\.nojs \.reveal\{opacity:1;transform:none\}/);
+  assert.match(html, /\.nojs \.reveal,\.nojs \.tl\{opacity:1;transform:none\}/);
 });
 
 test('generated page is up to date with its template', () => {
