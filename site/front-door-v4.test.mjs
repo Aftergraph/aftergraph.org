@@ -77,6 +77,7 @@ test('homepage exposes governed interaction boundary without overclaiming compat
   assert.match(html, /Stream the interaction\. Govern the action\./);
   assert.match(html, /Design direction/);
   assert.match(html, /not presented as an implemented AG-UI compatibility claim/);
+  assert.match(html, /href="\/agent-ui-boundary\.json">Read machine contract<\/a>/);
   assert.match(html, />RUN<small>start \/ finish \/ error<\/small>/);
   assert.match(html, />TOOL<small>intent \/ args \/ result<\/small>/);
   assert.match(html, />APPROVAL<small>pause \/ inspect \/ authorize<\/small>/);
