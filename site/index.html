@@ -175,6 +175,23 @@ button.pnode.final[aria-current="true"] .pdot{background:var(--evidence);box-sha
 .trust-step{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--border);font-size:14px}
 .trust-step:last-child{border-bottom:0}
 .trust-arrow{display:grid;place-items:center;width:30px;height:30px;flex:none;border:1px solid var(--border-strong);border-radius:8px;background:var(--control-soft);color:var(--control);font:600 12px/1 var(--font-mono)}
+/* live proof */
+.proof-panel{position:relative;overflow:hidden;border:1px solid var(--border-strong);border-radius:var(--radius);background:linear-gradient(135deg,rgba(36,196,173,.08),rgba(8,12,20,.82) 38%,rgba(66,199,232,.06));box-shadow:0 24px 64px -34px rgba(0,0,0,.8)}
+.proof-head{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;padding:28px 28px 20px;border-bottom:1px solid var(--border)}
+.proof-state{display:inline-flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(8,12,20,.68);font:700 10px/1 var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--subtle)}
+.proof-state::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--decision);box-shadow:0 0 0 4px rgba(240,166,74,.1)}
+.proof-state[data-state="ok"]{color:var(--evidence);border-color:rgba(36,196,173,.35)}
+.proof-state[data-state="ok"]::before{background:var(--evidence);box-shadow:0 0 0 4px rgba(36,196,173,.12),0 0 18px rgba(36,196,173,.45)}
+.proof-state[data-state="error"]{color:var(--danger)}
+.proof-state[data-state="error"]::before{background:var(--danger)}
+.proof-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.proof-cell{padding:22px 24px;border-right:1px solid var(--border);min-width:0}
+.proof-cell:last-child{border-right:0}
+.proof-label{display:block;margin-bottom:8px;font:700 9px/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--subtle)}
+.proof-value{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 13px/1.5 var(--font-mono);color:var(--text)}
+.proof-actions{display:flex;flex-wrap:wrap;gap:10px;padding:20px 28px;border-top:1px solid var(--border)}
+@media(max-width:900px){.proof-grid{grid-template-columns:1fr 1fr}.proof-cell:nth-child(2){border-right:0}.proof-cell:nth-child(-n+2){border-bottom:1px solid var(--border)}}
+@media(max-width:560px){.proof-head{flex-direction:column}.proof-grid{grid-template-columns:1fr}.proof-cell{border-right:0!important;border-bottom:1px solid var(--border)}.proof-cell:last-child{border-bottom:0}}
 /* platform chain */
 .platform-chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:28px 0}
 .chain-node{position:relative;padding:10px 16px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;background:linear-gradient(180deg,rgba(20,31,64,.6),rgba(8,12,20,.6));font-family:var(--font-display);transition:border-color 200ms var(--ease),box-shadow 200ms var(--ease)}
@@ -485,6 +502,30 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <div class="trust-step"><span class="trust-arrow">2</span><span><strong>Evidence</strong> &mdash; Inspectable artifacts emitted</span></div>
 <div class="trust-step"><span class="trust-arrow">3</span><span><strong>Independent verifier</strong> &mdash; Separate process checks criteria</span></div>
 <div class="trust-step"><span class="trust-arrow">4</span><span><strong>Verdict</strong> &mdash; Bound to exact subject, not self-report</span></div>
+</div>
+</div>
+</section>
+
+<section class="section shell" id="proof">
+<p class="section-kicker">Live evidence</p>
+<h2>Do not trust the claim. Inspect the system.</h2>
+<p class="section-intro">This surface reads Aftergraph's own same-origin health contract at runtime. If the probe cannot be verified, the UI stays explicit about that.</p>
+<div class="proof-panel" data-live-proof aria-live="polite">
+<div class="proof-head">
+<div><span class="proof-label">Runtime probe</span><strong style="font:700 20px/1.25 var(--font-display)">aftergraph.org /healthz</strong></div>
+<span class="proof-state" data-proof-state data-state="loading">Checking runtime</span>
+</div>
+<div class="proof-grid">
+<div class="proof-cell"><span class="proof-label">Health</span><span class="proof-value" data-proof-health>unverified</span></div>
+<div class="proof-cell"><span class="proof-label">Exact deploy SHA</span><span class="proof-value" data-proof-sha>unverified</span></div>
+<div class="proof-cell"><span class="proof-label">Deployment</span><span class="proof-value" data-proof-deployed>unverified</span></div>
+<div class="proof-cell"><span class="proof-label">Route contract</span><span class="proof-value" data-proof-route>unverified</span></div>
+</div>
+<div class="proof-actions">
+<a class="button primary" href="/status">Open public status</a>
+<a class="button" href="/healthz">Inspect raw health</a>
+<a class="button" href="/atlas">Inspect Atlas</a>
+<a class="button" href="https://github.com/Aftergraph/aftergraph.org">View source</a>
 </div>
 </div>
 </section>
