@@ -662,9 +662,9 @@ if(!reduce){var art=document.querySelector('.orbit-art'),vis=document.querySelec
     state.dataset.state=match?'ok':'error';
     state.textContent=match?'Deploy provenance verified':'Provenance mismatch';
     set('[data-proof-health]',h&&h.status);
-    set('[data-proof-sha]',match&&p&&p.sha);
-    set('[data-proof-deployed]',match&&p&&p.deployed);
-    set('[data-proof-route]',match&&p&&p.route);
+    set('[data-proof-sha]',match&&p&&p.sha ? p.sha : null);
+    set('[data-proof-deployed]',match&&p&&p.deployed ? p.deployed : null);
+    set('[data-proof-route]',match&&p&&p.route ? p.route : null);
     if(commit&&match&&p.sha&&p.sha!=='local'){
       commit.href='https://github.com/Aftergraph/aftergraph.org/commit/'+encodeURIComponent(p.sha);
     }
