@@ -186,6 +186,12 @@ button.pnode.final[aria-current="true"] .pdot{background:var(--evidence);box-sha
 .protocol-note .tag{padding:4px 8px;border:1px solid var(--border);border-radius:999px;color:var(--decision)}
 @media(max-width:1000px){.interaction-shell{grid-template-columns:1fr}.event-rail{grid-template-columns:repeat(4,minmax(0,1fr))}.event-node::after{display:none}}
 @media(max-width:620px){.event-rail{grid-template-columns:1fr 1fr}.event-node{min-height:76px}}
+.obs-rail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.obs-card{padding:14px 15px;border:1px solid var(--border);border-radius:10px;background:rgba(8,12,20,.56)}
+.obs-card b{display:block;margin-bottom:6px;color:var(--text);font:700 10px/1 var(--font-mono);letter-spacing:.08em}
+.obs-card span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.obs-card code{color:var(--control);font:600 10px/1.4 var(--font-mono)}
+@media(max-width:620px){.obs-rail{grid-template-columns:1fr}}
 /* trust */
 .trust-split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
 .trust-statement{font-size:clamp(26px,3.4vw,40px);font-weight:700;line-height:1.16;letter-spacing:-.02em;font-family:var(--font-display)}
@@ -521,6 +527,11 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <button class="event-node" type="button" data-class="approval" data-event-title="Human approval boundary" data-event-desc="Consequential actions can stop at an explicit approval boundary before execution proceeds." data-event-rule="Approval changes allowed action scope; it is never inferred from UI activity.">APPROVAL<small>pause / inspect / authorize</small></button>
 <button class="event-node" type="button" data-class="evidence" data-event-title="Execution evidence" data-event-desc="The runtime emits inspectable artifacts tied to what actually happened, rather than relying on agent narration." data-event-rule="Evidence describes execution; it still requires evaluation.">EVIDENCE<small>artifacts / provenance</small></button>
 <button class="event-node" type="button" data-class="verification" data-event-title="Independent verification" data-event-desc="A separate verifier checks the exact subject and criteria before a stronger outcome claim is promoted." data-event-rule="Verified outcome is a verdict bound to evidence, not self-report.">VERDICT<small>criteria / subject / result</small></button>
+</div>
+<div class="obs-rail" aria-label="Interaction observability signals">
+<div class="obs-card"><b>ACTIVITY</b><span>Structured progress via snapshot/delta. <code>progress ≠ completion evidence</code>.</span></div>
+<div class="obs-card"><b>SUBAGENT</b><span>Producer attribution and lineage across concurrent work. <code>provenance ≠ ownership</code>.</span></div>
+<div class="obs-card"><b>INTERRUPT</b><span>Explicit pause/resume correlation for human or policy input. <code>resume ≠ ambient permission</code>.</span></div>
 </div>
 <div class="protocol-note"><span class="tag">Design direction</span><span>Event-stream UX inspired by open agent-interface patterns; not presented as an implemented AG-UI compatibility claim.</span><a class="source-link" style="margin-top:0" href="/agent-ui-boundary.json">Read machine contract</a><a class="source-link" style="margin-top:0" href="https://github.com/ag-ui-protocol/ag-ui">Related protocol: AG-UI</a></div>
 </div>
