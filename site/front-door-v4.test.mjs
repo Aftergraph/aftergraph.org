@@ -70,3 +70,16 @@ test('homepage exposes fail-closed live proof surface', () => {
   assert.match(html, /href="\/atlas"/);
   assert.match(html, /Do not trust the claim\. Inspect the system\./);
 });
+
+test('homepage exposes governed interaction boundary without overclaiming compatibility', () => {
+  assert.match(html, /id="interaction"/);
+  assert.match(html, /data-agent-boundary-script/);
+  assert.match(html, /Stream the interaction\. Govern the action\./);
+  assert.match(html, /Design direction/);
+  assert.match(html, /not presented as an implemented AG-UI compatibility claim/);
+  assert.match(html, />RUN<small>start \/ finish \/ error<\/small>/);
+  assert.match(html, />TOOL<small>intent \/ args \/ result<\/small>/);
+  assert.match(html, />APPROVAL<small>pause \/ inspect \/ authorize<\/small>/);
+  assert.match(html, />EVIDENCE<small>artifacts \/ provenance<\/small>/);
+  assert.match(html, />VERDICT<small>criteria \/ subject \/ result<\/small>/);
+});
