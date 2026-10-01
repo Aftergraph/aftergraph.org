@@ -133,16 +133,30 @@ const OG = `
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aftergraph.org/">
 <meta property="og:image" content="https://aftergraph.org/og-image.svg">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Aftergraph">
-<meta name="twitter:description" content="Governed, durable and verifiable intelligent work.">
+<meta property="og:image:alt" content="Aftergraph — Verifiable Intelligent Systems">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Aftergraph — Verifiable Intelligent Systems">
+<meta name="twitter:description" content="Infrastructure and open research for verifiable intelligent systems.">
+<meta name="twitter:image" content="https://aftergraph.org/og-image.svg">
 <script type="application/ld+json">${JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Aftergraph',
-  url: 'https://aftergraph.org',
-  description: 'Infrastructure and open research for governed, durable and verifiable intelligent work.',
-  sameAs: ['https://github.com/Aftergraph']
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': 'https://aftergraph.org/#organization',
+      name: 'Aftergraph',
+      url: 'https://aftergraph.org',
+      description: 'Infrastructure and open research for verifiable intelligent systems.',
+      sameAs: ['https://github.com/Aftergraph']
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://aftergraph.org/#website',
+      url: 'https://aftergraph.org',
+      name: 'Aftergraph',
+      publisher: { '@id': 'https://aftergraph.org/#organization' }
+    }
+  ]
 })}</script>`;
 
 const OG_SENTINEL = `
