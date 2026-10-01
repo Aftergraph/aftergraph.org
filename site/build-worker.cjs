@@ -13,6 +13,7 @@ const assert = (condition, message) => {
 // Source files are canonical. worker.js is generated deployment output.
 let landing = read('index.html');
 let launch = read('launch.html');
+let nextHtml = read('next.html');
 const launcherApp = read('launcher-app.js');
 const launcherRegistryRaw = read('launcher-registry.json');
 let launcherRegistry;
@@ -302,6 +303,7 @@ const secureHeaders = `const SECURE = {
 const worker = `${secureHeaders}
 const LANDING = ${JSON.stringify(landing)};
 const LAUNCH = ${JSON.stringify(launch)};
+const NEXT = ${JSON.stringify(nextHtml)};
 const LAUNCH_APP = ${JSON.stringify(launcherApp)};
 const LAUNCHER_REGISTRY = ${JSON.stringify(launcherRegistryRaw)};
 const LAUNCHER_ALLOWED_IDS = new Set(${JSON.stringify(launcherTelemetryIds)});
@@ -436,6 +438,7 @@ export default {
     let contentType = 'text/html;charset=utf-8';
     let cache = 'public, max-age=300';
     let responseStatus = 200;
+    let extraHeaders = {};
     if (p === '/healthz' || p === '/health') { body = HEALTH; contentType = 'application/json'; cache = 'public, max-age=60'; }
     else if (p === '/provenance.json') { body = PROVENANCE; contentType = 'application/json;charset=utf-8'; cache = 'no-store'; }
     else if (p === '/agent-ui-boundary.json') { body = AGENT_UI_BOUNDARY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
@@ -451,6 +454,7 @@ export default {
     else if (ICON_FILES[p]) { body = Uint8Array.from(atob(ICON_FILES[p]), c => c.charCodeAt(0)); contentType = 'image/png'; cache = 'public, max-age=86400'; }
     else if (p === '/launcher-app.js') { body = LAUNCH_APP; contentType = 'text/javascript;charset=utf-8'; cache = 'public, max-age=300'; }
     else if (p === '/launcher-registry.json') { body = LAUNCHER_REGISTRY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
+    else if (p === '/next' || p === '/next/') { body = NEXT; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
     else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
     else if (p === '/status' || p === '/status/') { body = STATUS; }
     else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }
@@ -464,7 +468,7 @@ export default {
     else { body = NOTFOUND; responseStatus = 404; cache = 'no-store'; }
     return new Response(request.method === 'HEAD' ? null : body, {
       status: responseStatus,
-      headers: { 'content-type': contentType, 'cache-control': cache, ...SECURE }
+      headers: { 'content-type': contentType, 'cache-control': cache, ...SECURE, ...extraHeaders }
     });
   }
 };`;
