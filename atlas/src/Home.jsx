@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import "./Home.css";
 
@@ -6,23 +6,30 @@ const PRODUCTS = [
   {
     id: "studio",
     title: "Studio by Aftergraph",
-    badge: "prototype",
-    body: "Generelt operativmiljø for styrt agentarbejde. Chat, styr missioner, godkend handlinger, inspicer evidence.",
-    pipeline: "Mål → Fremdrift → Behøver dig → Verificeret udfald",
+    badge: "demo",
+    body: "General-purpose operating environment for governed agent work: missions, approvals, evidence and outcome inspection.",
+    pipeline: "Goal → Progress → Needs You → Verified Outcome",
   },
   {
     id: "wie",
     title: "Wie by Aftergraph",
     badge: "prototype",
-    body: "Work Intelligence Engine. Kildeneutrale observationer bliver til strukturerede, attribuerbare WorkItems klar til gennemsyn.",
-    pipeline: "Signal → Observation → WorkItem → Gennemsyn → Publicér",
+    body: "Work Intelligence Engine. Source-neutral observations become structured, attributable WorkItems ready for review.",
+    pipeline: "Signal → Observation → WorkItem → Review → Publish",
   },
   {
     id: "sentinel",
     title: "Sentinel by Aftergraph",
     badge: "prototype",
-    body: "Verificeret kodegennemsyn. PR’er evalueres mod præcis HEAD med evidence-baserede SHIP / DO NOT SHIP-kendelser.",
-    pipeline: "Præcis HEAD → Tjek → Evidence → Kendelse",
+    body: "Exact-HEAD software review with evidence-backed verification findings and verdicts.",
+    pipeline: "Exact HEAD → Checks → Evidence → Verdict",
+  },
+  {
+    id: "atlas",
+    title: "Atlas by Aftergraph",
+    badge: "production",
+    body: "Evidence-aware development observatory for topology, truth planes, drift, snapshots and cited assertions.",
+    pipeline: "Canonical + Observed + Proposed → Evidence → Drift",
   },
 ];
 
@@ -45,26 +52,50 @@ const PRINCIPLES = [
   },
 ];
 
-const TIMELINE = [
-  { year: "2024", label: "Grundlagt", body: "Aftergraph stiftes med fokus på verificerbare autonome systemer." },
-  { year: "2025 Q1", label: "Første prototype", body: "Studio og Wie når prototype-stadie; interne tests begynder." },
-  { year: "2025 Q3", label: "Sentinel lanceres", body: "Kodegennemsyn med evidence-baserede kendelser åbnes for partnere." },
-  { year: "2026", label: "Atlas offentlig", body: "Atlas viser systemets topologi, drift og evidence i ét kort." },
-];
-
 const CODE_EXAMPLES = [
   {
     lang: "curl",
-    code: `curl -s https://aftergraph.org/healthz\n# {"status":"ok","sha":"66b29af",...}\ngit ls-remote https://github.com/Aftergraph/aftergraph.org HEAD\n# SHA’er skal matche — live kode er lig med reviewet kode`,
+    code: `curl -s https://aftergraph.org/healthz\ncurl -s https://aftergraph.org/provenance.json\n# Verify status, sha, route and deployed agree across both contracts.`,
   },
   {
     lang: "JavaScript",
-    code: `const live = await fetch('https://aftergraph.org/healthz')\n  .then(r => r.json());\nconsole.log(live.status, live.sha); // ok 66b29af`,
+    code: `const [health, provenance] = await Promise.all([\n  fetch('/healthz').then(r => r.json()),\n  fetch('/provenance.json').then(r => r.json())\n]);\nconst verified = health.status === 'ok' && health.sha === provenance.sha;`,
   },
 ];
 
 export default function Home({ onNavigate }) {
   const shouldReduceMotion = useReducedMotion();
+  const [truthCuts, setTruthCuts] = useState({
+    canonical: null,
+    observed: null,
+    canonicalRepos: null,
+    loading: true,
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      fetch('/platform/catalog.json', { cache: 'no-store' }).then((r) => {
+        if (!r.ok) throw new Error('platform catalog unavailable');
+        return r.json();
+      }),
+      fetch('/atlas/projection.json', { cache: 'no-store' }).then((r) => {
+        if (!r.ok) throw new Error('Atlas projection unavailable');
+        return r.json();
+      }),
+    ]).then(([catalog, projection]) => {
+      if (cancelled) return;
+      setTruthCuts({
+        canonical: catalog?.source?.evidence_cut ?? null,
+        observed: projection?.meta?.evidence_cut ?? null,
+        canonicalRepos: catalog?.counts?.canonical ?? null,
+        loading: false,
+      });
+    }).catch(() => {
+      if (!cancelled) setTruthCuts((current) => ({ ...current, loading: false }));
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   const go = (view) => {
     if (typeof onNavigate === "function") onNavigate(view);
@@ -95,14 +126,12 @@ export default function Home({ onNavigate }) {
           {...fadeUp}
           transition={sectionTransition()}
         >
-          <span className="ag-eyebrow">Atlas — dit overblik over Aftergraph</span>
+          <span className="ag-eyebrow">Atlas — evidence-aware system observatory</span>
           <h1 className="ag-display" style={{ fontSize: '70px', letterSpacing: '-2.8px', fontWeight: 600, lineHeight: 1.05 }}>
-            Byg autonome systemer der kan bevise deres arbejde
+            Inspect the system before you trust the claim
           </h1>
           <p className="ag-body-lg">
-            Atlas forbinder intelligent arbejde med begrænset autoritet, holdbar
-            eksekvering, evidence og uafhængig verifikation. Brug styrede agenter.
-            Verificér hvert udfald.
+            Atlas separates canonical system truth from observed evidence, proposed change and verification. Inspect provenance, topology and drift without collapsing one truth plane into another.
           </p>
           <div className="ag-hero-actions">
             <button
@@ -120,6 +149,18 @@ export default function Home({ onNavigate }) {
               Spørg Atlas
             </button>
           </div>
+          <div className="ag-cut-grid" aria-label="Atlas truth cuts">
+            <div className="ag-cut-card">
+              <span>Latest canonical topology</span>
+              <strong>{truthCuts.canonical || (truthCuts.loading ? 'loading…' : 'unavailable')}</strong>
+              <small>{truthCuts.canonicalRepos ? `${truthCuts.canonicalRepos} canonical repositories` : 'Governance-derived catalog'}</small>
+            </div>
+            <div className="ag-cut-card">
+              <span>Observed evidence snapshot</span>
+              <strong>{truthCuts.observed || (truthCuts.loading ? 'loading…' : 'unavailable')}</strong>
+              <small>Historical GitHub observation cut; not silently promoted to the canonical cut.</small>
+            </div>
+          </div>
         </motion.section>
 
         {/* ── Code blocks ── */}
@@ -128,9 +169,9 @@ export default function Home({ onNavigate }) {
           {...fadeUp}
           transition={sectionTransition(0.1)}
         >
-          <span className="ag-eyebrow">Verificér hvad der er live — lige nu</span>
+          <span className="ag-eyebrow">Verify what is live — without a hardcoded SHA</span>
           <h2 className="ag-headline">
-            Ingen tilmelding, ingen nøgle. Siden beviser hvilken kode den kører.
+            The public health and provenance contracts expose the deployed source identity. Cross-check them instead of trusting a badge.
           </h2>
           <div className="ag-code-grid">
             {CODE_EXAMPLES.map((block) => (
@@ -150,9 +191,9 @@ export default function Home({ onNavigate }) {
           {...fadeUp}
           transition={sectionTransition(0.15)}
         >
-          <span className="ag-eyebrow">Tre overflader. Ærlig modenhed.</span>
+          <span className="ag-eyebrow">Four public entry surfaces. Honest maturity.</span>
           <h2 className="ag-headline">
-            Hvert produkt viser hvad det gør, hvordan det virker, og hvor det står.
+            The entry surfaces are only part of the system. Governance currently tracks a broader canonical portfolio; maturity is not inferred from topology membership.
           </h2>
           <div className="ag-product-grid">
             {PRODUCTS.map((product) => (
@@ -189,25 +230,23 @@ export default function Home({ onNavigate }) {
           </div>
         </motion.section>
 
-        {/* ── Timeline ── */}
+        {/* ── Canonical portfolio ── */}
         <motion.section
           className="ag-section ag-timeline-section"
           {...fadeUp}
           transition={sectionTransition(0.25)}
         >
-          <span className="ag-eyebrow">Historik</span>
-          <h2 className="ag-headline">Fra grundlæggelse til offentligt kort</h2>
-          <ol className="ag-timeline">
-            {TIMELINE.map((entry) => (
-              <li key={entry.year} className="ag-timeline-item">
-                <span className="ag-timeline-year">{entry.year}</span>
-                <div className="ag-timeline-content">
-                  <strong className="ag-timeline-label">{entry.label}</strong>
-                  <p className="ag-timeline-body">{entry.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <span className="ag-eyebrow">Canonical system portfolio</span>
+          <h2 className="ag-headline">The front door is not the whole platform.</h2>
+          <p className="ag-body-lg">
+            FIHIM, RenOS, Runtime, CORE / ToolFabric, Skill ABI, Cron Fabric and other systems
+            participate in the current Governance topology. Visibility, lifecycle and maturity
+            remain separate claims.
+          </p>
+          <div className="ag-hero-actions">
+            <a className="ag-btn ag-btn-primary" href="/platform/catalog.json">Open platform catalog</a>
+            <button type="button" className="ag-btn" onClick={() => go("topology")}>Inspect topology snapshot</button>
+          </div>
         </motion.section>
 
         {/* ── CTA footer ── */}
@@ -216,10 +255,9 @@ export default function Home({ onNavigate }) {
           {...fadeUp}
           transition={sectionTransition(0.3)}
         >
-          <h2 className="ag-headline">Klar til at se dit systems sandhed?</h2>
+          <h2 className="ag-headline">Inspect the evidence planes.</h2>
           <p className="ag-body-lg">
-            Atlas samler topologi, drift og evidence i ét levende kort. Start
-            med at udforske eller stil spørgsmål direkte.
+            Use Atlas for evidence-aware exploration, and use the Governance-derived platform catalog when you need the latest canonical repository topology.
           </p>
           <div className="ag-hero-actions">
             <button
