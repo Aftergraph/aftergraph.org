@@ -200,6 +200,14 @@ const health = JSON.stringify({
   sha: process.env.AG_SHA || 'local'
 });
 
+const provenance = JSON.stringify({
+  schema: 'aftergraph-deploy-provenance/1.0',
+  repository: 'Aftergraph/aftergraph.org',
+  sha: process.env.AG_SHA || 'local',
+  deployed: process.env.AG_DEPLOYED || 'build-time',
+  route: 'aftergraph-site v1.2.0'
+});
+
 const robots = `User-agent: *
 Allow: /
 Disallow: /healthz
@@ -258,6 +266,7 @@ const MANIFEST = ${JSON.stringify(MANIFEST)};
 const SWJS = ${JSON.stringify(SWJS)};
 const ICON_FILES = ${JSON.stringify(ICON_FILES)};
 const HEALTH = ${JSON.stringify(health)};
+const PROVENANCE = ${JSON.stringify(provenance)};
 const ROBOTS = ${JSON.stringify(robots)};
 const SITEMAP = ${JSON.stringify(sitemap)};
 const TELEMETRY_EVENTS = new Set(['registry_loaded','registry_failure','zero_result','item_open','destination_probe']);
@@ -371,6 +380,7 @@ export default {
     let cache = 'public, max-age=300';
     let responseStatus = 200;
     if (p === '/healthz' || p === '/health') { body = HEALTH; contentType = 'application/json'; cache = 'public, max-age=60'; }
+    else if (p === '/provenance.json') { body = PROVENANCE; contentType = 'application/json;charset=utf-8'; cache = 'no-store'; }
     else if (p === '/robots.txt') { body = ROBOTS; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
     else if (p === '/sitemap.xml') { body = SITEMAP; contentType = 'application/xml;charset=utf-8'; cache = 'public, max-age=3600'; }
     else if (p === '/llms.txt') { body = LLMS; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
