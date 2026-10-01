@@ -82,6 +82,14 @@ jobs:
           STATUS=$?
           kill $SRV
           exit $STATUS
+      - name: Interaction boundary browser contract
+        run: |
+          node site/serve-local.cjs 8475 site &
+          SRV=$!
+          node atlas/scripts/verify-interaction.mjs "http://localhost:8475/index.html"
+          STATUS=$?
+          kill $SRV
+          exit $STATUS
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is current
