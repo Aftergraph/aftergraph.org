@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aftergraph.org/contracts/public-repository-catalog/1.0.schema.json",
+  "title": "Aftergraph Public Repository Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "source", "repositories"],
+  "properties": {
+    "schema": { "const": "aftergraph-public-repository-catalog/1.0" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract", "repository", "ref", "path", "topology_cut"],
+      "properties": {
+        "contract": { "const": "platform-topology/2.0" },
+        "repository": { "const": "Aftergraph/after-graph-governance" },
+        "ref": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "path": { "const": "docs/platform-topology/2.0.json" },
+        "topology_cut": { "type": ["string", "null"] }
+      }
+    },
+    "repositories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["repository", "url", "visibility", "classification"],
+        "properties": {
+          "repository": { "type": "string", "minLength": 1 },
+          "url": { "type": "string", "pattern": "^https://github\\.com/Aftergraph/" },
+          "visibility": { "const": "public" },
+          "classification": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["state", "role", "lifecycle", "label"],
+            "oneOf": [
+              {
+                "properties": {
+                  "state": { "const": "classified" },
+                  "role": { "enum": [
+                    "canonical-contracts",
+                    "normative-authority",
+                    "runtime-enforcement",
+                    "durable-execution",
+                    "primary-experience",
+                    "work-inference",
+                    "work-intelligence-experience",
+                    "continuity-contract",
+                    "continuity-containment-verification",
+                    "research-assurance",
+                    "capability-supply-chain",
+                    "model-rnd-methodology",
+                    "model-program",
+                    "model-lifecycle-registry",
+                    "venture-os-consumer",
+                    "knowledge-plane",
+                    "public-front-door",
+                    "brand-design-system",
+                    "organization-community",
+                    "verified-code-review",
+                    "agent-runtime",
+                    "scheduled-observation-fabric",
+                    "assurance-incubation",
+                    "temporary-verification-fixture",
+                    "legacy-migration-source",
+                    "skill-compatibility-contract",
+                    "skill-portability-benchmark",
+                    "human-operator-plane",
+                    "canonical-service-business-domain",
+                    "rendetalje-reference-tenant",
+                    "service-operations-product-surface",
+                    "operator-cockpit-projection",
+                    "operational-intelligence-projection",
+                    "tool-routing-control-plane",
+                    "personal-agent-product",
+                    "operational-intelligence-backend-projection"
+                  ] },
+                  "lifecycle": { "enum": ["active", "temporary", "internal-hold", "legacy-transition"] },
+                  "label": { "const": null }
+                }
+              },
+              {
+                "properties": {
+                  "state": { "const": "pending" },
+                  "role": { "type": ["string", "null"], "enum": [
+                    null,
+                    "canonical-contracts",
+                    "normative-authority",
+                    "runtime-enforcement",
+                    "durable-execution",
+                    "primary-experience",
+                    "work-inference",
+                    "work-intelligence-experience",
+                    "continuity-contract",
+                    "continuity-containment-verification",
+                    "research-assurance",
+                    "capability-supply-chain",
+                    "model-rnd-methodology",
+                    "model-program",
+                    "model-lifecycle-registry",
+                    "venture-os-consumer",
+                    "knowledge-plane",
+                    "public-front-door",
+                    "brand-design-system",
+                    "organization-community",
+                    "verified-code-review",
+                    "agent-runtime",
+                    "scheduled-observation-fabric",
+                    "assurance-incubation",
+                    "temporary-verification-fixture",
+                    "legacy-migration-source",
+                    "skill-compatibility-contract",
+                    "skill-portability-benchmark",
+                    "human-operator-plane",
+                    "canonical-service-business-domain",
+                    "rendetalje-reference-tenant",
+                    "service-operations-product-surface",
+                    "operator-cockpit-projection",
+                    "operational-intelligence-projection",
+                    "tool-routing-control-plane",
+                    "personal-agent-product",
+                    "operational-intelligence-backend-projection"
+                  ] },
+                  "lifecycle": { "type": ["string", "null"], "enum": [null, "active", "temporary", "internal-hold", "legacy-transition"] },
+                  "label": { "const": "Classification pending" }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

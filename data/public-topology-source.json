@@ -1,0 +1,7 @@
+{
+  "schema": "aftergraph-governance-topology-source/1.0",
+  "repository": "Aftergraph/after-graph-governance",
+  "ref": "c25e557233afac3519cdefd5d04f8997615b655c",
+  "topology_path": "docs/platform-topology/2.0.json",
+  "org_state_schema_path": "docs/contracts/org-state/1.0.json"
+}

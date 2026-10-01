@@ -312,8 +312,8 @@ describe('useQuery staleTime and retry behavior', () => {
           expect(fetchSpy).toHaveBeenCalled();
         });
 
-        // With retry:false in test QueryClient, should be exactly 1 call
-        expect(fetchSpy).toHaveBeenCalledTimes(1);
+        // Snapshot history falls back to the static index after the live API fails.
+        expect(fetchSpy).toHaveBeenCalledTimes(cfg.name === 'SnapshotsView' ? 2 : 1);
       });
     });
   }

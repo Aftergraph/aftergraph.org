@@ -18,6 +18,29 @@ const launcherRegistryRaw = read('launcher-registry.json');
 let launcherRegistry;
 try { launcherRegistry = JSON.parse(launcherRegistryRaw); } catch { assert(false, 'launcher-registry.json is not valid JSON'); }
 assert(launcherRegistry.schema === 'aftergraph-launcher-registry/1.0', 'launcher registry schema must be aftergraph-launcher-registry/1.0');
+const publicRepositoryCatalogRaw = read('public-repository-catalog.json');
+let publicRepositoryCatalog;
+try { publicRepositoryCatalog = JSON.parse(publicRepositoryCatalogRaw); } catch { assert(false, 'public-repository-catalog.json is not valid JSON'); }
+assert(publicRepositoryCatalog.schema === 'aftergraph-public-repository-catalog/1.0', 'public repository catalog schema must be aftergraph-public-repository-catalog/1.0');
+const publicRepositoryCatalogSchema = JSON.parse(read('public-repository-catalog.schema.json'));
+assert(publicRepositoryCatalogSchema.$id === 'https://aftergraph.org/contracts/public-repository-catalog/1.0.schema.json', 'public repository catalog schema ID mismatch');
+const hasExactKeys = (value, expected) => Object.keys(value || {}).sort().join('\0') === [...expected].sort().join('\0');
+assert(hasExactKeys(publicRepositoryCatalog, ['schema', 'source', 'repositories']), 'public repository catalog has unexpected top-level fields');
+assert(hasExactKeys(publicRepositoryCatalog.source, ['contract', 'repository', 'ref', 'path', 'topology_cut']), 'public repository catalog source has unexpected fields');
+assert(Array.isArray(publicRepositoryCatalog.repositories), 'public repository catalog must contain a repository array');
+assert(publicRepositoryCatalog.repositories.every((repository) => hasExactKeys(repository, ['repository', 'url', 'visibility', 'classification'])), 'public repository catalog entry has unexpected fields');
+assert(publicRepositoryCatalog.repositories.every((repository) => repository.visibility === 'public'), 'public repository catalog contains a non-public entry');
+assert(publicRepositoryCatalog.repositories.every((repository) => hasExactKeys(repository.classification, ['state', 'role', 'lifecycle', 'label'])), 'public repository classification has unexpected fields');
+const classificationVariants = publicRepositoryCatalogSchema.properties.repositories.items.properties.classification.oneOf;
+assert(Array.isArray(classificationVariants) && classificationVariants.length === 2, 'public repository schema must define classified and pending variants');
+const classificationMatches = (classification, variant) => Object.entries(variant.properties || {}).every(([field, rule]) => {
+  if ('const' in rule && classification[field] !== rule.const) return false;
+  if (Array.isArray(rule.enum) && !rule.enum.includes(classification[field])) return false;
+  if (rule.type === 'string' && typeof classification[field] !== 'string') return false;
+  if (Array.isArray(rule.type) && !rule.type.includes(classification[field] === null ? 'null' : typeof classification[field])) return false;
+  return true;
+});
+assert(publicRepositoryCatalog.repositories.every((repository) => classificationVariants.filter((variant) => classificationMatches(repository.classification, variant)).length === 1), 'public repository classification does not match exactly one approved schema variant');
 const notFound = read('404.html');
 const statusPage = read('status.html');
 let sentinel = read('sentinel.html');
@@ -227,6 +250,7 @@ const LANDING = ${JSON.stringify(landing)};
 const LAUNCH = ${JSON.stringify(launch)};
 const LAUNCH_APP = ${JSON.stringify(launcherApp)};
 const LAUNCHER_REGISTRY = ${JSON.stringify(launcherRegistryRaw)};
+const PUBLIC_REPOSITORY_CATALOG = ${JSON.stringify(publicRepositoryCatalogRaw)};
 const LAUNCHER_ALLOWED_IDS = new Set(${JSON.stringify(launcherTelemetryIds)});
 const NOTFOUND = ${JSON.stringify(notFound)};
 const FAVICON = ${JSON.stringify(favicon)};
@@ -368,6 +392,7 @@ export default {
     else if (ICON_FILES[p]) { body = Uint8Array.from(atob(ICON_FILES[p]), c => c.charCodeAt(0)); contentType = 'image/png'; cache = 'public, max-age=86400'; }
     else if (p === '/launcher-app.js') { body = LAUNCH_APP; contentType = 'text/javascript;charset=utf-8'; cache = 'public, max-age=300'; }
     else if (p === '/launcher-registry.json') { body = LAUNCHER_REGISTRY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
+    else if (p === '/platform/repositories.json') { body = PUBLIC_REPOSITORY_CATALOG; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
     else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
     else if (p === '/status' || p === '/status/') { body = STATUS; }
     else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }

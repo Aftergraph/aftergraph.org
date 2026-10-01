@@ -9,6 +9,8 @@ const launcher = read('launch.html');
 const launcherApp = read('launcher-app.js');
 const launcherRegistryText = read('launcher-registry.json');
 const launcherRegistry = JSON.parse(launcherRegistryText);
+const publicRepositoryCatalogText = read('public-repository-catalog.json');
+const publicRepositoryCatalog = JSON.parse(publicRepositoryCatalogText);
 const launcherSurface = `${launcher}\n${launcherApp}\n${launcherRegistryText}`;
 const sentinelPage = read('sentinel.html');
 const communityPage = fs.existsSync(path.join(root, 'community.html')) ? read('community.html') : '';
@@ -79,12 +81,16 @@ for (const privateUrl of [
 }
 
 assert.equal(launcherRegistry.schema, 'aftergraph-launcher-registry/1.0');
+assert.equal(publicRepositoryCatalog.schema, 'aftergraph-public-repository-catalog/1.0');
+assert.ok(publicRepositoryCatalog.repositories.every((repo) => repo.visibility === 'public'), 'public topology catalog must omit private repositories');
+assert.ok(publicRepositoryCatalog.repositories.every((repo) => !('maturity' in repo) && !('evidence' in repo)), 'topology catalog must not conflate maturity or evidence');
 assert.ok(launcherRegistry.entities.length >= 10, 'launcher registry must expose the governed public surface');
 assert.ok(launcherRegistry.entities.some((item) => item.id === 'runtime' && item.source_visibility === 'private'), 'Runtime must remain private-source/public-surface');
 assert.ok(!launcherRegistry.entities.some((item) => item.source_visibility === 'private' && /^https:\/\/github\.com\/Aftergraph\//.test(item.url)), 'private source URL leaked through launcher registry');
 assert.ok(launcherRegistry.actions.some((item) => item.id === 'open-community' && item.url === '/community'), 'launcher registry must expose community navigation');
 has(launcher, 'src="/launcher-app.js"', 'launcher external app module');
 has(buildWorker, "p === '/launcher-registry.json'", 'launcher registry worker route');
+has(buildWorker, "p === '/platform/repositories.json'", 'public topology catalog worker route');
 has(buildWorker, "p === '/api/launcher/telemetry'", 'launcher telemetry route');
 has(launcherApp, "fetch(REGISTRY_URL", 'launcher consumes canonical registry');
 has(launcherApp, "type:'evidence'", 'launcher evidence intent');

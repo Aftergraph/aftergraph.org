@@ -453,16 +453,7 @@ export default function App() {
 
   return (
     <AtlasShell activeView={view} onViewChange={openView}>
-      {/* Legacy header hidden — AtlasShell provides top bar */}
-      <div className="hidden">
-        <header className="atlas-head">
-          <h1>Aftergraph Atlas</h1>
-          <span className="cut">
-            cut {projection.meta.evidence_cut} ({age.label} old{age.stale ? ', STALE — regenerate' : ''}) · gov {String(projection.meta.gov_sha).slice(0, 7)}
-            {origin === 'fetch' ? ' · live fetch (may be stale)' : ''}
-          </span>
-        </header>
-      </div>
+      {view !== 'home' && <h1 className="sr-only">Aftergraph Atlas</h1>}
 
       {/* Experience lenses + overlays as compact toolbar inside shell content */}
       {view !== 'home' && (
@@ -471,7 +462,9 @@ export default function App() {
         style={{ fontSize: 'var(--ag-type-ui)' }}
       >
         <div
-          className="flex items-center gap-1 px-2 py-1 rounded-lg border"
+          role="group"
+          aria-label="Experience lens"
+          className="flex flex-wrap min-w-0 max-w-full items-center gap-1 px-2 py-1 rounded-lg border"
           style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
         >
           <span className="mr-1" style={{ color: 'var(--ag-text-subtle)' }}>Lens:</span>
@@ -497,7 +490,9 @@ export default function App() {
           })}
         </div>
         <div
-          className="flex items-center gap-1 px-2 py-1 rounded-lg border"
+          role="group"
+          aria-label="Evidence planes"
+          className="flex flex-wrap min-w-0 max-w-full items-center gap-1 px-2 py-1 rounded-lg border"
           style={{ background: 'var(--ag-surface)', borderColor: 'var(--ag-border)' }}
         >
           <span className="mr-1" style={{ color: 'var(--ag-text-subtle)' }}>Planes:</span>
