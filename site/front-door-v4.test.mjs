@@ -50,7 +50,7 @@ test('homepage product surfaces mirror launcher maturity truth', () => {
   assert.match(html, /<article class="product-card" id="wie">[\s\S]*?<span class="tag">prototype<\/span>/);
   assert.match(html, /<article class="product-card" id="sentinel">[\s\S]*?<span class="tag">prototype<\/span>/);
   assert.match(html, /<article class="product-card featured" id="atlas">[\s\S]*?<span class="tag production">production<\/span>/);
-  assert.match(html, /Four public surfaces\. Honest maturity\./);
+  assert.match(html, /Four public entry surfaces\. Honest maturity\./);
 });
 
 test('homepage exposes fail-closed live proof surface', () => {
