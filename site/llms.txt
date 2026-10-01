@@ -17,6 +17,8 @@
 - [Knowledge Plane Evidence](https://docs.aftergraph.org/evidence/claim-graph/): Claim graph with provenance and audit status
 - [Knowledge Plane Sentinel](https://docs.aftergraph.org/sentinel/): Sentinel documentation
 - [Health](https://aftergraph.org/healthz): Deployment status
+- [Deploy provenance](https://aftergraph.org/provenance.json): Deterministic deployed source identity
+- [Agent UI boundary](https://aftergraph.org/agent-ui-boundary.json): Draft, non-canonical interaction-pattern contract; AG-UI-inspired with no compatibility claim
 - [Sentinel](https://aftergraph.org/sentinel): Verified code-review product page
 - [Atlas](https://aftergraph.org/atlas): Evidence-aware development observatory (read-only projection)
 
@@ -81,4 +83,4 @@ Wie's canonical public backend repository is `wi-backend`. Public product naming
 
 ## Evidence rule
 
-Visibility never upgrades evidence. Canonical topology membership does not establish functional conformance, production readiness or APC compatibility. Research claims, experiments, prototypes and production capabilities are labelled by maturity on their owning surfaces. Research evidence is never runtime authority by itself.
+Interaction events never upgrade authority. Visibility never upgrades evidence. Canonical topology membership does not establish functional conformance, production readiness or APC compatibility. Research claims, experiments, prototypes and production capabilities are labelled by maturity on their owning surfaces. Research evidence is never runtime authority by itself.

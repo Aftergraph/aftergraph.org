@@ -167,6 +167,31 @@ button.pnode.final[aria-current="true"] .pdot{background:var(--evidence);box-sha
 .product-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
 .product-mini{padding:14px;border:1px solid var(--border);border-radius:8px;background:rgba(8,12,20,.6);font:12px/1.7 var(--font-mono);color:var(--subtle)}
 .product-mini b{color:var(--text);font-weight:600}
+/* agent interaction boundary */
+.interaction-shell{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:20px;align-items:stretch}
+.event-rail{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;padding:20px;border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(180deg,rgba(20,31,64,.5),rgba(8,12,20,.62))}
+.event-node{position:relative;min-height:92px;padding:14px 10px;border:1px solid var(--border);border-radius:10px;background:rgba(8,12,20,.72);color:var(--muted);font:700 10px/1.35 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;text-align:left;cursor:pointer;transition:transform 180ms var(--ease),border-color 180ms var(--ease),color 180ms var(--ease),background 180ms var(--ease)}
+.event-node::after{content:"→";position:absolute;right:-8px;top:50%;transform:translate(50%,-50%);color:var(--subtle);pointer-events:none}
+.event-node:last-child::after{display:none}
+.event-node:hover,.event-node[aria-pressed="true"]{transform:translateY(-2px);border-color:var(--border-strong);color:var(--text);background:var(--control-soft)}
+.event-node[data-class="authority"],.event-node[data-class="approval"]{border-color:rgba(240,166,74,.32)}
+.event-node[data-class="evidence"],.event-node[data-class="verification"]{border-color:rgba(36,196,173,.34)}
+.event-node small{display:block;margin-top:8px;color:var(--subtle);font:500 9px/1.35 var(--font-mono);letter-spacing:0;text-transform:none}
+.event-detail{display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:24px;border:1px solid var(--border-strong);border-radius:var(--radius);background:linear-gradient(145deg,rgba(66,199,232,.08),rgba(8,12,20,.72))}
+.event-detail .eyebrow{font:700 9px/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--control)}
+.event-detail h3{margin:8px 0 10px;font:700 20px/1.25 var(--font-display)}
+.event-detail p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.6}
+.boundary-rule{display:flex;align-items:center;gap:9px;padding:11px 13px;border-left:3px solid var(--decision);background:var(--decision-soft);border-radius:0 9px 9px 0;color:var(--text);font:600 11px/1.45 var(--font-mono)}
+.protocol-note{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px;color:var(--subtle);font:11px/1.5 var(--font-mono)}
+.protocol-note .tag{padding:4px 8px;border:1px solid var(--border);border-radius:999px;color:var(--decision)}
+@media(max-width:1000px){.interaction-shell{grid-template-columns:1fr}.event-rail{grid-template-columns:repeat(4,minmax(0,1fr))}.event-node::after{display:none}}
+@media(max-width:620px){.event-rail{grid-template-columns:1fr 1fr}.event-node{min-height:76px}}
+.obs-rail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.obs-card{padding:14px 15px;border:1px solid var(--border);border-radius:10px;background:rgba(8,12,20,.56)}
+.obs-card b{display:block;margin-bottom:6px;color:var(--text);font:700 10px/1 var(--font-mono);letter-spacing:.08em}
+.obs-card span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.obs-card code{color:var(--control);font:600 10px/1.4 var(--font-mono)}
+@media(max-width:620px){.obs-rail{grid-template-columns:1fr}}
 /* trust */
 .trust-split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
 .trust-statement{font-size:clamp(26px,3.4vw,40px);font-weight:700;line-height:1.16;letter-spacing:-.02em;font-family:var(--font-display)}
@@ -175,6 +200,23 @@ button.pnode.final[aria-current="true"] .pdot{background:var(--evidence);box-sha
 .trust-step{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--border);font-size:14px}
 .trust-step:last-child{border-bottom:0}
 .trust-arrow{display:grid;place-items:center;width:30px;height:30px;flex:none;border:1px solid var(--border-strong);border-radius:8px;background:var(--control-soft);color:var(--control);font:600 12px/1 var(--font-mono)}
+/* live proof */
+.proof-panel{position:relative;overflow:hidden;border:1px solid var(--border-strong);border-radius:var(--radius);background:linear-gradient(135deg,rgba(36,196,173,.08),rgba(8,12,20,.82) 38%,rgba(66,199,232,.06));box-shadow:0 24px 64px -34px rgba(0,0,0,.8)}
+.proof-head{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;padding:28px 28px 20px;border-bottom:1px solid var(--border)}
+.proof-state{display:inline-flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(8,12,20,.68);font:700 10px/1 var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--subtle)}
+.proof-state::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--decision);box-shadow:0 0 0 4px rgba(240,166,74,.1)}
+.proof-state[data-state="ok"]{color:var(--evidence);border-color:rgba(36,196,173,.35)}
+.proof-state[data-state="ok"]::before{background:var(--evidence);box-shadow:0 0 0 4px rgba(36,196,173,.12),0 0 18px rgba(36,196,173,.45)}
+.proof-state[data-state="error"]{color:var(--danger)}
+.proof-state[data-state="error"]::before{background:var(--danger)}
+.proof-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.proof-cell{padding:22px 24px;border-right:1px solid var(--border);min-width:0}
+.proof-cell:last-child{border-right:0}
+.proof-label{display:block;margin-bottom:8px;font:700 9px/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--subtle)}
+.proof-value{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 13px/1.5 var(--font-mono);color:var(--text)}
+.proof-actions{display:flex;flex-wrap:wrap;gap:10px;padding:20px 28px;border-top:1px solid var(--border)}
+@media(max-width:900px){.proof-grid{grid-template-columns:1fr 1fr}.proof-cell:nth-child(2){border-right:0}.proof-cell:nth-child(-n+2){border-bottom:1px solid var(--border)}}
+@media(max-width:560px){.proof-head{flex-direction:column}.proof-grid{grid-template-columns:1fr}.proof-cell{border-right:0!important;border-bottom:1px solid var(--border)}.proof-cell:last-child{border-bottom:0}}
 /* platform chain */
 .platform-chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:28px 0}
 .chain-node{position:relative;padding:10px 16px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;background:linear-gradient(180deg,rgba(20,31,64,.6),rgba(8,12,20,.6));font-family:var(--font-display);transition:border-color 200ms var(--ease),box-shadow 200ms var(--ease)}
@@ -471,6 +513,35 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 </div>
 </section>
 
+<section class="section shell" id="interaction">
+<p class="section-kicker">Agent–user boundary · illustrative</p>
+<h2>Stream the interaction. Govern the action.</h2>
+<p class="section-intro">Modern agent interfaces need ordered, inspectable events. Aftergraph keeps that interaction stream separate from authority, execution evidence and independent verification.</p>
+<div class="interaction-shell">
+<div>
+<div class="event-rail" role="group" aria-label="Illustrative Aftergraph interaction event flow">
+<button class="event-node" type="button" data-event-title="Run lifecycle" data-event-desc="A bounded run starts with an explicit identity and scope. UI lifecycle state is observable, but starting a run does not grant authority." data-event-rule="Lifecycle state is interaction context — not permission." aria-pressed="true">RUN<small>start / finish / error</small></button>
+<button class="event-node" type="button" data-event-title="Streaming message" data-event-desc="Incremental output can render immediately while preserving a stable event identity for the frontend." data-event-rule="Rendered text is communication — not evidence of completion.">MESSAGE<small>start / delta / end</small></button>
+<button class="event-node" type="button" data-event-title="Tool intent" data-event-desc="Tool requests are visible as typed interaction events so the user can understand what the agent intends to do." data-event-rule="Tool intent must cross Trust before execution.">TOOL<small>intent / args / result</small></button>
+<button class="event-node" type="button" data-event-title="Shared state" data-event-desc="Snapshots establish a full UI state; deltas update it incrementally without forcing opaque frontend reconstruction." data-event-rule="Shared state is synchronized context — not canonical authority.">STATE<small>snapshot / delta</small></button>
+<button class="event-node" type="button" data-class="approval" data-event-title="Human approval boundary" data-event-desc="Consequential actions can stop at an explicit approval boundary before execution proceeds." data-event-rule="Approval changes allowed action scope; it is never inferred from UI activity.">APPROVAL<small>pause / inspect / authorize</small></button>
+<button class="event-node" type="button" data-class="evidence" data-event-title="Execution evidence" data-event-desc="The runtime emits inspectable artifacts tied to what actually happened, rather than relying on agent narration." data-event-rule="Evidence describes execution; it still requires evaluation.">EVIDENCE<small>artifacts / provenance</small></button>
+<button class="event-node" type="button" data-class="verification" data-event-title="Independent verification" data-event-desc="A separate verifier checks the exact subject and criteria before a stronger outcome claim is promoted." data-event-rule="Verified outcome is a verdict bound to evidence, not self-report.">VERDICT<small>criteria / subject / result</small></button>
+</div>
+<div class="obs-rail" aria-label="Interaction observability signals">
+<div class="obs-card"><b>ACTIVITY</b><span>Structured progress via snapshot/delta. <code>progress ≠ completion evidence</code>.</span></div>
+<div class="obs-card"><b>SUBAGENT</b><span>Producer attribution and lineage across concurrent work. <code>provenance ≠ ownership</code>.</span></div>
+<div class="obs-card"><b>INTERRUPT</b><span>Explicit pause/resume correlation for human or policy input. <code>resume ≠ ambient permission</code>.</span></div>
+</div>
+<div class="protocol-note"><span class="tag">Design direction</span><span>Event-stream UX inspired by open agent-interface patterns; not presented as an implemented AG-UI compatibility claim.</span><a class="source-link" style="margin-top:0" href="/agent-ui-boundary.json">Read machine contract</a><a class="source-link" style="margin-top:0" href="https://github.com/ag-ui-protocol/ag-ui">Related protocol: AG-UI</a></div>
+</div>
+<aside class="event-detail" data-event-detail>
+<div><span class="eyebrow">Selected boundary</span><h3 data-event-heading>Run lifecycle</h3><p data-event-copy>A bounded run starts with an explicit identity and scope. UI lifecycle state is observable, but starting a run does not grant authority.</p></div>
+<div class="boundary-rule" data-event-rule>Lifecycle state is interaction context — not permission.</div>
+</aside>
+</div>
+</section>
+
 <section class="section shell" id="trust">
 <p class="section-kicker">Why Aftergraph</p>
 <h2>Complete is not verified.</h2>
@@ -485,6 +556,32 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <div class="trust-step"><span class="trust-arrow">2</span><span><strong>Evidence</strong> &mdash; Inspectable artifacts emitted</span></div>
 <div class="trust-step"><span class="trust-arrow">3</span><span><strong>Independent verifier</strong> &mdash; Separate process checks criteria</span></div>
 <div class="trust-step"><span class="trust-arrow">4</span><span><strong>Verdict</strong> &mdash; Bound to exact subject, not self-report</span></div>
+</div>
+</div>
+</section>
+
+<section class="section shell" id="proof">
+<p class="section-kicker">Live evidence</p>
+<h2>Do not trust the claim. Inspect the system.</h2>
+<p class="section-intro">This surface cross-checks Aftergraph's same-origin health and deploy-provenance contracts at runtime. A verified state requires the exact SHA, route and deployment marker to agree.</p>
+<div class="proof-panel" data-live-proof aria-live="polite">
+<div class="proof-head">
+<div><span class="proof-label">Runtime probe</span><strong style="font:700 20px/1.25 var(--font-display)">aftergraph.org /healthz</strong></div>
+<span class="proof-state" data-proof-state data-state="loading">Checking runtime</span>
+</div>
+<div class="proof-grid">
+<div class="proof-cell"><span class="proof-label">Health</span><span class="proof-value" data-proof-health>unverified</span></div>
+<div class="proof-cell"><span class="proof-label">Exact deploy SHA</span><span class="proof-value" data-proof-sha>unverified</span></div>
+<div class="proof-cell"><span class="proof-label">Deployment</span><span class="proof-value" data-proof-deployed>unverified</span></div>
+<div class="proof-cell"><span class="proof-label">Route contract</span><span class="proof-value" data-proof-route>unverified</span></div>
+</div>
+<div class="proof-actions">
+<a class="button primary" href="/status">Open public status</a>
+<a class="button" href="/healthz">Inspect raw health</a>
+<a class="button" href="/provenance.json">Inspect provenance</a>
+<a class="button" data-proof-commit href="https://github.com/Aftergraph/aftergraph.org">Open exact commit</a>
+<a class="button" href="/atlas">Inspect Atlas</a>
+<a class="button" href="https://github.com/Aftergraph/aftergraph.org">View source</a>
 </div>
 </div>
 </section>
@@ -602,6 +699,53 @@ var links={};var secs=[];
 document.querySelectorAll('.nav-links a[href^="#"]').forEach(function(a){var f=a.getAttribute('href').slice(1);if(f&&document.getElementById(f)){links[f]=a;secs.push(f);}});
 if('IntersectionObserver' in window&&secs.length){var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){secs.forEach(function(s){if(links[s]){links[s].classList.toggle('active',s===e.target.id);}});}});},{rootMargin:'-45% 0px -50% 0px'});secs.forEach(function(s){var el=document.getElementById(s);if(el){io2.observe(el);}});}
 if(!reduce){var art=document.querySelector('.orbit-art'),vis=document.querySelector('.hero-visual');if(art&&vis){var mono=function(){var y=window.scrollY;if(y<window.innerHeight&&y>=0){art.style.transform='translate3d(0,'+(y*0.09)+'px,0)';vis.style.transform='translate3d(0,'+(y*0.04)+'px,0)';}else{art.style.transform='';vis.style.transform='';}};var t=false;window.addEventListener('scroll',function(){if(!t){requestAnimationFrame(function(){mono();t=false;});t=true;}},{passive:true});mono();}}
+})();
+</script>
+<script data-live-proof-script>
+(function(){
+  var root=document.querySelector('[data-live-proof]');
+  if(!root||typeof fetch!=='function') return;
+  var state=root.querySelector('[data-proof-state]');
+  var commit=root.querySelector('[data-proof-commit]');
+  var set=function(sel,val){var el=root.querySelector(sel);if(el)el.textContent=(val===undefined||val===null||val==='')?'unverified':String(val);};
+  var getJson=function(path){return fetch(path,{cache:'no-store',headers:{Accept:'application/json'}}).then(function(r){if(!r.ok)throw new Error(path+' HTTP '+r.status);return r.json();});};
+  Promise.all([getJson('/healthz'),getJson('/provenance.json')]).then(function(values){
+    var h=values[0],p=values[1];
+    var valid=p&&p.schema==='aftergraph-deploy-provenance/1.0';
+    var match=valid&&h&&h.status==='ok'&&h.sha===p.sha&&h.route===p.route&&h.deployed===p.deployed;
+    state.dataset.state=match?'ok':'error';
+    state.textContent=match?'Deploy provenance verified':'Provenance mismatch';
+    set('[data-proof-health]',h&&h.status);
+    set('[data-proof-sha]',match&&p&&p.sha ? p.sha : null);
+    set('[data-proof-deployed]',match&&p&&p.deployed ? p.deployed : null);
+    set('[data-proof-route]',match&&p&&p.route ? p.route : null);
+    if(commit&&match&&p.sha&&p.sha!=='local'){
+      commit.href='https://github.com/Aftergraph/aftergraph.org/commit/'+encodeURIComponent(p.sha);
+    }
+  }).catch(function(){
+    state.dataset.state='error';
+    state.textContent='Runtime not verified';
+    set('[data-proof-health]','unavailable');
+  });
+})();
+</script>
+<script data-agent-boundary-script>
+(function(){
+  var nodes=[].slice.call(document.querySelectorAll('.event-node[data-event-title]'));
+  var detail=document.querySelector('[data-event-detail]');
+  if(!nodes.length||!detail) return;
+  var heading=detail.querySelector('[data-event-heading]');
+  var copy=detail.querySelector('[data-event-copy]');
+  var rule=detail.querySelector('[data-event-rule]');
+  nodes.forEach(function(node){
+    node.addEventListener('click',function(){
+      nodes.forEach(function(n){n.setAttribute('aria-pressed','false');});
+      node.setAttribute('aria-pressed','true');
+      if(heading) heading.textContent=node.dataset.eventTitle||'Interaction event';
+      if(copy) copy.textContent=node.dataset.eventDesc||'';
+      if(rule) rule.textContent=node.dataset.eventRule||'';
+    });
+  });
 })();
 </script>
 </body>

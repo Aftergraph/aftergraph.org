@@ -52,3 +52,41 @@ test('homepage product surfaces mirror launcher maturity truth', () => {
   assert.match(html, /<article class="product-card featured" id="atlas">[\s\S]*?<span class="tag production">production<\/span>/);
   assert.match(html, /Four public surfaces\. Honest maturity\./);
 });
+
+test('homepage exposes fail-closed live proof surface', () => {
+  assert.match(html, /id="proof"/);
+  assert.match(html, /data-live-proof/);
+  assert.match(html, /<script data-live-proof-script>/);
+  assert.match(html, /getJson\('\/healthz'\)/);
+  assert.match(html, /getJson\('\/provenance\.json'\)/);
+  assert.match(html, /aftergraph-deploy-provenance\/1\.0/);
+  assert.match(html, /h\.sha===p\.sha&&h\.route===p\.route&&h\.deployed===p\.deployed/);
+  assert.match(html, /data-proof-state/);
+  assert.match(html, /data-proof-sha/);
+  assert.match(html, /data-proof-commit/);
+  assert.match(html, /href="\/status"/);
+  assert.match(html, /href="\/healthz"/);
+  assert.match(html, /href="\/provenance\.json"/);
+  assert.match(html, /href="\/atlas"/);
+  assert.match(html, /Do not trust the claim\. Inspect the system\./);
+});
+
+test('homepage exposes governed interaction boundary without overclaiming compatibility', () => {
+  assert.match(html, /id="interaction"/);
+  assert.match(html, /data-agent-boundary-script/);
+  assert.match(html, /Stream the interaction\. Govern the action\./);
+  assert.match(html, /Design direction/);
+  assert.match(html, /not presented as an implemented AG-UI compatibility claim/);
+  assert.match(html, /href="\/agent-ui-boundary\.json">Read machine contract<\/a>/);
+  assert.match(html, />RUN<small>start \/ finish \/ error<\/small>/);
+  assert.match(html, />TOOL<small>intent \/ args \/ result<\/small>/);
+  assert.match(html, />APPROVAL<small>pause \/ inspect \/ authorize<\/small>/);
+  assert.match(html, />EVIDENCE<small>artifacts \/ provenance<\/small>/);
+  assert.match(html, />VERDICT<small>criteria \/ subject \/ result<\/small>/);
+  assert.match(html, /aria-label="Interaction observability signals"/);
+  assert.match(html, /<b>ACTIVITY<\/b>/);
+  assert.match(html, /<b>SUBAGENT<\/b>/);
+  assert.match(html, /<b>INTERRUPT<\/b>/);
+  assert.match(html, /progress ≠ completion evidence/);
+  assert.match(html, /provenance ≠ ownership/);
+});

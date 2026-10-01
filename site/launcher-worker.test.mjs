@@ -45,3 +45,37 @@ test('telemetry worker enforces same-origin browser submissions', async () => {
   const response = await dispatch({ event: 'registry_loaded', result_bucket: '6-20' }, { origin: 'https://example.com' });
   assert.equal(response.status, 403);
 });
+
+test('deploy provenance endpoint exposes deterministic source identity', async () => {
+  const env = createEnv();
+  const request = new Request('https://aftergraph.org/provenance.json', { method: 'GET' });
+  const response = await worker.fetch(request, env);
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('content-type') || '', /application\/json/);
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+  const body = await response.json();
+  assert.equal(body.schema, 'aftergraph-deploy-provenance/1.0');
+  assert.equal(body.repository, 'Aftergraph/aftergraph.org');
+  assert.equal(body.route, 'aftergraph-site v1.2.0');
+  assert.ok(body.sha);
+  assert.ok(body.deployed);
+});
+
+test('agent UI boundary endpoint exposes draft non-canonical semantics', async () => {
+  const env = createEnv();
+  const request = new Request('https://aftergraph.org/agent-ui-boundary.json', { method: 'GET' });
+  const response = await worker.fetch(request, env);
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('content-type') || '', /application\/json/);
+  const body = await response.json();
+  assert.equal(body.schema, 'aftergraph-agent-ui-boundary/0.2-draft');
+  assert.equal(body.status, 'illustrative');
+  assert.equal(body.authority, 'non-canonical');
+  assert.equal(body.flow.length, 7);
+  assert.equal(body.flow.at(-1)?.label, 'VERDICT');
+  assert.equal(body.observability?.subagent?.rule, 'attribution is provenance, not ownership');
+  assert.equal(body.observability?.interrupt?.authority, 'requires explicit authorization path');
+  assert.ok(body.envelope?.fields?.includes('trace_id'));
+  assert.ok(body.envelope?.fields?.includes('subagent_run_id'));
+  assert.match(body.inspired_by?.[0]?.relationship || '', /no compatibility claim/);
+});
