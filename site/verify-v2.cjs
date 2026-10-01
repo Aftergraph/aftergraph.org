@@ -168,14 +168,11 @@ const workerForSurface = worker
   .filter((line) => !/^const ATLAS_[A-Z_]+ = /.test(line))
   .join('\n');
 const publicSurface = `${landing}\n${launcherSurface}\n${statusPage}\n${communityPage}\n${statusDataText}\n${llms}\n${workerForSurface}`.toLowerCase();
+const linkedGithubRepos = new Set(
+  [...publicSurface.matchAll(/https:\/\/github\.com\/aftergraph\/([a-z0-9._-]+)/g)].map((match) => match[1])
+);
 for (const privateRepo of platformCatalog.repositories.filter((repo) => repo.visibility === 'private')) {
-  const privateUrl = `https://github.com/aftergraph/${privateRepo.name}`;
-  const escaped = privateUrl.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\for (const privateRepo of platformCatalog.repositories.filter((repo) => repo.visibility === 'private')) {
-  const privateUrl = `https://github.com/aftergraph/${privateRepo.name}`;
-  assert.ok(!publicSurface.includes(privateUrl), `private repository source URL leaked into public surface: ${privateRepo.name}`);
-}');
-  const exactPrivateUrl = new RegExp(`${escaped}(?=["'/?#\\s]|$)`, 'i');
-  assert.ok(!exactPrivateUrl.test(publicSurface), `private repository source URL leaked into public surface: ${privateRepo.name}`);
+  assert.ok(!linkedGithubRepos.has(privateRepo.name.toLowerCase()), `private repository source URL leaked into public surface: ${privateRepo.name}`);
 }
 
 for (const forbidden of ['customer logos', 'trusted by thousands', 'industry-leading production']) {
