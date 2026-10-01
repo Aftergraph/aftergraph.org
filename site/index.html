@@ -152,7 +152,7 @@ button.pnode.final[aria-current="true"] .pdot{background:var(--evidence);box-sha
 .intent-card li a:hover::after{opacity:1;transform:translateX(0)}
 .intent-card li a:hover{color:var(--control)}
 /* products */
-.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 .product-card{position:relative;padding:28px;border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(180deg,rgba(20,31,64,.5),rgba(8,12,20,.55));display:flex;flex-direction:column;gap:12px;transition:transform 200ms var(--ease),border-color 200ms var(--ease),box-shadow 200ms var(--ease)}
 .product-card:hover{transform:translateY(-3px);border-color:var(--border-strong);box-shadow:0 24px 48px -24px rgba(0,0,0,.7)}
 .product-card.featured{border-color:var(--border-strong);box-shadow:0 0 0 1px rgba(66,199,232,.15),0 24px 48px -24px rgba(0,0,0,.6)}
@@ -162,6 +162,8 @@ button.pnode.final[aria-current="true"] .pdot{background:var(--evidence);box-sha
 @keyframes dashflow{to{stroke-dashoffset:-28}}
 .product-card h3{margin:0;font-size:20px;font-weight:700;font-family:var(--font-display);letter-spacing:.01em}
 .product-card .tag{display:inline-block;padding:3px 9px;border-radius:999px;font:700 10px/1.3 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;background:var(--decision-soft);color:var(--decision);border:1px solid rgba(240,166,74,.3)}
+.product-card .tag.production{background:var(--evidence-soft);color:var(--evidence);border-color:rgba(36,196,173,.34)}
+.product-card .tag.demo{background:var(--control-soft);color:var(--control);border-color:rgba(66,199,232,.34)}
 .product-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
 .product-mini{padding:14px;border:1px solid var(--border);border-radius:8px;background:rgba(8,12,20,.6);font:12px/1.7 var(--font-mono);color:var(--subtle)}
 .product-mini b{color:var(--text);font-weight:600}
@@ -431,12 +433,12 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 
 <section class="section shell" id="products">
 <p class="section-kicker">Products</p>
-<h2>Three surfaces. Honest maturity.</h2>
-<p class="section-intro">Each product shows what it does, how it works, and where it stands. No inflated claims.</p>
+<h2>Four public surfaces. Honest maturity.</h2>
+<p class="section-intro">The front door now mirrors the canonical public surface registry: Studio, Wie, Sentinel and Atlas — each labelled by its actual maturity.</p>
 <div class="product-grid">
 <article class="product-card featured" id="studio">
 <h3>Studio by Aftergraph</h3>
-<span class="tag">prototype</span>
+<span class="tag demo">demo</span>
 <svg class="product-art" viewBox="0 0 320 130" role="img" aria-label="Studio artwork: scattered mission threads converging into one governed lane"><defs><linearGradient id="stg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#42c7e8" stop-opacity=".15"/><stop offset="1" stop-color="#42c7e8"/></linearGradient></defs><rect width="320" height="130" fill="#0a1120"/><g stroke="url(#stg)" stroke-width="2" fill="none"><path d="M10 25 C 120 25, 150 60, 230 60"/><path d="M10 65 C 120 65, 150 65, 230 65"/><path d="M10 105 C 120 105, 150 70, 230 70"/></g><g class="flow" stroke="#42c7e8" stroke-width="2" fill="none"><path d="M10 25 C 120 25, 150 60, 230 60"/><path d="M10 65 C 120 65, 150 65, 230 65"/><path d="M10 105 C 120 105, 150 70, 230 70"/></g><rect x="230" y="48" width="80" height="36" rx="8" fill="rgba(66,199,232,.12)" stroke="#42c7e8"/><circle cx="252" cy="66" r="5" fill="#42c7e8"><animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/></circle><circle cx="272" cy="66" r="5" fill="#42c7e8" opacity=".6"/><circle cx="292" cy="66" r="5" fill="#24c4ad"/></svg>
 <p>General-purpose operating environment for governed agent work. Chat, manage missions, approve actions, inspect evidence.</p>
 <div class="product-mini"><b>Goal</b> &rarr; Progress &rarr; Needs You &rarr; <b>Verified Outcome</b></div>
@@ -457,6 +459,14 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <p>Verified code review. PRs evaluated against exact HEAD with evidence-backed SHIP / DO NOT SHIP verdicts.</p>
 <div class="product-mini">Exact HEAD &rarr; Checks &rarr; Evidence &rarr; <b>Verdict</b></div>
 <a class="button" href="/sentinel" style="margin-top:auto;align-self:flex-start">Sentinel details</a>
+</article>
+<article class="product-card featured" id="atlas">
+<h3>Atlas by Aftergraph</h3>
+<span class="tag production">production</span>
+<svg class="product-art" viewBox="0 0 320 130" role="img" aria-label="Atlas artwork: evidence-aware system graph with canonical, observed and proposed planes"><rect width="320" height="130" fill="#0a1120"/><g stroke="rgba(66,199,232,.28)" stroke-width="1.4" fill="none"><path d="M42 28 L118 62 L196 34 L274 68"/><path d="M42 28 L78 98 L168 92 L274 68"/><path d="M118 62 L168 92 L230 106"/></g><g><circle cx="42" cy="28" r="7" fill="#7759e8"/><circle cx="118" cy="62" r="7" fill="#42c7e8"/><circle cx="196" cy="34" r="7" fill="#24c4ad"/><circle cx="274" cy="68" r="8" fill="#42c7e8"/><circle cx="78" cy="98" r="6" fill="#f0a64a"/><circle cx="168" cy="92" r="7" fill="#24c4ad"/><circle cx="230" cy="106" r="6" fill="#7759e8"/></g><circle cx="168" cy="92" r="16" fill="none" stroke="#24c4ad" opacity=".45"><animate attributeName="r" values="12;20" dur="2.8s" repeatCount="indefinite"/><animate attributeName="opacity" values=".5;0" dur="2.8s" repeatCount="indefinite"/></circle></svg>
+<p>Production evidence-aware development observatory and system graph. Inspect topology, truth planes, drift, snapshots and cited assertions.</p>
+<div class="product-mini"><b>Canonical</b> + Observed + Proposed &rarr; topology &rarr; evidence &rarr; drift</div>
+<a class="button" href="/atlas" style="margin-top:auto;align-self:flex-start">Open Atlas</a>
 </article>
 </div>
 </section>
@@ -555,7 +565,7 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 </main>
 <footer class="footer shell">
 <div><a class="brand" href="/">AFTERGRAPH<i>.</i></a><p>Infrastructure and open research for verifiable intelligent systems.</p><span class="verify-note"><i aria-hidden="true"></i>This site proves its code · /healthz</span></div>
-<div><h4>Products</h4><a href="#studio">Studio</a><a href="#wie">Wie</a><a href="/sentinel">Sentinel</a><a href="/studio/">Studio demo</a></div>
+<div><h4>Products</h4><a href="#studio">Studio</a><a href="#wie">Wie</a><a href="/sentinel">Sentinel</a><a href="/atlas">Atlas</a></div>
 <div><h4>Platform</h4><a href="https://github.com/Aftergraph/works-execution">WORKS</a><a href="https://github.com/Aftergraph/trust-gateway">Trust Gateway</a><a href="https://github.com/Aftergraph/aie">AIE</a><a href="/atlas">Atlas</a></div>
 <div><h4>Resources</h4><a href="https://docs.aftergraph.org">Docs</a><a href="https://github.com/Aftergraph/intelligence-systems-research">Research</a><a href="/community">Community</a><a href="https://github.com/Aftergraph">GitHub</a><a href="/status">Status</a></div>
 </footer>
