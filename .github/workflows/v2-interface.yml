@@ -78,7 +78,7 @@ jobs:
         run: |
           node site/serve-local.cjs 8474 site &
           SRV=$!
-          node atlas/scripts/verify-proof.mjs "http://localhost:8474/"
+          node atlas/scripts/verify-proof.mjs "http://localhost:8474/index.html"
           STATUS=$?
           kill $SRV
           exit $STATUS
