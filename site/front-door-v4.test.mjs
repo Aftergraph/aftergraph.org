@@ -44,3 +44,11 @@ test('homepage exposes proof-first developer entry paths', () => {
   assert.match(html, /Infrastructure \+ open research · verifiable intelligent systems/);
   assert.match(html, /Inspect it before you trust it\./);
 });
+
+test('homepage product surfaces mirror launcher maturity truth', () => {
+  assert.match(html, /<article class="product-card featured" id="studio">[\s\S]*?<span class="tag demo">demo<\/span>/);
+  assert.match(html, /<article class="product-card" id="wie">[\s\S]*?<span class="tag">prototype<\/span>/);
+  assert.match(html, /<article class="product-card" id="sentinel">[\s\S]*?<span class="tag">prototype<\/span>/);
+  assert.match(html, /<article class="product-card featured" id="atlas">[\s\S]*?<span class="tag production">production<\/span>/);
+  assert.match(html, /Four public surfaces\. Honest maturity\./);
+});
