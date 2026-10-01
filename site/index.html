@@ -369,8 +369,8 @@ html{scroll-behavior:auto}
 <p class="hero-lede">For teams that let AI agents write code, change production or act on real systems. Aftergraph binds agent work to scoped authority, durable execution and evidence that an independent verifier checks, so <b>agent says done</b> becomes <b>verified outcome</b>.</p>
 <div class="actions">
 <a class="button primary" href="#verify-live" data-cta="hero-verify-live">Verify this site live</a>
+<a class="button" href="https://github.com/orgs/Aftergraph/discussions" target="_blank" rel="noopener" data-cta="hero-talk">Talk to us</a>
 <a class="button" href="#platform">Explore the platform</a>
-<a class="button" href="/atlas">Open Atlas</a>
 <a class="button" href="https://github.com/Aftergraph" target="_blank" rel="noopener">View source</a>
 </div>
 </div>
@@ -436,6 +436,17 @@ html{scroll-behavior:auto}
 <div class="proof-stat"><span class="proof-num">7</span><span class="proof-label">stages, intent to verified outcome</span></div>
 <span class="live-pill" id="livepill"><span class="live-dot" aria-hidden="true"></span><span id="livetext">checking system…</span></span>
 </div></section>
+<section class="section shell" id="use-cases">
+<p class="section-kicker">Who it is for</p>
+<h2>Agent says done. Aftergraph checks.</h2>
+<p class="section-intro">Teams already let agents write code, change systems and run long jobs. The hard part is knowing the work actually happened, within the permission it was given. Three places Aftergraph is built for today.</p>
+<div class="evidence-grid use-case-grid">
+<div class="evidence-cell" data-use-case="agent-prs"><span class="cell-tag">Code review · prototype</span><h3>Agent-written pull requests</h3><p>Coding agents open PRs faster than people can review them. Sentinel evaluates the exact commit and returns a SHIP / DO NOT SHIP verdict with the evidence attached.</p><a class="source-link" href="/sentinel">See Sentinel</a></div>
+<div class="evidence-cell" data-use-case="governed-actions"><span class="cell-tag">Authority · governed</span><h3>Agents acting on real systems</h3><p>An agent that can deploy, pay or email needs scoped, expiring permission, not a shared key. AIE and Trust Gateway grant authority per mission and fail closed.</p><a class="source-link" href="https://github.com/Aftergraph/trust-gateway" target="_blank" rel="noopener">See Trust Gateway</a></div>
+<div class="evidence-cell" data-use-case="durable-work"><span class="cell-tag">Execution · durable</span><h3>Long-running agent work</h3><p>Multi-hour jobs crash, time out and restart. WORKS keeps leases, state and recovery, so the result can be traced back to every step that produced it.</p><a class="source-link" href="https://github.com/Aftergraph/works-execution" target="_blank" rel="noopener">See WORKS</a></div>
+<div class="evidence-cell" data-use-case="talk"><span class="cell-tag">Early teams</span><h3>Building something similar?</h3><p>Tell us what your agents do and where verification breaks today. Concrete failures shape the roadmap more than feature requests.</p><a class="source-link" href="https://github.com/orgs/Aftergraph/discussions" target="_blank" rel="noopener">Start a discussion</a></div>
+</div>
+</section>
 <section class="section shell" id="verify-live">
 <p class="section-kicker">Developers</p>
 <h2>Verify what is live — right now.</h2>
@@ -684,11 +695,11 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <h2>Shipped in the open.</h2>
 <p class="section-intro">Merged history plus the current branch direction. Every production entry is inspectable on GitHub.</p>
 <div class="timeline">
+<div class="t-row"><span class="t-date">2026-10-01</span><span><strong>Platform truth refresh</strong> — Governance topology/2.0, 34 canonical repos, live deploy provenance and agent interaction boundary</span><span class="t-tag wip">frontier</span></div>
 <div class="t-row"><span class="t-date">2026-09-14</span><span><strong>V3 product-first front door</strong> — Studio, Wie, Sentinel and intent router (#72)</span><span class="t-tag prod">production</span></div>
 <div class="t-row"><span class="t-date">2026-09-10</span><span><strong>Atlas interaction layer</strong> — evidence-aware observatory, agent contract, gated deploys (#58–#70)</span><span class="t-tag prod">production</span></div>
 <div class="t-row"><span class="t-date">2026-09-09</span><span><strong>Brand OS v1.1.0</strong> — canonical visual system adopted across the site (#65)</span><span class="t-tag prod">production</span></div>
 <div class="t-row"><span class="t-date">2026-09-08</span><span><strong>Topology reconciled</strong> — public surface aligned with Runtime and Wie truth (#53)</span><span class="t-tag prod">production</span></div>
-<div class="t-row"><span class="t-date">2026-10-01</span><span><strong>Platform truth refresh</strong> — Governance topology/2.0, 34 canonical repos, live deploy provenance and agent interaction boundary</span><span class="t-tag wip">frontier</span></div>
 </div>
 </section>
 <section class="final-cta shell">
@@ -698,6 +709,7 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <a class="button primary" href="/atlas">Open Atlas</a>
 <a class="button" href="https://docs.aftergraph.org" target="_blank" rel="noopener">Read the docs</a>
 <a class="button" href="https://github.com/Aftergraph" target="_blank" rel="noopener">Browse GitHub</a>
+<a class="button" href="https://github.com/orgs/Aftergraph/discussions" target="_blank" rel="noopener">Talk to us</a>
 <a class="button" href="/launch">Open launcher</a>
 </div>
 </section>
