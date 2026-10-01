@@ -17,6 +17,7 @@
 - [Knowledge Plane Evidence](https://docs.aftergraph.org/evidence/claim-graph/): Claim graph with provenance and audit status
 - [Knowledge Plane Sentinel](https://docs.aftergraph.org/sentinel/): Sentinel documentation
 - [Health](https://aftergraph.org/healthz): Deployment status
+- [Platform catalog](https://aftergraph.org/platform/catalog.json): Governance-derived repository topology, roles, visibility and lifecycle
 - [Deploy provenance](https://aftergraph.org/provenance.json): Deterministic deployed source identity
 - [Agent UI boundary](https://aftergraph.org/agent-ui-boundary.json): Draft, non-canonical interaction-pattern contract; AG-UI-inspired with no compatibility claim
 - [Sentinel](https://aftergraph.org/sentinel): Verified code-review product page
@@ -42,36 +43,49 @@
 
 ## Platform topology (from Aftergraph/after-graph-governance)
 
-Canonical platform topology: 21 repositories
-Public repositories: 12
-Private repositories: 9
+Canonical platform topology: 34 repositories
+Permanent repositories: 32
+Active repositories: 30
+Public repositories: 16
+Private repositories: 18
+Temporary repositories: 2
+Evidence cut: 2026-09-30
+Machine-readable projection: https://aftergraph.org/platform/catalog.json
 
 Repository count is a Governance projection, not product identity and not compatibility evidence.
 
-### Public
+### Public canonical repositories
 
 - `.github`
 - `after-graph-governance`
+- `aftergraph-cron-fabric`
 - `aftergraph.org`
 - `aie`
 - `brand`
 - `docs`
 - `intelligence-systems-research`
 - `sentinel`
+- `sentinel-firetest2` (temporary fixture; expires 2026-10-05)
+- `skill-abi`
 - `studio`
 - `trust-gateway`
+- `war-room`
 - `wi-backend`
 - `works-execution`
 
-### Private
+### Private canonical repositories
 
-9 private repositories participate in the canonical topology; their repository names are not enumerated on this public allowlist. Public product/capability pages may describe a private implementation without exposing a private source link.
+18 private repositories participate in topology/2.0. Public Governance now names their system roles, but private source URLs are not exposed by this site.
+
+Notable current private product/capability systems include FIHIM, RenOS, Runtime, Relay, Core/ToolFabric, Business Ops, Skills Vault, Continuum, AFM and Model Registry. Public product/capability pages may describe a private implementation without exposing a private source link.
 
 ## Product identities
 
 - Studio by Aftergraph
 - Sentinel by Aftergraph
 - Wie by Aftergraph
+- FIHIM by Aftergraph (private product environment)
+- RenOS by Aftergraph (private service-operations product surface)
 - Continuum by Aftergraph
 
 Wie's canonical public backend repository is `wi-backend`. Public product naming is separate from source-repository identity.
