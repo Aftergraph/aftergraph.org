@@ -40,7 +40,7 @@ body { margin: 0; background: var(--ag-canvas); color: var(--ag-text); font-fami
    never outline:none here, or keyboard users lose the visible indicator. */
 .tree .kind { color: var(--ag-muted); font-size: 10px; margin-left: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
 .tree .conf { color: var(--ag-danger); }
-.graph { position: relative; min-height: 0; background: var(--ag-canvas); }
+.graph { position: relative; width: 100%; height: min(72vh, 720px); min-height: 540px; overflow: hidden; border: 1px solid var(--ag-border); border-radius: var(--ag-radius-surface); background: var(--ag-canvas); box-shadow: var(--ag-shadow-raised); }
 .graph:focus { outline: 2px solid var(--ag-control); outline-offset: -2px; }
 .inspector { border-left: 1px solid var(--ag-border); overflow: auto; padding: var(--ag-space-4); background: rgba(8, 12, 20, 0.5); display: flex; flex-direction: column; gap: var(--ag-space-3); }
 .inspector h2 { font-size: 15px; margin: 0 0 var(--ag-space-2); word-break: break-all; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
@@ -216,4 +216,8 @@ button[class*="rounded-full"][style*="background: var(--ag-control)"] {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 760px) {
+  .graph { height: 62vh; min-height: 460px; }
 }

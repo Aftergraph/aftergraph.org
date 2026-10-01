@@ -82,7 +82,7 @@ export default function TopologyView({ graph, drift, node, impact, xray, onNodeS
   }, [graph, drift, node, impact, xray, setNodes, setEdges]);
 
   return (
-    <div className="graph" ref={graphRef} tabIndex={0} aria-label="Directed topology. Arrow keys move selection, Enter focuses inspector, Escape clears.">
+    <div className="graph" ref={graphRef} tabIndex={0} aria-label="Directed topology. Arrow keys move selection; Escape clears.">
       <ReactFlow
         nodes={nodes}
         edges={edges}
