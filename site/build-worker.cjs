@@ -38,6 +38,7 @@ for (const f of ['icon-180.png', 'icon-192.png', 'icon-512.png']) {
 }
 const llms = read('llms.txt');
 const security = read('security.txt');
+const agentUiBoundary = read('agent-ui-boundary.json');
 const experienceHero = read('experience-hero.js');
 
 // ---- Atlas (/atlas): vite-built observatory, inlined as static routes ----
@@ -255,6 +256,7 @@ const FAVICON = ${JSON.stringify(favicon)};
 const OGIMAGE = ${JSON.stringify(ogImage)};
 const LLMS = ${JSON.stringify(llms)};
 const SECURITY = ${JSON.stringify(security)};
+const AGENT_UI_BOUNDARY = ${JSON.stringify(agentUiBoundary)};
 const STATUS = ${JSON.stringify(statusBuilt)};
 const SENTINEL = ${JSON.stringify(sentinel)};
 const COMMUNITY = ${JSON.stringify(community)};
@@ -381,6 +383,7 @@ export default {
     let responseStatus = 200;
     if (p === '/healthz' || p === '/health') { body = HEALTH; contentType = 'application/json'; cache = 'public, max-age=60'; }
     else if (p === '/provenance.json') { body = PROVENANCE; contentType = 'application/json;charset=utf-8'; cache = 'no-store'; }
+    else if (p === '/agent-ui-boundary.json') { body = AGENT_UI_BOUNDARY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
     else if (p === '/robots.txt') { body = ROBOTS; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
     else if (p === '/sitemap.xml') { body = SITEMAP; contentType = 'application/xml;charset=utf-8'; cache = 'public, max-age=3600'; }
     else if (p === '/llms.txt') { body = LLMS; contentType = 'text/plain;charset=utf-8'; cache = 'public, max-age=3600'; }
