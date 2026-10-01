@@ -60,6 +60,7 @@ afterEach(() => {
 });
 
 import AtlasShell from '../components/AtlasShell.jsx';
+import Home from '../Home.jsx';
 import CapabilitiesView from '../components/CapabilitiesView.jsx';
 import ModelsView from '../components/ModelsView.jsx';
 import ResearchView from '../components/ResearchView.jsx';
@@ -317,4 +318,52 @@ describe('useQuery staleTime and retry behavior', () => {
       });
     });
   }
+});
+
+
+// ─── Atlas Home truth-cut contract ──────────────────────────────────────────
+describe('Atlas Home separates canonical and observed truth cuts', () => {
+  let fetchSpy;
+
+  beforeEach(() => {
+    fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
+      if (url === '/platform/catalog.json') {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            source: { evidence_cut: '2026-09-30' },
+            counts: { canonical: 34 },
+          }),
+        });
+      }
+      if (url === '/atlas/projection.json') {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            meta: { evidence_cut: '2026-09-08T23:23:16Z' },
+          }),
+        });
+      }
+      return Promise.reject(new Error(`unexpected fetch: ${url}`));
+    });
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
+  });
+
+  it('renders separate canonical and observed cuts without silently freshening evidence', async () => {
+    render(React.createElement(Home, { onNavigate: vi.fn() }));
+
+    await waitFor(() => {
+      expect(screen.getByText('2026-09-30')).toBeInTheDocument();
+      expect(screen.getByText('2026-09-08T23:23:16Z')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('34 canonical repositories')).toBeInTheDocument();
+    expect(screen.getByText(/Historical GitHub observation cut/)).toBeInTheDocument();
+    expect(screen.getByText('Four public entry surfaces. Honest maturity.')).toBeInTheDocument();
+    expect(screen.getByText('Atlas by Aftergraph')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Open platform catalog/i })).toHaveAttribute('href', '/platform/catalog.json');
+  });
 });
