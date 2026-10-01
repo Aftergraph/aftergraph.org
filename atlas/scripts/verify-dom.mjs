@@ -21,7 +21,7 @@ try {
     await page.getByRole('heading', { level: 1 }).waitFor({ timeout: 15000 });
 
     const heading = await page.getByRole('heading', { level: 1 }).innerText();
-    if (!heading.includes('Byg autonome systemer')) fail(`overview h1 unexpected: ${heading}`);
+    if (!heading.includes('Inspect the system before you trust the claim')) fail(`overview h1 unexpected: ${heading}`);
 
     const tabs = page.getByRole('tab');
     if (await tabs.count() !== 10) fail(`Atlas shell exposes ${await tabs.count()} tabs, expected 10`);
