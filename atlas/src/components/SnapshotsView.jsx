@@ -10,9 +10,21 @@ const MOTION_STAGGER = { hidden: {}, show: { transition: { staggerChildren: 0.05
 const MOTION_ITEM = { hidden: { opacity: 0, x: -8 }, show: { opacity: 1, x: 0, transition: { ...MOTION_SURFACE } } };
 
 async function fetchSnapshots() {
-  const res = await fetch('/api/v3/snapshots');
-  if (!res.ok) throw new Error('Failed to fetch snapshots');
-  return res.json();
+  try {
+    const res = await fetch('/api/v3/snapshots');
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data?.snapshots)) return data;
+    }
+  } catch {
+    // The static site remains useful when the optional live API is offline.
+  }
+
+  const res = await fetch('/atlas/snapshots/index.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error(`Failed to fetch snapshots: HTTP ${res.status}`);
+  const snapshots = await res.json();
+  if (!Array.isArray(snapshots)) throw new Error('Snapshot index must be an array');
+  return { snapshots, source: 'static' };
 }
 
 function DiffBadge({ label, count, type }) {
@@ -40,6 +52,15 @@ function SnapshotRow({ snapshot, onSelect, selected, loading }) {
       variants={MOTION_ITEM}
       layout
       onClick={() => !loading && onSelect(snapshot)}
+      onKeyDown={(event) => {
+        if (loading || (event.key !== 'Enter' && event.key !== ' ')) return;
+        event.preventDefault();
+        onSelect(snapshot);
+      }}
+      role="button"
+      tabIndex={loading ? -1 : 0}
+      aria-label={`Compare snapshot ${snapshot.evidence_cut} with current`}
+      aria-pressed={isSelected}
       className="rounded-2xl border p-6 cursor-pointer flex flex-col sm:flex-row sm:items-center gap-4"
       style={{
         background: isSelected ? 'var(--ag-control-soft)' : 'var(--ag-canvas-raised)',

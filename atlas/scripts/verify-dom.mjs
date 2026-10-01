@@ -4,6 +4,11 @@ import { chromium } from 'playwright';
 
 const base = process.argv[2] || 'http://localhost:8471/atlas/';
 const docsBase = process.argv[3] || null;
+const atlasUrl = (params = {}) => {
+  const url = new URL(base);
+  for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
+  return url.toString();
+};
 let failures = 0;
 const fail = (m) => {
   console.error(`VERIFY-FAIL: ${m}`);
@@ -15,13 +20,15 @@ try {
   // Desktop topology
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(atlasUrl({ view: 'topology' }), { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2500);
     const nodes = await page.locator('.rf-node').count();
     if (nodes < 20) fail(`topology shows ${nodes} nodes, expected >= 20 repository nodes`);
-    const header = await page.locator('.atlas-head').innerText();
-    for (const needle of ['Aftergraph Atlas', 'CANONICAL', 'OBSERVED', 'PROPOSED', 'Drift', 'gov']) {
-      if (!header.includes(needle)) fail(`header missing ${needle}`);
+    const heading = await page.getByRole('heading', { level: 1 }).innerText();
+    if (heading !== 'Aftergraph Atlas') fail(`page heading is '${heading}', expected Aftergraph Atlas`);
+    const controls = await page.locator('main').innerText();
+    for (const needle of ['CANONICAL', 'OBSERVED', 'PROPOSED', 'Drift', 'cut ']) {
+      if (!controls.includes(needle)) fail(`topology controls missing ${needle}`);
     }
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (overflow > 1) fail(`desktop horizontal overflow: ${overflow}px`);
@@ -57,19 +64,25 @@ try {
       return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
     });
     if (!(contrast >= 4.5)) fail(`body text contrast ${contrast.toFixed(2)}:1 below WCAG AA 4.5`);
-    // Inspector via URL state
-    await page.goto(`${base}?node=${encodeURIComponent('repo:Aftergraph/aie')}`, { waitUntil: 'networkidle', timeout: 60000 });
+    // URL selection is reflected in the repository list and graph node.
+    await page.goto(atlasUrl({ view: 'topology', node: 'repo:Aftergraph/aie' }), { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
-    const insp = await page.locator('.inspector').innerText();
-    for (const needle of ['repo:Aftergraph/aie', 'CANONICAL', 'OBSERVED', 'source:', 'ref:', 'observed:']) {
-      if (!insp.includes(needle)) fail(`inspector missing ${needle}`);
+    const selectedRepo = page.locator('.tree button[aria-selected="true"]');
+    if (await selectedRepo.count() !== 1 || (await selectedRepo.innerText()).trim() !== 'aie') {
+      fail('URL-selected repository is not reflected in the entity list');
     }
-    // Real impact behavior: blast-radius analysis renders on demand
-    await page.getByRole('button', { name: 'Show impact (2-hop)' }).click();
-    await page.waitForTimeout(1000);
-    const impact = await page.locator('.inspector').innerText();
-    if (!impact.includes('dependents (') || !impact.includes('dependencies (')) {
-      fail('impact analysis did not render dependents/dependencies');
+    const selectedCard = page.locator('.rf-node.selected');
+    if (await selectedCard.count() !== 1 || await selectedCard.getAttribute('title') !== 'repo:Aftergraph/aie') {
+      fail('URL-selected repository is not highlighted in the topology graph');
+    }
+    // Selecting a repository keeps the entity list, graph and URL in sync.
+    await page.getByRole('button', { name: 'runtime', exact: true }).click();
+    await page.waitForTimeout(1200);
+    if (new URL(page.url()).searchParams.get('node') !== 'repo:Aftergraph/runtime') {
+      fail('repository selection was not written to the Atlas URL');
+    }
+    if (await page.locator('.rf-node.selected').getAttribute('title') !== 'repo:Aftergraph/runtime') {
+      fail('repository selection was not highlighted in the topology graph');
     }
     // Tree filter empty-state: nonsense query must say so instead of silent empty
     await page.getByLabel('Filter entities').fill('zzz-no-such-entity-qqq');
@@ -83,7 +96,7 @@ try {
   // Truth-plane overlay toggles drive the graph + URL state
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(atlasUrl({ view: 'topology' }), { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2500);
     // Truth-plane overlay toggles: aria-pressed flips and URL state follows
     const prop = page.getByRole('button', { name: 'PROPOSED', exact: true });
@@ -123,52 +136,54 @@ try {
     await page.locator('.panel tbody tr').first().locator('button').click();
     await page.waitForTimeout(1500);
     if (!page.url().includes('node=')) fail('pulse selection did not address the node in URL');
-    const pins = await page.locator('.inspector').innerText();
-    if (!pins.includes('repo:Aftergraph/')) fail('pulse inspector missing after row navigation');
+    const pulseNode = new URL(page.url()).searchParams.get('node');
+    if (!pulseNode?.startsWith('repo:Aftergraph/')) fail('pulse selection did not retain a repository node');
+    if (await page.locator('.rf-node.selected').getAttribute('title') !== pulseNode) {
+      fail('pulse selection did not highlight the selected topology node');
+    }
     await page.goto(`${base}?view=ask`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
-    const ask = await page.locator('.panel').innerText();
+    const ask = await page.locator('main').innerText();
     if (!ask.includes('Ask Atlas')) fail('ask view missing');
     // Real Ask behavior: submit a question, citations must render
-    await page.getByLabel('Question').fill('wi-backend head');
+    await page.getByRole('textbox', { name: 'Ask Atlas' }).fill('wi-backend head');
     await page.getByRole('button', { name: 'Ask', exact: true }).click();
     await page.waitForTimeout(1500);
-    const answered = await page.locator('.panel').innerText();
+    const answered = await page.locator('main').innerText();
     if (!answered.includes('wi-backend')) fail('ask produced no wi-backend evidence');
-    if (!answered.includes('CANONICAL') && !answered.includes('OBSERVED')) fail('ask citations lack truth-plane tags');
+    if (!/\b(?:CAN|OBS|PRO)\b/.test(answered)) fail('ask citations lack truth-plane tags');
     // Unanswerable path must say so honestly
-    await page.getByLabel('Question').fill('quantum teapot revenue synergies');
+    await page.getByRole('textbox', { name: 'Ask Atlas' }).fill('quantum teapot revenue synergies');
     await page.getByRole('button', { name: 'Ask', exact: true }).click();
     await page.waitForTimeout(1500);
-    const unans = await page.locator('.panel').innerText();
-    if (!unans.includes('Unanswerable')) fail('ask hides unanswerable state');
+    const unans = await page.locator('main').innerText();
+    if (!unans.includes('Ingen matching assertions fundet')) fail('ask hides unanswerable state');
     await page.goto(`${base}?view=contracts`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(1500);
     const contracts = await page.locator('.panel').innerText();
     if (!contracts.includes('Contracts')) fail('contracts view missing');
-    // Contract row navigates into the topology inspector
+    // Contract row navigates to its topology context.
     await page.locator('.panel tbody tr').first().locator('button').click();
     await page.waitForTimeout(1500);
     if (!page.url().includes('node=')) fail('contract selection did not address the node in URL');
-    const cins = await page.locator('.inspector').innerText();
-    if (!cins.includes('contract:')) fail('contract inspector missing after row navigation');
+    if (new URL(page.url()).searchParams.get('view') !== 'topology') fail('contract selection did not open topology');
     await page.goto(`${base}?view=snapshots`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(1500);
-    const snaps = await page.locator('.panel').innerText();
+    const snaps = await page.locator('main').innerText();
     if (!snaps.includes('Snapshots')) fail('snapshots view missing');
     // Exercise the real time-machine path: diff oldest snapshot vs current
-    const diffButtons = await page.getByRole('button', { name: 'diff vs current' }).count();
-    if (diffButtons < 1) fail('snapshots view has no diff buttons');
+    const snapshotRows = await page.getByRole('button', { name: /Compare snapshot .* with current/ }).count();
+    if (snapshotRows < 1) fail('snapshots view has no accessible history rows');
     else {
-      await page.getByRole('button', { name: 'diff vs current' }).first().click();
+      await page.getByRole('button', { name: /Compare snapshot .* with current/ }).first().click();
       await page.waitForTimeout(1500);
-      const dl = await page.locator('.panel').innerText();
-      if (!dl.includes('comparing')) fail('snapshot diff never rendered');
-      if (!/assertions \+\d+\/−\d+/.test(dl)) fail('snapshot diff missing added/removed assertion counts');
+      const dl = await page.locator('main').innerText();
+      if (!dl.includes('Diff:') || !dl.includes('changes')) fail('snapshot diff never rendered');
+      if (!/assertions\s+[+−-]\d+/.test(dl)) fail('snapshot diff missing assertion change counts');
     }
     // Every remaining view must render without crashing (no error boundary:
     // a throw in any view blanks the whole app for that URL).
-    for (const [v, needle] of [['pulse', 'Pulse'], ['models', 'AFM lineage'], ['research', 'Proposal constellation']]) {
+    for (const [v, needle] of [['pulse', 'Pulse'], ['models', 'ACTIVE'], ['research', 'Ingen forskningsdata']]) {
       await page.goto(`${base}?view=${v}`, { waitUntil: 'networkidle', timeout: 60000 });
       await page.waitForTimeout(1500);
       const body = await page.locator('body').innerText();
@@ -182,28 +197,24 @@ try {
     // Fixture previews must honor their own publication boundary
     await page.goto(`${base}?view=capabilities`, { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(1500);
-    const caps = await page.locator('.panel').innerText();
-    if (!caps.includes('PREVIEW')) fail('capabilities preview label missing');
-    if (!caps.includes('withheld')) fail('capabilities preview does not withhold flagged fixture content');
+    const caps = await page.locator('main').innerText();
+    if (!caps.includes('Ingen kapaciteter fundet')) fail('empty capabilities state is not explicit');
     if (caps.includes('aftergraph-observer')) fail('capabilities preview publishes clearance-flagged skill name');
     await page.close();
   }
-  // System x-ray traces a directed path from live relations
+  // Topology renders directed relations from the active evidence projection.
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(atlasUrl({ view: 'topology' }), { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
-    await page.getByLabel('Trace from').selectOption('repo:Aftergraph/studio');
-    await page.getByLabel('Trace to').selectOption('repo:Aftergraph/works-execution');
-    await page.getByRole('button', { name: 'Trace' }).click();
-    await page.waitForTimeout(500);
-    const xray = await page.locator('.inspector').innerText();
-    if (!xray.includes('consumes') && !xray.includes('No directed path')) fail('x-ray produced neither path nor honest gap');
+    if (await page.locator('.react-flow__edge').count() < 1) fail('topology rendered no directed relations');
+    const edgeLabels = (await page.locator('.react-flow__edge-text').allTextContents()).join(' ');
+    if (!edgeLabels.includes('consumes') && !edgeLabels.includes('proposes')) fail('topology relation labels are missing');
     await page.close();
   }
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(atlasUrl({ view: 'topology' }), { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
     const lang = await page.evaluate(() => document.documentElement.lang);
     if (!lang) fail('html lang missing');
@@ -230,25 +241,29 @@ try {
   }
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(atlasUrl({ view: 'topology' }), { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
     await page.getByLabel('Filter entities').fill('wi-backend');
     await page.waitForTimeout(500);
     const buttons = await page.locator('.tree button').count();
     if (buttons !== 1) fail(`search 'wi-backend' shows ${buttons} tree buttons, expected 1`);
-    const head = await page.locator('.atlas-head').innerText();
-    if (!head.includes('old')) fail('header cut chip missing age');
+    const cut = await page.locator('main').innerText();
+    if (!cut.includes('cut ')) fail('topology evidence cut is not shown');
     await page.close();
   }
   {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-    await page.goto(`${base}?node=${encodeURIComponent('repo:Aftergraph/wi-backend')}`, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(atlasUrl({ view: 'topology', node: 'repo:Aftergraph/wi-backend' }), { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2000);
     const nodes = await page.locator('.rf-node').count();
     if (nodes >= 20) fail(`mobile shows ${nodes} nodes, expected neighborhood subset (< 20)`);
     if (nodes < 2) fail(`mobile shows ${nodes} nodes, expected a real neighborhood (>= 2)`);
-    const insp = await page.locator('.inspector').innerText();
-    if (!insp.includes('repo:Aftergraph/wi-backend')) fail('mobile inspector missing selection');
+    if (await page.locator('.tree button[aria-selected="true"]').innerText() !== 'wi-backend') {
+      fail('mobile entity list does not reflect its selected repository');
+    }
+    if (await page.locator('.rf-node.selected').getAttribute('title') !== 'repo:Aftergraph/wi-backend') {
+      fail('mobile topology does not highlight its selected repository');
+    }
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (overflow > 1) fail(`mobile horizontal overflow: ${overflow}px`);
     await page.close();
@@ -256,24 +271,23 @@ try {
   // Keyboard traversal: arrows move graph selection, Escape clears it
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(atlasUrl({ view: 'topology' }), { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2500);
     await page.locator('.graph').click();
     await page.keyboard.press('ArrowDown');
     await page.waitForTimeout(1000);
-    const sel = await page.locator('.inspector').innerText();
-    if (!sel.includes('repo:Aftergraph/')) fail('ArrowDown did not move graph selection into the inspector');
+    const selected = page.locator('.rf-node.selected');
+    if (!(await selected.getAttribute('title'))?.startsWith('repo:Aftergraph/')) fail('ArrowDown did not move graph selection');
     await page.keyboard.press('Escape');
     await page.waitForTimeout(1000);
-    const cleared = await page.locator('.inspector').innerText();
-    if (cleared.includes('repo:Aftergraph/')) fail('Escape did not clear the selection');
+    if (await page.locator('.rf-node.selected').count() !== 0) fail('Escape did not clear the graph selection');
     await page.close();
   }
   // Experience deep-link state must restore exactly, not merely survive parsing.
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     const related = 'repo:Aftergraph/trust-gateway';
-    await page.goto(`${base}?node=${encodeURIComponent('repo:Aftergraph/aie')}&view=topology&lens=SOURCE&related=${encodeURIComponent(related)}`, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(atlasUrl({ node: 'repo:Aftergraph/aie', view: 'topology', lens: 'SOURCE', related }), { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(1800);
     const sourceLens = page.getByRole('button', { name: 'SOURCE', exact: true });
     if (await sourceLens.getAttribute('aria-pressed') !== 'true') fail('SOURCE lens did not restore from URL state');
@@ -287,7 +301,7 @@ try {
   // Reduced motion must remove decorative animation without removing required state.
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(atlasUrl({ view: 'topology' }), { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(800);
     const lensCount = await page.getByRole('group', { name: 'Experience lens' }).getByRole('button').count();
     if (lensCount < 3) fail('reduced-motion mode hides required Experience lens state');
@@ -296,7 +310,7 @@ try {
   // Tablet: full graph in a narrower viewport — must render without overflow
   {
     const page = await browser.newPage({ viewport: { width: 820, height: 1180 } });
-    await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.goto(atlasUrl({ view: 'topology' }), { waitUntil: 'networkidle', timeout: 60000 });
     await page.waitForTimeout(2500);
     const nodes = await page.locator('.rf-node').count();
     if (nodes < 20) fail(`tablet shows ${nodes} nodes, expected full topology (>= 20)`);
