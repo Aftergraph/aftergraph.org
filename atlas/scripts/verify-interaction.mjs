@@ -23,7 +23,16 @@ try {
   const verdict = page.getByRole('button', { name: /VERDICT/i });
   await verdict.click();
   assert.equal((await page.locator('[data-event-heading]').textContent())?.trim(), 'Independent verification');
-  assert.match((await page.locator('[data-event-rule]').textContent()) || '', /Verified outcome is a verdict bound to evidence/);
+  assert.match((await page.locator('[data-event-detail] [data-event-rule]').textContent()) || '', /Verified outcome is a verdict bound to evidence/);
+
+  const observability = page.locator('.obs-card');
+  assert.equal(await observability.count(), 3, 'expected three observability cards');
+  const observabilityText = (await observability.allTextContents()).join(' ');
+  assert.match(observabilityText, /ACTIVITY/);
+  assert.match(observabilityText, /SUBAGENT/);
+  assert.match(observabilityText, /INTERRUPT/);
+  assert.match(observabilityText, /progress ≠ completion evidence/);
+  assert.match(observabilityText, /provenance ≠ ownership/);
 
   const note = (await page.locator('.protocol-note').textContent()) || '';
   assert.match(note, /Design direction/);
