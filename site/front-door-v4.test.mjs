@@ -105,3 +105,21 @@ test('homepage reflects Governance topology 2.0 portfolio truth', () => {
   assert.match(html, /canonical != public != production/);
   assert.match(html, /href="\/platform\/catalog\.json">Open platform catalog<\/a>/);
 });
+
+test('hero proof stats match the platform catalog and public product surfaces', () => {
+  const catalog = JSON.parse(fs.readFileSync(new URL('./platform-catalog.json', import.meta.url), 'utf8'));
+  const proofRow = html.match(/<section class="proof shell"[\s\S]*?<\/section>/)?.[0] ?? '';
+  const stat = (key) => proofRow.match(new RegExp(`data-catalog-count="${key}"><span class="proof-num">(\\d+)<`))?.[1];
+  assert.equal(Number(stat('canonical')), catalog.counts.canonical);
+  assert.equal(Number(stat('public')), catalog.counts.public);
+  assert.equal(Number(proofRow.match(/<span data-catalog-count="private">(\d+)<\/span>/)?.[1]), catalog.counts.private);
+  const surfaces = (html.match(/<article class="product-card[^"]*" id="(studio|wie|sentinel|atlas)">/g) ?? []).length;
+  assert.equal(Number(proofRow.match(/data-entry-surfaces><span class="proof-num">(\d+)</)?.[1]), surfaces);
+  assert.doesNotMatch(proofRow, />21<\/span><span class="proof-label">canonical/);
+});
+
+test('hero names the audience and leads with a single proof-first primary action', () => {
+  assert.match(html, /For teams that let AI agents write code, change production or act on real systems\./);
+  assert.equal((html.match(/<header class="hero shell">[\s\S]*?<\/header>/)?.[0].match(/class="button primary"/g) ?? []).length, 1);
+  assert.match(html, /class="button primary" href="#verify-live" data-cta="hero-verify-live">Verify this site live<\/a>/);
+});
