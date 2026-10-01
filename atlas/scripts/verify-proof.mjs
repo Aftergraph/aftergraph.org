@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 
-const base = process.argv[2] || 'http://127.0.0.1:8474/';
+const base = process.argv[2] || 'http://127.0.0.1:8474/index.html';
 const browser = await chromium.launch({ headless: true });
 
 async function verifyCase({ health, provenance, expectedState, expectedLabel, expectedSha }) {
