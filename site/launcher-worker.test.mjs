@@ -60,3 +60,18 @@ test('deploy provenance endpoint exposes deterministic source identity', async (
   assert.ok(body.sha);
   assert.ok(body.deployed);
 });
+
+test('agent UI boundary endpoint exposes draft non-canonical semantics', async () => {
+  const env = createEnv();
+  const request = new Request('https://aftergraph.org/agent-ui-boundary.json', { method: 'GET' });
+  const response = await worker.fetch(request, env);
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('content-type') || '', /application\/json/);
+  const body = await response.json();
+  assert.equal(body.schema, 'aftergraph-agent-ui-boundary/0.1-draft');
+  assert.equal(body.status, 'illustrative');
+  assert.equal(body.authority, 'non-canonical');
+  assert.equal(body.flow.length, 7);
+  assert.equal(body.flow.at(-1)?.label, 'VERDICT');
+  assert.match(body.inspired_by?.[0]?.relationship || '', /no compatibility claim/);
+});
