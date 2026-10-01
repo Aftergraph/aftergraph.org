@@ -14,6 +14,7 @@ const assert = (condition, message) => {
 let landing = read('index.html');
 let launch = read('launch.html');
 let nextHtml = read('next.html');
+const nextProductsRaw = read('next-products.json');
 const launcherApp = read('launcher-app.js');
 const launcherRegistryRaw = read('launcher-registry.json');
 let launcherRegistry;
@@ -304,6 +305,7 @@ const worker = `${secureHeaders}
 const LANDING = ${JSON.stringify(landing)};
 const LAUNCH = ${JSON.stringify(launch)};
 const NEXT = ${JSON.stringify(nextHtml)};
+const NEXT_PRODUCTS = ${nextProductsRaw};
 const LAUNCH_APP = ${JSON.stringify(launcherApp)};
 const LAUNCHER_REGISTRY = ${JSON.stringify(launcherRegistryRaw)};
 const LAUNCHER_ALLOWED_IDS = new Set(${JSON.stringify(launcherTelemetryIds)});
@@ -455,6 +457,7 @@ export default {
     else if (p === '/launcher-app.js') { body = LAUNCH_APP; contentType = 'text/javascript;charset=utf-8'; cache = 'public, max-age=300'; }
     else if (p === '/launcher-registry.json') { body = LAUNCHER_REGISTRY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
     else if (p === '/next' || p === '/next/') { body = NEXT; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
+    else if (NEXT_PRODUCTS[p.replace(/\/$/, '')]) { body = NEXT_PRODUCTS[p.replace(/\/$/, '')]; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
     else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
     else if (p === '/status' || p === '/status/') { body = STATUS; }
     else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }

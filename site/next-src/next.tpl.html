@@ -139,16 +139,38 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}
 @media(max-width:1000px){.stick .wrap,.break,.company .grid{grid-template-columns:1fr}.stick .wrap{gap:24px}.phase{min-height:0}.phase-desc{min-height:0;font-size:17px;margin-bottom:18px}.term-body{min-height:250px;font-size:12.5px;padding:16px}.problems{grid-template-columns:1fr}.hud{display:none}}
 @media(max-width:720px){nav.top{display:none}.wrap{width:calc(100% - 32px)}.band{padding:100px 0}.hero{padding-bottom:100px}.ctas .btn{flex:1 1 100%}.prod{min-height:400px;padding:26px}.prod h3{font-size:44px}.deny{padding:22px;min-height:300px}.company{padding:100px 0}.railnav{display:none}.stick{align-items:flex-start;padding-top:84px}.term-bar span{display:none}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01s!important;animation-delay:0s!important;transition:none!important}html{scroll-behavior:auto}.reveal{opacity:1;transform:none}}
-</style></head>
+
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.45s}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--control);color:#021015;padding:10px 14px;border-radius:10px;font-weight:700}
+.skip:focus{top:12px}
+:focus-visible{outline:2px solid var(--control);outline-offset:3px;border-radius:6px}
+.kbtn{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);font:500 13px/1 Inter,system-ui,sans-serif;cursor:pointer}
+.kbtn kbd{font:700 11px/1 var(--mono);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:3px 6px}
+.hdr-r{display:flex;align-items:center;gap:10px}
+dialog.pal{width:min(640px,calc(100% - 24px));max-height:70vh;padding:0;border:1px solid rgba(66,199,232,.35);border-radius:18px;background:rgba(6,9,18,.96);color:var(--text);box-shadow:0 40px 120px rgba(0,0,0,.7)}
+dialog.pal::backdrop{background:rgba(2,4,8,.6);backdrop-filter:blur(6px)}
+.pal input{width:100%;border:0;border-bottom:1px solid var(--line);background:none;color:var(--text);font:500 18px/1 Inter,system-ui,sans-serif;padding:20px 22px;outline:0}
+.pal ul{list-style:none;margin:0;padding:8px;max-height:52vh;overflow:auto}
+.pal li a{display:flex;justify-content:space-between;gap:14px;padding:12px 14px;border-radius:10px;color:var(--text);text-decoration:none}
+.pal li a span{color:var(--muted);font:500 12px/1.4 var(--mono);text-align:right}
+.pal li a[aria-selected=true],.pal li a:hover{background:rgba(66,199,232,.1)}
+.pal .hint{padding:10px 22px 14px;color:var(--muted);font:500 11px/1 var(--mono);border-top:1px solid var(--line)}
+.prod .more{color:var(--c)!important}
+</style>
+<script type="speculationrules">{"prerender":[{"where":{"href_matches":"/next/products/*"},"eagerness":"moderate"}]}</script>
+</head>
 <body class="nojs">
+<a class="skip" href="#main">Skip to content</a>
 <canvas id="graph" aria-hidden="true"></canvas><div class="vignette"></div><div class="grain"></div>
 <div class="preview">PREVIEW of the new aftergraph.org · not indexed · <a href="/">current site</a></div>
 <header id="hdr"><div class="wrap">
 <a class="logo" href="/next" aria-label="Aftergraph">AFTERGRAPH<b>.</b></a>
 <nav class="top" aria-label="Primary"><a href="#story">The proof</a><a href="#break">Break it</a><a href="#products">Products</a><a href="#company">Company</a><a href="/community">Community</a></nav>
-<a class="btn small primary" href="#talk">Talk to us</a>
+<div class="hdr-r"><button class="kbtn" type="button" data-pal aria-label="Search Aftergraph">Search <kbd>⌘K</kbd></button><a class="btn small primary" href="#talk">Talk to us</a></div>
 </div></header>
-<main>
+__PALETTE__
+<main id="main">
 <section class="hero"><div class="wrap">
 <span class="eyebrow"><i></i>Infrastructure for verifiable AI agents</span>
 <h1><span class="line"><span>Your agent says it's done.</span></span><span class="line"><span><em>We prove it.</em></span></span></h1>

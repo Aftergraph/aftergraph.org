@@ -60,3 +60,25 @@ test('generated page is up to date with its template', () => {
   const tpl = fs.readFileSync(new URL('./next-src/next.tpl.html', import.meta.url), 'utf8');
   assert.ok(tpl.includes('__NODES__') && !html.includes('__NODES__') && !html.includes('__PRODUCTS__'));
 });
+
+test('M2: product pages, view transitions, palette, a11y', () => {
+  const pages = JSON.parse(fs.readFileSync(new URL('./next-products.json', import.meta.url), 'utf8'));
+  const keys = Object.keys(pages);
+  assert.equal(keys.length, 7);
+  assert.match(html, /@view-transition\{navigation:auto\}/);
+  assert.match(html, /type="speculationrules"/);
+  assert.match(html, /<a class="skip" href="#main">/);
+  assert.match(html, /<main id="main">/);
+  const palItems = (html.match(/<dialog class="pal"[\s\S]*?<\/dialog>/) || [''])[0].match(/<li>/g) || [];
+  assert.ok(palItems.length >= 32 + 8, 'palette lists every system and page');
+  for (const k of keys) {
+    const p = pages[k];
+    const slug = k.split('/').pop();
+    assert.match(html, new RegExp(`href="/next/products/${slug}"`));
+    assert.match(html, new RegExp(`view-transition-name:t-${slug}`));
+    assert.match(p, new RegExp(`<h1 style="view-transition-name:t-${slug}">`));
+    assert.match(p, /<meta name="robots" content="noindex, nofollow">/);
+    assert.match(p, /<dialog class="pal"/);
+    assert.doesNotMatch(p, /waitlist|pricing|\$\d/i);
+  }
+});
