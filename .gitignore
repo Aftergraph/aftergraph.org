@@ -10,3 +10,4 @@ site/.brand/
 
 # Generated Cloudflare deployment output; built from canonical site sources
 site/worker.js
+site/atlas/
