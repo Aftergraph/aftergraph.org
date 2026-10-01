@@ -136,9 +136,17 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $base = 'https://aftergraph.org'
 
-          $health = Invoke-RestMethod -Uri "$base/healthz?verify=$env:GITHUB_SHA" -Method Get
-          if ($health.status -ne 'ok' -or $health.sha -ne $env:GITHUB_SHA) {
-            throw "health provenance mismatch: expected $env:GITHUB_SHA, got $($health.sha)"
+          # Workers deploys propagate across the edge for a short while; poll the
+          # exact-HEAD provenance instead of failing on the first stale read.
+          $health = $null
+          for ($attempt = 1; $attempt -le 12; $attempt++) {
+            try { $health = Invoke-RestMethod -Uri "$base/healthz?verify=$env:GITHUB_SHA&attempt=$attempt" -Method Get -Headers @{ 'Cache-Control' = 'no-cache' } } catch { $health = $null }
+            if ($health -and $health.status -eq 'ok' -and $health.sha -eq $env:GITHUB_SHA) { break }
+            Write-Host "attempt ${attempt}: edge still serving $($health.sha); waiting"
+            Start-Sleep -Seconds 10
+          }
+          if (-not $health -or $health.status -ne 'ok' -or $health.sha -ne $env:GITHUB_SHA) {
+            throw "health provenance mismatch after 12 attempts: expected $env:GITHUB_SHA, got $($health.sha)"
           }
 
           $paths = @('/', '/launch', '/launcher-app.js', '/launcher-registry.json', '/platform/catalog.json', '/status', '/sentinel', '/robots.txt', '/sitemap.xml')

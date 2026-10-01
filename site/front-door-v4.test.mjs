@@ -138,3 +138,9 @@ test('history timeline is newest first', () => {
   assert.ok(dates.length >= 2);
   assert.deepEqual(dates, [...dates].sort().reverse());
 });
+
+test('reveal animation never hides tall mobile sections', () => {
+  assert.doesNotMatch(html, /threshold:\.12/);
+  assert.match(html, /threshold:0,rootMargin:/);
+  assert.match(html, /\/\* ==== Mobile polish ==== \*\//);
+});
