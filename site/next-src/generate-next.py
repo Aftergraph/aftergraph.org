@@ -64,7 +64,7 @@ pcss="""
 .pn a{display:flex;flex-direction:column;gap:6px;padding:22px 24px;border-radius:18px;border:1px solid var(--line);min-width:220px;color:var(--text)}
 .pn a:hover{text-decoration:none;border-color:rgba(66,199,232,.5)}.pn small{color:var(--muted);font:700 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase}.pn b{font:700 24px/1 var(--display)}
 @media(max-width:900px){.facts{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.facts{grid-template-columns:1fr}.phero{min-height:70vh;padding:90px 0 50px}.phero .orb{width:420px;height:420px;right:-180px}}
+@media(max-width:560px){.facts{grid-template-columns:1fr}.pn a{flex:1 1 100%;min-width:0}.phero{min-height:70vh;padding:90px 0 50px}.phero .orb{width:420px;height:420px;right:-180px}}
 """
 hdr=tpl[tpl.index('<header id="hdr">'):tpl.index('</header>')+9].replace('href="#story"','href="/next#story"').replace('href="#break"','href="/next#break"').replace('href="#products"','href="/next#products"').replace('href="#company"','href="/next#company"').replace('href="#talk"','href="/next#talk"')
 foot=tpl[tpl.index('<footer>'):tpl.index('</footer>')+9]
