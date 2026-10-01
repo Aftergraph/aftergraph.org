@@ -29,6 +29,17 @@ a:hover{color:#8fe0f5}
 .mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:13px;color:#7b8494;margin-bottom:28px}
 .btn{display:inline-block;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);padding:10px 20px;border-radius:6px;color:#d7dbe2;font-weight:600;font-size:15px}
 .btn:hover{border-color:rgba(66,199,232,.4);color:#42c7e8}
+
+/* ==== Shared mobile polish (all pages) ==== */
+html,body{overflow-x:clip}
+img,svg,video,canvas{max-width:100%}
+pre{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+h1,h2,h3{overflow-wrap:break-word}
+code{overflow-wrap:anywhere}
+:target{scroll-margin-top:72px}
+@media(pointer:coarse){a.button,.button,button{min-height:44px}}
+@media(max-width:600px){table{display:block;max-width:100%;overflow-x:auto}}
+@media(max-width:600px){body{padding-left:16px;padding-right:16px}}
 </style>
 </head>
 <body>
