@@ -457,7 +457,7 @@ export default {
     else if (p === '/launcher-app.js') { body = LAUNCH_APP; contentType = 'text/javascript;charset=utf-8'; cache = 'public, max-age=300'; }
     else if (p === '/launcher-registry.json') { body = LAUNCHER_REGISTRY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
     else if (p === '/next' || p === '/next/') { body = NEXT; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
-    else if (NEXT_PRODUCTS[p.replace(/\/$/, '')]) { body = NEXT_PRODUCTS[p.replace(/\/$/, '')]; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
+    else if (NEXT_PRODUCTS[p.endsWith('/') ? p.slice(0, -1) : p]) { body = NEXT_PRODUCTS[p.endsWith('/') ? p.slice(0, -1) : p]; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
     else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }
     else if (p === '/status' || p === '/status/') { body = STATUS; }
     else if (p === '/sentinel' || p === '/sentinel/') { body = SENTINEL; }

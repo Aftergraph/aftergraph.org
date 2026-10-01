@@ -82,3 +82,8 @@ test('M2: product pages, view transitions, palette, a11y', () => {
     assert.doesNotMatch(p, /waitlist|pricing|\$\d/i);
   }
 });
+
+test('worker template keeps /next/products route syntactically valid', () => {
+  assert.doesNotMatch(worker, /NEXT_PRODUCTS\[p\.replace\(\/\\\/\$\//);
+  assert.match(worker, /NEXT_PRODUCTS\[p\.endsWith\('\/'\) \? p\.slice\(0, -1\) : p\]/);
+});
