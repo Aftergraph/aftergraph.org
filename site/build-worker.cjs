@@ -40,6 +40,9 @@ const llms = read('llms.txt');
 const security = read('security.txt');
 const agentUiBoundary = read('agent-ui-boundary.json');
 const platformCatalog = read('platform-catalog.json');
+let platformCatalogParsed;
+try { platformCatalogParsed = JSON.parse(platformCatalog); } catch { assert(false, 'platform-catalog.json is not valid JSON'); }
+assert(platformCatalogParsed.schema === 'aftergraph-public-platform-catalog/1.0', 'platform catalog schema must be aftergraph-public-platform-catalog/1.0');
 const experienceHero = read('experience-hero.js');
 
 // ---- Atlas (/atlas): vite-built observatory, inlined as static routes ----
@@ -108,12 +111,15 @@ const OG_ATLAS = `
 atlasHtml = atlasHtml.replace('</head>', `<link rel="icon" type="image/svg+xml" href="/favicon.ico">${OG_ATLAS}\n</head>`);
 
 // Public topology is a Governance projection. These gates fail closed when a
-// source surface drifts from the current canonical/public boundary.
-assert(landing.includes('21 canonical repositories'), 'landing must declare the canonical 21-repository topology');
-assert(landing.includes('12 public') && landing.includes('9 private'), 'landing visibility totals must be reconciled');
-assert(statusPage.includes('21 canonical') && statusPage.includes('12 public') && statusPage.includes('9 private'), 'status topology totals must be reconciled');
-assert(llms.includes('Canonical platform topology: 21 repositories'), 'llms.txt must carry canonical topology total');
-assert(llms.includes('Public repositories: 12') && llms.includes('Private repositories: 9'), 'llms.txt visibility totals must be reconciled');
+// source surface drifts from the pinned platform catalog.
+const topologyCounts = platformCatalogParsed.counts;
+assert(platformCatalogParsed.source.schema === 'platform-topology/2.0', 'platform catalog must derive from Governance topology/2.0');
+assert(platformCatalogParsed.source.evidence_cut === '2026-09-30', 'platform catalog evidence cut must be pinned to 2026-09-30');
+assert(landing.includes(`${topologyCounts.canonical} canonical repositories`), 'landing must declare the current canonical repository total');
+assert(landing.includes(`${topologyCounts.public} public`) && landing.includes(`${topologyCounts.private} private`), 'landing visibility totals must match platform catalog');
+assert(statusPage.includes(`${topologyCounts.canonical} canonical`) && statusPage.includes(`${topologyCounts.public} public`) && statusPage.includes(`${topologyCounts.private} private`), 'status topology totals must match platform catalog');
+assert(llms.includes(`Canonical platform topology: ${topologyCounts.canonical} repositories`), 'llms.txt must carry platform catalog topology total');
+assert(llms.includes(`Public repositories: ${topologyCounts.public}`) && llms.includes(`Private repositories: ${topologyCounts.private}`), 'llms.txt visibility totals must match platform catalog');
 const llmsPublic = llms.split('### Public')[1]?.split('### Private')[0] || '';
 assert(llmsPublic.includes('- `wi-backend`'), 'public repository list must use canonical wi-backend slug');
 assert(llmsPublic.includes('- `sentinel`'), 'public repository list must include Sentinel');
