@@ -56,11 +56,17 @@ test('homepage product surfaces mirror launcher maturity truth', () => {
 test('homepage exposes fail-closed live proof surface', () => {
   assert.match(html, /id="proof"/);
   assert.match(html, /data-live-proof/);
-  assert.match(html, /fetch\('\/healthz'/);
+  assert.match(html, /<script data-live-proof-script>/);
+  assert.match(html, /getJson\('\/healthz'\)/);
+  assert.match(html, /getJson\('\/provenance\.json'\)/);
+  assert.match(html, /aftergraph-deploy-provenance\/1\.0/);
+  assert.match(html, /h\.sha===p\.sha&&h\.route===p\.route&&h\.deployed===p\.deployed/);
   assert.match(html, /data-proof-state/);
   assert.match(html, /data-proof-sha/);
+  assert.match(html, /data-proof-commit/);
   assert.match(html, /href="\/status"/);
   assert.match(html, /href="\/healthz"/);
+  assert.match(html, /href="\/provenance\.json"/);
   assert.match(html, /href="\/atlas"/);
   assert.match(html, /Do not trust the claim\. Inspect the system\./);
 });
