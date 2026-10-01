@@ -83,4 +83,10 @@ test('homepage exposes governed interaction boundary without overclaiming compat
   assert.match(html, />APPROVAL<small>pause \/ inspect \/ authorize<\/small>/);
   assert.match(html, />EVIDENCE<small>artifacts \/ provenance<\/small>/);
   assert.match(html, />VERDICT<small>criteria \/ subject \/ result<\/small>/);
+  assert.match(html, /aria-label="Interaction observability signals"/);
+  assert.match(html, /<b>ACTIVITY<\/b>/);
+  assert.match(html, /<b>SUBAGENT<\/b>/);
+  assert.match(html, /<b>INTERRUPT<\/b>/);
+  assert.match(html, /progress ≠ completion evidence/);
+  assert.match(html, /provenance ≠ ownership/);
 });
