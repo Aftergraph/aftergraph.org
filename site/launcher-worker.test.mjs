@@ -68,10 +68,14 @@ test('agent UI boundary endpoint exposes draft non-canonical semantics', async (
   assert.equal(response.status, 200);
   assert.match(response.headers.get('content-type') || '', /application\/json/);
   const body = await response.json();
-  assert.equal(body.schema, 'aftergraph-agent-ui-boundary/0.1-draft');
+  assert.equal(body.schema, 'aftergraph-agent-ui-boundary/0.2-draft');
   assert.equal(body.status, 'illustrative');
   assert.equal(body.authority, 'non-canonical');
   assert.equal(body.flow.length, 7);
   assert.equal(body.flow.at(-1)?.label, 'VERDICT');
+  assert.equal(body.observability?.subagent?.rule, 'attribution is provenance, not ownership');
+  assert.equal(body.observability?.interrupt?.authority, 'requires explicit authorization path');
+  assert.ok(body.envelope?.fields?.includes('trace_id'));
+  assert.ok(body.envelope?.fields?.includes('subagent_run_id'));
   assert.match(body.inspired_by?.[0]?.relationship || '', /no compatibility claim/);
 });
