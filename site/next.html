@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Aftergraph · Your agent says it is done. We prove it.</title>
+<meta name="description" content="Aftergraph gives AI agents scoped authority, durable execution and evidence anyone can verify.">
+<meta name="theme-color" content="#080c14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#080c14;--bg2:#05080f;--raised:#0e1630;--text:#f5f7fa;--muted:#8993a4;--line:rgba(137,147,164,.2);--control:#42c7e8;--evidence:#24c4ad;--authority:#7759e8;--decision:#f0a64a;--system:#4c8bd8;--fail:#ef6a6a;--r:16px;--display:'Space Grotesk','Inter',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--ease:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--control);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{width:min(1180px,100% - 40px);margin:0 auto}
+.preview{background:var(--decision);color:#1a1205;text-align:center;font:700 12px/1 var(--mono);padding:9px 12px;letter-spacing:.04em}
+.preview a{color:#1a1205;text-decoration:underline}
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(8,12,20,.72);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;color:var(--text);font:700 15px/1 var(--display);letter-spacing:.14em}
+.logo:hover{text-decoration:none}.logo i{color:var(--control);font-style:normal}
+nav.top{display:flex;gap:26px;font-size:14px}nav.top a{color:var(--muted)}nav.top a:hover{color:var(--text);text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;font:600 15px/1 Inter,sans-serif;border:1px solid var(--line);color:var(--text);transition:transform .2s var(--ease),background .2s}
+.btn:hover{text-decoration:none;transform:translateY(-1px)}
+.btn.primary{background:var(--control);color:#04121a;border-color:var(--control)}
+.btn.small{min-height:40px;padding:0 16px;font-size:14px}
+.hero{position:relative;padding:88px 0 72px;background:radial-gradient(900px 500px at 75% 10%,rgba(66,199,232,.13),transparent 60%),radial-gradient(700px 500px at 10% 90%,rgba(119,89,232,.12),transparent 60%)}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
+.eyebrow{font:700 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--evidence)}
+h1{font:700 clamp(40px,6vw,72px)/1.02 var(--display);letter-spacing:-.03em;margin:18px 0 22px}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--control),var(--evidence));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:clamp(17px,2vw,20px);color:#c4cad6;max-width:34em;margin:0 0 30px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px}
+.mission{background:linear-gradient(180deg,rgba(14,22,48,.9),rgba(5,8,15,.92));border:1px solid rgba(66,199,232,.3);border-radius:22px;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.mhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;font:700 11px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.live{display:inline-flex;align-items:center;gap:7px;color:var(--evidence)}.live i{width:8px;height:8px;border-radius:50%;background:var(--evidence);box-shadow:0 0 0 0 rgba(36,196,173,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(36,196,173,0)}100%{box-shadow:0 0 0 0 rgba(36,196,173,0)}}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;padding:12px;border-radius:12px;border:1px solid transparent;transition:background .4s,border-color .4s,opacity .4s}
+.step .dot{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:700 12px/1 var(--mono);border:1px solid var(--line);color:var(--muted)}
+.step b{display:block;font:600 15px/1.3 var(--display)}
+.step span{display:block;font:500 12.5px/1.5 var(--mono);color:var(--muted);overflow-wrap:anywhere}
+.js .step{opacity:.42}
+.step.on{opacity:1;background:rgba(66,199,232,.07);border-color:rgba(66,199,232,.22)}
+.step.on .dot{color:#04121a;background:var(--control);border-color:var(--control)}
+.step.done{opacity:1}.step.done .dot{color:#04121a;background:var(--evidence);border-color:var(--evidence)}
+.step.fail .dot{background:var(--fail);border-color:var(--fail);color:#1a0505}
+.demo-tag{font:700 10px/1 var(--mono);color:var(--authority);border:1px solid rgba(119,89,232,.4);border-radius:999px;padding:3px 7px;margin-left:6px;vertical-align:middle;letter-spacing:.08em}
+.verdict{margin-top:14px;padding:14px;border-radius:12px;font:700 13px/1.45 var(--mono);border:1px solid var(--line);color:var(--muted)}
+.verdict.ok{border-color:rgba(36,196,173,.5);color:var(--evidence);background:rgba(36,196,173,.08)}
+.verdict.bad{border-color:rgba(239,106,106,.5);color:var(--fail);background:rgba(239,106,106,.08)}
+.replay{margin-top:12px;background:none;border:0;color:var(--control);font:600 13px/1 Inter,sans-serif;cursor:pointer;padding:8px 0;min-height:40px}
+section.band{padding:96px 0;border-top:1px solid var(--line)}
+.kicker{font:700 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--control);margin:0 0 14px}
+h2{font:700 clamp(30px,4vw,46px)/1.08 var(--display);letter-spacing:-.02em;margin:0 0 18px;max-width:20em}
+.intro{color:var(--muted);font-size:18px;max-width:40em;margin:0 0 44px}
+.problem{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{padding:26px;border:1px solid var(--line);border-radius:var(--r);background:rgba(14,22,48,.4)}
+.card h3{font:600 19px/1.3 var(--display);margin:12px 0 8px}.card p{color:var(--muted);margin:0;font-size:15px}
+.card .num{font:700 12px/1 var(--mono);color:var(--decision)}
+.planes{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.plane{padding:26px;border-radius:var(--r);border:1px solid var(--line);position:relative;overflow:hidden}
+.plane:before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--c)}
+.plane h3{font:600 20px/1.2 var(--display);margin:6px 0 10px}.plane p{color:var(--muted);margin:0 0 14px;font-size:15px}
+.plane small{font:700 11px/1 var(--mono);color:var(--c);letter-spacing:.1em;text-transform:uppercase}
+.break{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:start}
+.tries{display:grid;gap:10px}
+.try{text-align:left;width:100%;padding:16px 18px;border-radius:12px;border:1px solid var(--line);background:rgba(14,22,48,.5);color:var(--text);font:500 15px/1.4 Inter,sans-serif;cursor:pointer;min-height:56px;transition:border-color .2s,background .2s}
+.try:hover,.try[aria-pressed=true]{border-color:var(--fail);background:rgba(239,106,106,.07)}
+.deny{border:1px solid rgba(239,106,106,.45);border-radius:18px;padding:24px;background:linear-gradient(180deg,rgba(239,106,106,.08),rgba(5,8,15,.6));font:500 13.5px/1.7 var(--mono);min-height:250px}
+.deny h4{margin:0 0 12px;font:700 22px/1 var(--display);color:var(--fail)}
+.deny dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0}.deny dt{color:var(--muted)}.deny dd{margin:0;overflow-wrap:anywhere}
+.products{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.prod{display:flex;flex-direction:column;gap:8px;padding:24px;border:1px solid var(--line);border-radius:var(--r);background:rgba(14,22,48,.35);transition:border-color .2s,transform .3s var(--ease)}
+.prod:hover{border-color:rgba(66,199,232,.45);transform:translateY(-2px)}
+.prod h3{margin:4px 0 0;font:700 22px/1.1 var(--display)}.prod .tag{color:var(--text);font-weight:500;margin:0}
+.prod p{margin:0;color:var(--muted);font-size:14px;flex:1}.prod a{font-size:14px;font-weight:600;margin-top:6px}
+.pill{align-self:flex-start;font:700 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:5px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.pill.public{color:var(--evidence);border-color:rgba(36,196,173,.35)}.pill.private{color:var(--decision);border-color:rgba(240,166,74,.35)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+.stat{padding:26px;border-radius:var(--r);border:1px solid var(--line)}
+.stat b{display:block;font:700 48px/1 var(--display);color:var(--text)}.stat span{color:var(--muted)}
+.cta{text-align:center;padding:110px 0;border-top:1px solid var(--line);background:radial-gradient(700px 300px at 50% 100%,rgba(66,199,232,.12),transparent 70%)}
+.cta h2{margin:0 auto 18px}.cta .intro{margin:0 auto 32px}.cta .ctas{justify-content:center}
+footer{border-top:1px solid var(--line);padding:36px 0 calc(36px + env(safe-area-inset-bottom));color:var(--muted);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}
+footer nav{display:flex;flex-wrap:wrap;gap:18px}footer a{color:var(--muted)}
+@media(max-width:980px){.hero .wrap,.break{grid-template-columns:1fr}.planes,.products{grid-template-columns:1fr 1fr}.hero{padding-top:56px}}
+@media(max-width:720px){nav.top{display:none}.problem,.stats{grid-template-columns:1fr}section.band{padding:68px 0}.wrap{width:calc(100% - 32px)}.ctas .btn{flex:1 1 100%}}
+@media(max-width:560px){.planes,.products{grid-template-columns:1fr}h1{font-size:40px}.mission{padding:16px}.step{padding:10px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style></head>
+<body>
+<div class="preview">PREVIEW of the new aftergraph.org · not indexed · <a href="/">current site</a></div>
+<header><div class="wrap">
+<a class="logo" href="/next" aria-label="Aftergraph"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" stroke="#42c7e8" stroke-width="1.6"/><circle cx="12" cy="12" r="5.5" stroke="#42c7e8" stroke-width="1.6" opacity=".6"/><circle cx="12" cy="12" r="2" fill="#24c4ad"/></svg>AFTERGRAPH<i>.</i></a>
+<nav class="top" aria-label="Primary"><a href="#how">How it works</a><a href="#break">Try to break it</a><a href="#products">Products</a><a href="#company">Company</a><a href="/community">Community</a></nav>
+<a class="btn small primary" href="#talk">Talk to us</a>
+</div></header>
+<main>
+<section class="hero"><div class="wrap">
+<div>
+<p class="eyebrow">Infrastructure for verifiable AI agents</p>
+<h1>Your agent says it's done. <em>Aftergraph proves it.</em></h1>
+<p class="lede">Give agents real work with scoped authority, durable execution and evidence anyone can check. Not a dashboard that trusts the agent. A system that doesn't have to.</p>
+<div class="ctas"><a class="btn primary" href="#mission">Watch a real mission</a><a class="btn" href="#break">Try to break it</a></div>
+</div>
+<div class="mission" id="mission" aria-live="polite">
+<div class="mhead"><span>Mission · deploy aftergraph.org</span><span class="live"><i></i>Live data</span></div>
+<ol class="steps">
+<li class="step" data-step="intent"><span class="dot">1</span><div><b>Intent</b><span id="m-intent">Deploy this website at the exact commit on main.</span></div></li>
+<li class="step" data-step="authority"><span class="dot">2</span><div><b>Authority <em class="demo-tag">EXAMPLE</em></b><span>scope: deploy aftergraph.org · expires: 15 min · revocable</span></div></li>
+<li class="step" data-step="execute"><span class="dot">3</span><div><b>Execute</b><span>gates → build → deploy → verify routes</span></div></li>
+<li class="step" data-step="evidence"><span class="dot">4</span><div><b>Evidence</b><span id="m-evidence">Commit, timestamp and route published at /provenance.json</span></div></li>
+<li class="step" data-step="verify"><span class="dot">5</span><div><b>Verify</b><span id="m-verify">Your browser checks the running site against the evidence.</span></div></li>
+</ol>
+<div class="verdict" id="m-verdict">Open /healthz and /provenance.json to check it yourself.</div>
+<button class="replay" id="m-replay" type="button" hidden>Run the check again ↻</button>
+</div>
+</div></section>
+
+<section class="band" id="how"><div class="wrap">
+<p class="kicker">The problem</p>
+<h2>Agents are getting real access. Trust hasn't caught up.</h2>
+<p class="intro">Coding agents open PRs, ops agents touch production, research agents run for days. Today most of that rests on the agent's own report.</p>
+<div class="problem">
+<div class="card"><span class="num">01</span><h3>"Done" is a claim</h3><p>An agent saying tests pass isn't the same as tests passing on the code that shipped.</p></div>
+<div class="card"><span class="num">02</span><h3>Access is all or nothing</h3><p>API keys don't expire with the task. Nobody can say what the agent was allowed to do, and for how long.</p></div>
+<div class="card"><span class="num">03</span><h3>Long work falls over</h3><p>A crash halfway through a two-day job means starting over, or worse, half a change in production.</p></div>
+</div>
+</div></section>
+
+<section class="band"><div class="wrap">
+<p class="kicker">How Aftergraph works</p>
+<h2>Four planes between an intent and a verified result.</h2>
+<p class="intro">Each plane is its own system with its own contract, so no single component, including the agent, has to be trusted.</p>
+<div class="planes">
+<div class="plane" style="--c:var(--authority)"><small>Authority</small><h3>AIE</h3><p>Scoped, budgeted, expiring permission for every task, and revocation that actually stops work.</p><a href="https://github.com/Aftergraph/aie" target="_blank" rel="noopener">Source →</a></div>
+<div class="plane" style="--c:var(--decision)"><small>Enforcement</small><h3>Trust Gateway</h3><p>Fail-closed admission. Actions outside the grant are refused before they happen, with a reason.</p><a href="https://github.com/Aftergraph/trust-gateway" target="_blank" rel="noopener">Source →</a></div>
+<div class="plane" style="--c:var(--system)"><small>Execution</small><h3>WORKS</h3><p>Durable work with leases, recovery and checkpoints, so a crash resumes instead of restarting.</p><a href="https://github.com/Aftergraph/works-execution" target="_blank" rel="noopener">Source →</a></div>
+<div class="plane" style="--c:var(--evidence)"><small>Evidence</small><h3>Verification</h3><p>Every result ships with evidence a third party can check, like the mission running at the top of this page.</p><a href="/status">Live proof →</a></div>
+</div>
+</div></section>
+
+<section class="band" id="break"><div class="wrap break">
+<div>
+<p class="kicker">Try to break it <span class="demo-tag">SIMULATION</span></p>
+<h2>Ask the agent to overstep.</h2>
+<p class="intro">Pick something an agent with a deploy grant should never do. This is a simulation of Trust Gateway's decision format, so you can see what a refusal looks like.</p>
+<div class="tries" role="group" aria-label="Attempts">
+<button class="try" type="button" data-try="push">Push straight to main, skip review</button>
+<button class="try" type="button" data-try="secrets">Read the production secrets</button>
+<button class="try" type="button" data-try="extend">Keep the deploy permission for a week</button>
+<button class="try" type="button" data-try="unknown">Deploy a commit nobody approved</button>
+</div>
+</div>
+<div class="deny" id="deny" aria-live="polite"><h4 style="color:var(--muted)">Waiting for an attempt</h4><p style="margin:0;color:var(--muted)">Choose one on the left. Every refusal names the rule, the grant and what would have been needed.</p></div>
+</div></section>
+
+<section class="band" id="products"><div class="wrap">
+<p class="kicker">Products</p>
+<h2>Built on the same planes. Each with one job.</h2>
+<p class="intro">Generated from the governance catalog. Public products link to source; private ones are shown so you see the whole company.</p>
+<div class="products">
+<article class="prod" data-product="relay"><span class="pill private">private</span><h3>Relay</h3><p class="tag">Supervise autonomous work</p><p>Governed operator plane for supervising autonomous work across agents, missions, execution nodes, Runtime projection, and Aftergraph infrastructure.</p><a href="/atlas?view=topology&amp;node=repo%3AAftergraph%2Frelay">In Atlas →</a></article>
+<article class="prod" data-product="studio"><span class="pill public">public</span><h3>Studio</h3><p class="tag">Work with agents, see the evidence</p><p>General-purpose human operating environment for Chat, Work, Space, control and evidence surfaces.</p><a href="https://github.com/Aftergraph/studio" target="_blank" rel="noopener">Source →</a></article>
+<article class="prod" data-product="fihim"><span class="pill private">private</span><h3>FIHIM</h3><p class="tag">Your persistent personal agent</p><p>Persistent personal intelligent-agent environment: identity/context continuity, agent coordination, user-facing conversational and delegated-work experiences, surfaced through HomeOS and other approved clients.</p><a href="/atlas?view=topology&amp;node=repo%3AAftergraph%2Ffihim">In Atlas →</a></article>
+<article class="prod" data-product="war-room"><span class="pill public">public</span><h3>War Room</h3><p class="tag">Operational intelligence</p><p>Operational intelligence projection, organization reality queries, missions/agents/compute/attention/evidence aggregation and secondary diagnostic surfaces without inventing canonical state.</p><a href="https://github.com/Aftergraph/war-room" target="_blank" rel="noopener">Source →</a></article>
+<article class="prod" data-product="wi-frontend"><span class="pill private">private</span><h3>Wie</h3><p class="tag">Understand how work really happens</p><p>Wie browser experience and least-privilege BFF consuming canonical Work Intelligence state from wi-backend.</p><a href="/atlas?view=topology&amp;node=repo%3AAftergraph%2Fwi-frontend">In Atlas →</a></article>
+<article class="prod" data-product="renos"><span class="pill private">private</span><h3>RenOS</h3><p class="tag">Run a service business on agents</p><p>RenOS branded service-operations operator experience, workspace composition, chat projection, attention/control presentation and domain/process/verification views.</p><a href="/atlas?view=topology&amp;node=repo%3AAftergraph%2Frenos">In Atlas →</a></article>
+<article class="prod" data-product="sentinel"><span class="pill public">public</span><h3>Sentinel</h3><p class="tag">Verified code review</p><p>Exact-HEAD verified code-review verdicts with stale-base invalidation and cited evidence.</p><a href="https://github.com/Aftergraph/sentinel" target="_blank" rel="noopener">Source →</a></article>
+</div>
+</div></section>
+
+<section class="band" id="company"><div class="wrap">
+<p class="kicker">The whole company</p>
+<h2>One organization, mapped in the open.</h2>
+<p class="intro">Every system has an owner, a role and a lifecycle in a public catalog. Nothing on this page is a mockup.</p>
+<div class="stats">
+<div class="stat"><b>32</b><span>permanent systems</span></div>
+<div class="stat"><b>15</b><span>open source</span></div>
+<div class="stat"><b>7</b><span>products on shared planes</span></div>
+</div>
+<div class="ctas"><a class="btn" href="/#company-map">See all 32 systems</a><a class="btn" href="/atlas">Explore in Atlas</a><a class="btn" href="/platform/catalog.json">Raw catalog</a></div>
+</div></section>
+
+<section class="cta" id="talk"><div class="wrap">
+<h2>Building with agents? Let's talk.</h2>
+<p class="intro">Tell us what your agents do today and where trust breaks. We read every thread.</p>
+<div class="ctas"><a class="btn primary" href="https://github.com/orgs/Aftergraph/discussions" target="_blank" rel="noopener">Start a discussion</a><a class="btn" href="https://github.com/Aftergraph" target="_blank" rel="noopener">GitHub</a></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>© Aftergraph · Infrastructure and open research for verifiable intelligent systems</span><nav><a href="/healthz">/healthz</a><a href="/provenance.json">/provenance.json</a><a href="/status">Status</a><a href="/community">Community</a><a href="/">Current site</a></nav></div></footer>
+<script>
+(function(){
+document.documentElement.classList.add('js');
+var steps=[].slice.call(document.querySelectorAll('.step')),v=document.getElementById('m-verdict'),rb=document.getElementById('m-replay');
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function wait(ms){return new Promise(function(r){setTimeout(r,reduce?0:ms)})}
+function get(u){return fetch(u,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(u+' '+r.status);return r.json()})}
+async function run(){
+ rb.hidden=true;v.className='verdict';v.textContent='Running…';
+ steps.forEach(function(s){s.classList.remove('on','done','fail')});
+ var prov=null,health=null,err=null;
+ var data=Promise.all([get('/provenance.json'),get('/healthz')]).then(function(x){prov=x[0];health=x[1]}).catch(function(e){err=e});
+ for(var i=0;i<steps.length;i++){
+  var s=steps[i];s.classList.add('on');
+  if(s.dataset.step==='intent'){await data;if(prov){document.getElementById('m-intent').textContent='Deploy '+prov.repository+' at '+prov.sha.slice(0,7)+'.'}}
+  if(s.dataset.step==='evidence'&&prov){var e=document.getElementById('m-evidence');e.innerHTML='';var a=document.createElement('a');a.href='https://github.com/'+prov.repository+'/commit/'+prov.sha;a.target='_blank';a.rel='noopener';a.textContent='commit '+prov.sha.slice(0,7);e.appendChild(a);e.appendChild(document.createTextNode(' · deployed '+new Date(prov.deployed).toLocaleString()+' · '+prov.route))}
+  await wait(650);s.classList.remove('on');
+  if(s.dataset.step==='verify'){
+   var ok=prov&&health&&health.sha===prov.sha&&health.status==='ok';
+   s.classList.add(ok?'done':'fail');
+   document.getElementById('m-verify').textContent=ok?'Running site sha matches the evidence.':'Could not confirm the running site matches the evidence.';
+   v.className='verdict '+(ok?'ok':'bad');
+   v.textContent=ok?'VERIFIED · the code serving this page is '+prov.sha.slice(0,7)+', exactly what the evidence says was deployed.':'NOT VERIFIED · '+(err?err.message:'sha mismatch')+'. That is the point: when evidence and reality disagree, we say so.';
+  } else s.classList.add('done');
+ }
+ rb.hidden=false;
+}
+rb.addEventListener('click',run);
+var started=false;function go(){if(!started){started=true;run()}}
+if('IntersectionObserver' in window){new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){go();o.disconnect()}})},{threshold:.3}).observe(document.getElementById('mission'))}else go();
+var D={
+ push:{rule:'branch.main.requires_review',asked:'git push origin main',grant:'deploy:aftergraph.org (no write to main)',need:'An approved PR through the merge queue'},
+ secrets:{rule:'secrets.read.out_of_scope',asked:'read env/production/*',grant:'deploy:aftergraph.org (secrets brokered, never read)',need:'A separate grant naming the secret, approved by an owner'},
+ extend:{rule:'authority.ttl.max_exceeded',asked:'extend grant to 7 days',grant:'deploy:aftergraph.org · expires in 15 min',need:'A new grant from AIE. Agents cannot extend their own authority'},
+ unknown:{rule:'deploy.commit.not_on_main',asked:'deploy a1b2c3d (unreviewed branch)',grant:'deploy:aftergraph.org @ main HEAD only',need:'The commit merged to main and passing gates'}
+};
+var box=document.getElementById('deny');
+[].forEach.call(document.querySelectorAll('.try'),function(b){b.addEventListener('click',function(){
+ [].forEach.call(document.querySelectorAll('.try'),function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');
+ var d=D[b.dataset.try];box.innerHTML='';var h=document.createElement('h4');h.textContent='DENIED';box.appendChild(h);
+ var dl=document.createElement('dl');[['attempt',d.asked],['grant',d.grant],['rule',d.rule],['would need',d.need],['effect','nothing executed · decision logged']].forEach(function(r){var dt=document.createElement('dt');dt.textContent=r[0];var dd=document.createElement('dd');dd.textContent=r[1];dl.appendChild(dt);dl.appendChild(dd)});box.appendChild(dl);
+})});
+})();
+</script>
+</body></html>
