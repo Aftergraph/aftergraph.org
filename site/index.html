@@ -167,6 +167,24 @@ button.pnode.final[aria-current="true"] .pdot{background:var(--evidence);box-sha
 .product-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
 .product-mini{padding:14px;border:1px solid var(--border);border-radius:8px;background:rgba(8,12,20,.6);font:12px/1.7 var(--font-mono);color:var(--subtle)}
 .product-mini b{color:var(--text);font-weight:600}
+/* system portfolio */
+.portfolio-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.portfolio-card{display:flex;flex-direction:column;gap:12px;padding:20px;border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(180deg,rgba(20,31,64,.42),rgba(8,12,20,.58));min-width:0}
+.portfolio-card h3{margin:0;font:700 17px/1.25 var(--font-display)}
+.portfolio-meta{display:flex;flex-wrap:wrap;gap:6px}
+.portfolio-pill{padding:4px 8px;border:1px solid var(--border);border-radius:999px;color:var(--subtle);font:700 9px/1.2 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+.portfolio-pill.public{color:var(--evidence);border-color:rgba(36,196,173,.3)}
+.portfolio-pill.private{color:var(--decision);border-color:rgba(240,166,74,.3)}
+.portfolio-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+.portfolio-signal{margin-top:auto;padding-top:12px;border-top:1px solid var(--border);color:var(--subtle);font:11px/1.55 var(--font-mono)}
+.portfolio-signal b{color:var(--text)}
+.portfolio-actions{display:flex;flex-wrap:wrap;gap:10px}
+.catalog-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:20px 0}
+.catalog-stat{padding:14px;border:1px solid var(--border);border-radius:10px;background:rgba(8,12,20,.5)}
+.catalog-stat b{display:block;font:700 22px/1 var(--font-display);color:var(--text)}
+.catalog-stat span{display:block;margin-top:5px;color:var(--subtle);font:700 9px/1.3 var(--font-mono);letter-spacing:.09em;text-transform:uppercase}
+@media(max-width:980px){.portfolio-grid{grid-template-columns:1fr 1fr}.catalog-summary{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:620px){.portfolio-grid{grid-template-columns:1fr}.catalog-summary{grid-template-columns:1fr 1fr}}
 /* agent interaction boundary */
 .interaction-shell{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:20px;align-items:stretch}
 .event-rail{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;padding:20px;border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(180deg,rgba(20,31,64,.5),rgba(8,12,20,.62))}
@@ -475,8 +493,8 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 
 <section class="section shell" id="products">
 <p class="section-kicker">Products</p>
-<h2>Four public surfaces. Honest maturity.</h2>
-<p class="section-intro">The front door now mirrors the canonical public surface registry: Studio, Wie, Sentinel and Atlas — each labelled by its actual maturity.</p>
+<h2>Four public entry surfaces. Honest maturity.</h2>
+<p class="section-intro">Studio, Wie, Sentinel and Atlas are the current public entry surfaces. The wider canonical portfolio is larger and includes private products, operator projections, capabilities, assurance and operations systems.</p>
 <div class="product-grid">
 <article class="product-card featured" id="studio">
 <h3>Studio by Aftergraph</h3>
@@ -511,6 +529,29 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <a class="button" href="/atlas" style="margin-top:auto;align-self:flex-start">Open Atlas</a>
 </article>
 </div>
+</section>
+
+<section class="section shell" id="portfolio">
+<p class="section-kicker">System portfolio · Governance topology/2.0</p>
+<h2>The platform is larger than the front door.</h2>
+<p class="section-intro">Governance evidence cut 2026-09-30 records 34 canonical repositories. Visibility and lifecycle are shown separately from product maturity; topology membership does not imply production readiness.</p>
+<div class="catalog-summary" aria-label="Canonical repository topology summary">
+<div class="catalog-stat"><b>34</b><span>canonical</span></div>
+<div class="catalog-stat"><b>32</b><span>permanent</span></div>
+<div class="catalog-stat"><b>30</b><span>active</span></div>
+<div class="catalog-stat"><b>16</b><span>public</span></div>
+<div class="catalog-stat"><b>18</b><span>private</span></div>
+</div>
+<div class="portfolio-grid">
+<article class="portfolio-card"><div><h3>FIHIM</h3><div class="portfolio-meta"><span class="portfolio-pill private">private repo</span><span class="portfolio-pill">personal agent product</span></div></div><p>Persistent personal intelligent-agent environment and operator cockpit that composes canonical Aftergraph domain systems without taking ownership of their truth.</p><div class="portfolio-signal"><b>Recent signal</b> · Economic Graph v1 operator projection · <code>ad7e841</code></div><div class="portfolio-actions"><a class="source-link" href="/atlas?view=topology&amp;node=repo%3AAftergraph%2Ffihim">Inspect in Atlas</a></div></article>
+<article class="portfolio-card"><div><h3>RenOS</h3><div class="portfolio-meta"><span class="portfolio-pill private">private repo</span><span class="portfolio-pill">service operations</span></div></div><p>Branded service-operations operator experience over Business Ops and tenant-specific domain truth, with attention and verification projections.</p><div class="portfolio-signal"><b>Recent signal</b> · evidence-backed T24 staffing signal · <code>a4a013a</code></div><div class="portfolio-actions"><a class="source-link" href="/atlas?view=topology&amp;node=repo%3AAftergraph%2Frenos">Inspect in Atlas</a></div></article>
+<article class="portfolio-card"><div><h3>War Room</h3><div class="portfolio-meta"><span class="portfolio-pill public">public repo</span><span class="portfolio-pill">ops intelligence projection</span></div></div><p>Organization-reality and operational-intelligence projection. It is a secondary diagnostic/backend surface — not the canonical operator/control owner.</p><div class="portfolio-signal"><b>Boundary</b> · observe and correlate; never invent canonical state.</div><div class="portfolio-actions"><a class="source-link" href="https://github.com/Aftergraph/war-room">View source</a><a class="source-link" href="/atlas?view=topology&amp;node=repo%3AAftergraph%2Fwar-room">Atlas</a></div></article>
+<article class="portfolio-card"><div><h3>CORE / ToolFabric</h3><div class="portfolio-meta"><span class="portfolio-pill private">private repo</span><span class="portfolio-pill">capability routing</span></div></div><p>Capability-resolution and tool-routing control plane. Agents request capabilities; authority, secrets and execution remain owned by their canonical systems.</p><div class="portfolio-signal"><b>Recent signal</b> · Labs Fabric v0.6 manifest-driven preflight · <code>86e5fd8</code></div><div class="portfolio-actions"><a class="source-link" href="/atlas?view=topology&amp;node=repo%3AAftergraph%2Fcore">Inspect in Atlas</a></div></article>
+<article class="portfolio-card"><div><h3>Skill ABI</h3><div class="portfolio-meta"><span class="portfolio-pill public">public repo</span><span class="portfolio-pill">portable skills contract</span></div></div><p>Semantic compatibility contract for portable agent skills across models, runtimes and capability environments. Portable does not mean merely parseable.</p><div class="portfolio-signal"><b>Recent signal</b> · ToolFabric binding constraints · <code>aeccfe5</code></div><div class="portfolio-actions"><a class="source-link" href="https://github.com/Aftergraph/skill-abi">View source</a></div></article>
+<article class="portfolio-card"><div><h3>Cron Fabric</h3><div class="portfolio-meta"><span class="portfolio-pill public">public repo</span><span class="portfolio-pill">scheduled observation</span></div></div><p>Read-only scheduled organization sensing with evidence gating, dedupe and escalation. Observation explicitly grants no execution authority.</p><div class="portfolio-signal"><b>Recent signal</b> · live org-pulse smoke: 27 discovered repos · <code>598fa98</code></div><div class="portfolio-actions"><a class="source-link" href="https://github.com/Aftergraph/aftergraph-cron-fabric">View source</a></div></article>
+</div>
+<p class="evidence-rule"><b>Catalog rule:</b> canonical != public != production. Inspect the machine-readable catalog for all repositories, roles, visibility and lifecycle.</p>
+<a class="source-link" href="/platform/catalog.json">Open platform catalog</a>
 </section>
 
 <section class="section shell" id="interaction">
@@ -646,7 +687,7 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 <div class="t-row"><span class="t-date">2026-09-10</span><span><strong>Atlas interaction layer</strong> — evidence-aware observatory, agent contract, gated deploys (#58–#70)</span><span class="t-tag prod">production</span></div>
 <div class="t-row"><span class="t-date">2026-09-09</span><span><strong>Brand OS v1.1.0</strong> — canonical visual system adopted across the site (#65)</span><span class="t-tag prod">production</span></div>
 <div class="t-row"><span class="t-date">2026-09-08</span><span><strong>Topology reconciled</strong> — public surface aligned with Runtime and Wie truth (#53)</span><span class="t-tag prod">production</span></div>
-<div class="t-row"><span class="t-date">now</span><span><strong>Observatory frontier</strong> — proof-first entry paths, Atlas-first discovery and source-visible marketing (this branch)</span><span class="t-tag wip">in progress</span></div>
+<div class="t-row"><span class="t-date">2026-10-01</span><span><strong>Platform truth refresh</strong> — Governance topology/2.0, 34 canonical repos, live deploy provenance and agent interaction boundary</span><span class="t-tag wip">frontier</span></div>
 </div>
 </section>
 <section class="final-cta shell">
@@ -662,11 +703,11 @@ console.log(live.status, live.sha); // ok 66b29af</pre></details>
 </main>
 <footer class="footer shell">
 <div><a class="brand" href="/">AFTERGRAPH<i>.</i></a><p>Infrastructure and open research for verifiable intelligent systems.</p><span class="verify-note"><i aria-hidden="true"></i>This site proves its code · /healthz</span></div>
-<div><h4>Products</h4><a href="#studio">Studio</a><a href="#wie">Wie</a><a href="/sentinel">Sentinel</a><a href="/atlas">Atlas</a></div>
+<div><h4>Products</h4><a href="#studio">Studio</a><a href="#wie">Wie</a><a href="/sentinel">Sentinel</a><a href="/atlas">Atlas</a><a href="#portfolio">FIHIM + RenOS</a></div>
 <div><h4>Platform</h4><a href="https://github.com/Aftergraph/works-execution">WORKS</a><a href="https://github.com/Aftergraph/trust-gateway">Trust Gateway</a><a href="https://github.com/Aftergraph/aie">AIE</a><a href="/atlas">Atlas</a></div>
-<div><h4>Resources</h4><a href="https://docs.aftergraph.org">Docs</a><a href="https://github.com/Aftergraph/intelligence-systems-research">Research</a><a href="/community">Community</a><a href="https://github.com/Aftergraph">GitHub</a><a href="/status">Status</a></div>
+<div><h4>Resources</h4><a href="/platform/catalog.json">Platform catalog</a><a href="https://docs.aftergraph.org">Docs</a><a href="https://github.com/Aftergraph/intelligence-systems-research">Research</a><a href="/community">Community</a><a href="https://github.com/Aftergraph">GitHub</a><a href="/status">Status</a></div>
 </footer>
-<div class="status-strip shell" aria-label="Public system signals"><span><b>21 canonical repositories</b> · 12 public · 9 private</span><span><b>WORKS</b> most mature runtime surface</span><span>Research evidence is never runtime authority</span></div>
+<div class="status-strip shell" aria-label="Public system signals"><span><b>34 canonical repositories</b> · 16 public · 18 private</span><span><b>30 active</b> · 32 permanent · 2 temporary</span><span>Research evidence is never runtime authority</span></div>
 <nav class="tabbar" aria-label="Mobile sections">
 <a href="#products"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Products</a>
 <a href="#verify-live"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Verify</a>
