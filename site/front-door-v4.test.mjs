@@ -144,3 +144,14 @@ test('reveal animation never hides tall mobile sections', () => {
   assert.match(html, /threshold:0,rootMargin:/);
   assert.match(html, /\/\* ==== Mobile polish ==== \*\//);
 });
+
+test('company map lists every permanent catalog system exactly once', () => {
+  const catalog = JSON.parse(fs.readFileSync(new URL('./platform-catalog.json', import.meta.url), 'utf8'));
+  const permanent = catalog.repositories.filter((r) => r.lifecycle !== 'temporary').map((r) => r.name).sort();
+  const block = html.match(/<section class="section shell" id="company-map">[\s\S]*?<\/section>/)?.[0] ?? '';
+  const listed = [...block.matchAll(/data-repo="([^"]+)"/g)].map((m) => m[1]).sort();
+  assert.deepEqual(listed, permanent);
+  for (const r of catalog.repositories.filter((x) => x.lifecycle !== 'temporary' && x.visibility === 'public')) {
+    assert.ok(block.includes(`href="${r.source_url}"`), `${r.name} links to source`);
+  }
+});
