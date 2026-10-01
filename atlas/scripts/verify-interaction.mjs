@@ -18,7 +18,7 @@ try {
   await approval.click();
   assert.equal(await approval.getAttribute('aria-pressed'), 'true');
   assert.equal((await page.locator('[data-event-heading]').textContent())?.trim(), 'Human approval boundary');
-  assert.match((await page.locator('[data-event-rule]').textContent()) || '', /Approval changes allowed action scope/);
+  assert.match((await page.locator('[data-event-detail] [data-event-rule]').textContent()) || '', /Approval changes allowed action scope/);
 
   const verdict = page.getByRole('button', { name: /VERDICT/i });
   await verdict.click();
