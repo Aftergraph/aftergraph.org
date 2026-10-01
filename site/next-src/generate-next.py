@@ -100,7 +100,7 @@ for i,n in enumerate(products):
 </main>
 {foot}
 <script>{PALJS}</script>"""
-    doc=head_html+f'<title>{NAMES[n]} · Aftergraph</title>\n<meta name="description" content="{html.escape(t)}. {html.escape(dsc)}">\n<meta name="theme-color" content="#04060c">\n<style>'+style+pcss+'</style>\n<script type="speculationrules">{"prerender":[{"where":{"href_matches":"/next/products/*"},"eagerness":"moderate"}]}</script>\n</head>\n<body>\n'+body+'\n</body></html>'
+    doc=head_html+f'<title>{NAMES[n]} · Aftergraph</title>\n<meta name="robots" content="noindex, nofollow">\n<meta name="description" content="{html.escape(t)}. {html.escape(dsc)}">\n<meta name="theme-color" content="#04060c">\n<style>'+style+pcss+'</style>\n<script type="speculationrules">{"prerender":[{"where":{"href_matches":"/next/products/*"},"eagerness":"moderate"}]}</script>\n</head>\n<body>\n'+body+'\n</body></html>'
     pages['/next/products/'+sl]=doc
 json.dump(pages,open('site/next-products.json','w'))
 print('product pages',len(pages))
