@@ -1,5 +1,5 @@
 {
-  "schema": "aftergraph-agent-ui-boundary/0.1-draft",
+  "schema": "aftergraph-agent-ui-boundary/0.2-draft",
   "status": "illustrative",
   "authority": "non-canonical",
   "inspired_by": [
@@ -13,6 +13,9 @@
     "interaction events are not authority",
     "tool intent must cross trust before consequential execution",
     "shared UI state is context, not canonical truth",
+    "activity is progress projection, not completion evidence",
+    "subagent attribution is provenance, not ownership",
+    "interrupts require explicit resume correlation",
     "execution emits inspectable evidence",
     "verified outcomes require independent evaluation"
   ],
@@ -85,5 +88,80 @@
         "result"
       ]
     }
-  ]
+  ],
+  "envelope": {
+    "ordering": "producer-ordered per run/subagent stream; consumer must not infer authority from order alone",
+    "transport": "unspecified",
+    "fields": [
+      "event_id",
+      "event_type",
+      "run_id",
+      "sequence",
+      "timestamp",
+      "trace_id",
+      "parent_event_id",
+      "subagent_run_id",
+      "metadata"
+    ],
+    "note": "Draft Aftergraph envelope inspired by event-stream protocols; field names are not an AG-UI compatibility surface."
+  },
+  "observability": {
+    "activity": {
+      "role": "structured progress projection",
+      "semantics": [
+        "snapshot",
+        "delta"
+      ],
+      "authority": "none"
+    },
+    "subagent": {
+      "role": "producer attribution and lineage",
+      "semantics": [
+        "start",
+        "finish",
+        "error",
+        "parent linkage"
+      ],
+      "authority": "none",
+      "rule": "attribution is provenance, not ownership"
+    },
+    "interrupt": {
+      "role": "explicit pause/resume boundary for human or policy input",
+      "semantics": [
+        "pause",
+        "resume",
+        "cancel",
+        "expire"
+      ],
+      "authority": "requires explicit authorization path",
+      "rule": "resume correlation must be explicit; UI activity never implies approval"
+    }
+  },
+  "lineage": {
+    "run": [
+      "run_id",
+      "parent_run_id"
+    ],
+    "subagent": [
+      "subagent_run_id",
+      "parent_subagent_run_id",
+      "parent_tool_call_id",
+      "parent_message_id"
+    ],
+    "tool": [
+      "tool_call_id",
+      "parent_message_id"
+    ],
+    "evidence": [
+      "subject_id",
+      "artifact_refs",
+      "provenance_ref"
+    ],
+    "verification": [
+      "verifier_id",
+      "criteria_ref",
+      "subject_id",
+      "verdict"
+    ]
+  }
 }
