@@ -87,3 +87,8 @@ test('worker template keeps /next/products route syntactically valid', () => {
   assert.doesNotMatch(worker, /NEXT_PRODUCTS\[p\.replace\(\/\\\/\$\//);
   assert.match(worker, /NEXT_PRODUCTS\[p\.endsWith\('\/'\) \? p\.slice\(0, -1\) : p\]/);
 });
+
+test('mobile header keeps Talk to us on one line', () => {
+  assert.match(html, /\.hdr-r \.btn\{white-space:nowrap\}/);
+  assert.match(html, /<span class="kl">Search<\/span>/);
+});
