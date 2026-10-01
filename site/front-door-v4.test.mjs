@@ -50,7 +50,7 @@ test('homepage product surfaces mirror launcher maturity truth', () => {
   assert.match(html, /<article class="product-card" id="wie">[\s\S]*?<span class="tag">prototype<\/span>/);
   assert.match(html, /<article class="product-card" id="sentinel">[\s\S]*?<span class="tag">prototype<\/span>/);
   assert.match(html, /<article class="product-card featured" id="atlas">[\s\S]*?<span class="tag production">production<\/span>/);
-  assert.match(html, /Four public surfaces\. Honest maturity\./);
+  assert.match(html, /Four public entry surfaces\. Honest maturity\./);
 });
 
 test('homepage exposes fail-closed live proof surface', () => {
@@ -89,4 +89,19 @@ test('homepage exposes governed interaction boundary without overclaiming compat
   assert.match(html, /<b>INTERRUPT<\/b>/);
   assert.match(html, /progress ≠ completion evidence/);
   assert.match(html, /provenance ≠ ownership/);
+});
+
+test('homepage reflects Governance topology 2.0 portfolio truth', () => {
+  assert.match(html, /34 canonical repositories/);
+  assert.match(html, /16 public/);
+  assert.match(html, /18 private/);
+  assert.match(html, /30 active/);
+  assert.match(html, /32 permanent/);
+  assert.doesNotMatch(html, /21 canonical repositories/);
+  assert.match(html, /id="portfolio"/);
+  for (const name of ['FIHIM', 'RenOS', 'War Room', 'CORE \/ ToolFabric', 'Skill ABI', 'Cron Fabric']) {
+    assert.match(html, new RegExp(`<h3>${name}<\\/h3>`));
+  }
+  assert.match(html, /canonical != public != production/);
+  assert.match(html, /href="\/platform\/catalog\.json">Open platform catalog<\/a>/);
 });

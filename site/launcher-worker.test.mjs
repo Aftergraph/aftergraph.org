@@ -79,3 +79,24 @@ test('agent UI boundary endpoint exposes draft non-canonical semantics', async (
   assert.ok(body.envelope?.fields?.includes('subagent_run_id'));
   assert.match(body.inspired_by?.[0]?.relationship || '', /no compatibility claim/);
 });
+
+test('platform catalog endpoint exposes Governance topology 2.0 truth', async () => {
+  const env = createEnv();
+  const request = new Request('https://aftergraph.org/platform/catalog.json', { method: 'GET' });
+  const response = await worker.fetch(request, env);
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('content-type') || '', /application\/json/);
+  const body = await response.json();
+  assert.equal(body.schema, 'aftergraph-public-platform-catalog/1.0');
+  assert.equal(body.source.schema, 'platform-topology/2.0');
+  assert.equal(body.source.evidence_cut, '2026-09-30');
+  assert.equal(body.source.pinned_sha, '7b963c880c4ccc886d4f06eb80eaf483dee848b4');
+  assert.equal(body.counts.canonical, 34);
+  assert.equal(body.counts.public, 16);
+  assert.equal(body.counts.private, 18);
+  assert.equal(body.counts.active, 30);
+  assert.equal(body.counts.permanent, 32);
+  assert.ok(body.repositories.some((repo) => repo.name === 'fihim' && repo.role === 'personal-agent-product'));
+  assert.ok(body.repositories.some((repo) => repo.name === 'renos' && repo.role === 'service-operations-product-surface'));
+  assert.ok(body.repositories.some((repo) => repo.name === 'skill-abi' && repo.visibility === 'public'));
+});

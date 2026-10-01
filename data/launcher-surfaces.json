@@ -205,9 +205,87 @@
       ],
       "icon": "github",
       "description": "Public Aftergraph repositories and source surfaces"
+    },
+    {
+      "id": "war-room",
+      "name": "War Room",
+      "url": "https://github.com/Aftergraph/war-room",
+      "maturity": "projection",
+      "aliases": [
+        "war room",
+        "ops intelligence",
+        "organization reality",
+        "missions",
+        "compute",
+        "attention"
+      ],
+      "icon": "atlas",
+      "description": "Public operational-intelligence backend projection; not the primary operator/control owner"
+    },
+    {
+      "id": "skill-abi",
+      "name": "Skill ABI",
+      "url": "https://github.com/Aftergraph/skill-abi",
+      "maturity": "alpha",
+      "aliases": [
+        "sabi",
+        "skills",
+        "portable skills",
+        "compatibility",
+        "skill abi"
+      ],
+      "icon": "governance",
+      "description": "Semantic compatibility contract for portable AI agent skills"
+    },
+    {
+      "id": "cron-fabric",
+      "repo": "aftergraph-cron-fabric",
+      "name": "Cron Fabric",
+      "url": "https://github.com/Aftergraph/aftergraph-cron-fabric",
+      "maturity": "baseline",
+      "aliases": [
+        "cron",
+        "scheduled observation",
+        "org pulse",
+        "sensors",
+        "monitoring"
+      ],
+      "icon": "status",
+      "description": "Read-only scheduled organization sensing with evidence gating and dedupe"
+    },
+    {
+      "id": "platform-catalog",
+      "name": "Platform catalog",
+      "url": "/platform/catalog.json",
+      "maturity": "canonical-projection",
+      "aliases": [
+        "catalog",
+        "repositories",
+        "topology",
+        "34 repos",
+        "system portfolio"
+      ],
+      "icon": "atlas",
+      "description": "Governance-derived canonical repository catalog and lifecycle projection"
     }
   ],
   "actions": [
+    {
+      "id": "open-platform-catalog",
+      "kind": "evidence",
+      "name": "Open platform catalog",
+      "description": "Inspect the Governance-derived canonical repository topology projection",
+      "url": "/platform/catalog.json",
+      "aliases": [
+        "catalog",
+        "repos",
+        "repositories",
+        "topology",
+        "portfolio"
+      ],
+      "icon": "atlas",
+      "remember_id": "platform-catalog"
+    },
     {
       "id": "explore-system",
       "kind": "navigate",

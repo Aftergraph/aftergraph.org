@@ -17,6 +17,7 @@ const statusPage = read('status.html');
 const statusDataText = read('status-data.json');
 const statusData = JSON.parse(statusDataText);
 const llms = read('llms.txt');
+const platformCatalog = JSON.parse(read('platform-catalog.json'));
 const worker = fs.existsSync(path.join(root, 'worker.js')) ? read('worker.js') : '';
 const atlasIndex = fs.existsSync(path.join(root, 'atlas', 'index.html')) ? read('atlas/index.html') : '';
 
@@ -46,7 +47,7 @@ has(landing, ':focus-visible', 'visible focus');
 has(landing, 'platform-chain', 'V3 platform lifecycle chain');
 has(landing, 'trust-flow', 'V3 trust verification flow');
 has(landing, 'product-mini', 'V3 product miniatures');
-has(landing, '21 canonical repositories', 'canonical topology on landing');
+has(landing, `${platformCatalog.counts.canonical} canonical repositories`, 'canonical topology on landing');
 
 has(launcherSurface, 'Aftergraph Launcher', 'launcher title');
 has(launcherSurface, 'FIND', 'launcher find phase');
@@ -85,6 +86,7 @@ assert.ok(!launcherRegistry.entities.some((item) => item.source_visibility === '
 assert.ok(launcherRegistry.actions.some((item) => item.id === 'open-community' && item.url === '/community'), 'launcher registry must expose community navigation');
 has(launcher, 'src="/launcher-app.js"', 'launcher external app module');
 has(buildWorker, "p === '/launcher-registry.json'", 'launcher registry worker route');
+has(buildWorker, "p === '/platform/catalog.json'", 'platform catalog worker route');
 has(buildWorker, "p === '/api/launcher/telemetry'", 'launcher telemetry route');
 has(launcherApp, "fetch(REGISTRY_URL", 'launcher consumes canonical registry');
 has(launcherApp, "type:'evidence'", 'launcher evidence intent');
@@ -112,10 +114,12 @@ for (const contextPack of [
 // Canonical public topology is a projection of Governance truth, not installed
 // repo discovery. Runtime is currently private and therefore must not appear in
 // the public source allowlist even though the Runtime capability is public-facing.
-has(llms, 'Canonical platform topology: 21 repositories', 'canonical topology count');
-has(llms, 'Public repositories: 12', 'canonical public repository count');
-has(llms, 'Private repositories: 9', 'canonical private repository count');
-const llmsPublic = llms.split('### Public')[1]?.split('### Private')[0] || '';
+assert.equal(platformCatalog.schema, 'aftergraph-public-platform-catalog/1.0');
+assert.equal(platformCatalog.source.schema, 'platform-topology/2.0');
+has(llms, `Canonical platform topology: ${platformCatalog.counts.canonical} repositories`, 'canonical topology count');
+has(llms, `Public repositories: ${platformCatalog.counts.public}`, 'canonical public repository count');
+has(llms, `Private repositories: ${platformCatalog.counts.private}`, 'canonical private repository count');
+const llmsPublic = llms.split('### Public canonical repositories')[1]?.split('### Private canonical repositories')[0] || '';
 has(llmsPublic, '`wi-backend`', 'canonical Wie backend repo');
 has(llmsPublic, '`sentinel`', 'Sentinel public repo');
 assert.ok(!llmsPublic.includes('`runtime`'), 'private Runtime repository leaked into llms public allowlist');
@@ -149,9 +153,9 @@ assert.ok(statusData.repos.every((repo) => repo.visibility === 'public'), 'statu
 assert.ok(!statusData.repos.some((repo) => repo.name === 'runtime'), 'private Runtime repository leaked into status data');
 assert.ok(!statusData.repos.some((repo) => repo.name === 'work-intelligence-v2'), 'legacy Work Intelligence slug leaked into status data');
 assert.ok(statusData.repos.some((repo) => repo.name === 'wi-backend'), 'status data must use canonical wi-backend slug');
-has(statusPage, '21 canonical', 'status page canonical repository count');
-has(statusPage, '12 public', 'status page public repository count');
-has(statusPage, '9 private', 'status page private repository count');
+has(statusPage, `${platformCatalog.counts.canonical} canonical`, 'status page canonical repository count');
+has(statusPage, `${platformCatalog.counts.public} public`, 'status page public repository count');
+has(statusPage, `${platformCatalog.counts.private} private`, 'status page private repository count');
 has(statusPage, 'wi-backend', 'status page canonical Wie backend slug');
 has(statusPage, 'wie.aftergraph.org', 'status mentions Wie domain for provenance reference');
 assert.ok(!statusPage.includes('wie.aftergraph.org/api/healthz'), 'status must not reference unrouted Wie health endpoint');
@@ -164,8 +168,11 @@ const workerForSurface = worker
   .filter((line) => !/^const ATLAS_[A-Z_]+ = /.test(line))
   .join('\n');
 const publicSurface = `${landing}\n${launcherSurface}\n${statusPage}\n${communityPage}\n${statusDataText}\n${llms}\n${workerForSurface}`.toLowerCase();
-for (const privateRepo of ['context-continuity', 'skills-vault']) {
-  assert.ok(!publicSurface.includes(privateRepo), `private repository leaked into public surface: ${privateRepo}`);
+const linkedGithubRepos = new Set(
+  [...publicSurface.matchAll(/https:\/\/github\.com\/aftergraph\/([a-z0-9._-]+)/g)].map((match) => match[1])
+);
+for (const privateRepo of platformCatalog.repositories.filter((repo) => repo.visibility === 'private')) {
+  assert.ok(!linkedGithubRepos.has(privateRepo.name.toLowerCase()), `private repository source URL leaked into public surface: ${privateRepo.name}`);
 }
 
 for (const forbidden of ['customer logos', 'trusted by thousands', 'industry-leading production']) {
