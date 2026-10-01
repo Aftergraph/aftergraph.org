@@ -19,6 +19,9 @@ on:
       - 'DEPLOYMENT.md'
       - '.github/workflows/deploy.yml'
   workflow_dispatch: {}
+  # Truth layer refresh: redeploy main with freshly read ecosystem state.
+  schedule:
+    - cron: '17 */6 * * *'
 
 permissions:
   contents: read
@@ -66,6 +69,10 @@ jobs:
         run: node --test site/launcher-registry.test.mjs site/launcher-telemetry.test.mjs
       - name: Sync canonical Brand OS inputs
         run: node scripts/sync-brand.mjs
+      - name: Read live ecosystem state (truth layer)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node site/next-src/build-ecosystem-state.mjs
       - name: Compile canonical worker
         run: node site/build-worker.cjs
       - name: Launcher Worker telemetry runtime contract
@@ -83,7 +90,8 @@ jobs:
     # must not become a path for deploying code that never passed the merge queue.
     if: >-
       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ENABLE_DEPLOY == 'true')
+      (github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ENABLE_DEPLOY == 'true') ||
+      (github.event_name == 'schedule' && github.ref == 'refs/heads/main' && vars.ENABLE_DEPLOY == 'true')
     # Temporary fail-closed production runner while #86 tracks migration to a
     # dedicated least-privilege Cloudflare API token. The OAuth credential stays
     # on the runner and is never copied into GitHub Actions secrets.
@@ -111,6 +119,8 @@ jobs:
           $deployed = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
           "AG_DEPLOYED=$deployed" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
       - name: Verify deploy build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           npm --prefix atlas ci
           npm --prefix atlas test
@@ -120,6 +130,7 @@ jobs:
           node scripts/generate-launcher-registry.mjs
           node --test site/launcher-registry.test.mjs site/launcher-telemetry.test.mjs
           node scripts/sync-brand.mjs
+          node site/next-src/build-ecosystem-state.mjs
           node site/build-worker.cjs
           node --test site/launcher-worker.test.mjs
           node site/verify-v2.cjs

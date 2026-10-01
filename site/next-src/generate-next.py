@@ -1,3 +1,4 @@
+import os
 import json, html
 c=json.load(open('site/platform-catalog.json'))
 repos={r['name']:r for r in c['repositories']}
@@ -39,9 +40,10 @@ items=''.join(f'<li><a href="{u}" data-k="{html.escape(t.lower())}">{html.escape
 for nd in nodes:
     u=('/next/products/'+slug(nd['id'])) if nd['id'] in products else nd['url']
     items+=f'<li><a href="{html.escape(u)}" data-k="{html.escape((nd["name"]+" "+nd["id"]+" "+nd["role"]+" "+nd["g"]).lower())}">{html.escape(nd["name"])}<span>{html.escape(nd["g"])} · {nd["vis"]}</span></a></li>'
+LIVE=open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'live.js')).read().replace('</','<\\/')
 PALETTE='<dialog class="pal" id="pal" aria-label="Search Aftergraph"><input id="palq" type="search" placeholder="Search systems, products and pages…" aria-label="Search" autocomplete="off"><ul id="pall" role="listbox">'+items+'</ul><div class="hint">↑↓ to move · Enter to open · Esc to close</div></dialog>'
 PALJS=open('site/next-src/palette.js').read()
-out=tpl.replace('__PRODUCTS__','\n'.join(cards)).replace('__NODES__',json.dumps(nodes,separators=(',',':')).replace('</','<\\/')).replace('__NPUB__',str(NPUB)).replace('__NP__',str(len(nodes))).replace('__NPROD__',str(len(products))).replace('__PALETTE__',PALETTE).replace('</body></html>','<script>'+PALJS+'</script>\n</body></html>')
+out=tpl.replace('__LIVE__',LIVE).replace('__PRODUCTS__','\n'.join(cards)).replace('__NODES__',json.dumps(nodes,separators=(',',':')).replace('</','<\\/')).replace('__NPUB__',str(NPUB)).replace('__NP__',str(len(nodes))).replace('__NPROD__',str(len(products))).replace('__PALETTE__',PALETTE).replace('</body></html>','<script>'+PALJS+'</script>\n</body></html>')
 open('site/next.html','w').write(out); print(len(out))
 
 # ---------- product pages ----------
@@ -76,6 +78,7 @@ for i,n in enumerate(products):
     body=f"""<a class="skip" href="#main">Skip to content</a>
 {hdr}
 {PALETTE}
+<script>{LIVE}</script>
 <main id="main">
 <section class="phero" style="--c:{col}"><div class="orb" aria-hidden="true" style="view-transition-name:orb-{sl}"></div><div class="wrap" style="position:relative">
 <p class="crumb"><a href="/next#products">Products</a> / 0{i+1}</p>
@@ -93,6 +96,7 @@ for i,n in enumerate(products):
 <div class="fact"><small>Role</small><b>{html.escape((d.get('role') or '').replace('-',' '))}</b></div>
 <div class="fact"><small>Repository</small><b>Aftergraph/{html.escape(n)}</b></div>
 </div>
+<div class="live1" data-live-repo="{html.escape(n)}" style="margin:0 0 28px"><small>Loading live state…</small></div>
 <p class="intro" style="margin-bottom:28px">Being in the catalog is not a production claim. Maturity, ownership and contracts live in the catalog and Atlas, and this page is generated from them.</p>
 <div class="ctas" style="opacity:1;animation:none"><a class="btn" href="/next#story">See how Aftergraph proves work</a><a class="btn" href="/platform/catalog.json">Raw catalog</a></div>
 <nav class="pn" aria-label="More products"><a href="/next/products/{slug(prv)}"><small>← Previous</small><b>{NAMES[prv]}</b></a><a href="/next/products/{slug(nxt)}" style="text-align:right"><small>Next →</small><b>{NAMES[nxt]}</b></a></nav>
