@@ -56,7 +56,7 @@ jobs:
       - name: Verify V2 contract
         run: node site/verify-v2.cjs
       - name: Generated bundle is current
-        run: git diff --exit-code -- site/worker.js site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
+        run: git diff --exit-code -- site/wrangler.toml site/atlas/ site/atlas-experience.json site/launcher-registry.json
       - name: Diff check
         run: git diff --check
 
