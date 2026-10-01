@@ -129,7 +129,8 @@ try {
 
     const menu = page.getByRole('button', { name: 'Open navigation menu' });
     await menu.click();
-    if (await menu.getAttribute('aria-expanded') !== 'true') fail('mobile navigation did not open');
+    const openMenu = page.getByRole('button', { name: 'Close navigation menu' });
+    if (await openMenu.getAttribute('aria-expanded') !== 'true') fail('mobile navigation did not open');
 
     const overflow = await overflowPx(page);
     if (overflow > 1) fail(`mobile horizontal overflow: ${overflow}px`);
