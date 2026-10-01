@@ -1,0 +1,710 @@
+{
+  "schema": "aftergraph-public-platform-catalog/1.0",
+  "source": {
+    "repository": "Aftergraph/after-graph-governance",
+    "contract": "docs/platform-topology/2.0.json",
+    "schema": "platform-topology/2.0",
+    "evidence_cut": "2026-09-30",
+    "pinned_sha": "7b963c880c4ccc886d4f06eb80eaf483dee848b4"
+  },
+  "counts": {
+    "canonical": 34,
+    "permanent": 32,
+    "active": 30,
+    "public": 16,
+    "private": 18,
+    "temporary": 2
+  },
+  "groups": {
+    "platform": [
+      {
+        "name": "aie",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": "authority",
+        "system_class": "institution",
+        "role": "normative-authority",
+        "owns": "Portable institution, authority, delegation, lifecycle, budget and revocation semantics.",
+        "source_url": "https://github.com/Aftergraph/aie",
+        "expires_at": null
+      },
+      {
+        "name": "trust-gateway",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": "trust",
+        "system_class": "enforcement",
+        "role": "runtime-enforcement",
+        "owns": "Fail-closed runtime admission, policy enforcement, approvals, secrets and action audit.",
+        "source_url": "https://github.com/Aftergraph/trust-gateway",
+        "expires_at": null
+      },
+      {
+        "name": "runtime",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": "runtime",
+        "system_class": "runtime",
+        "role": "agent-runtime",
+        "owns": "Agent lifecycle, orchestration, dispatch, checkpoints, metering and observability.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "works-execution",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": "execution",
+        "system_class": "execution",
+        "role": "durable-execution",
+        "owns": "Durable work state, scheduling, workers, leases, recovery, execution evidence and quittance.",
+        "source_url": "https://github.com/Aftergraph/works-execution",
+        "expires_at": null
+      },
+      {
+        "name": "relay",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": "experience",
+        "system_class": "operator-plane",
+        "role": "human-operator-plane",
+        "owns": "Governed operator plane for supervising autonomous work across agents, missions, execution nodes, Runtime projection, and Aftergraph infrastructure.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "studio",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": "experience",
+        "system_class": "experience",
+        "role": "primary-experience",
+        "owns": "General-purpose human operating environment for Chat, Work, Space, control and evidence surfaces.",
+        "source_url": "https://github.com/Aftergraph/studio",
+        "expires_at": null
+      },
+      {
+        "name": "fihim",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": "experience",
+        "system_class": "personal-agent-environment",
+        "role": "personal-agent-product",
+        "owns": "Persistent personal intelligent-agent environment: identity/context continuity, agent coordination, user-facing conversational and delegated-work experiences, surfaced through HomeOS and other approved clients.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "war-room",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": "experience",
+        "system_class": "ops-intelligence-projection",
+        "role": "operational-intelligence-backend-projection",
+        "owns": "Operational intelligence projection, organization reality queries, missions/agents/compute/attention/evidence aggregation and secondary diagnostic surfaces without inventing canonical state.",
+        "source_url": "https://github.com/Aftergraph/war-room",
+        "expires_at": null
+      },
+      {
+        "name": "wi-backend",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": "intelligence",
+        "system_class": "work-intelligence",
+        "role": "work-inference",
+        "owns": "Source-neutral observation to canonical WorkItem inference, review, publication and promotion boundaries.",
+        "source_url": "https://github.com/Aftergraph/wi-backend",
+        "expires_at": null
+      },
+      {
+        "name": "wi-frontend",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": "experience",
+        "system_class": "specialist-experience",
+        "role": "work-intelligence-experience",
+        "owns": "Wie browser experience and least-privilege BFF consuming canonical Work Intelligence state from wi-backend.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "sentinel",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": "verification",
+        "system_class": "assurance",
+        "role": "verified-code-review",
+        "owns": "Exact-HEAD verified code-review verdicts with stale-base invalidation and cited evidence.",
+        "source_url": "https://github.com/Aftergraph/sentinel",
+        "expires_at": null
+      }
+    ],
+    "products": [
+      {
+        "name": "relay",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": "experience",
+        "system_class": "operator-plane",
+        "role": "human-operator-plane",
+        "owns": "Governed operator plane for supervising autonomous work across agents, missions, execution nodes, Runtime projection, and Aftergraph infrastructure.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "studio",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": "experience",
+        "system_class": "experience",
+        "role": "primary-experience",
+        "owns": "General-purpose human operating environment for Chat, Work, Space, control and evidence surfaces.",
+        "source_url": "https://github.com/Aftergraph/studio",
+        "expires_at": null
+      },
+      {
+        "name": "fihim",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": "experience",
+        "system_class": "personal-agent-environment",
+        "role": "personal-agent-product",
+        "owns": "Persistent personal intelligent-agent environment: identity/context continuity, agent coordination, user-facing conversational and delegated-work experiences, surfaced through HomeOS and other approved clients.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "war-room",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": "experience",
+        "system_class": "ops-intelligence-projection",
+        "role": "operational-intelligence-backend-projection",
+        "owns": "Operational intelligence projection, organization reality queries, missions/agents/compute/attention/evidence aggregation and secondary diagnostic surfaces without inventing canonical state.",
+        "source_url": "https://github.com/Aftergraph/war-room",
+        "expires_at": null
+      },
+      {
+        "name": "wi-frontend",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": "experience",
+        "system_class": "specialist-experience",
+        "role": "work-intelligence-experience",
+        "owns": "Wie browser experience and least-privilege BFF consuming canonical Work Intelligence state from wi-backend.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "renos",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "product-surface",
+        "role": "service-operations-product-surface",
+        "owns": "RenOS branded service-operations operator experience, workspace composition, chat projection, attention/control presentation and domain/process/verification views.",
+        "source_url": null,
+        "expires_at": null
+      }
+    ],
+    "capabilities": [
+      {
+        "name": "context-continuity",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "continuity",
+        "role": "continuity-contract",
+        "owns": "Portable transfer of actionable context/state across model, agent, session and runtime boundaries.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "continuum",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "assurance",
+        "role": "continuity-containment-verification",
+        "owns": "Continuity and containment fault-injection campaigns and verification harnesses.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "intelligence-systems-research",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "research-assurance",
+        "role": "research-assurance",
+        "owns": "SPEC-001, MISSION-Bench methodology, scientific claims, experiments, assurance and publication evidence.",
+        "source_url": "https://github.com/Aftergraph/intelligence-systems-research",
+        "expires_at": null
+      },
+      {
+        "name": "skills-vault",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "capabilities",
+        "role": "capability-supply-chain",
+        "owns": "Governed skill discovery, trust, lifecycle, provenance, compatibility and distribution.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "llm-research-development",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "models",
+        "role": "model-rnd-methodology",
+        "owns": "Reusable model research, experiment, evaluation, promotion and provenance methodology.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "afm",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "models",
+        "role": "model-program",
+        "owns": "AFM-specific model training, datasets, experiments, evaluations and artifact manifests.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "model-registry",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "models",
+        "role": "model-lifecycle-registry",
+        "owns": "Immutable promoted model identities, versions, aliases, lifecycle, provenance and artifact locations.",
+        "source_url": null,
+        "expires_at": null
+      },
+      {
+        "name": "aftergraph-cron-fabric",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "operations",
+        "role": "scheduled-observation-fabric",
+        "owns": "Read-only scheduled organization sensing, evidence gating, dedupe and Telegram escalation. It grants no execution authority.",
+        "source_url": "https://github.com/Aftergraph/aftergraph-cron-fabric",
+        "expires_at": null
+      },
+      {
+        "name": "docs",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "knowledge",
+        "role": "knowledge-plane",
+        "owns": "Provenance-pinned rendering, discovery, developer documentation and agent-readable context surfaces.",
+        "source_url": "https://github.com/Aftergraph/docs",
+        "expires_at": null
+      },
+      {
+        "name": "skill-abi",
+        "visibility": "public",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "capabilities",
+        "role": "skill-compatibility-contract",
+        "owns": "Semantic compatibility, bounded effects, degradation and conformance for portable AI agent skills.",
+        "source_url": "https://github.com/Aftergraph/skill-abi",
+        "expires_at": null
+      },
+      {
+        "name": "core",
+        "visibility": "private",
+        "lifecycle": "active",
+        "architecture_plane": null,
+        "system_class": "capabilities",
+        "role": "tool-routing-control-plane",
+        "owns": "ToolFabric registry federation, semantic capability resolution, health-aware routing plans and non-authoritative tool selection.",
+        "source_url": null,
+        "expires_at": null
+      }
+    ]
+  },
+  "repositories": [
+    {
+      "name": "after-graph-governance",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "governance",
+      "role": "canonical-contracts",
+      "owns": "Platform topology, cross-repo boundaries, contract registration and generated org-state mechanics.",
+      "source_url": "https://github.com/Aftergraph/after-graph-governance",
+      "expires_at": null
+    },
+    {
+      "name": "aie",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": "authority",
+      "system_class": "institution",
+      "role": "normative-authority",
+      "owns": "Portable institution, authority, delegation, lifecycle, budget and revocation semantics.",
+      "source_url": "https://github.com/Aftergraph/aie",
+      "expires_at": null
+    },
+    {
+      "name": "trust-gateway",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": "trust",
+      "system_class": "enforcement",
+      "role": "runtime-enforcement",
+      "owns": "Fail-closed runtime admission, policy enforcement, approvals, secrets and action audit.",
+      "source_url": "https://github.com/Aftergraph/trust-gateway",
+      "expires_at": null
+    },
+    {
+      "name": "runtime",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": "runtime",
+      "system_class": "runtime",
+      "role": "agent-runtime",
+      "owns": "Agent lifecycle, orchestration, dispatch, checkpoints, metering and observability.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "works-execution",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": "execution",
+      "system_class": "execution",
+      "role": "durable-execution",
+      "owns": "Durable work state, scheduling, workers, leases, recovery, execution evidence and quittance.",
+      "source_url": "https://github.com/Aftergraph/works-execution",
+      "expires_at": null
+    },
+    {
+      "name": "relay",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": "experience",
+      "system_class": "operator-plane",
+      "role": "human-operator-plane",
+      "owns": "Governed operator plane for supervising autonomous work across agents, missions, execution nodes, Runtime projection, and Aftergraph infrastructure.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "studio",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": "experience",
+      "system_class": "experience",
+      "role": "primary-experience",
+      "owns": "General-purpose human operating environment for Chat, Work, Space, control and evidence surfaces.",
+      "source_url": "https://github.com/Aftergraph/studio",
+      "expires_at": null
+    },
+    {
+      "name": "fihim",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": "experience",
+      "system_class": "personal-agent-environment",
+      "role": "personal-agent-product",
+      "owns": "Persistent personal intelligent-agent environment: identity/context continuity, agent coordination, user-facing conversational and delegated-work experiences, surfaced through HomeOS and other approved clients.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "war-room",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": "experience",
+      "system_class": "ops-intelligence-projection",
+      "role": "operational-intelligence-backend-projection",
+      "owns": "Operational intelligence projection, organization reality queries, missions/agents/compute/attention/evidence aggregation and secondary diagnostic surfaces without inventing canonical state.",
+      "source_url": "https://github.com/Aftergraph/war-room",
+      "expires_at": null
+    },
+    {
+      "name": "wi-backend",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": "intelligence",
+      "system_class": "work-intelligence",
+      "role": "work-inference",
+      "owns": "Source-neutral observation to canonical WorkItem inference, review, publication and promotion boundaries.",
+      "source_url": "https://github.com/Aftergraph/wi-backend",
+      "expires_at": null
+    },
+    {
+      "name": "wi-frontend",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": "experience",
+      "system_class": "specialist-experience",
+      "role": "work-intelligence-experience",
+      "owns": "Wie browser experience and least-privilege BFF consuming canonical Work Intelligence state from wi-backend.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "context-continuity",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "continuity",
+      "role": "continuity-contract",
+      "owns": "Portable transfer of actionable context/state across model, agent, session and runtime boundaries.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "continuum",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "assurance",
+      "role": "continuity-containment-verification",
+      "owns": "Continuity and containment fault-injection campaigns and verification harnesses.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "sentinel",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": "verification",
+      "system_class": "assurance",
+      "role": "verified-code-review",
+      "owns": "Exact-HEAD verified code-review verdicts with stale-base invalidation and cited evidence.",
+      "source_url": "https://github.com/Aftergraph/sentinel",
+      "expires_at": null
+    },
+    {
+      "name": "sentinel-firetest",
+      "visibility": "private",
+      "lifecycle": "temporary",
+      "architecture_plane": null,
+      "system_class": "assurance-fixture",
+      "role": "temporary-verification-fixture",
+      "owns": "Throwaway live-fire fixture for Sentinel proofs. Topology membership is temporary and grants no permanent platform responsibility.",
+      "source_url": null,
+      "expires_at": "2026-10-05"
+    },
+    {
+      "name": "sentinel-firetest2",
+      "visibility": "public",
+      "lifecycle": "temporary",
+      "architecture_plane": null,
+      "system_class": "assurance-fixture",
+      "role": "temporary-verification-fixture",
+      "owns": "Throwaway live-fire fixture for Sentinel proofs (second instance, live-verified 2026-09-10). Topology membership is temporary and grants no permanent platform responsibility.",
+      "source_url": "https://github.com/Aftergraph/sentinel-firetest2",
+      "expires_at": "2026-10-05"
+    },
+    {
+      "name": "intelligence-systems-research",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "research-assurance",
+      "role": "research-assurance",
+      "owns": "SPEC-001, MISSION-Bench methodology, scientific claims, experiments, assurance and publication evidence.",
+      "source_url": "https://github.com/Aftergraph/intelligence-systems-research",
+      "expires_at": null
+    },
+    {
+      "name": "skills-vault",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "capabilities",
+      "role": "capability-supply-chain",
+      "owns": "Governed skill discovery, trust, lifecycle, provenance, compatibility and distribution.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "llm-research-development",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "models",
+      "role": "model-rnd-methodology",
+      "owns": "Reusable model research, experiment, evaluation, promotion and provenance methodology.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "afm",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "models",
+      "role": "model-program",
+      "owns": "AFM-specific model training, datasets, experiments, evaluations and artifact manifests.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "model-registry",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "models",
+      "role": "model-lifecycle-registry",
+      "owns": "Immutable promoted model identities, versions, aliases, lifecycle, provenance and artifact locations.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "autonomous-venture-company",
+      "visibility": "private",
+      "lifecycle": "legacy-transition",
+      "architecture_plane": null,
+      "system_class": "legacy-transition",
+      "role": "legacy-migration-source",
+      "owns": "Legacy product, Hermes integration and migration-source behavior pending governed extraction.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "aftergraph-cron-fabric",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "operations",
+      "role": "scheduled-observation-fabric",
+      "owns": "Read-only scheduled organization sensing, evidence gating, dedupe and Telegram escalation. It grants no execution authority.",
+      "source_url": "https://github.com/Aftergraph/aftergraph-cron-fabric",
+      "expires_at": null
+    },
+    {
+      "name": "veranza",
+      "visibility": "private",
+      "lifecycle": "internal-hold",
+      "architecture_plane": null,
+      "system_class": "incubation",
+      "role": "assurance-incubation",
+      "owns": "Internal assurance-product incubation concept under naming/clearance hold. Topology membership does not imply public or production maturity.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "docs",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "knowledge",
+      "role": "knowledge-plane",
+      "owns": "Provenance-pinned rendering, discovery, developer documentation and agent-readable context surfaces.",
+      "source_url": "https://github.com/Aftergraph/docs",
+      "expires_at": null
+    },
+    {
+      "name": "aftergraph.org",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "public",
+      "role": "public-front-door",
+      "owns": "Public website, marketing information architecture and system launcher.",
+      "source_url": "https://github.com/Aftergraph/aftergraph.org",
+      "expires_at": null
+    },
+    {
+      "name": "brand",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "foundation",
+      "role": "brand-design-system",
+      "owns": "Visual identity, semantic design tokens, master assets and public communication design rules.",
+      "source_url": "https://github.com/Aftergraph/brand",
+      "expires_at": null
+    },
+    {
+      "name": ".github",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "foundation",
+      "role": "organization-community",
+      "owns": "Organization profile, contribution defaults, security/support routing and shared community infrastructure.",
+      "source_url": "https://github.com/Aftergraph/.github",
+      "expires_at": null
+    },
+    {
+      "name": "skill-abi",
+      "visibility": "public",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "capabilities",
+      "role": "skill-compatibility-contract",
+      "owns": "Semantic compatibility, bounded effects, degradation and conformance for portable AI agent skills.",
+      "source_url": "https://github.com/Aftergraph/skill-abi",
+      "expires_at": null
+    },
+    {
+      "name": "skillport",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "assurance",
+      "role": "skill-portability-benchmark",
+      "owns": "Open benchmark and evaluation suite for semantic portability of skills across models, runtimes and capability environments.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "business-ops",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "service-business-domain",
+      "role": "canonical-service-business-domain",
+      "owns": "Canonical tenant-neutral service-business domain state, invariants, migration mappings, charge-source facts and shadow-conformance semantics.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "rendetalje",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "tenant-domain",
+      "role": "rendetalje-reference-tenant",
+      "owns": "Rendetalje-specific cleaning semantics, pricing policies, estimator behavior, playbooks, communication policy, tenant configuration, migration mappings and tenant-specific Business Ops composition.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "renos",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "product-surface",
+      "role": "service-operations-product-surface",
+      "owns": "RenOS branded service-operations operator experience, workspace composition, chat projection, attention/control presentation and domain/process/verification views.",
+      "source_url": null,
+      "expires_at": null
+    },
+    {
+      "name": "core",
+      "visibility": "private",
+      "lifecycle": "active",
+      "architecture_plane": null,
+      "system_class": "capabilities",
+      "role": "tool-routing-control-plane",
+      "owns": "ToolFabric registry federation, semantic capability resolution, health-aware routing plans and non-authoritative tool selection.",
+      "source_url": null,
+      "expires_at": null
+    }
+  ]
+}
