@@ -133,3 +133,40 @@ test('truth layer: /next and product pages render live state from the same-origi
   }
   assert.match(worker, /p === '\/next\/ecosystem-state\.json'/);
 });
+
+test('freshness: HEAD age decides active/quiet/dormant, never guessed', async () => {
+  const { freshness } = await import('./next-src/build-ecosystem-state.mjs');
+  const now = new Date('2026-10-02T00:00:00Z');
+  assert.equal(freshness('2026-09-25T00:00:00Z', now), 'active');
+  assert.equal(freshness('2026-08-20T00:00:00Z', now), 'quiet');
+  assert.equal(freshness('2026-06-01T00:00:00Z', now), 'dormant');
+  assert.equal(freshness(null, now), 'unknown');
+  assert.equal(freshness('not a date', now), 'unknown');
+});
+
+test('freshness: release drift is read from compare, never assumed', async () => {
+  const { readRepo } = await import('./next-src/build-ecosystem-state.mjs');
+  const fake = async (url) => {
+    const ok = (d) => ({ ok: true, status: 200, json: async () => d });
+    if (url.endsWith('/repos/Aftergraph/x')) return ok({ default_branch: 'main' });
+    if (url.includes('/commits/main')) return ok({ sha: 'a'.repeat(40), commit: { committer: { date: '2026-10-01T00:00:00Z' } } });
+    if (url.includes('/releases/latest')) return ok({ tag_name: 'v1', published_at: '2026-09-01T00:00:00Z', html_url: 'u' });
+    if (url.includes('/compare/v1...main')) return ok({ ahead_by: 42 });
+    if (url.includes('/pulls')) return ok([]);
+    if (url.includes('/actions/runs')) return ok({ workflow_runs: [] });
+    return { ok: false, status: 404 };
+  };
+  const r = await readRepo('x', { fetchImpl: fake, now: () => new Date('2026-10-02T00:00:00Z') });
+  assert.equal(r.release.aheadBy, 42);
+  assert.equal(r.freshness, 'active');
+});
+
+test('hand-written product copy is re-verified at least every 45 days', () => {
+  const src = fs.readFileSync(new URL('./next-src/generate-next.py', import.meta.url), 'utf8');
+  const m = src.match(/COPY_VERIFIED=\{n:'(\d{4}-\d{2}-\d{2})' for n in COPY\}/);
+  assert.ok(m, 'COPY_VERIFIED must record when product copy was last checked against the source');
+  const age = (Date.now() - Date.parse(m[1] + 'T00:00:00Z')) / 864e5;
+  assert.ok(age <= 45, `product copy last verified ${m[1]} (${Math.round(age)} d ago): re-check it against platform-catalog.json "owns" and each README, then bump the date`);
+  const live = fs.readFileSync(new URL('./next-src/live.js', import.meta.url), 'utf8');
+  assert.match(live, /fchip/); assert.match(live, /main is \$\{esc\(a\)\} commit/);
+});
