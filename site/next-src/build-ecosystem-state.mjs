@@ -13,6 +13,8 @@ import { fileURLToPath } from 'node:url';
 const SITE = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OWNER = 'Aftergraph';
 const API = process.env.GITHUB_API_URL || 'https://api.github.com';
+const NPM = process.env.NPM_REGISTRY_URL || 'https://registry.npmjs.org';
+const PYPI = process.env.PYPI_URL || 'https://pypi.org';
 
 export function aggregateRuns(runs) {
   const list = (Array.isArray(runs) ? runs : []).filter((r) => r && typeof r === 'object');
@@ -43,6 +45,38 @@ async function gh(path, token, fetchImpl) {
   if (res.status === 404) return { missing: true };
   if (!res.ok) throw new Error(`${path}: HTTP ${res.status}`);
   return { data: await res.json() };
+}
+
+// Public registry read (npm, PyPI). No token; 404 means the name is not there.
+async function registry(url, fetchImpl) {
+  const res = await fetchImpl(url, { headers: { accept: 'application/json', 'user-agent': 'aftergraph-site-truth-layer' } });
+  if (res.status === 404) return { missing: true };
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return { data: await res.json() };
+}
+
+// [project] name/version from a pyproject.toml, without a TOML dependency.
+export function pyprojectMeta(text) {
+  let section = null; const out = { name: null, version: null };
+  for (const line of String(text).split(/\r?\n/)) {
+    const h = line.match(/^\s*\[([^\]]+)\]\s*$/);
+    if (h) { section = h[1].trim(); continue; }
+    if (section !== 'project') continue;
+    const m = line.match(/^\s*(name|version)\s*=\s*["']([^"']+)["']/);
+    if (m && !out[m[1]]) out[m[1]] = m[2];
+  }
+  return out;
+}
+
+// Whether a registry entry is ours: it must point back at an Aftergraph repo.
+// A name that exists but links elsewhere is reported as taken, never as ours.
+export function registryStatus(ecosystem, data) {
+  const blob = JSON.stringify(ecosystem === 'npm'
+    ? [data?.repository, data?.homepage, data?.bugs]
+    : [data?.info?.project_urls, data?.info?.home_page]).toLowerCase();
+  const ours = blob.includes('github.com/aftergraph/');
+  const version = ecosystem === 'npm' ? data?.['dist-tags']?.latest ?? null : data?.info?.version ?? null;
+  return { registry: ours ? 'published' : 'name-taken', registryVersion: version };
 }
 
 // Freshness of a repository from the age of its default-branch HEAD.
@@ -96,6 +130,33 @@ export async function readRepo(name, { token, fetchImpl = fetch, now = () => new
       if (r.missing) return;
       out.checks = aggregateRuns(r.data.workflow_runs);
       out.status = out.checks.status === 'unknown' ? 'no-ci' : out.checks.status;
+    });
+  }
+  if (out.head) {
+    // Root package manifests at the exact HEAD, checked against the public
+    // registries. Monorepo workspaces are not walked; only root manifests count.
+    await step('packages', async () => {
+      const file = async (p) => {
+        const r = await gh(`/repos/${OWNER}/${name}/contents/${p}?ref=${out.head}`, token, fetchImpl);
+        if (r.missing || typeof r.data?.content !== 'string') return null;
+        return Buffer.from(r.data.content, 'base64').toString('utf8');
+      };
+      const pkgs = [];
+      const pj = await file('package.json');
+      if (pj) { const j = JSON.parse(pj); if (j.name) pkgs.push({ ecosystem: 'npm', name: j.name, version: j.version || null, private: j.private === true }); }
+      const pp = await file('pyproject.toml');
+      if (pp) { const m = pyprojectMeta(pp); if (m.name) pkgs.push({ ecosystem: 'pypi', name: m.name, version: m.version, private: false }); }
+      for (const p of pkgs) {
+        p.registry = p.private ? 'private' : 'unknown'; p.registryVersion = null;
+        if (p.private) continue;
+        const url = p.ecosystem === 'npm' ? `${NPM}/${p.name.replace('/', '%2f')}` : `${PYPI}/pypi/${encodeURIComponent(p.name)}/json`;
+        try {
+          const r = await registry(url, fetchImpl);
+          if (r.missing) p.registry = 'unpublished';
+          else Object.assign(p, registryStatus(p.ecosystem, r.data));
+        } catch (e) { out.errors.push(`registry ${p.ecosystem}:${p.name}: ${e.message}`); }
+      }
+      out.packages = pkgs;
     });
   }
   if (out.errors.length && out.status !== 'failing') out.status = out.head ? out.status : 'unknown';
