@@ -252,3 +252,51 @@ test('build-worker.cjs parses (no duplicate top-level declarations)', async () =
   const file = fileURLToPath(new URL('./build-worker.cjs', import.meta.url));
   execFileSync(process.execPath, ['--check', file], { stdio: 'pipe' });
 });
+
+test('packages: registry entries count as ours only when they link back to Aftergraph', async () => {
+  const { readRepo, pyprojectMeta, registryStatus } = await import('./next-src/build-ecosystem-state.mjs');
+  assert.deepEqual(pyprojectMeta('[build-system]\nname = "nope"\n[project]\nname = "aftergraph-sdk"\nversion = "0.2.0"\n[tool.x]\nname="no"\n'), { name: 'aftergraph-sdk', version: '0.2.0' });
+  assert.equal(registryStatus('npm', { repository: { url: 'git+https://github.com/Aftergraph/x.git' }, 'dist-tags': { latest: '1.2.3' } }).registry, 'published');
+  assert.equal(registryStatus('npm', { repository: { url: 'git+https://github.com/someone/else.git' } }).registry, 'name-taken');
+  const b64 = (o) => Buffer.from(typeof o === 'string' ? o : JSON.stringify(o)).toString('base64');
+  const fake = async (url) => {
+    const ok = (d) => ({ ok: true, status: 200, json: async () => d });
+    if (url.endsWith('/repos/Aftergraph/x')) return ok({ default_branch: 'main' });
+    if (url.includes('/commits/main')) return ok({ sha: 'a'.repeat(40), commit: { committer: { date: '2026-10-01T00:00:00Z' } } });
+    if (url.includes('/contents/package.json')) return ok({ content: b64({ name: '@aftergraph/x', version: '0.1.0' }) });
+    if (url.includes('/contents/pyproject.toml')) return ok({ content: b64('[project]\nname = "x-py"\n') });
+    if (url.startsWith('https://registry.npmjs.org/@aftergraph%2fx')) return { ok: false, status: 404 };
+    if (url.startsWith('https://pypi.org/pypi/x-py/json')) return ok({ info: { version: '9.9', project_urls: { Source: 'https://github.com/elsewhere/x' } } });
+    if (url.includes('/pulls')) return ok([]);
+    if (url.includes('/actions/runs')) return ok({ workflow_runs: [] });
+    return { ok: false, status: 404 };
+  };
+  const r = await readRepo('x', { fetchImpl: fake, now: () => new Date('2026-10-02T00:00:00Z') });
+  assert.deepEqual(r.packages.map((p) => [p.ecosystem, p.name, p.registry]), [['npm', '@aftergraph/x', 'unpublished'], ['pypi', 'x-py', 'name-taken']]);
+});
+
+test('/next/packages is server-rendered, never indexed, never lists private systems', async () => {
+  assert.match(worker, /p === '\/next\/packages'[^\n]*x-robots-tag': 'noindex, nofollow'/);
+  assert.match(worker, /const NEXT_PACKAGES_PAGE = /);
+  const { createRequire } = await import('node:module');
+  const req = createRequire(import.meta.url);
+  const { renderPackagesPage } = req('./next-src/packages-page.cjs');
+  const empty = renderPackagesPage(JSON.stringify({ generatedAt: null, repos: [] }));
+  assert.match(empty, /Not generated in this build/);
+  assert.doesNotMatch(empty, /id="summary"/);
+  const page = renderPackagesPage(JSON.stringify({ generatedAt: '2026-10-02T00:00:00Z', source: 'fixture', repos: [
+    { name: 'sentinel', visibility: 'public', packages: [{ ecosystem: 'npm', name: '@aftergraph/sentinel', version: '1.0.0', private: true, registry: 'private' }] },
+    { name: 'aie', visibility: 'public', packages: [{ ecosystem: 'npm', name: '@aftergraph/aie', version: '0.3.0', private: false, registry: 'published', registryVersion: '0.3.0' }] },
+    { name: 'docs', visibility: 'public', packages: [] },
+    { name: 'brand', visibility: 'public' },
+    { name: 'runtime', visibility: 'private', status: 'private', packages: [{ ecosystem: 'npm', name: 'secret-pkg', registry: 'unpublished' }] }] }));
+  assert.match(page, /<meta name="robots" content="noindex,nofollow">/);
+  assert.doesNotMatch(page, /<script/);
+  assert.doesNotMatch(page, /runtime|secret-pkg/);
+  assert.match(page, /data-repo="sentinel" data-ecosystem="npm" data-registry="private"/);
+  assert.match(page, /href="https:\/\/www\.npmjs\.com\/package\/@aftergraph\/aie"[^>]*>published 0\.3\.0/);
+  assert.match(page, /id="summary" data-published="1" data-unpublished="0" data-taken="0" data-private="1"/);
+  assert.match(page, /id="no-manifest">.*docs/);
+  assert.match(page, /id="unread">.*brand/);
+  for (const f of ['ecosystem-page.cjs', 'releases-page.cjs', 'status-page.cjs']) assert.match(fs.readFileSync(new URL(`./next-src/${f}`, import.meta.url), 'utf8'), /href="\/next\/packages"/);
+});

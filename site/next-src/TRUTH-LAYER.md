@@ -18,6 +18,8 @@ in `platform-catalog.json` it records:
 - `release`: latest release (or tag) and `aheadBy`, the number of commits main
   has moved past it, read from the GitHub compare API
 - `openPRs`
+- `packages`: root `package.json` / `pyproject.toml` at HEAD (name, version,
+  `private`), each checked against the public npm or PyPI registry
 
 Private repos are listed by name only, with status `private`.
 
@@ -58,3 +60,13 @@ check names), pending or unknown CI, repos with read errors (`errors[]`), public
 CI, and repos that are `quiet` or `dormant` by HEAD age. The verdict line counts failing plus read
 errors. Private repos are never listed. `noindex`, no client JS. When the state file is missing the
 page says nothing is claimed.
+
+## /next/packages
+
+`/next/packages` (renderer `next-src/packages-page.cjs`) lists what each public system declares as a
+package at its exact HEAD and what the registry holds under that name: `published` (the registry
+entry links back to `github.com/Aftergraph/...`), `unpublished` (404 on the registry), `name-taken`
+(the name exists but does not link to Aftergraph, so it is never claimed as ours), `private`
+(`"private": true` in package.json) or `unknown` (read failed, recorded in `errors[]`). Only root
+manifests are read; monorepo workspaces are not walked. Private repos are never listed. `noindex`,
+no client JS.
