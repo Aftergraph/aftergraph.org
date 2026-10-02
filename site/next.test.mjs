@@ -170,3 +170,27 @@ test('hand-written product copy is re-verified at least every 45 days', () => {
   const live = fs.readFileSync(new URL('./next-src/live.js', import.meta.url), 'utf8');
   assert.match(live, /fchip/); assert.match(live, /main is \$\{esc\(a\)\} commit/);
 });
+
+test('/next/ecosystem is server-rendered from the truth layer and never indexed', async () => {
+  assert.match(worker, /p === '\/next\/ecosystem'[^\n]*x-robots-tag': 'noindex, nofollow'/);
+  assert.match(worker, /const ECOSYSTEM_PAGE = /);
+  assert.match(html, /href="\/next\/ecosystem"/);
+  const { createRequire } = await import('node:module');
+  const { renderEcosystemPage } = createRequire(import.meta.url)('./next-src/ecosystem-page.cjs');
+  const empty = renderEcosystemPage(JSON.stringify({ generatedAt: null, repos: [], counts: {} }));
+  assert.match(empty, /Not generated in this build/);
+  const statePath = new URL('./ecosystem-state.json', import.meta.url);
+  const state = fs.existsSync(statePath) ? JSON.parse(fs.readFileSync(statePath, 'utf8')) : { generatedAt: '2026-10-02T00:00:00Z', source: 'fixture', counts: { total: 2 }, repos: [
+    { name: 'sentinel', visibility: 'public', status: 'failing', head: 'b05c32f52c5f', headAt: '2026-10-02T00:00:00Z', freshness: 'active', release: { tag: 'v1.0.0', aheadBy: 3 }, openPRs: 1, checks: { failing: ['deploy'] } },
+    { name: 'runtime', visibility: 'private', status: 'private' }] };
+  const page = renderEcosystemPage(JSON.stringify(state));
+  assert.match(page, /<meta name="robots" content="noindex,nofollow">/);
+  assert.doesNotMatch(page, /<script/);
+  const esc = (n) => n.replace(/\./g, '\\.');
+  for (const r of state.repos) assert.match(page, new RegExp(`data-repo="${esc(r.name)}" data-status="${r.status}"`));
+  for (const r of state.repos.filter((x) => x.visibility === 'private')) assert.doesNotMatch(page, new RegExp(`github\\.com/Aftergraph/${esc(r.name)}"`));
+  const order = state.repos.map((r) => r.name);
+  const firstFailing = state.repos.find((r) => r.status === 'failing');
+  if (firstFailing) assert.ok(page.indexOf(`data-repo="${firstFailing.name}"`) < page.indexOf('data-status="passing"') || !page.includes('data-status="passing"'), 'failing sorts first');
+  assert.ok(order.length >= 1);
+});

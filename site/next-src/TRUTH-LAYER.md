@@ -21,6 +21,12 @@ in `platform-catalog.json` it records:
 
 Private repos are listed by name only, with status `private`.
 
+`/next/ecosystem` renders the same file as a server-side table at build time
+(no client JS, noindex): one row per catalog repo, sorted failing first, with
+CI on HEAD, freshness, HEAD sha and date, latest release with `+aheadBy`, open
+PRs and failing check names. Its "Verified" line is `generatedAt`; when the
+file was not generated the page says so and lists nothing.
+
 ## What is hand-written, and how it stays honest
 
 Product headlines and one-liners live in `COPY` in `generate-next.py`.
