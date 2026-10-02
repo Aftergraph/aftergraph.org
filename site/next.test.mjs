@@ -300,3 +300,7 @@ test('/next/packages is server-rendered, never indexed, never lists private syst
   assert.match(page, /id="unread">.*brand/);
   for (const f of ['ecosystem-page.cjs', 'releases-page.cjs', 'status-page.cjs']) assert.match(fs.readFileSync(new URL(`./next-src/${f}`, import.meta.url), 'utf8'), /href="\/next\/packages"/);
 });
+
+test('/next links every truth-layer page', () => {
+  for (const p of ['/next/ecosystem', '/next/status', '/next/releases', '/next/packages']) assert.match(html, new RegExp(`href="${p.replace(/\//g, '\\/')}"`));
+});
