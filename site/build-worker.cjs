@@ -23,6 +23,8 @@ const ecosystemStateRaw = fs.existsSync(path.join(SITE, 'ecosystem-state.json'))
 JSON.parse(ecosystemStateRaw);
 const { renderEcosystemPage } = require('./next-src/ecosystem-page.cjs');
 const ecosystemPage = renderEcosystemPage(ecosystemStateRaw);
+const { renderReleasesPage } = require('./next-src/releases-page.cjs');
+const releasesPage = renderReleasesPage(ecosystemStateRaw);
 
 const launcherApp = read('launcher-app.js');
 const launcherRegistryRaw = read('launcher-registry.json');
@@ -317,6 +319,7 @@ const NEXT = ${JSON.stringify(nextHtml)};
 const NEXT_PRODUCTS = ${nextProductsRaw};
 const ECOSYSTEM_STATE = ${JSON.stringify(ecosystemStateRaw)};
 const ECOSYSTEM_PAGE = ${JSON.stringify(ecosystemPage)};
+const RELEASES_PAGE = ${JSON.stringify(releasesPage)};
 const LAUNCH_APP = ${JSON.stringify(launcherApp)};
 const LAUNCHER_REGISTRY = ${JSON.stringify(launcherRegistryRaw)};
 const LAUNCHER_ALLOWED_IDS = new Set(${JSON.stringify(launcherTelemetryIds)});
@@ -469,6 +472,7 @@ export default {
     else if (p === '/launcher-registry.json') { body = LAUNCHER_REGISTRY; contentType = 'application/json;charset=utf-8'; cache = 'public, max-age=300'; }
     else if (p === '/next/ecosystem-state.json') { body = ECOSYSTEM_STATE; contentType = 'application/json;charset=utf-8'; extraHeaders = { 'x-robots-tag': 'noindex, nofollow', 'cache-control': 'public, max-age=300' }; }
     else if (p === '/next/ecosystem' || p === '/next/ecosystem/') { body = ECOSYSTEM_PAGE; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
+    else if (p === '/next/releases' || p === '/next/releases/') { body = RELEASES_PAGE; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
     else if (p === '/next' || p === '/next/') { body = NEXT; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
     else if (NEXT_PRODUCTS[p.endsWith('/') ? p.slice(0, -1) : p]) { body = NEXT_PRODUCTS[p.endsWith('/') ? p.slice(0, -1) : p]; extraHeaders = { 'x-robots-tag': 'noindex, nofollow' }; }
     else if (p === '/launch' || p === '/launch/') { body = LAUNCH; }

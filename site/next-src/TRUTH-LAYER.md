@@ -41,3 +41,11 @@ and bumps the date.
 - dashed chip: freshness of the repo
 - "main is N commits ahead": the latest release is older than what is on main;
   the release is not a picture of the product today
+
+## /next/releases
+
+`/next/releases` (renderer `next-src/releases-page.cjs`) renders release drift from the same
+`ecosystem-state.json` at build time: every public repo with a release or tag, sorted by how far
+the default branch is past it (GitHub compare `ahead_by`), each linked to that compare view.
+Public repos with no release are listed separately. Private repos are never listed. `noindex`, no
+client JS. When the state file is missing the page says nothing is claimed.
