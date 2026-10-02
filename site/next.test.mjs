@@ -194,3 +194,26 @@ test('/next/ecosystem is server-rendered from the truth layer and never indexed'
   if (firstFailing) assert.ok(page.indexOf(`data-repo="${firstFailing.name}"`) < page.indexOf('data-status="passing"') || !page.includes('data-status="passing"'), 'failing sorts first');
   assert.ok(order.length >= 1);
 });
+
+test('/next/releases is server-rendered release drift, never indexed, never lists private systems', async () => {
+  assert.match(worker, /p === '\/next\/releases'[^\n]*x-robots-tag': 'noindex, nofollow'/);
+  assert.match(worker, /const RELEASES_PAGE = /);
+  const { createRequire } = await import('node:module');
+  const req = createRequire(import.meta.url);
+  const { renderReleasesPage } = req('./next-src/releases-page.cjs');
+  assert.match(renderReleasesPage(JSON.stringify({ generatedAt: null, repos: [] })), /Not generated in this build/);
+  const page = renderReleasesPage(JSON.stringify({ generatedAt: '2026-10-02T00:00:00Z', source: 'fixture', repos: [
+    { name: 'docs', visibility: 'public', status: 'passing', branch: 'main', release: { tag: 'v1.0.0', at: '2026-09-01T00:00:00Z', url: 'https://github.com/Aftergraph/docs/releases/tag/v1.0.0', aheadBy: 67 } },
+    { name: 'brand', visibility: 'public', status: 'passing', branch: 'main', release: { tag: 'v0.1.0', aheadBy: 0 } },
+    { name: 'sentinel', visibility: 'public', status: 'passing', release: null },
+    { name: 'runtime', visibility: 'private', status: 'private', release: { tag: 'v9', aheadBy: 1 } }] }));
+  assert.match(page, /<meta name="robots" content="noindex,nofollow">/);
+  assert.doesNotMatch(page, /<script/);
+  assert.doesNotMatch(page, /runtime/);
+  assert.ok(page.indexOf('data-repo="docs"') < page.indexOf('data-repo="brand"'), 'largest drift first');
+  assert.match(page, /compare\/v1\.0\.0\.\.\.main/);
+  assert.match(page, /at release/);
+  assert.match(page, /id="unreleased"><a href="https:\/\/github.com\/Aftergraph\/sentinel"/);
+  const eco = req('./next-src/ecosystem-page.cjs').renderEcosystemPage(JSON.stringify({ generatedAt: null, repos: [] }));
+  assert.match(eco, /href="\/next\/releases"/);
+});
