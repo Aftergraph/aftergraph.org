@@ -49,3 +49,12 @@ and bumps the date.
 the default branch is past it (GitHub compare `ahead_by`), each linked to that compare view.
 Public repos with no release are listed separately. Private repos are never listed. `noindex`, no
 client JS. When the state file is missing the page says nothing is claimed.
+
+## /next/status
+
+`/next/status` (renderer `next-src/status-page.cjs`) lists what needs attention, from the same
+`ecosystem-state.json` and nothing else: public repos with failing CI on HEAD (with the failing
+check names), pending or unknown CI, repos with read errors (`errors[]`), public repos without
+CI, and repos that are `quiet` or `dormant` by HEAD age. The verdict line counts failing plus read
+errors. Private repos are never listed. `noindex`, no client JS. When the state file is missing the
+page says nothing is claimed.

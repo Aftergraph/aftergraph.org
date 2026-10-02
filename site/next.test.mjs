@@ -217,3 +217,31 @@ test('/next/releases is server-rendered release drift, never indexed, never list
   const eco = req('./next-src/ecosystem-page.cjs').renderEcosystemPage(JSON.stringify({ generatedAt: null, repos: [] }));
   assert.match(eco, /href="\/next\/releases"/);
 });
+
+test('/next/status lists attention items from the truth layer only, never indexed, never private', async () => {
+  assert.match(worker, /p === '\/next\/status'[^\n]*x-robots-tag': 'noindex, nofollow'/);
+  assert.match(worker, /const STATUS_PAGE = /);
+  const { createRequire } = await import('node:module');
+  const req = createRequire(import.meta.url);
+  const { renderStatusPage } = req('./next-src/status-page.cjs');
+  const empty = renderStatusPage(JSON.stringify({ generatedAt: null, repos: [] }));
+  assert.match(empty, /Not generated in this build/);
+  assert.doesNotMatch(empty, /id="verdict"/);
+  const page = renderStatusPage(JSON.stringify({ generatedAt: '2026-10-02T00:00:00Z', source: 'fixture', freshnessRule: 'active: HEAD <= 14 days old', repos: [
+    { name: 'sentinel', visibility: 'public', status: 'failing', head: 'b05c32f52c5f', checks: { failing: ['deploy'] }, errors: [], freshness: 'active' },
+    { name: 'docs', visibility: 'public', status: 'pending', checks: { runs: 4, failing: [] }, errors: ['release: 403'], freshness: 'quiet', headAt: '2026-08-01T00:00:00Z' },
+    { name: 'brand', visibility: 'public', status: 'no-ci', errors: [], freshness: 'active' },
+    { name: 'runtime', visibility: 'private', status: 'failing' }] }));
+  assert.match(page, /<meta name="robots" content="noindex,nofollow">/);
+  assert.doesNotMatch(page, /<script/);
+  assert.doesNotMatch(page, /runtime/);
+  assert.match(page, /id="verdict">2 need attention/);
+  assert.match(page, /id="failing" data-count="1"/);
+  assert.match(page, /data-repo="sentinel">.*deploy/);
+  assert.match(page, /id="errors" data-count="1"/);
+  assert.match(page, /id="no-ci" data-count="1"/);
+  assert.match(page, /id="stale" data-count="1"/);
+  const ok = renderStatusPage(JSON.stringify({ generatedAt: '2026-10-02T00:00:00Z', source: 'fixture', repos: [{ name: 'brand', visibility: 'public', status: 'passing', errors: [], freshness: 'active' }] }));
+  assert.match(ok, /id="verdict">No failing CI and no read errors</);
+  assert.match(req('./next-src/releases-page.cjs').renderReleasesPage(JSON.stringify({ generatedAt: null, repos: [] })), /href="\/next\/status"/);
+});
