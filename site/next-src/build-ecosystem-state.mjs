@@ -16,8 +16,12 @@ const API = process.env.GITHUB_API_URL || 'https://api.github.com';
 const NPM = process.env.NPM_REGISTRY_URL || 'https://registry.npmjs.org';
 const PYPI = process.env.PYPI_URL || 'https://pypi.org';
 
-export function aggregateRuns(runs) {
-  const list = (Array.isArray(runs) ? runs : []).filter((r) => r && typeof r === 'object');
+// selfRunId: the workflow run that is building this page right now. It is
+// always in progress while we read, so counting it would publish this repo's
+// own build as "pending" forever. It is excluded; every other run counts.
+export function aggregateRuns(runs, { selfRunId = null } = {}) {
+  const self = selfRunId == null || selfRunId === '' ? null : String(selfRunId);
+  const list = (Array.isArray(runs) ? runs : []).filter((r) => r && typeof r === 'object' && (self === null || String(r.id) !== self));
   if (list.length === 0) return { status: 'unknown', runs: 0, failing: [] };
   // Latest run per workflow on this exact commit.
   const latest = new Map();
@@ -128,7 +132,7 @@ export async function readRepo(name, { token, fetchImpl = fetch, now = () => new
     await step('checks', async () => {
       const r = await gh(`/repos/${OWNER}/${name}/actions/runs?head_sha=${out.head}&per_page=100`, token, fetchImpl);
       if (r.missing) return;
-      out.checks = aggregateRuns(r.data.workflow_runs);
+      out.checks = aggregateRuns(r.data.workflow_runs, { selfRunId: process.env.GITHUB_RUN_ID || null });
       out.status = out.checks.status === 'unknown' ? 'no-ci' : out.checks.status;
     });
   }

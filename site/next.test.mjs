@@ -98,6 +98,13 @@ test('truth layer: run aggregation is exact and never optimistic', async () => {
   assert.equal(aggregateRuns([]).status, 'unknown');
   assert.equal(aggregateRuns([{ workflow_id: 1, name: 'ci', status: 'completed', conclusion: 'success', created_at: '1' }]).status, 'passing');
   assert.equal(aggregateRuns([{ workflow_id: 1, name: 'ci', status: 'in_progress', conclusion: null, created_at: '1' }]).status, 'pending');
+  // The run building the page is excluded; other in-progress runs still count.
+  const selfRun = { id: 42, workflow_id: 2, name: 'deploy', status: 'in_progress', conclusion: null, created_at: '2' };
+  const done = { id: 41, workflow_id: 1, name: 'ci', status: 'completed', conclusion: 'success', created_at: '1' };
+  assert.equal(aggregateRuns([done, selfRun], { selfRunId: '42' }).status, 'passing');
+  assert.equal(aggregateRuns([done, selfRun], { selfRunId: '42' }).runs, 1);
+  assert.equal(aggregateRuns([done, selfRun]).status, 'pending');
+  assert.equal(aggregateRuns([done, { ...selfRun, id: 43 }], { selfRunId: '42' }).status, 'pending');
   const r = aggregateRuns([
     { workflow_id: 1, name: 'ci', status: 'completed', conclusion: 'failure', created_at: '1' },
     { workflow_id: 1, name: 'ci', status: 'completed', conclusion: 'success', created_at: '2' },
