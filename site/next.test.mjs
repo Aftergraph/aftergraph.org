@@ -220,7 +220,7 @@ test('/next/releases is server-rendered release drift, never indexed, never list
 
 test('/next/status lists attention items from the truth layer only, never indexed, never private', async () => {
   assert.match(worker, /p === '\/next\/status'[^\n]*x-robots-tag': 'noindex, nofollow'/);
-  assert.match(worker, /const STATUS_PAGE = /);
+  assert.match(worker, /const NEXT_STATUS_PAGE = /);
   const { createRequire } = await import('node:module');
   const req = createRequire(import.meta.url);
   const { renderStatusPage } = req('./next-src/status-page.cjs');
@@ -244,4 +244,11 @@ test('/next/status lists attention items from the truth layer only, never indexe
   const ok = renderStatusPage(JSON.stringify({ generatedAt: '2026-10-02T00:00:00Z', source: 'fixture', repos: [{ name: 'brand', visibility: 'public', status: 'passing', errors: [], freshness: 'active' }] }));
   assert.match(ok, /id="verdict">No failing CI and no read errors</);
   assert.match(req('./next-src/releases-page.cjs').renderReleasesPage(JSON.stringify({ generatedAt: null, repos: [] })), /href="\/next\/status"/);
+});
+
+test('build-worker.cjs parses (no duplicate top-level declarations)', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const { fileURLToPath } = await import('node:url');
+  const file = fileURLToPath(new URL('./build-worker.cjs', import.meta.url));
+  execFileSync(process.execPath, ['--check', file], { stdio: 'pipe' });
 });
