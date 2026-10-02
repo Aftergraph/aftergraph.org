@@ -45,7 +45,16 @@ async function gh(path, token, fetchImpl) {
   return { data: await res.json() };
 }
 
-export async function readRepo(name, { token, fetchImpl = fetch } = {}) {
+// Freshness of a repository from the age of its default-branch HEAD.
+// active <= 14 days, quiet <= 60 days, dormant beyond that, unknown without a HEAD.
+export function freshness(headAt, now = new Date()) {
+  const t = Date.parse(headAt || '');
+  if (!Number.isFinite(t)) return 'unknown';
+  const days = (now.getTime() - t) / 864e5;
+  return days <= 14 ? 'active' : days <= 60 ? 'quiet' : 'dormant';
+}
+
+export async function readRepo(name, { token, fetchImpl = fetch, now = () => new Date() } = {}) {
   const out = { name, visibility: 'public', status: 'unknown', head: null, headAt: null, branch: null, release: null, openPRs: null, checks: null, errors: [] };
   const step = async (label, fn) => { try { await fn(); } catch (e) { out.errors.push(`${label}: ${e.message}`); } };
   let branch = null;
@@ -65,10 +74,18 @@ export async function readRepo(name, { token, fetchImpl = fetch } = {}) {
   });
   await step('release', async () => {
     const r = await gh(`/repos/${OWNER}/${name}/releases/latest`, token, fetchImpl);
-    if (!r.missing) { out.release = { tag: r.data.tag_name, at: r.data.published_at, url: r.data.html_url }; return; }
+    if (!r.missing) { out.release = { tag: r.data.tag_name, at: r.data.published_at, url: r.data.html_url, aheadBy: null }; return; }
     const t = await gh(`/repos/${OWNER}/${name}/tags?per_page=1`, token, fetchImpl);
-    if (!t.missing && Array.isArray(t.data) && t.data[0]) out.release = { tag: t.data[0].name, at: null, url: null };
+    if (!t.missing && Array.isArray(t.data) && t.data[0]) out.release = { tag: t.data[0].name, at: null, url: null, aheadBy: null };
   });
+  if (out.release) {
+    // How far the default branch has moved past the latest release: a release
+    // that is many commits behind main is not a picture of the product today.
+    await step('release-drift', async () => {
+      const r = await gh(`/repos/${OWNER}/${name}/compare/${encodeURIComponent(out.release.tag)}...${encodeURIComponent(branch)}`, token, fetchImpl);
+      if (!r.missing && Number.isInteger(r.data?.ahead_by)) out.release.aheadBy = r.data.ahead_by;
+    });
+  }
   await step('pulls', async () => {
     const r = await gh(`/repos/${OWNER}/${name}/pulls?state=open&per_page=100`, token, fetchImpl);
     if (!r.missing && Array.isArray(r.data)) out.openPRs = r.data.length >= 100 ? '100+' : r.data.length;
@@ -82,6 +99,7 @@ export async function readRepo(name, { token, fetchImpl = fetch } = {}) {
     });
   }
   if (out.errors.length && out.status !== 'failing') out.status = out.head ? out.status : 'unknown';
+  out.freshness = freshness(out.headAt, now());
   return out;
 }
 
@@ -89,13 +107,15 @@ export async function buildState({ catalog, token, fetchImpl = fetch, now = () =
   const repos = [];
   for (const r of catalog.repositories) {
     if (r.visibility !== 'public') { repos.push({ name: r.name, visibility: 'private', status: 'private' }); continue; }
-    repos.push(await readRepo(r.name, { token, fetchImpl }));
+    repos.push(await readRepo(r.name, { token, fetchImpl, now }));
   }
   const count = (s) => repos.filter((r) => r.status === s).length;
   return {
     schema: 'aftergraph.ecosystem-state/v1',
     generatedAt: now().toISOString(),
     source: 'GitHub REST API, read at build time; exact default-branch HEAD per public repository',
+    freshnessRule: 'active: HEAD <= 14 days old; quiet: <= 60 days; dormant: older',
+    freshness: { active: repos.filter((r) => r.freshness === 'active').length, quiet: repos.filter((r) => r.freshness === 'quiet').length, dormant: repos.filter((r) => r.freshness === 'dormant').length },
     counts: { total: repos.length, passing: count('passing'), failing: count('failing'), pending: count('pending'), noCi: count('no-ci'), unknown: count('unknown'), private: count('private') },
     repos,
   };

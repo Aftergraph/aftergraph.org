@@ -21,12 +21,17 @@ for g,names in [('product',products),('platform',platform),('capability',caps),(
 assert len(nodes)==len(perm)
 COPY={
 'relay':('Supervise autonomous work','Mission control for agents. Every mission, agent and machine in one governed plane, with a clear way to step in.','#42c7e8'),
-'studio':('Work with agents, see the evidence','Chat, work and evidence side by side, so you see what was done and not only what was said.','#24c4ad'),
+'studio':('Work with agents, see the evidence','Chat, Work and Space in one environment, with the evidence beside every answer, so you see what was done and not only what was said.','#24c4ad'),
 'fihim':('A personal agent that remembers','Your context and identity carry across agents and devices, under rules you set.','#7759e8'),
 'war-room':('Operational intelligence','Ask what is really happening across missions, agents and compute, answered from evidence.','#f0a64a'),
 'wi-frontend':('See how work really happens','Work intelligence on least privilege, read straight from the source of truth.','#4c8bd8'),
 'renos':('Run a service business on agents','Scheduling, customers and day-to-day operations for real-world service companies.','#e86aa6'),
 'sentinel':('Code review that checks the exact commit','Verdicts go stale when the base moves, and every claim cites its evidence.','#2fd6a0')}
+# Hand-written copy goes stale as products move. Each entry records the day it
+# was last checked against the catalog "owns" text and the repository README;
+# next.test.mjs fails once a check is older than COPY_MAX_AGE_DAYS.
+COPY_VERIFIED={n:'2026-10-02' for n in COPY}
+COPY_MAX_AGE_DAYS=45
 def slug(n): return {'wi-frontend':'wie'}.get(n,n)
 cards=[]
 for i,n in enumerate(products):
