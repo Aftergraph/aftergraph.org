@@ -155,3 +155,11 @@ test('company map lists every permanent catalog system exactly once', () => {
     assert.ok(block.includes(`href="${r.source_url}"`), `${r.name} links to source`);
   }
 });
+
+test('front door gives Genesis Lume an explicit public preview path without inventing a fifth canonical product surface', () => {
+  const llms = fs.readFileSync(new URL('./llms.txt', import.meta.url), 'utf8');
+  assert.match(html, /href="https:\/\/lumen\.aftergraph\.org\/" aria-label="Explore Lume public preview">Lume preview<\/a>/);
+  assert.match(llms, /\[Lume public preview\]\(https:\/\/lumen\.aftergraph\.org\/\)/);
+  assert.match(llms, /does NOT establish Genesis GA/);
+  assert.match(html, /Four public entry surfaces\. Honest maturity\./);
+});
